@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
@@ -8,10 +8,33 @@ import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { store } from '../src/store';
+import { useAppSelector } from '../src/store/hooks';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { loadTokenFromStorage } from '../src/store/authSlice';
+import { View, ActivityIndicator } from 'react-native';
+import LoginScreen from '../src/screens/Auth/LoginScreen';
 
-export const unstable_settings = {
-  anchor: 'index',
-};
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const dispatch = useDispatch();
+  const { token, loading } = useAppSelector((s) => s.auth);
+  useEffect(() => {
+    // @ts-ignore hydrate token on app start
+    dispatch(loadTokenFromStorage());
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+  if (!token) {
+    return <LoginScreen />;
+  }
+  return <>{children}</>;
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -20,9 +43,9 @@ export default function RootLayout() {
     <ReduxProvider store={store}>
       <PaperProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-          </Stack>
+          <AuthGate>
+            <Slot />
+          </AuthGate>
           <StatusBar style="auto" />
         </ThemeProvider>
       </PaperProvider>
