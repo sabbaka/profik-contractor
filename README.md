@@ -48,3 +48,53 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+---
+
+## Quick Start (Contractor app)
+
+- **[Requirements]** Node 18+, npm 9+, Expo CLI
+- **[Install]**
+
+```bash
+npm install
+```
+
+- **[Environment]** Create `.env` from `.env.example` and set:
+
+```bash
+EXPO_PUBLIC_API_URL=https://your-backend.example.com
+GOOGLE_MAPS_API_KEY=your_native_google_maps_key
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_browser_key_optional
+```
+
+- **[Run]**
+
+```bash
+npx expo start -c
+```
+
+- **[Routing]** File-based routes under `app/` using Expo Router:
+
+  - `app/_layout.tsx` provides providers and auth gate
+  - `app/(contractor)/open/map.tsx` Map view (native uses `react-native-maps`, web fallback)
+  - `app/(contractor)/open/index.tsx` Open Jobs list
+  - `app/(contractor)/jobs/[id].tsx` Job Details
+
+- **[Maps]**
+
+  - Native maps via `react-native-maps` guarded (no web import).
+  - Components split: `components/OpenJobsMap.native.tsx` and `.web.tsx`.
+
+- **[Config]**
+
+  - `app.config.ts` (if present) or `app.json` should source Google Maps key from env.
+  - API base URL is `EXPO_PUBLIC_API_URL` in `src/api/profikApi.ts`.
+
+- **[Builds]**
+
+  - Move secrets to EAS and build:
+
+```bash
+eas build --platform ios --profile preview
+eas build --platform android --profile preview
