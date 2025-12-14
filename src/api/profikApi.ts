@@ -33,7 +33,7 @@ export const profikApi = createApi({
     signup: builder.mutation<void, { email: string; password: string; role: string }>({
       query: (body) => ({ url: '/auth/register', method: 'POST', body }),
     }),
-    login: builder.mutation<{ token: string }, { email: string; password: string }>({
+    login: builder.mutation<{ token: string }, { phone: string; password: string }>({
       query: (body) => ({ url: '/auth/login', method: 'POST', body }),
     }),
     me: builder.query<{ id: string; email: string; role: string; name: string; balance: number }, void>({

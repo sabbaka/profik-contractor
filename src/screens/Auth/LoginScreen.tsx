@@ -7,17 +7,17 @@ import { setToken } from '../../store/authSlice';
 
 export default function LoginScreen() {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [login, { isLoading }] = useLoginMutation();
 
   const onSubmit = async () => {
-    if (!email.trim() || !password.trim()) {
-      Alert.alert('Validation', 'Please enter email and password.');
+    if (!phone.trim() || !password.trim()) {
+      Alert.alert('Validation', 'Please enter phone and password.');
       return;
     }
     try {
-      const res = await login({ email: email.trim(), password: password.trim() }).unwrap();
+      const res = await login({ phone: phone.trim(), password: password.trim() }).unwrap();
       if (res?.token) {
         dispatch(setToken(res.token));
       }
@@ -32,11 +32,11 @@ export default function LoginScreen() {
       <View style={styles.card}>
         <Text variant="headlineSmall" style={{ marginBottom: 12 }}>Contractor Login</Text>
         <TextInput
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
+          label="Phone"
+          value={phone}
+          onChangeText={setPhone}
           autoCapitalize="none"
-          keyboardType="email-address"
+          keyboardType="phone-pad"
           style={{ marginBottom: 8 }}
         />
         <TextInput
