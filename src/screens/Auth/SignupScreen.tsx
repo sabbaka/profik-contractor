@@ -3,32 +3,37 @@ import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { YStack } from 'tamagui';
 import { Button, Text, TextInput } from '@/components/ui/ui';
-import { useDispatch } from 'react-redux';
-import { useLoginMutation } from '../../api/profikApi';
-import { setToken } from '../../store/authSlice';
+import { useSignupMutation } from '../../api/profikApi';
 
-export type LoginScreenProps = {
-  onGoToSignup?: () => void;
+export type SignupScreenProps = {
+  onGoToLogin?: () => void;
 };
 
-export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
-  const dispatch = useDispatch();
-  const [phone, setPhone] = useState('');
+export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [login, { isLoading }] = useLoginMutation();
+  const [signup, { isLoading }] = useSignupMutation();
 
   const onSubmit = async () => {
-    if (!phone.trim() || !password.trim()) {
-      Alert.alert('Validation', 'Please enter phone and password.');
+    if (!email.trim() || !password.trim()) {
+      Alert.alert('Validation', 'Please enter email and password.');
       return;
     }
+
     try {
-      const res = await login({ phone: phone.trim(), password: password.trim() }).unwrap();
-      if (res?.token) {
-        dispatch(setToken(res.token));
-      }
+      await signup({ email: email.trim(), password: password.trim(), role: 'contractor' }).unwrap();
+      Alert.alert('Success', 'Account created. You can now log in.', [
+        {
+          text: 'OK',
+          onPress: () => {
+            if (onGoToLogin) {
+              onGoToLogin();
+            }
+          },
+        },
+      ]);
     } catch (e: any) {
-      const msg = e?.data?.message || 'Login failed';
+      const msg = e?.data?.message || 'Signup failed';
       Alert.alert('Error', msg);
     }
   };
@@ -48,15 +53,15 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
         <StatusBar style="dark" />
         <YStack gap="$2" width="100%" maxWidth={420} alignSelf="center">
           <Text large style={{ color: '#000' }} marginBottom="$4">
-            Contractor Login
+            Contractor Sign Up
           </Text>
           <YStack gap="$4">
             <TextInput
-              placeholder="Phone"
-              value={phone}
-              onChangeText={setPhone}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
               autoCapitalize="none"
-              keyboardType="phone-pad"
+              keyboardType="email-address"
             />
             <TextInput
               placeholder="Password"
@@ -76,20 +81,14 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
               marginTop="$4"
               opacity={isLoading ? 0.7 : 1}
             >
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? 'Signing up...' : 'Sign Up'}
             </Button>
             <Button
               variant="outlined"
               marginTop="$2"
-              onPress={() => {
-                if (onGoToSignup) {
-                  onGoToSignup();
-                } else {
-                  Alert.alert('Not implemented', 'Account creation is not available yet in this app.');
-                }
-              }}
+              onPress={onGoToLogin}
             >
-              Create account
+              Already have an account? Login
             </Button>
           </YStack>
         </YStack>

@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -16,11 +16,13 @@ import { store } from '../src/store';
 import { useAppSelector } from '../src/store/hooks';
 import { loadTokenFromStorage } from '../src/store/authSlice';
 import LoginScreen from '../src/screens/Auth/LoginScreen';
+import SignupScreen from '../src/screens/Auth/SignupScreen';
 import tamaguiConfig from '../tamagui.config';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
   const { token, loading } = useAppSelector((s) => s.auth);
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
   useEffect(() => {
     // @ts-ignore hydrate token on app start
     dispatch(loadTokenFromStorage());
@@ -41,7 +43,10 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     );
   }
   if (!token) {
-    return <LoginScreen />;
+    if (mode === 'signup') {
+      return <SignupScreen onGoToLogin={() => setMode('login')} />;
+    }
+    return <LoginScreen onGoToSignup={() => setMode('signup')} />;
   }
   return <>{children}</>;
 }
