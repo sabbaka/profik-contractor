@@ -4,16 +4,19 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import React from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
+import React, { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider as ReduxProvider, useDispatch } from 'react-redux';
+import { PortalProvider } from '@tamagui/portal';
+import { TamaguiProvider } from 'tamagui';
 import { store } from '../src/store';
 import { useAppSelector } from '../src/store/hooks';
-import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 import { loadTokenFromStorage } from '../src/store/authSlice';
-import { View, ActivityIndicator } from 'react-native';
 import LoginScreen from '../src/screens/Auth/LoginScreen';
+import tamaguiConfig from '../tamagui.config';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
@@ -25,7 +28,14 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#FFFFFF',
+        }}
+      >
         <ActivityIndicator size="large" />
       </View>
     );
@@ -40,15 +50,23 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ReduxProvider store={store}>
-      <PaperProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <AuthGate>
-            <Slot />
-          </AuthGate>
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </PaperProvider>
-    </ReduxProvider>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ReduxProvider store={store}>
+          <PaperProvider>
+            <TamaguiProvider config={tamaguiConfig}>
+              <PortalProvider>
+                <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                  <AuthGate>
+                    <Slot />
+                  </AuthGate>
+                  <StatusBar style="dark" />
+                </ThemeProvider>
+              </PortalProvider>
+            </TamaguiProvider>
+          </PaperProvider>
+        </ReduxProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }

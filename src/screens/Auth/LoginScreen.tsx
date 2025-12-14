@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { Text, Button, TextInput, ActivityIndicator } from 'react-native-paper';
+import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { YStack } from 'tamagui';
+import { Button, Text, TextInput } from '@/components/ui/ui';
 import { useDispatch } from 'react-redux';
 import { useLoginMutation } from '../../api/profikApi';
 import { setToken } from '../../store/authSlice';
@@ -28,33 +30,53 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={styles.card}>
-        <Text variant="headlineSmall" style={{ marginBottom: 12 }}>Contractor Login</Text>
-        <TextInput
-          label="Phone"
-          value={phone}
-          onChangeText={setPhone}
-          autoCapitalize="none"
-          keyboardType="phone-pad"
-          style={{ marginBottom: 8 }}
-        />
-        <TextInput
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          style={{ marginBottom: 12 }}
-        />
-        <Button mode="contained" onPress={onSubmit} disabled={isLoading}>
-          {isLoading ? <ActivityIndicator animating color="#fff" /> : 'Login'}
-        </Button>
-      </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <YStack
+        flex={1}
+        gap="$1"
+        padding="$4"
+        justifyContent="center"
+        backgroundColor="$background"
+      >
+        <StatusBar style="dark" />
+        <YStack gap="$2" width="100%" maxWidth={420} alignSelf="center">
+          <Text large style={{ color: '#000' }} marginBottom="$4">
+            Contractor Login
+          </Text>
+          <YStack gap="$4">
+            <TextInput
+              placeholder="Phone"
+              value={phone}
+              onChangeText={setPhone}
+              autoCapitalize="none"
+              keyboardType="phone-pad"
+            />
+            <TextInput
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+          </YStack>
+          <YStack gap="$2">
+            <Button
+              borderRadius="$10"
+              backgroundColor="$red10"
+              pressStyle={{ opacity: 0.9, scale: 0.97 }}
+              fontWeight="bold"
+              onPress={onSubmit}
+              disabled={isLoading}
+              marginTop="$4"
+              opacity={isLoading ? 0.7 : 1}
+            >
+              {isLoading ? 'Logging in...' : 'Login'}
+            </Button>
+          </YStack>
+        </YStack>
+      </YStack>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center' },
-  card: { width: '100%', maxWidth: 420 },
-});
