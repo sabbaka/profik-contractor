@@ -1,11 +1,10 @@
-import { Text } from 'tamagui';
+import { Text } from '@/components/ui/ui';
 import Animated, { 
   useAnimatedStyle, 
   withRepeat, 
   withSequence, 
   withTiming 
 } from 'react-native-reanimated';
-import { useEffect } from 'react';
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
