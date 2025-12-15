@@ -7,7 +7,6 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as ReduxProvider, useDispatch } from 'react-redux';
 import { PortalProvider } from '@tamagui/portal';
@@ -58,18 +57,16 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ReduxProvider store={store}>
-          <PaperProvider>
-            <TamaguiProvider config={tamaguiConfig}>
-              <PortalProvider>
-                <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                  <AuthGate>
-                    <Slot />
-                  </AuthGate>
-                  <StatusBar style="dark" />
-                </ThemeProvider>
-              </PortalProvider>
-            </TamaguiProvider>
-          </PaperProvider>
+          <TamaguiProvider config={tamaguiConfig}>
+            <PortalProvider>
+              <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                <AuthGate>
+                  <Slot />
+                </AuthGate>
+                <StatusBar style="dark" />
+              </ThemeProvider>
+            </PortalProvider>
+          </TamaguiProvider>
         </ReduxProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
