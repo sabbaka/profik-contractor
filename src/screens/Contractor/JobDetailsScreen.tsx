@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { Text, ActivityIndicator, Button, TextInput, Card } from 'react-native-paper';
+import { ScrollView, Alert } from 'react-native';
+import { YStack, Spinner } from 'tamagui';
+import { Text, Button, TextInput, Card } from '@/components/ui/ui';
 import MapPreview from '../../../components/MapPreview';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -50,45 +51,49 @@ export default function JobDetailsScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-        <Text>Loading job...</Text>
-      </View>
+      <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
+        <Spinner size="large" color="$gray10" />
+        <Text marginTop="$3">Loading job...</Text>
+      </YStack>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.center}>
-        <Text variant="titleMedium">❌ Failed to load job</Text>
-        <Button onPress={refetch} loading={isFetching}>Retry</Button>
-      </View>
+      <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
+        <Text variant="titleMedium" marginBottom="$3">❌ Failed to load job</Text>
+        <Button onPress={refetch} disabled={isFetching} opacity={isFetching ? 0.7 : 1}>
+          {isFetching ? 'Loading...' : 'Retry'}
+        </Button>
+      </YStack>
     );
   }
 
   if (!job) {
     return (
-      <View style={styles.center}>
+      <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
         <Text>No job found.</Text>
-      </View>
+      </YStack>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text variant="headlineSmall" style={styles.title}>{job.title}</Text>
-      <Text variant="bodyMedium" style={styles.muted}>{job.category}</Text>
-      <Text variant="bodyLarge" style={styles.price}>
-        {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK' }).format(job.price ?? 0)}
-      </Text>
-      <Text variant="bodyMedium" style={styles.description}>{job.description}</Text>
+    <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+      <YStack gap="$2" marginBottom="$3">
+        <Text variant="headlineSmall">{job.title}</Text>
+        <Text variant="bodyMedium" color="$gray10">{job.category}</Text>
+        <Text variant="bodyLarge" fontWeight="600" marginTop="$2">
+          {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK' }).format(job.price ?? 0)}
+        </Text>
+        <Text variant="bodyMedium" marginTop="$2">{job.description}</Text>
+      </YStack>
 
       {(job.addressLine || job.city || job.postalCode || job.country || (job.lat && job.lng)) && (
-        <Card style={{ marginTop: 12 }}>
+        <Card marginTop="$3">
           <Card.Title title="Location" />
           <Card.Content>
             {(job.addressLine || job.city || job.postalCode || job.country) ? (
-              <Text style={{ marginBottom: 8 }}>
+              <Text marginBottom="$2">
                 {[job.addressLine, job.city, job.postalCode, job.country].filter(Boolean).join(', ')}
               </Text>
             ) : null}
@@ -102,65 +107,61 @@ export default function JobDetailsScreen() {
       )}
 
       {me?.role === 'contractor' && (
-        <>
+        <YStack marginTop="$4">
           {(offerStatus?.hasOffered || lastOffer) ? (
-            <Card style={styles.offerBox}>
-              <Card.Title title="Your Offer" subtitle={`Status: submitted`} />
+            <Card>
+              <Card.Title title="Your Offer" subtitle="Status: submitted" />
               <Card.Content>
-                <Text style={{ marginBottom: 4 }}>
+                <Text marginBottom="$1">
                   Price: {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK' }).format((lastOffer?.price ?? job.price) || 0)}
                 </Text>
                 {lastOffer?.message ? (
                   <Text>Message: {lastOffer.message}</Text>
                 ) : (
-                  <Text style={{ color: '#666' }}>Message: —</Text>
+                  <Text color="$gray10">Message: —</Text>
                 )}
               </Card.Content>
             </Card>
           ) : (
-            <View style={styles.offerBox}>
-              <Text variant="titleMedium" style={{ marginBottom: 8 }}>Submit an Offer</Text>
-              <TextInput
-                label="Your price"
-                value={price}
-                onChangeText={setPrice}
-                keyboardType="decimal-pad"
-                style={{ marginBottom: 8 }}
-              />
-              <TextInput
-                label="Message (optional)"
-                value={message}
-                onChangeText={setMessage}
-                multiline
-                numberOfLines={3}
-                style={{ marginBottom: 12 }}
-              />
-              {offerStatus?.hasOffered && (
-                <Text style={{ color: '#666', marginBottom: 8 }}>
-                  You have already submitted an offer for this job.
-                </Text>
-              )}
-              <Button mode="contained" onPress={onSubmitOffer} loading={isSubmitting} disabled={isSubmitting}>
-                Submit Offer
-              </Button>
-            </View>
+            <YStack
+              padding="$3"
+              borderRadius="$4"
+              borderWidth={1}
+              borderColor="$gray4"
+              backgroundColor="$background"
+            >
+              <Text variant="titleMedium" marginBottom="$2">Submit an Offer</Text>
+              <YStack gap="$2">
+                <TextInput
+                  placeholder="Your price"
+                  value={price}
+                  onChangeText={setPrice}
+                  keyboardType="decimal-pad"
+                />
+                <TextInput
+                  placeholder="Message (optional)"
+                  value={message}
+                  onChangeText={setMessage}
+                  multiline
+                  numberOfLines={3}
+                />
+                {offerStatus?.hasOffered && (
+                  <Text color="$gray10" fontSize={13}>
+                    You have already submitted an offer for this job.
+                  </Text>
+                )}
+                <Button variant="contained" onPress={onSubmitOffer} disabled={isSubmitting} opacity={isSubmitting ? 0.7 : 1}>
+                  {isSubmitting ? 'Submitting...' : 'Submit Offer'}
+                </Button>
+              </YStack>
+            </YStack>
           )}
-        </>
+        </YStack>
       )}
 
-      <Button mode="outlined" style={{ marginTop: 16 }} onPress={() => navigation.goBack()}>
+      <Button variant="outlined" marginTop="$4" onPress={() => navigation.goBack()}>
         Back
       </Button>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
-  container: { padding: 16 },
-  title: { marginBottom: 4 },
-  muted: { color: '#666', marginBottom: 8 },
-  price: { fontWeight: '600', marginBottom: 12 },
-  description: { lineHeight: 20 },
-  offerBox: { marginTop: 16, padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#eee', backgroundColor: '#fff' },
-});

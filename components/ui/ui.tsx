@@ -1,4 +1,6 @@
-import { Input, styled, Button as TamaguiButton, Text as TextElement } from 'tamagui';
+import { Input, styled, Button as TamaguiButton, Text as TextElement, Card as TamaguiCard } from 'tamagui';
+import React, { useEffect, useState } from 'react';
+import { YStack, XStack, Spinner as TamaguiSpinner } from 'tamagui';
 
 export const Button = styled(TamaguiButton, {
   borderRadius: 10,
@@ -49,6 +51,15 @@ export const Button = styled(TamaguiButton, {
         backgroundColor: 'transparent',
         borderWidth: 0,
       },
+      contained: {
+        height: 'auto',
+        backgroundColor: '#fa2a48',
+        color: 'white',
+        paddingVertical: '$4',
+        pressStyle: {
+          backgroundColor: '#e2223d',
+        },
+      },
     },
   } as const,
 
@@ -89,5 +100,94 @@ export const Text = styled(TextElement, {
         fontWeight: 'bold',
       },
     },
+    variant: {
+      titleLarge: {
+        fontSize: 22,
+        fontWeight: 'bold',
+      },
+      titleMedium: {
+        fontSize: 18,
+        fontWeight: '600',
+      },
+      headlineSmall: {
+        fontSize: 24,
+        fontWeight: 'bold',
+      },
+      bodyLarge: {
+        fontSize: 16,
+      },
+      bodyMedium: {
+        fontSize: 14,
+      },
+    },
   },
 });
+
+// ActivityIndicator replacement
+export const ActivityIndicator = TamaguiSpinner;
+
+// Card component
+export const Card = Object.assign(
+  styled(TamaguiCard, {
+    padding: '$4',
+    borderRadius: '$6',
+    borderWidth: 1,
+    borderColor: '$borderColor',
+    backgroundColor: '$background',
+  }),
+  {
+    Title: ({ title, subtitle }: { title: string; subtitle?: string }) => (
+      <YStack marginBottom="$2">
+        <Text fontSize={16} fontWeight="700">
+          {title}
+        </Text>
+        {subtitle && (
+          <Text fontSize={14} color="$gray10">
+            {subtitle}
+          </Text>
+        )}
+      </YStack>
+    ),
+    Content: ({ children }: { children: React.ReactNode }) => <YStack>{children}</YStack>,
+  }
+);
+
+// Snackbar/Toast component
+export function Snackbar({
+  visible,
+  onDismiss,
+  duration = 3000,
+  children,
+}: {
+  visible: boolean;
+  onDismiss: () => void;
+  duration?: number;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    if (visible && duration > 0) {
+      const timer = setTimeout(() => {
+        onDismiss();
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [visible, duration, onDismiss]);
+
+  if (!visible) return null;
+
+  return (
+    <YStack
+      position="absolute"
+      bottom="$4"
+      left="$4"
+      right="$4"
+      backgroundColor="$gray12"
+      padding="$4"
+      borderRadius="$4"
+      elevation="$4"
+      zIndex={9999}
+    >
+      <Text color="white">{children}</Text>
+    </YStack>
+  );
+}

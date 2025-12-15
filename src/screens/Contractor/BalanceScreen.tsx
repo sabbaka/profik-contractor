@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { Text, ActivityIndicator, Button, TextInput, Snackbar } from 'react-native-paper';
+import { Alert } from 'react-native';
+import { YStack } from 'tamagui';
+import { Text, ActivityIndicator, Button, TextInput, Snackbar } from '@/components/ui/ui';
 import { useMeQuery, useTopupBalanceMutation } from '../../api/profikApi';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
@@ -52,52 +53,47 @@ export default function BalanceScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-        <Text>Loading balance...</Text>
-      </View>
+      <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
+        <ActivityIndicator size="large" color="$gray10" />
+        <Text marginTop="$3">Loading balance...</Text>
+      </YStack>
     );
   }
 
   if (error || !user) {
     return (
-      <View style={styles.center}>
-        <Text variant="titleMedium">❌ Failed to load balance</Text>
-        <Button onPress={refetch} loading={isFetching}>Retry</Button>
-      </View>
+      <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
+        <Text variant="titleMedium" marginBottom="$3">❌ Failed to load balance</Text>
+        <Button onPress={refetch} disabled={isFetching} opacity={isFetching ? 0.7 : 1}>
+          {isFetching ? 'Loading...' : 'Retry'}
+        </Button>
+      </YStack>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
       <Text variant="titleLarge">Your Balance</Text>
-      <Text variant="headlineSmall" style={{ marginTop: 8 }}>
+      <Text variant="headlineSmall" marginTop="$2">
         {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK' }).format(user.balance ?? 0)}
       </Text>
-      <View style={{ width: '85%', marginTop: 24 }}>
+      <YStack width="85%" marginTop="$6" gap="$3">
         <TextInput
-          label="Top-up amount (CZK)"
+          placeholder="Top-up amount (CZK)"
           value={amount}
           onChangeText={setAmount}
           keyboardType="numeric"
-          mode="outlined"
-          style={{ marginBottom: 12 }}
         />
-        <Button mode="contained" onPress={onTopup} loading={isCreating} disabled={isCreating}>
-          Top Up
+        <Button variant="contained" onPress={onTopup} disabled={isCreating} opacity={isCreating ? 0.7 : 1}>
+          {isCreating ? 'Processing...' : 'Top Up'}
         </Button>
-        <Text style={{ marginTop: 8, color: '#666' }}>
+        <Text fontSize={14} color="$gray10" marginTop="$2">
           You'll complete payment in a secure web view and return to the app automatically.
         </Text>
-      </View>
+      </YStack>
       <Snackbar visible={snackbarVisible} onDismiss={() => setSnackbarVisible(false)} duration={3000}>
         {snackbarMsg}
       </Snackbar>
-    </View>
+    </YStack>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 },
-});
