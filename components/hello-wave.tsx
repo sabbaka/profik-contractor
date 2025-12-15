@@ -1,19 +1,40 @@
-import Animated from 'react-native-reanimated';
+import { Text } from 'tamagui';
+import Animated, { 
+  useAnimatedStyle, 
+  withRepeat, 
+  withSequence, 
+  withTiming 
+} from 'react-native-reanimated';
+import { useEffect } from 'react';
+
+const AnimatedText = Animated.createAnimatedComponent(Text);
 
 export function HelloWave() {
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: withRepeat(
+          withSequence(
+            withTiming('0deg', { duration: 150 }),
+            withTiming('25deg', { duration: 150 }),
+            withTiming('0deg', { duration: 150 }),
+            withTiming('25deg', { duration: 150 }),
+            withTiming('0deg', { duration: 150 }),
+            withTiming('0deg', { duration: 2000 })
+          ),
+          -1
+        ),
+      },
+    ],
+  }));
+
   return (
-    <Animated.Text
-      style={{
-        fontSize: 28,
-        lineHeight: 32,
-        marginTop: -6,
-        animationName: {
-          '50%': { transform: [{ rotate: '25deg' }] },
-        },
-        animationIterationCount: 4,
-        animationDuration: '300ms',
-      }}>
+    <AnimatedText
+      fontSize={28}
+      lineHeight={32}
+      marginTop={-6}
+      style={animatedStyle}>
       👋
-    </Animated.Text>
+    </AnimatedText>
   );
 }

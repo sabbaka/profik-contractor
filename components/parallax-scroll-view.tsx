@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet } from 'react-native';
+import { YStack } from 'tamagui';
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -7,9 +7,7 @@ import Animated, {
   useScrollOffset,
 } from 'react-native-reanimated';
 
-import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useThemeColor } from '@/hooks/use-theme-color';
 
 const HEADER_HEIGHT = 250;
 
@@ -23,7 +21,6 @@ export default function ParallaxScrollView({
   headerImage,
   headerBackgroundColor,
 }: Props) {
-  const backgroundColor = useThemeColor({}, 'background');
   const colorScheme = useColorScheme() ?? 'light';
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollOffset(scrollRef);
@@ -47,33 +44,20 @@ export default function ParallaxScrollView({
   return (
     <Animated.ScrollView
       ref={scrollRef}
-      style={{ backgroundColor, flex: 1 }}
+      style={{ backgroundColor: colorScheme === 'dark' ? '#151718' : '#fff', flex: 1 }}
       scrollEventThrottle={16}>
       <Animated.View
         style={[
-          styles.header,
-          { backgroundColor: headerBackgroundColor[colorScheme] },
+          {
+            height: HEADER_HEIGHT,
+            overflow: 'hidden',
+            backgroundColor: headerBackgroundColor[colorScheme],
+          },
           headerAnimatedStyle,
         ]}>
         {headerImage}
       </Animated.View>
-      <ThemedView style={styles.content}>{children}</ThemedView>
+      <YStack flex={1} padding="$8" gap="$4" overflow="hidden">{children}</YStack>
     </Animated.ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    height: HEADER_HEIGHT,
-    overflow: 'hidden',
-  },
-  content: {
-    flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: 'hidden',
-  },
-});
