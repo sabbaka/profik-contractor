@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
-import { YStack, Spinner } from 'tamagui';
-import { Text, Button, TextInput, Card } from '@/components/ui/ui';
+import { YStack } from 'tamagui';
+import { Text, Button, TextInput, Card, ActivityIndicator } from '@/components/ui/ui';
 import MapPreview from '../../../components/MapPreview';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -52,7 +52,7 @@ export default function JobDetailsScreen() {
   if (isLoading) {
     return (
       <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
-        <Spinner size="large" color="$gray10" />
+        <ActivityIndicator size="large" color="$gray10" />
         <Text marginTop="$3">Loading job...</Text>
       </YStack>
     );
