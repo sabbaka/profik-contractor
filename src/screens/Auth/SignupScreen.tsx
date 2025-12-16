@@ -73,7 +73,7 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
           <YStack gap="$2">
             <Button
               borderRadius="$10"
-              backgroundColor="$red10"
+              backgroundColor="$blue10"
               pressStyle={{ opacity: 0.9, scale: 0.97 }}
               fontWeight="bold"
               onPress={onSubmit}
