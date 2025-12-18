@@ -21,10 +21,10 @@ export const Button = styled(TamaguiButton, {
 
       primary: {
         height: 'auto',
-        backgroundColor: '$blue10',
+        backgroundColor: '#fa2a48',
         color: 'white',
         pressStyle: {
-          backgroundColor: '$blue9',
+          backgroundColor: '#e2223d',
           borderWidth: 0,
         },
         paddingVertical: '$4',
@@ -39,11 +39,11 @@ export const Button = styled(TamaguiButton, {
       bordered: {
         backgroundColor: 'transparent',
         borderWidth: 1,
-        borderColor: '$blue10',
-        color: '$blue10',
+        borderColor: '#fa2a48',
+        color: '#fa2a48',
       },
       borderedProminent: {
-        backgroundColor: '$blue10',
+        backgroundColor: '#fa2a48',
         color: 'white',
         fontWeight: '600',
       },
@@ -53,11 +53,13 @@ export const Button = styled(TamaguiButton, {
       },
       contained: {
         height: 'auto',
-        backgroundColor: '$blue10',
+        backgroundColor: '#fa2a48',
         color: 'white',
         paddingVertical: '$4',
+        fontSize: 17,
         pressStyle: {
-          backgroundColor: '$blue9',
+          backgroundColor: '#e2223d',
+          borderWidth: 0,
         },
       },
     },
@@ -142,7 +144,7 @@ export const Text = styled(TextElement, {
       link: {
         lineHeight: 30,
         fontSize: 16,
-        color: '#2563eb',
+        color: '#fa2a48',
       },
     },
   },
