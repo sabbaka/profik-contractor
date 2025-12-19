@@ -47,6 +47,15 @@ export default function JobDetailsRoute() {
     }
   }, [job?.createdAt]);
 
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+
+    router.replace('/(contractor)/open');
+  };
+
   const onSubmitOffer = async () => {
     if (me?.role !== 'contractor') {
       Alert.alert('Unauthorized', 'Only contractors can submit offers.');
@@ -121,7 +130,7 @@ export default function JobDetailsRoute() {
           circular
           size="$4"
           scaleIcon={1.5}
-          onPress={() => router.back()}
+          onPress={handleBack}
           color="$color"
         />
         <TamaguiText fontSize="$6" fontWeight="600" numberOfLines={1} flex={1} textAlign="center">
