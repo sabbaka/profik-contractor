@@ -20,12 +20,12 @@ export default function ContractorProfileSheet({
 
   const handleOpenJobsPress = () => {
     onOpenChange(false);
-    router.push({ pathname: '/open' as any });
+    router.push({ pathname: '/(contractor)/open' as any });
   };
 
   const handleBalancePress = () => {
     onOpenChange(false);
-    router.push({ pathname: '/balance' as any });
+    router.push({ pathname: '/(contractor)/balance' as any });
   };
 
   const handleLogout = () => {

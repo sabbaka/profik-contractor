@@ -1,11 +1,22 @@
 import React from 'react';
 import { Stack } from 'expo-router';
+import ContractorHeader from '@/components/layout/ContractorHeader';
 
 export default function ContractorLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="jobs/[id]" options={{ title: 'Job Details' }} />
-    </Stack>
+    <>
+      <ContractorHeader />
+      <Stack
+        initialRouteName="open/index"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="open/index" />
+        <Stack.Screen name="open/map" />
+        <Stack.Screen name="balance" />
+        <Stack.Screen name="jobs/[id]" />
+      </Stack>
+    </>
   );
 }

@@ -1,9 +1,7 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -52,8 +50,6 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -61,12 +57,10 @@ export default function RootLayout() {
           <PaperProvider>
             <TamaguiProvider config={tamaguiConfig}>
               <PortalProvider>
-                <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                  <AuthGate>
-                    <Slot />
-                  </AuthGate>
-                  <StatusBar style="dark" />
-                </ThemeProvider>
+                <AuthGate>
+                  <Slot />
+                </AuthGate>
+                <StatusBar style="dark" />
               </PortalProvider>
             </TamaguiProvider>
           </PaperProvider>
