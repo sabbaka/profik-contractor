@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { useTheme } from 'tamagui';
 
 type Props =
   | { lat: number; lng: number; height?: number }
@@ -9,6 +10,7 @@ type Props =
 
 export default function MapPreview(props: Props) {
   const height = (props as any).height ?? 180;
+  const theme = useTheme();
 
   const hasCoords = (p: Props): p is { lat: number; lng: number; height?: number } =>
     (p as any).lat != null && (p as any).lng != null;
@@ -48,7 +50,15 @@ export default function MapPreview(props: Props) {
 
   if (!region) {
     return (
-      <View style={[styles.placeholder, { height }]}> 
+      <View
+        style={[
+          styles.placeholder,
+          {
+            height,
+            backgroundColor: theme?.gray2?.val ?? '#f2f2f2',
+          },
+        ]}
+      >
         <Text>Locating…</Text>
       </View>
     );
@@ -66,7 +76,6 @@ const styles = StyleSheet.create({
   placeholder: {
     borderRadius: 8,
     marginVertical: 12,
-    backgroundColor: '#f2f2f2',
     alignItems: 'center',
     justifyContent: 'center',
   },

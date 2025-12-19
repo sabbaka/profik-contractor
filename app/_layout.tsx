@@ -5,7 +5,7 @@ import 'react-native-reanimated';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { MD3LightTheme, Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as ReduxProvider, useDispatch } from 'react-redux';
 import { PortalProvider } from '@tamagui/portal';
@@ -14,6 +14,18 @@ import { store } from '../src/store';
 import { useAppSelector } from '../src/store/hooks';
 import { loadTokenFromStorage } from '../src/store/authSlice';
 import tamaguiConfig from '../tamagui.config';
+
+const paperTheme = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: '#fa2a48',
+    secondary: '#181818',
+    tertiary: '#181818',
+    surface: '#ffffff',
+    background: '#ffffff',
+  },
+} as const;
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
@@ -53,8 +65,8 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ReduxProvider store={store}>
-          <PaperProvider>
-            <TamaguiProvider config={tamaguiConfig}>
+          <PaperProvider theme={paperTheme}>
+            <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
               <PortalProvider>
                 <AuthGate>
                   <Slot />

@@ -1,9 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ContractorProfileHeaderButton from '../profile/ContractorProfileHeaderButton';
+import { useTheme } from 'tamagui';
 
 export default function ContractorHeader() {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
 
   return (
     <View
@@ -11,6 +13,8 @@ export default function ContractorHeader() {
         styles.header,
         {
           paddingTop: insets.top,
+          backgroundColor: theme?.background?.val ?? '#ffffff',
+          borderBottomColor: theme?.gray4?.val ?? '#eeeeee',
         },
       ]}
     >
@@ -22,13 +26,12 @@ export default function ContractorHeader() {
 const styles = StyleSheet.create({
   header: {
     height: 'auto',
-    backgroundColor: '#f2f2f2',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     paddingHorizontal: 25,
     paddingBottom: 5,
-    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
   },
   title: {
     fontWeight: '500',

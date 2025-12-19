@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from 'tamagui';
 
 type Props =
   | { lat: number; lng: number; height?: number }
@@ -7,6 +8,7 @@ type Props =
 
 export default function MapPreview(props: Props) {
   const height = (props as any).height ?? 180;
+  const theme = useTheme();
   const hasCoords = (p: Props): p is { lat: number; lng: number; height?: number } =>
     (p as any).lat != null && (p as any).lng != null;
 
@@ -48,7 +50,15 @@ export default function MapPreview(props: Props) {
   }, [coords, address]);
 
   return (
-    <View style={[styles.box, { height }]}> 
+    <View
+      style={[
+        styles.box,
+        {
+          height,
+          backgroundColor: theme?.gray2?.val ?? '#f2f2f2',
+        },
+      ]}
+    >
       <Text>Map preview not available on web</Text>
       <Text>{label}</Text>
     </View>
@@ -56,5 +66,5 @@ export default function MapPreview(props: Props) {
 }
 
 const styles = StyleSheet.create({
-  box: { borderRadius: 8, marginVertical: 12, backgroundColor: '#f2f2f2', alignItems: 'center', justifyContent: 'center' },
+  box: { borderRadius: 8, marginVertical: 12, alignItems: 'center', justifyContent: 'center' },
 });
