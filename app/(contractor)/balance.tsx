@@ -88,7 +88,7 @@ export default function BalanceRoute() {
           {isCreating ? 'Processing...' : 'Top Up'}
         </Button>
         <Text fontSize={14} color="$gray10" marginTop="$2">
-          You'll complete payment in a secure web view and return to the app automatically.
+          You&apos;ll complete payment in a secure web view and return to the app automatically.
         </Text>
       </YStack>
       <Snackbar visible={snackbarVisible} onDismiss={() => setSnackbarVisible(false)} duration={3000}>
