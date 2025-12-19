@@ -1,27 +1,44 @@
-import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
+import { Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { YStack } from 'tamagui';
-import { Button, Text, TextInput } from '@/components/ui/ui';
+import { FormInput } from '@/components/form';
+import { Button, Text } from '@/components/ui/ui';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { useSignupMutation } from '../../api/profikApi';
 
 export type SignupScreenProps = {
   onGoToLogin?: () => void;
 };
 
+const signupSchema = z.object({
+  email: z.string().min(1, 'Email is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+type SignupFormValues = z.infer<typeof signupSchema>;
+
 export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [signup, { isLoading }] = useSignupMutation();
 
-  const onSubmit = async () => {
-    if (!email.trim() || !password.trim()) {
-      Alert.alert('Validation', 'Please enter email and password.');
-      return;
-    }
+  const form = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
+  const {
+    control,
+    formState: { errors },
+  } = form;
+
+  const onSubmit = async (data: SignupFormValues) => {
     try {
-      await signup({ email: email.trim(), password: password.trim(), role: 'contractor' }).unwrap();
+      await signup({ email: data.email.trim(), password: data.password.trim(), role: 'contractor' }).unwrap();
       Alert.alert('Success', 'Account created. You can now log in.', [
         {
           text: 'OK',
@@ -39,60 +56,52 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <YStack
-        flex={1}
-        gap="$1"
-        padding="$4"
-        justifyContent="center"
-        backgroundColor="$background"
-      >
-        <StatusBar style="dark" />
-        <YStack gap="$2" width="100%" maxWidth={420} alignSelf="center">
-          <Text large style={{ color: '#000' }} marginBottom="$4">
-            Sign Up
-          </Text>
-          <YStack gap="$4">
-            <TextInput
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
-            <TextInput
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </YStack>
-          <YStack gap="$2">
-            <Button
-              borderRadius="$10"
-              backgroundColor="$red10"
-              pressStyle={{ opacity: 0.9, scale: 0.97 }}
-              fontWeight="bold"
-              onPress={onSubmit}
-              disabled={isLoading}
-              marginTop="$4"
-              opacity={isLoading ? 0.7 : 1}
-            >
-              {isLoading ? 'Signing up...' : 'Sign Up'}
-            </Button>
-            <Button
-              variant="outlined"
-              marginTop="$2"
-              onPress={onGoToLogin}
-            >
-              Already have an account? Login
-            </Button>
-          </YStack>
+    <YStack flex={1} gap={'$1'} padding="$4" justifyContent="center" backgroundColor="$background">
+      <StatusBar style="dark" />
+      <YStack gap="$2">
+        <Text large style={{ color: '#000' }} marginBottom={'$4'}>
+          Sign Up
+        </Text>
+
+        <YStack gap="$4">
+          <FormInput
+            flex={0}
+            name="email"
+            control={control}
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            error={errors.email?.message}
+          />
+
+          <FormInput
+            flex={0}
+            name="password"
+            control={control}
+            placeholder="Password"
+            secureTextEntry
+            error={errors.password?.message}
+          />
+        </YStack>
+
+        <YStack gap="$2">
+          <Button
+            borderRadius="$10"
+            backgroundColor="$red10"
+            pressStyle={{ opacity: 0.9, scale: 0.97 }}
+            fontWeight="bold"
+            onPress={form.handleSubmit(onSubmit)}
+            disabled={isLoading}
+            marginTop="$4"
+            opacity={isLoading ? 0.7 : 1}
+          >
+            {isLoading ? 'Signing up...' : 'Sign Up'}
+          </Button>
+          <Button variant="outlined" marginTop="$2" onPress={onGoToLogin}>
+            Already have an account? Login
+          </Button>
         </YStack>
       </YStack>
-    </KeyboardAvoidingView>
+    </YStack>
   );
 }
