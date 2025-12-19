@@ -4,7 +4,13 @@ import MapPreview from '../../../components/MapPreview';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Separator, Spinner, YStack } from 'tamagui';
 import { Button, Text, TextInput } from '@/components/ui/ui';
-import { useCreateOfferMutation, useGetJobByIdQuery, useHasOfferedQuery, useMeQuery } from '../../../src/api/profikApi';
+import {
+  useCreateOfferMutation,
+  useGetJobByIdQuery,
+  useGetMyOfferForJobQuery,
+  useHasOfferedQuery,
+  useMeQuery,
+} from '../../../src/api/profikApi';
 
 export default function JobDetailsRoute() {
   const params = useLocalSearchParams<{ id: string }>();
@@ -17,7 +23,15 @@ export default function JobDetailsRoute() {
   const [price, setPrice] = useState('');
   const [message, setMessage] = useState('');
   const [lastOffer, setLastOffer] = useState<{ price: number; message?: string } | null>(null);
+  const [lastOfferId, setLastOfferId] = useState<string | null>(null);
   const { data: offerStatus } = useHasOfferedQuery(id, { skip: !me || me.role !== 'contractor' });
+
+  const { data: myOffer } = useGetMyOfferForJobQuery(id, {
+    skip: !me || me.role !== 'contractor' || !offerStatus?.hasOffered,
+    refetchOnMountOrArgChange: true,
+  });
+
+  const offerIdForChat = lastOfferId ?? (myOffer as any)?.id ?? null;
 
   const onSubmitOffer = async () => {
     if (me?.role !== 'contractor') {
@@ -34,9 +48,10 @@ export default function JobDetailsRoute() {
       return;
     }
     try {
-      await createOffer({ jobId: id, price: priceNum, message: message.trim() || undefined }).unwrap();
+      const created = await createOffer({ jobId: id, price: priceNum, message: message.trim() || undefined }).unwrap();
       Alert.alert('Success', 'Offer submitted successfully');
       setLastOffer({ price: priceNum, message: message.trim() || undefined });
+      setLastOfferId((created as any)?.id ?? null);
       setMessage('');
       setPrice('');
       refetch();
@@ -166,6 +181,21 @@ export default function JobDetailsRoute() {
                   <Text fontSize={14} color="$gray10">
                     Message: —
                   </Text>
+                )}
+
+                {!!offerIdForChat && (
+                  <Button
+                    variant="outlined"
+                    marginTop="$3"
+                    onPress={() =>
+                      router.push({
+                        pathname: '/(contractor)/offer-chat/[offerId]' as any,
+                        params: { offerId: offerIdForChat },
+                      })
+                    }
+                  >
+                    Chat
+                  </Button>
                 )}
               </YStack>
             ) : (

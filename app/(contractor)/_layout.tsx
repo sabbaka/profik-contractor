@@ -16,6 +16,7 @@ export default function ContractorLayout() {
         <Stack.Screen name="open/map" />
         <Stack.Screen name="balance" />
         <Stack.Screen name="jobs/[id]" />
+        <Stack.Screen name="offer-chat/[offerId]" />
       </Stack>
     </>
   );
