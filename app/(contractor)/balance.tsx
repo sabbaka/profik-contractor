@@ -53,7 +53,7 @@ export default function BalanceRoute() {
 
   if (isLoading) {
     return (
-      <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
+      <YStack flex={1} alignItems="center" justifyContent="center" paddingHorizontal="$4">
         <ActivityIndicator size="large" color="$gray10" />
         <Text marginTop="$3">Loading balance...</Text>
       </YStack>
@@ -62,7 +62,7 @@ export default function BalanceRoute() {
 
   if (error || !user) {
     return (
-      <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
+      <YStack flex={1} alignItems="center" justifyContent="center" paddingHorizontal="$4">
         <Text variant="titleMedium" marginBottom="$3">❌ Failed to load balance</Text>
         <Button onPress={refetch} disabled={isFetching} opacity={isFetching ? 0.7 : 1}>
           {isFetching ? 'Loading...' : 'Retry'}
@@ -72,19 +72,21 @@ export default function BalanceRoute() {
   }
 
   return (
-    <YStack flex={1} justifyContent="center" alignItems="center" padding="$4">
-      <Text variant="titleLarge">Your Balance</Text>
-      <Text variant="headlineSmall" marginTop="$2">
+    <YStack flex={1} padding="$4" gap="$4">
+      <YStack gap="$2">
+        <Text variant="titleLarge">Your Balance</Text>
+        <Text variant="headlineSmall" marginTop="$2">
         {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK' }).format(user.balance ?? 0)}
-      </Text>
-      <YStack width="85%" marginTop="$6" gap="$3">
+        </Text>
+      </YStack>
+      <YStack gap="$3">
         <TextInput
           placeholder="Top-up amount (CZK)"
           value={amount}
           onChangeText={setAmount}
           keyboardType="numeric"
         />
-        <Button variant="contained" onPress={onTopup} disabled={isCreating} opacity={isCreating ? 0.7 : 1}>
+        <Button variant="primary" onPress={onTopup} disabled={isCreating} opacity={isCreating ? 0.7 : 1}>
           {isCreating ? 'Processing...' : 'Top Up'}
         </Button>
         <Text fontSize={14} color="$gray10" marginTop="$2">

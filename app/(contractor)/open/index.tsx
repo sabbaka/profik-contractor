@@ -16,7 +16,7 @@ export default function OpenJobsRoute() {
 
   if (isLoading) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
+      <YStack flex={1} alignItems="center" justifyContent="center" paddingHorizontal="$4">
         <Spinner size="large" color="$gray10" />
         <Text marginTop="$3" fontSize={16} color="$gray11">
           Loading open jobs...
@@ -40,7 +40,7 @@ export default function OpenJobsRoute() {
 
   if (jobs.length === 0) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
+      <YStack flex={1} alignItems="center" justifyContent="center" paddingHorizontal="$4">
         <Text fontSize={16} color="$gray12">
           No open jobs right now.
         </Text>
@@ -49,11 +49,11 @@ export default function OpenJobsRoute() {
   }
 
   return (
-    <YStack flex={1} paddingHorizontal="$3" paddingTop="$3" paddingBottom="$4">
+    <YStack flex={1}>
       <FlatList
         data={jobs}
         keyExtractor={(item: any) => item.id}
-        contentContainerStyle={{ paddingBottom: 16 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
         refreshControl={
           <RefreshControl
             refreshing={isFetching}
@@ -83,7 +83,7 @@ export default function OpenJobsRoute() {
               <Text fontSize={13} color="$gray10" marginTop="$1">
                 {item.category}
               </Text>
-              <Text fontSize={18} fontWeight="800" color="$color">
+              <Text fontSize={20} fontWeight="800" color="$color">
                 {item.title}
               </Text>
               {item.description ? (
