@@ -1,54 +1,63 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { YStack } from 'tamagui';
-import { FormInput } from '@/components/form';
-import { Button, Text } from '@/components/ui/ui';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { useSignupMutation } from '../../api/profikApi';
+import { Button, Text, TextInput } from '@/components/ui/ui';
+import { useRequestSmsCodeMutation, useVerifySmsCodeMutation, profikApi } from '../../api/profikApi';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../store/authSlice';
+import { router } from 'expo-router';
 
 export type SignupScreenProps = {
   onGoToLogin?: () => void;
 };
 
-const signupSchema = z.object({
-  email: z.string().min(1, 'Email is required'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-type SignupFormValues = z.infer<typeof signupSchema>;
-
 export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
-  const [signup, { isLoading }] = useSignupMutation();
+  const dispatch = useDispatch();
+  const [phone, setPhone] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [code, setCode] = React.useState('');
 
-  const form = useForm<SignupFormValues>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  const [requestSmsCode, { isLoading: requesting }] = useRequestSmsCodeMutation();
+  const [verifySmsCode, { isLoading: verifying }] = useVerifySmsCodeMutation();
+  const isLoading = requesting || verifying;
 
-  const {
-    control,
-    formState: { errors },
-  } = form;
+  const handleSignup = async () => {
+    const trimmedPhone = phone.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+    const trimmedName = name.trim();
+    const trimmedCode = code.trim();
 
-  const onSubmit = async (data: SignupFormValues) => {
+    if (!trimmedPhone) {
+      Alert.alert('Error', 'Phone is required');
+      return;
+    }
+
     try {
-      await signup({ email: data.email.trim(), password: data.password.trim(), role: 'contractor' }).unwrap();
-      Alert.alert('Success', 'Account created. You can now log in.', [
-        {
-          text: 'OK',
-          onPress: () => {
-            if (onGoToLogin) {
-              onGoToLogin();
-            }
-          },
-        },
-      ]);
+      if (!trimmedCode) {
+        await requestSmsCode({ phone: trimmedPhone, purpose: 'register' }).unwrap();
+        Alert.alert('Code sent', 'We sent an SMS code to your phone. Enter it and tap Sign Up again.');
+        return;
+      }
+
+      const res = await verifySmsCode({
+        phone: trimmedPhone,
+        code: trimmedCode,
+        email: trimmedEmail || undefined,
+        password: trimmedPassword,
+        name: trimmedName,
+        role: 'contractor',
+      }).unwrap();
+
+      if (res?.token) {
+        dispatch(setToken(res.token));
+        // @ts-ignore util exists on api instance
+        dispatch(profikApi.util.resetApiState());
+        router.replace('/(contractor)/open' as any);
+      }
     } catch (e: any) {
       const msg = e?.data?.message || 'Signup failed';
       Alert.alert('Error', msg);
@@ -64,23 +73,15 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
         </Text>
 
         <YStack gap="$4">
-          <FormInput
-            flex={0}
-            name="email"
-            control={control}
-            placeholder="Email"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            error={errors.email?.message}
-          />
-
-          <FormInput
-            flex={0}
-            name="password"
-            control={control}
-            placeholder="Password"
-            secureTextEntry
-            error={errors.password?.message}
+          <TextInput placeholder="Phone" value={phone} onChangeText={setPhone} autoCapitalize="none" keyboardType="phone-pad" />
+          <TextInput placeholder="Name" value={name} onChangeText={setName} autoCapitalize="words" />
+          <TextInput placeholder="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+          <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
+          <TextInput
+            placeholder="SMS code (enter after you receive it)"
+            value={code}
+            onChangeText={setCode}
+            keyboardType="number-pad"
           />
         </YStack>
 
@@ -90,14 +91,18 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
             backgroundColor="$red10"
             pressStyle={{ opacity: 0.9, scale: 0.97 }}
             fontWeight="bold"
-            onPress={form.handleSubmit(onSubmit)}
+            onPress={handleSignup}
             disabled={isLoading}
             marginTop="$4"
             opacity={isLoading ? 0.7 : 1}
           >
             {isLoading ? 'Signing up...' : 'Sign Up'}
           </Button>
-          <Button variant="outlined" marginTop="$2" onPress={onGoToLogin}>
+          <Button
+            variant="outlined"
+            marginTop="$2"
+            onPress={() => (onGoToLogin ? onGoToLogin() : router.push('/auth/login' as any))}
+          >
             Already have an account? Login
           </Button>
         </YStack>

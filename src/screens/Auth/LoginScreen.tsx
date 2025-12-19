@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useLoginMutation } from '../../api/profikApi';
+import { profikApi, useLoginMutation } from '../../api/profikApi';
 import { setToken } from '../../store/authSlice';
 
 export type LoginScreenProps = {
@@ -45,6 +45,8 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
       const res = await login({ phone: data.phone.trim(), password: data.password.trim() }).unwrap();
       if (res?.token) {
         dispatch(setToken(res.token));
+        // @ts-ignore util exists on api instance
+        dispatch(profikApi.util.resetApiState());
         router.replace('/(contractor)/open' as any);
       }
     } catch (e: any) {

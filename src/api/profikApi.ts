@@ -30,11 +30,20 @@ export const profikApi = createApi({
   tagTypes: ['Jobs'],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    signup: builder.mutation<void, { email: string; password: string; role: string }>({
+    signup: builder.mutation<{ token: string }, { email: string; password: string; role: string; name?: string; phone?: string }>({
       query: (body) => ({ url: '/auth/register', method: 'POST', body }),
     }),
     login: builder.mutation<{ token: string }, { phone: string; password: string }>({
       query: (body) => ({ url: '/auth/login', method: 'POST', body }),
+    }),
+    requestSmsCode: builder.mutation<{ success: boolean }, { phone: string; purpose: 'register' }>({
+      query: (body) => ({ url: '/auth/sms/request-code', method: 'POST', body }),
+    }),
+    verifySmsCode: builder.mutation<
+      { token: string },
+      { phone: string; code: string; email?: string; password: string; name: string; role: 'client' | 'contractor' }
+    >({
+      query: (body) => ({ url: '/auth/sms/verify', method: 'POST', body }),
     }),
     me: builder.query<{ id: string; email: string; role: string; name: string; balance: number }, void>({
       query: () => ({ url: '/auth/me', method: 'GET' }),
@@ -59,4 +68,15 @@ export const profikApi = createApi({
   }),
 });
 
-export const { useSignupMutation, useLoginMutation, useMeQuery, useGetOpenJobsQuery, useGetJobByIdQuery, useCreateOfferMutation, useHasOfferedQuery, useTopupBalanceMutation } = profikApi;
+export const {
+  useSignupMutation,
+  useLoginMutation,
+  useRequestSmsCodeMutation,
+  useVerifySmsCodeMutation,
+  useMeQuery,
+  useGetOpenJobsQuery,
+  useGetJobByIdQuery,
+  useCreateOfferMutation,
+  useHasOfferedQuery,
+  useTopupBalanceMutation,
+} = profikApi;
