@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, Alert } from 'react-native';
 import MapPreview from '../../../components/MapPreview';
 import { useLocalSearchParams, router } from 'expo-router';
-import { Separator, Spinner, YStack } from 'tamagui';
+import { Button as TamaguiButton, Separator, Spinner, YStack } from 'tamagui';
 import { Button, Text, TextInput } from '@/components/ui/ui';
 import {
   useCreateOfferMutation,
@@ -184,8 +184,12 @@ export default function JobDetailsRoute() {
                 )}
 
                 {!!offerIdForChat && (
-                  <Button
+                  <TamaguiButton
+                    size="$4"
                     variant="outlined"
+                    borderColor="$gray5"
+                    color="$gray11"
+                    fontWeight="600"
                     marginTop="$3"
                     onPress={() =>
                       router.push({
@@ -195,7 +199,7 @@ export default function JobDetailsRoute() {
                     }
                   >
                     Chat
-                  </Button>
+                  </TamaguiButton>
                 )}
               </YStack>
             ) : (
