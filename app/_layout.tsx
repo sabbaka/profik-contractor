@@ -1,8 +1,8 @@
-import { Slot } from 'expo-router';
+import { Redirect, Slot, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -13,14 +13,12 @@ import { TamaguiProvider } from 'tamagui';
 import { store } from '../src/store';
 import { useAppSelector } from '../src/store/hooks';
 import { loadTokenFromStorage } from '../src/store/authSlice';
-import LoginScreen from '../src/screens/Auth/LoginScreen';
-import SignupScreen from '../src/screens/Auth/SignupScreen';
 import tamaguiConfig from '../tamagui.config';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch();
   const { token, loading } = useAppSelector((s) => s.auth);
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const segments = useSegments() as unknown as string[];
   useEffect(() => {
     // @ts-ignore hydrate token on app start
     dispatch(loadTokenFromStorage());
@@ -40,11 +38,12 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       </View>
     );
   }
-  if (!token) {
-    if (mode === 'signup') {
-      return <SignupScreen onGoToLogin={() => setMode('login')} />;
-    }
-    return <LoginScreen onGoToSignup={() => setMode('signup')} />;
+
+  // Allow access to auth routes without token
+  const isAuthRoute = segments[0] === 'auth';
+
+  if (!token && !isAuthRoute) {
+    return <Redirect href={"/auth/login" as any} />;
   }
   return <>{children}</>;
 }

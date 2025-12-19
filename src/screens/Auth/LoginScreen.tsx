@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { YStack } from 'tamagui';
 import { Button, Text, TextInput } from '@/components/ui/ui';
 import { useDispatch } from 'react-redux';
+import { router } from 'expo-router';
 import { useLoginMutation } from '../../api/profikApi';
 import { setToken } from '../../store/authSlice';
 
@@ -26,6 +27,7 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
       const res = await login({ phone: phone.trim(), password: password.trim() }).unwrap();
       if (res?.token) {
         dispatch(setToken(res.token));
+        router.replace('/(contractor)/open' as any);
       }
     } catch (e: any) {
       const msg = e?.data?.message || 'Login failed';
@@ -48,7 +50,7 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
         <StatusBar style="dark" />
         <YStack gap="$2" width="100%" maxWidth={420} alignSelf="center">
           <Text large style={{ color: '#000' }} marginBottom="$4">
-            Contractor Login
+            Login
           </Text>
           <YStack gap="$4">
             <TextInput
@@ -68,7 +70,7 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
           <YStack gap="$2">
             <Button
               borderRadius="$10"
-              backgroundColor="$blue10"
+              backgroundColor="$red10"
               pressStyle={{ opacity: 0.9, scale: 0.97 }}
               fontWeight="bold"
               onPress={onSubmit}

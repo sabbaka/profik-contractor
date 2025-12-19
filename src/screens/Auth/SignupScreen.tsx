@@ -53,7 +53,7 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
         <StatusBar style="dark" />
         <YStack gap="$2" width="100%" maxWidth={420} alignSelf="center">
           <Text large style={{ color: '#000' }} marginBottom="$4">
-            Contractor Sign Up
+            Sign Up
           </Text>
           <YStack gap="$4">
             <TextInput
@@ -73,7 +73,7 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
           <YStack gap="$2">
             <Button
               borderRadius="$10"
-              backgroundColor="$blue10"
+              backgroundColor="$red10"
               pressStyle={{ opacity: 0.9, scale: 0.97 }}
               fontWeight="bold"
               onPress={onSubmit}
