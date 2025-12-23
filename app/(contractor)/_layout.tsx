@@ -1,6 +1,6 @@
-import React from 'react';
-import { Stack } from 'expo-router';
-import ContractorHeader from '@/components/layout/ContractorHeader';
+import ContractorHeader from "@/src/components/layout/ContractorHeader";
+import { Stack } from "expo-router";
+import React from "react";
 
 export default function ContractorLayout() {
   return (

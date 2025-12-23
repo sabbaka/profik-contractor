@@ -111,7 +111,7 @@ export default function OfferChatRoute() {
             />
             <Button
               size="$4"
-              backgroundColor="$red10"
+              backgroundColor="$gray12"
               color="white"
               onPress={handleSend}
               disabled={isSending || !content.trim()}

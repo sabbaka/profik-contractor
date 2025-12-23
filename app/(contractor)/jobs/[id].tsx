@@ -1,49 +1,70 @@
-import React, { useMemo, useState } from 'react';
-import { ScrollView, Alert } from 'react-native';
-import MapPreview from '../../../components/MapPreview';
-import { useLocalSearchParams, router } from 'expo-router';
-import { ArrowLeft, Clock, MapPin } from '@tamagui/lucide-icons';
-import { Button as TamaguiButton, Separator, Spinner, Text as TamaguiText, XStack, YStack } from 'tamagui';
-import { Button, Text, TextInput } from '@/components/ui/ui';
+import { Button, Text, TextInput } from "@/src/components/ui/ui";
+import { ArrowLeft, Clock, MapPin } from "@tamagui/lucide-icons";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useMemo, useState } from "react";
+import { Alert, ScrollView } from "react-native";
+import {
+  Separator,
+  Spinner,
+  Button as TamaguiButton,
+  Text as TamaguiText,
+  XStack,
+  YStack,
+} from "tamagui";
 import {
   useCreateOfferMutation,
   useGetJobByIdQuery,
   useGetMyOfferForJobQuery,
   useHasOfferedQuery,
   useMeQuery,
-} from '../../../src/api/profikApi';
+} from "../../../src/api/profikApi";
+import MapPreview from "../../../src/components/MapPreview";
 
 export default function JobDetailsRoute() {
   const params = useLocalSearchParams<{ id: string }>();
   const id = params.id as string;
-  const { data: job, isLoading, error, refetch, isFetching } = useGetJobByIdQuery(id, {
+  const {
+    data: job,
+    isLoading,
+    error,
+    refetch,
+    isFetching,
+  } = useGetJobByIdQuery(id, {
     refetchOnMountOrArgChange: true,
   });
   const { data: me } = useMeQuery();
   const [createOffer, { isLoading: isSubmitting }] = useCreateOfferMutation();
-  const [price, setPrice] = useState('');
-  const [message, setMessage] = useState('');
-  const [lastOffer, setLastOffer] = useState<{ price: number; message?: string } | null>(null);
+  const [price, setPrice] = useState("");
+  const [message, setMessage] = useState("");
+  const [lastOffer, setLastOffer] = useState<{
+    price: number;
+    message?: string;
+  } | null>(null);
   const [lastOfferId, setLastOfferId] = useState<string | null>(null);
-  const { data: offerStatus } = useHasOfferedQuery(id, { skip: !me || me.role !== 'contractor' });
+  const { data: offerStatus } = useHasOfferedQuery(id, {
+    skip: !me || me.role !== "contractor",
+  });
 
   const { data: myOffer } = useGetMyOfferForJobQuery(id, {
-    skip: !me || me.role !== 'contractor' || !offerStatus?.hasOffered,
+    skip: !me || me.role !== "contractor" || !offerStatus?.hasOffered,
     refetchOnMountOrArgChange: true,
   });
 
   const offerIdForChat = lastOfferId ?? (myOffer as any)?.id ?? null;
 
   const formattedPrice = useMemo(() => {
-    return new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK' }).format(job?.price ?? 0);
+    return new Intl.NumberFormat("cs-CZ", {
+      style: "currency",
+      currency: "CZK",
+    }).format(job?.price ?? 0);
   }, [job?.price]);
 
   const formattedDate = useMemo(() => {
-    if (!job?.createdAt) return '';
+    if (!job?.createdAt) return "";
     try {
-      return new Intl.DateTimeFormat('en-US').format(new Date(job.createdAt));
+      return new Intl.DateTimeFormat("en-US").format(new Date(job.createdAt));
     } catch {
-      return '';
+      return "";
     }
   }, [job?.createdAt]);
 
@@ -53,34 +74,38 @@ export default function JobDetailsRoute() {
       return;
     }
 
-    router.replace('/(contractor)/open');
+    router.replace("/(contractor)/open");
   };
 
   const onSubmitOffer = async () => {
-    if (me?.role !== 'contractor') {
-      Alert.alert('Unauthorized', 'Only contractors can submit offers.');
+    if (me?.role !== "contractor") {
+      Alert.alert("Unauthorized", "Only contractors can submit offers.");
       return;
     }
     if (!price.trim()) {
-      Alert.alert('Validation', 'Please enter your offer price.');
+      Alert.alert("Validation", "Please enter your offer price.");
       return;
     }
     const priceNum = Number(price);
     if (isNaN(priceNum) || priceNum <= 0) {
-      Alert.alert('Validation', 'Price must be a positive number.');
+      Alert.alert("Validation", "Price must be a positive number.");
       return;
     }
     try {
-      const created = await createOffer({ jobId: id, price: priceNum, message: message.trim() || undefined }).unwrap();
-      Alert.alert('Success', 'Offer submitted successfully');
+      const created = await createOffer({
+        jobId: id,
+        price: priceNum,
+        message: message.trim() || undefined,
+      }).unwrap();
+      Alert.alert("Success", "Offer submitted successfully");
       setLastOffer({ price: priceNum, message: message.trim() || undefined });
       setLastOfferId((created as any)?.id ?? null);
-      setMessage('');
-      setPrice('');
+      setMessage("");
+      setPrice("");
       refetch();
     } catch (err: any) {
-      const msg = err?.data?.message || 'Failed to submit offer';
-      Alert.alert('Error', msg);
+      const msg = err?.data?.message || "Failed to submit offer";
+      Alert.alert("Error", msg);
     }
   };
 
@@ -116,14 +141,25 @@ export default function JobDetailsRoute() {
     );
   }
 
-  const addressText = [job.addressLine, job.city, job.postalCode, job.country].filter(Boolean).join(', ');
-  const cityText = job.city || 'Remote';
-  const myOfferPrice = (lastOffer?.price ?? (myOffer as any)?.price) as number | undefined;
-  const myOfferMessage = (lastOffer?.message ?? (myOffer as any)?.message) as string | undefined;
+  const addressText = [job.addressLine, job.city, job.postalCode, job.country]
+    .filter(Boolean)
+    .join(", ");
+  const cityText = job.city || "Remote";
+  const myOfferPrice = (lastOffer?.price ?? (myOffer as any)?.price) as
+    | number
+    | undefined;
+  const myOfferMessage = (lastOffer?.message ?? (myOffer as any)?.message) as
+    | string
+    | undefined;
 
   return (
     <YStack flex={1}>
-      <XStack paddingHorizontal="$4" paddingVertical="$2" alignItems="center" justifyContent="space-between">
+      <XStack
+        paddingHorizontal="$4"
+        paddingVertical="$2"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <TamaguiButton
           icon={ArrowLeft}
           chromeless
@@ -133,7 +169,13 @@ export default function JobDetailsRoute() {
           onPress={handleBack}
           color="$color"
         />
-        <TamaguiText fontSize="$6" fontWeight="600" numberOfLines={1} flex={1} textAlign="center">
+        <TamaguiText
+          fontSize="$6"
+          fontWeight="600"
+          numberOfLines={1}
+          flex={1}
+          textAlign="center"
+        >
           Details
         </TamaguiText>
         <XStack width="$4" />
@@ -149,7 +191,12 @@ export default function JobDetailsRoute() {
             <Text fontSize={28} fontWeight="800" lineHeight={34}>
               {job.title}
             </Text>
-            <Text fontSize={24} fontWeight="800" color="$color" letterSpacing={-0.5}>
+            <Text
+              fontSize={24}
+              fontWeight="800"
+              color="$color"
+              letterSpacing={-0.5}
+            >
               {formattedPrice}
             </Text>
             <XStack gap="$4" marginTop="$2">
@@ -207,10 +254,16 @@ export default function JobDetailsRoute() {
           )}
 
           {/* Offer section for contractors */}
-          {me?.role === 'contractor' && (
+          {me?.role === "contractor" && (
             <YStack paddingHorizontal="$4" gap="$3">
               {offerStatus?.hasOffered || lastOffer || myOffer ? (
-                <YStack padding="$4" borderRadius="$6" backgroundColor="$background" borderWidth={1} borderColor="$gray4">
+                <YStack
+                  padding="$4"
+                  borderRadius="$6"
+                  backgroundColor="$background"
+                  borderWidth={1}
+                  borderColor="$gray4"
+                >
                   <Text fontSize={16} fontWeight="700" marginBottom="$2">
                     Your Offer
                   </Text>
@@ -218,10 +271,10 @@ export default function JobDetailsRoute() {
                     Status: submitted
                   </Text>
                   <Text fontSize={14} marginBottom="$2">
-                    Price:{' '}
-                    {new Intl.NumberFormat('cs-CZ', {
-                      style: 'currency',
-                      currency: 'CZK',
+                    Price:{" "}
+                    {new Intl.NumberFormat("cs-CZ", {
+                      style: "currency",
+                      currency: "CZK",
                     }).format(myOfferPrice || 0)}
                   </Text>
                   {myOfferMessage ? (
@@ -243,7 +296,7 @@ export default function JobDetailsRoute() {
                       marginTop="$3"
                       onPress={() =>
                         router.push({
-                          pathname: '/(contractor)/offer-chat/[offerId]' as any,
+                          pathname: "/(contractor)/offer-chat/[offerId]" as any,
                           params: { offerId: offerIdForChat },
                         })
                       }
@@ -253,7 +306,13 @@ export default function JobDetailsRoute() {
                   )}
                 </YStack>
               ) : (
-                <YStack padding="$4" borderRadius="$6" backgroundColor="$background" borderWidth={1} borderColor="$gray4">
+                <YStack
+                  padding="$4"
+                  borderRadius="$6"
+                  backgroundColor="$background"
+                  borderWidth={1}
+                  borderColor="$gray4"
+                >
                   <Text fontSize={16} fontWeight="700" marginBottom="$3">
                     Submit an Offer
                   </Text>
@@ -282,7 +341,7 @@ export default function JobDetailsRoute() {
                       disabled={isSubmitting}
                       opacity={isSubmitting ? 0.7 : 1}
                     >
-                      {isSubmitting ? 'Submitting...' : 'Submit Offer'}
+                      {isSubmitting ? "Submitting..." : "Submit Offer"}
                     </Button>
                   </YStack>
                 </YStack>

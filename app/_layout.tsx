@@ -19,7 +19,7 @@ const paperTheme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: '#fa2a48',
+    primary: '#181818',
     secondary: '#181818',
     tertiary: '#181818',
     surface: '#ffffff',

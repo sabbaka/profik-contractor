@@ -1,6 +1,14 @@
-import { Input, styled, Button as TamaguiButton, Text as TextElement, Card as TamaguiCard, View as TamaguiView } from 'tamagui';
-import React, { useEffect, useState } from 'react';
-import { YStack, XStack, Spinner as TamaguiSpinner } from 'tamagui';
+import React, { useEffect } from "react";
+import {
+  Input,
+  styled,
+  Button as TamaguiButton,
+  Card as TamaguiCard,
+  Spinner as TamaguiSpinner,
+  View as TamaguiView,
+  Text as TextElement,
+  YStack,
+} from "tamagui";
 
 export const Button = styled(TamaguiButton, {
   borderRadius: 10,
@@ -9,10 +17,10 @@ export const Button = styled(TamaguiButton, {
   variants: {
     variant: {
       default: {
-        height: 'auto',
-        backgroundColor: '$gray12',
-        color: 'white',
-        paddingVertical: '$4',
+        height: "auto",
+        backgroundColor: "$gray12",
+        color: "white",
+        paddingVertical: "$4",
         pressStyle: {
           opacity: 0.9,
           scale: 0.97,
@@ -20,45 +28,45 @@ export const Button = styled(TamaguiButton, {
       },
 
       primary: {
-        height: 'auto',
-        backgroundColor: '#fa2a48',
-        color: 'white',
+        height: "auto",
+        backgroundColor: "#181818",
+        color: "white",
         pressStyle: {
-          backgroundColor: '#e2223d',
+          backgroundColor: "#333333",
           borderWidth: 0,
         },
-        paddingVertical: '$4',
+        paddingVertical: "$4",
         fontSize: 17,
       },
       secondary: {
-        height: 'auto',
-        backgroundColor: '#181818',
-        color: 'white',
-        paddingVertical: '$4',
+        height: "auto",
+        backgroundColor: "#181818",
+        color: "white",
+        paddingVertical: "$4",
       },
       bordered: {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         borderWidth: 1,
-        borderColor: '#fa2a48',
-        color: '#fa2a48',
+        borderColor: "#181818",
+        color: "#181818",
       },
       borderedProminent: {
-        backgroundColor: '#fa2a48',
-        color: 'white',
-        fontWeight: '600',
+        backgroundColor: "#181818",
+        color: "white",
+        fontWeight: "600",
       },
       outlined: {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         borderWidth: 0,
       },
       contained: {
-        height: 'auto',
-        backgroundColor: '#fa2a48',
-        color: 'white',
-        paddingVertical: '$4',
+        height: "auto",
+        backgroundColor: "#181818",
+        color: "white",
+        paddingVertical: "$4",
         fontSize: 17,
         pressStyle: {
-          backgroundColor: '#e2223d',
+          backgroundColor: "#333333",
           borderWidth: 0,
         },
       },
@@ -66,21 +74,21 @@ export const Button = styled(TamaguiButton, {
   } as const,
 
   defaultVariants: {
-    variant: 'default',
+    variant: "default",
   },
 });
 
 export const TextInput = styled(Input, {
   borderWidth: 0,
-  paddingVertical: '$5',
+  paddingVertical: "$5",
   fontSize: 16,
-  color: '$gray12',
-  height: 'auto',
+  color: "$gray12",
+  height: "auto",
   borderRadius: 10,
 
   focusStyle: {
-    color: '$gray12',
-    borderColor: '$gray10',
+    color: "$gray12",
+    borderColor: "$gray10",
   },
 
   variants: {
@@ -93,27 +101,27 @@ export const TextInput = styled(Input, {
 });
 
 export const Text = styled(TextElement, {
-  color: '$gray12',
+  color: "$gray12",
   variants: {
     large: {
       true: {
         fontSize: 22,
         lineHeight: 24,
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
     },
     variant: {
       titleLarge: {
         fontSize: 22,
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
       titleMedium: {
         fontSize: 18,
-        fontWeight: '600',
+        fontWeight: "600",
       },
       headlineSmall: {
         fontSize: 24,
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
       bodyLarge: {
         fontSize: 16,
@@ -129,22 +137,22 @@ export const Text = styled(TextElement, {
       },
       title: {
         fontSize: 32,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         lineHeight: 32,
       },
       defaultSemiBold: {
         fontSize: 16,
         lineHeight: 24,
-        fontWeight: '600',
+        fontWeight: "600",
       },
       subtitle: {
         fontSize: 20,
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
       link: {
         lineHeight: 30,
         fontSize: 16,
-        color: '#fa2a48',
+        color: "#181818",
       },
     },
   },
@@ -152,7 +160,7 @@ export const Text = styled(TextElement, {
 
 // ThemedView replacement - just use YStack or XStack with backgroundColor
 export const ThemedView = styled(TamaguiView, {
-  backgroundColor: '$background',
+  backgroundColor: "$background",
 });
 
 // ActivityIndicator replacement
@@ -161,11 +169,11 @@ export const ActivityIndicator = TamaguiSpinner;
 // Card component
 export const Card = Object.assign(
   styled(TamaguiCard, {
-    padding: '$4',
-    borderRadius: '$6',
+    padding: "$4",
+    borderRadius: "$6",
     borderWidth: 1,
-    borderColor: '$borderColor',
-    backgroundColor: '$background',
+    borderColor: "$borderColor",
+    backgroundColor: "$background",
   }),
   {
     Title: ({ title, subtitle }: { title: string; subtitle?: string }) => (
@@ -180,7 +188,9 @@ export const Card = Object.assign(
         )}
       </YStack>
     ),
-    Content: ({ children }: { children: React.ReactNode }) => <YStack>{children}</YStack>,
+    Content: ({ children }: { children: React.ReactNode }) => (
+      <YStack>{children}</YStack>
+    ),
   }
 );
 
