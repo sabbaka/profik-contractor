@@ -54,7 +54,7 @@ export function useSignup(): UseSignupReturn {
 
         Alert.alert(
           "✅ Code sent",
-          "We sent an SMS code to your phone. Enter it and tap Sign Up again."
+          "We sent an SMS code to your phone. Enter it and tap Verify Code."
         );
 
         return { success: true };

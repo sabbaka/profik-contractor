@@ -1,11 +1,18 @@
-import { StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import ContractorProfileHeaderButton from '../profile/ContractorProfileHeaderButton';
-import { useTheme } from 'tamagui';
+import { useSegments } from "expo-router";
+import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ContractorProfileHeaderButton from "../profile/ContractorProfileHeaderButton";
 
 export default function ContractorHeader() {
   const insets = useSafeAreaInsets();
-  const theme = useTheme();
+  const segments = useSegments() as string[];
+
+  const isJobDetail = segments.includes("jobs") && segments.includes("[id]");
+  const isOfferChat = segments.includes("offer-chat");
+
+  if (isJobDetail || isOfferChat) {
+    return null;
+  }
 
   return (
     <View
@@ -13,8 +20,6 @@ export default function ContractorHeader() {
         styles.header,
         {
           paddingTop: insets.top,
-          backgroundColor: theme?.background?.val ?? '#ffffff',
-          borderBottomColor: theme?.gray4?.val ?? '#eeeeee',
         },
       ]}
     >
@@ -25,16 +30,17 @@ export default function ContractorHeader() {
 
 const styles = StyleSheet.create({
   header: {
-    height: 'auto',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    height: "auto",
+    backgroundColor: "#f2f2f2",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "flex-end",
     paddingHorizontal: 25,
     paddingBottom: 5,
-    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
   title: {
-    fontWeight: '500',
+    fontWeight: "500",
     fontSize: 18,
   },
 });

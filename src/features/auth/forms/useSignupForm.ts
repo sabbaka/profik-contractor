@@ -1,10 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { isValidCzechPhone } from "@/src/components/form/PhoneInput";
 import { useSignup } from "../hooks/useSignup";
 
 const signupSchema = z.object({
-  phone: z.string().min(6, "Phone is required"),
+  phone: z
+    .string()
+    .min(1, "Phone is required")
+    .refine(isValidCzechPhone, "Enter a complete phone number (+420 XXX XXX XXX)"),
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.email("Invalid email").or(z.literal("")),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -21,6 +25,7 @@ export function useSignupForm(options?: UseSignupFormOptions) {
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
+    reValidateMode: "onChange",
     defaultValues: {
       phone: "",
       name: "",

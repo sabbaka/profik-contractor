@@ -22,8 +22,11 @@ export const FormInput = ({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <YStack gap="$2" flex={flex}>
+      render={({ field: { onChange, onBlur, value }, fieldState }) => {
+        const displayError = error ?? fieldState.error?.message;
+
+        return (
+          <YStack gap="$2" flex={flex}>
           {label && (
             <Label fontSize="$3" color="$gray10">
               {label}
@@ -31,22 +34,23 @@ export const FormInput = ({
           )}
           <Input
             {...props}
-            value={value?.toString()}
+            value={value == null ? "" : String(value)}
             onBlur={onBlur}
             onChangeText={onChange}
-            borderColor={error ? "$red8" : "$gray6"}
-            borderWidth={0}
+            borderWidth={displayError ? 1 : 0}
+            borderColor={displayError ? "$red8" : "$gray6"}
+            focusStyle={{ borderColor: displayError ? "$red8" : "$red8" }}
             paddingVertical={"$4"}
             height={"auto"}
-            focusStyle={{ borderColor: error ? "$red8" : "$red10" }}
           />
-          {error && (
+          {displayError ? (
             <Text color="$red10" fontSize="$2" marginLeft="$1">
-              {error}
+              {displayError}
             </Text>
-          )}
-        </YStack>
-      )}
+          ) : null}
+          </YStack>
+        );
+      }}
     />
   );
 };

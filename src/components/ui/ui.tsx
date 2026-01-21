@@ -11,7 +11,7 @@ import {
 } from "tamagui";
 
 export const Button = styled(TamaguiButton, {
-  borderRadius: 10,
+  borderRadius: "$10",
   fontSize: 17,
 
   variants: {

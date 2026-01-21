@@ -66,8 +66,11 @@ export const PhoneInput = ({
     <Controller
       control={control}
       name={name}
-      render={({ field: { onChange, onBlur, value } }) => (
-        <YStack gap="$2" flex={flex}>
+      render={({ field: { onChange, onBlur, value }, fieldState }) => {
+        const displayError = error ?? fieldState.error?.message;
+
+        return (
+          <YStack gap="$2" flex={flex}>
           {label && (
             <Label fontSize="$3" color="$gray10">
               {label}
@@ -90,18 +93,19 @@ export const PhoneInput = ({
               paddingVertical: 16,
               fontSize: 16,
               color: "#1a1a1a",
-              borderWidth: error ? 1 : 0,
-              borderColor: error ? "#e54545" : "transparent",
+              borderWidth: displayError ? 1 : 0,
+              borderColor: displayError ? "#e54545" : "transparent",
             }}
             placeholderTextColor="#999"
           />
-          {error && (
+          {displayError ? (
             <Text color="$red10" fontSize="$2" marginLeft="$1">
-              {error}
+              {displayError}
             </Text>
-          )}
-        </YStack>
-      )}
+          ) : null}
+          </YStack>
+        );
+      }}
     />
   );
 };

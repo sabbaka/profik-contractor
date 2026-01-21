@@ -7,7 +7,6 @@ export default function ContractorLayout() {
     <>
       <ContractorHeader />
       <Stack
-        initialRouteName="open/index"
         screenOptions={{
           headerShown: false,
         }}

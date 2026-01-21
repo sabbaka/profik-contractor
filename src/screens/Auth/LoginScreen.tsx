@@ -61,7 +61,10 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
               backgroundColor="$gray12"
               pressStyle={{ opacity: 0.9, scale: 0.97 }}
               fontWeight="bold"
-              onPress={submit}
+              onPress={() => {
+                Keyboard.dismiss();
+                submit();
+              }}
               disabled={isLoading}
               marginTop="$4"
               opacity={isLoading ? 0.7 : 1}
