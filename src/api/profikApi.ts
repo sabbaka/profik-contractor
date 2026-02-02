@@ -1,6 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { logout } from '../store/authSlice';
+import type { GetOfferedJobsParams, OfferedJobItem } from './types';
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000',
@@ -52,6 +53,10 @@ export const profikApi = createApi({
       query: () => ({ url: '/jobs/open', method: 'GET' }),
       providesTags: ['Jobs'],
     }),
+    getOfferedJobs: builder.query<OfferedJobItem[], GetOfferedJobsParams>({
+      query: ({ status }) => ({ url: `/jobs/offered?status=${status}`, method: 'GET' }),
+      providesTags: ['Jobs', 'Offers'],
+    }),
     getJobById: builder.query<any, string>({
       query: (id) => ({ url: `/jobs/${id}`, method: 'GET' }),
       providesTags: (_result, _error, id) => [{ type: 'Jobs', id } as any],
@@ -95,6 +100,7 @@ export const {
   useVerifySmsCodeMutation,
   useMeQuery,
   useGetOpenJobsQuery,
+  useGetOfferedJobsQuery,
   useGetJobByIdQuery,
   useCreateOfferMutation,
   useHasOfferedQuery,

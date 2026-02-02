@@ -6,11 +6,15 @@ import {
   Text,
 } from "@/src/components/ui/ui";
 import { useTopupForm } from "@/src/features/balance/forms";
+import { ArrowLeft } from "@tamagui/lucide-icons";
+import { router } from "expo-router";
 import React, { useState } from "react";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { YStack } from "tamagui";
+import { Keyboard, Pressable, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { XStack, YStack } from "tamagui";
 
 export default function BalanceRoute() {
+  const insets = useSafeAreaInsets();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
 
@@ -63,7 +67,22 @@ export default function BalanceRoute() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <YStack flex={1}>
+      <YStack flex={1} paddingTop={insets.top}>
+        <XStack
+          paddingHorizontal="$3"
+          paddingVertical="$2"
+          alignItems="center"
+          backgroundColor="transparent"
+        >
+          <Pressable
+            onPress={() => router.back()}
+            style={styles.backButton}
+            hitSlop={8}
+          >
+            <ArrowLeft size={28} color="$gray12" />
+          </Pressable>
+      
+        </XStack>
         <YStack flex={1} padding="$4" gap="$4">
           <YStack gap="$2">
             <Text variant="titleLarge">Your Balance</Text>
@@ -107,3 +126,9 @@ export default function BalanceRoute() {
     </TouchableWithoutFeedback>
   );
 }
+
+const styles = StyleSheet.create({
+  backButton: {
+    padding: 4,
+  },
+});

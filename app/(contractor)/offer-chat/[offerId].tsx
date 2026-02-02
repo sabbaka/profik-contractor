@@ -1,7 +1,8 @@
 import { useGetOfferMessagesQuery, useMeQuery, useSendOfferMessageMutation } from '@/src/api/profikApi';
+import { ArrowLeft } from '@tamagui/lucide-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Input, Spinner, Text, XStack, YStack } from 'tamagui';
 
@@ -47,16 +48,22 @@ export default function OfferChatRoute() {
     <SafeAreaView style={styles.container}>
       <YStack flex={1}>
         <XStack paddingHorizontal="$4" paddingVertical="$3" alignItems="center" justifyContent="space-between">
-          <Button size="$3" variant="outlined" onPress={() => router.back()}>
-            Back
-          </Button>
+        <Button
+        icon={ArrowLeft}
+        chromeless
+        circular
+        size="$2"
+        scaleIcon={1.5}
+        onPress={() => router.back()}
+        color="$color"
+      />
           <Text fontSize="$5" fontWeight="700">
             Chat
           </Text>
           <XStack width="$6" />
         </XStack>
 
-        <View style={styles.messagesWrapper}>
+        <Pressable style={styles.messagesWrapper} onPress={Keyboard.dismiss}>
           {isLoading && !messages ? (
             <YStack flex={1} alignItems="center" justifyContent="center">
               <Spinner size="large" color="$gray10" />
@@ -88,7 +95,7 @@ export default function OfferChatRoute() {
               )}
             </YStack>
           )}
-        </View>
+        </Pressable>
 
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={80}>
           <XStack

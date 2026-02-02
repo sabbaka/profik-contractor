@@ -3,8 +3,8 @@ import { logout } from '@/src/store/authSlice';
 import { ChevronRight, LogOut, User } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { Pressable } from 'react-native';
-import { Group, H2, Sheet, Text, XStack, YStack } from 'tamagui';
 import { useDispatch } from 'react-redux';
+import { Group, H2, Sheet, Text, XStack, YStack } from 'tamagui';
 
 interface ContractorProfileSheetProps {
   open: boolean;
@@ -93,7 +93,7 @@ export default function ContractorProfileSheet({
                     borderBottomWidth={1}
                     borderBottomColor="$gray5"
                   >
-                    <Text fontSize={20}>Open Jobs</Text>
+                    <Text fontSize={20}>Jobs</Text>
                     <ChevronRight size="$1" color="$gray5" />
                   </XStack>
                 </Pressable>

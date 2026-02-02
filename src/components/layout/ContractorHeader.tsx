@@ -9,8 +9,9 @@ export default function ContractorHeader() {
 
   const isJobDetail = segments.includes("jobs") && segments.includes("[id]");
   const isOfferChat = segments.includes("offer-chat");
+  const isBalancePage = segments.includes("balance");
 
-  if (isJobDetail || isOfferChat) {
+  if (isJobDetail || isOfferChat || isBalancePage) {
     return null;
   }
 
@@ -23,6 +24,7 @@ export default function ContractorHeader() {
         },
       ]}
     >
+      <View style={styles.spacer} />
       <ContractorProfileHeaderButton />
     </View>
   );
@@ -34,13 +36,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "flex-end",
-    paddingHorizontal: 25,
-    paddingBottom: 5,
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingBottom: 8,
     borderBottomColor: "#eee",
   },
-  title: {
-    fontWeight: "500",
-    fontSize: 18,
+  spacer: {
+    flex: 1,
   },
 });

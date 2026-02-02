@@ -1,37 +1,25 @@
-import { Clock, MapPin } from "@tamagui/lucide-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useGetJobByIdQuery } from "@/src/api/profikApi";
+import { useLocalSearchParams } from "expo-router";
+import { useCallback, useRef } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView as RNScrollView,
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Button,
-  Input,
-  ScrollView,
-  Separator,
-  Spinner,
-  Text,
-  XStack,
-  YStack,
-} from "tamagui";
-import {
-  useCreateOfferMutation,
-  useGetJobByIdQuery,
-  useGetMyOfferForJobQuery,
-  useHasOfferedQuery,
-  useMeQuery,
-} from "@/src/api/profikApi";
-import MapPreview from "../../MapPreview.native";
+import { Button, ScrollView, Separator, Spinner, Text, YStack } from "tamagui";
+import { ContractorOfferSection } from "./ContractorOfferSection";
+import { JobBasicInfo } from "./JobBasicInfo";
+import { JobDescription } from "./JobDescription";
 import { JobDetailHeader } from "./JobDetailHeader";
+import { JobLocation } from "./JobLocation";
+import { useJobOffer } from "./hooks/useJobOffer";
 
 export const JobDetail = () => {
   const params = useLocalSearchParams<{ id: string }>();
   const id = params.id as string;
+
   const {
     data: job,
     isLoading,
@@ -41,25 +29,6 @@ export const JobDetail = () => {
   } = useGetJobByIdQuery(id, {
     refetchOnMountOrArgChange: true,
   });
-  const { data: me } = useMeQuery();
-  const [createOffer, { isLoading: isSubmitting }] = useCreateOfferMutation();
-  const [price, setPrice] = useState("");
-  const [message, setMessage] = useState("");
-  const [lastOffer, setLastOffer] = useState<{
-    price: number;
-    message?: string;
-  } | null>(null);
-  const [lastOfferId, setLastOfferId] = useState<string | null>(null);
-  const { data: offerStatus } = useHasOfferedQuery(id, {
-    skip: !me || me.role !== "contractor",
-  });
-
-  const { data: myOffer } = useGetMyOfferForJobQuery(id, {
-    skip: !me || me.role !== "contractor" || !offerStatus?.hasOffered,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const offerIdForChat = lastOfferId ?? (myOffer as any)?.id ?? null;
 
   const scrollViewRef = useRef<RNScrollView>(null);
 
@@ -69,53 +38,25 @@ export const JobDetail = () => {
     }, 100);
   }, []);
 
-  const formattedPrice = useMemo(() => {
-    return new Intl.NumberFormat("cs-CZ", {
-      style: "currency",
-      currency: "CZK",
-    }).format(job?.price ?? 0);
-  }, [job?.price]);
+  const {
+    isContractor,
+    price,
+    setPrice,
+    message,
+    setMessage,
+    hasOffered,
+    myOfferPrice,
+    myOfferMessage,
+    myOfferStatus,
+    offerIdForChat,
+    isSubmitting,
+    submitOffer,
+  } = useJobOffer({
+    jobId: id,
+    onSuccess: refetch,
+  });
 
-  const formattedDate = useMemo(() => {
-    if (!job?.createdAt) return "";
-    try {
-      return new Intl.DateTimeFormat("en-US").format(new Date(job.createdAt));
-    } catch {
-      return "";
-    }
-  }, [job?.createdAt]);
-
-  const onSubmitOffer = async () => {
-    if (me?.role !== "contractor") {
-      Alert.alert("Unauthorized", "Only contractors can submit offers.");
-      return;
-    }
-    if (!price.trim()) {
-      Alert.alert("Validation", "Please enter your offer price.");
-      return;
-    }
-    const priceNum = Number(price);
-    if (isNaN(priceNum) || priceNum <= 0) {
-      Alert.alert("Validation", "Price must be a positive number.");
-      return;
-    }
-    try {
-      const created = await createOffer({
-        jobId: id,
-        price: priceNum,
-        message: message.trim() || undefined,
-      }).unwrap();
-      Alert.alert("Success", "Offer submitted successfully");
-      setLastOffer({ price: priceNum, message: message.trim() || undefined });
-      setLastOfferId((created as any)?.id ?? null);
-      setMessage("");
-      setPrice("");
-      refetch();
-    } catch (err: any) {
-      const msg = err?.data?.message || "Failed to submit offer";
-      Alert.alert("Error", msg);
-    }
-  };
+  console.log(job);
 
   if (isLoading) {
     return (
@@ -149,201 +90,57 @@ export const JobDetail = () => {
     );
   }
 
-  const addressText = [job.addressLine, job.city, job.postalCode, job.country]
-    .filter(Boolean)
-    .join(", ");
-  const cityText = job.city || "Remote";
-  const myOfferPrice = (lastOffer?.price ?? (myOffer as any)?.price) as
-    | number
-    | undefined;
-  const myOfferMessage = (lastOffer?.message ?? (myOffer as any)?.message) as
-    | string
-    | undefined;
-
   return (
     <SafeAreaView style={styles.container}>
       <YStack flex={1}>
         <JobDetailHeader />
-        <XStack
-          paddingHorizontal="$4"
-          paddingVertical="$2"
-          alignItems="center"
-          justifyContent="space-between"
-        ></XStack>
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
+          style={styles.flex}
         >
-          <ScrollView ref={scrollViewRef} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
             <YStack gap="$5" paddingBottom="$10">
-            {/* Job basic info */}
-            <YStack paddingHorizontal="$4" paddingTop="$2" gap="$2">
-              <Text fontSize={12} color="$gray10">
-                {job.category}
-              </Text>
-              <Text fontSize={28} fontWeight="800" lineHeight={34}>
-                {job.title}
-              </Text>
-              <Text
-                fontSize={24}
-                fontWeight="800"
-                color="$color"
-                letterSpacing={-0.5}
-              >
-                {formattedPrice}
-              </Text>
-              <XStack gap="$4" marginTop="$2">
-                <XStack gap="$2" alignItems="center">
-                  <Clock size={18} color="$gray10" />
-                  <Text fontSize={14} color="$gray11">
-                    {formattedDate}
-                  </Text>
-                </XStack>
-                <XStack gap="$2" alignItems="center">
-                  <MapPin size={18} color="$gray10" />
-                  <Text fontSize={14} color="$gray11">
-                    {cityText}
-                  </Text>
-                </XStack>
-              </XStack>
-            </YStack>
+              <JobBasicInfo
+                category={job.category}
+                title={job.title}
+                price={job.price ?? 0}
+                createdAt={job.createdAt}
+                city={job.city}
+              />
 
-            <Separator borderColor="$gray4" marginHorizontal="$4" />
+              <Separator borderColor="$gray4" marginHorizontal="$4" />
 
-            {/* Description */}
-            {job.description ? (
-              <YStack paddingHorizontal="$4" gap="$2">
-                <Text fontSize={16} fontWeight="700">
-                  Description
-                </Text>
-                <Text fontSize={14} color="$gray11" lineHeight={24}>
-                  {job.description}
-                </Text>
-              </YStack>
-            ) : null}
+              <JobDescription description={job.description} />
 
-            {/* Location */}
-            {(addressText || (job.lat && job.lng)) && (
-              <YStack paddingHorizontal="$4" gap="$3">
-                <Text fontSize={16} fontWeight="700">
-                  Location
-                </Text>
-                {addressText ? (
-                  <XStack gap="$2" alignItems="center">
-                    <MapPin size={20} color="$gray10" />
-                    <Text fontSize={14} color="$gray11">
-                      {addressText}
-                    </Text>
-                  </XStack>
-                ) : null}
-                <YStack height="auto" borderRadius="$6" overflow="hidden">
-                  {!!job.lat && !!job.lng ? (
-                    <MapPreview lat={job.lat} lng={job.lng} />
-                  ) : addressText ? (
-                    <MapPreview address={addressText} />
-                  ) : null}
-                </YStack>
-              </YStack>
-            )}
+              <JobLocation
+                addressLine={job.addressLine}
+                city={job.city}
+                postalCode={job.postalCode}
+                country={job.country}
+                lat={job.lat}
+                lng={job.lng}
+              />
 
-            {/* Offer section for contractors */}
-            {me?.role === "contractor" && (
-              <YStack paddingHorizontal="$4" gap="$3">
-                {offerStatus?.hasOffered || lastOffer || myOffer ? (
-                  <YStack
-                    padding="$4"
-                    borderRadius="$6"
-                    backgroundColor="$background"
-                    borderWidth={1}
-                    borderColor="$gray4"
-                  >
-                    <Text fontSize={16} fontWeight="700" marginBottom="$2">
-                      Your Offer
-                    </Text>
-                    <Text fontSize={14} marginBottom="$1">
-                      Status: submitted
-                    </Text>
-                    <Text fontSize={14} marginBottom="$2">
-                      Price:{" "}
-                      {new Intl.NumberFormat("cs-CZ", {
-                        style: "currency",
-                        currency: "CZK",
-                      }).format(myOfferPrice || 0)}
-                    </Text>
-                    {myOfferMessage ? (
-                      <Text fontSize={14}>Message: {myOfferMessage}</Text>
-                    ) : (
-                      <Text fontSize={14} color="$gray10">
-                        Message: —
-                      </Text>
-                    )}
-
-                    {!!offerIdForChat && (
-                      <Button
-                        size="$5"
-                        variant="outlined"
-                        fontWeight="600"
-                        borderRadius="$10"
-                        marginTop="$3"
-                        onPress={() =>
-                          router.push({
-                            pathname:
-                              "/(contractor)/offer-chat/[offerId]" as any,
-                            params: { offerId: offerIdForChat },
-                          })
-                        }
-                      >
-                        Chat
-                      </Button>
-                    )}
-                  </YStack>
-                ) : (
-                  <YStack
-                    padding="$4"
-                    borderRadius="$6"
-                    backgroundColor="$background"
-                    borderWidth={1}
-                    borderColor="$gray4"
-                  >
-                    <Text fontSize={16} fontWeight="700" marginBottom="$3">
-                      Submit an Offer
-                    </Text>
-                    <YStack gap="$3">
-                      <Input
-                        placeholder="Your price"
-                        value={price}
-                        onChangeText={setPrice}
-                        keyboardType="decimal-pad"
-                        onFocus={handleInputFocus}
-                      />
-                      <Input
-                        placeholder="Message (optional)"
-                        value={message}
-                        onChangeText={setMessage}
-                        multiline
-                        numberOfLines={3}
-                        onFocus={handleInputFocus}
-                      />
-                      {offerStatus?.hasOffered && (
-                        <Text fontSize={13} color="$gray10">
-                          You have already submitted an offer for this job.
-                        </Text>
-                      )}
-                      <Button
-                        borderRadius="$10"
-                        backgroundColor="$gray12"
-                        color="white"
-                        onPress={onSubmitOffer}
-                        disabled={isSubmitting}
-                        opacity={isSubmitting ? 0.7 : 1}
-                      >
-                        {isSubmitting ? "Submitting..." : "Submit Offer"}
-                      </Button>
-                    </YStack>
-                  </YStack>
-                )}
-              </YStack>
+              {isContractor && (
+                <ContractorOfferSection
+                  hasOffered={hasOffered}
+                  myOfferPrice={myOfferPrice}
+                  myOfferMessage={myOfferMessage}
+                  myOfferStatus={myOfferStatus}
+                  offerIdForChat={offerIdForChat}
+                  price={price}
+                  setPrice={setPrice}
+                  message={message}
+                  setMessage={setMessage}
+                  onSubmitOffer={submitOffer}
+                  isSubmitting={isSubmitting}
+                  onInputFocus={handleInputFocus}
+                />
               )}
             </YStack>
           </ScrollView>
@@ -358,9 +155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  centeredContainer: {
+  flex: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

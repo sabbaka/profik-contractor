@@ -1,12 +1,12 @@
+import { useGetOpenJobsQuery } from "@/src/api/profikApi";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { Button, Text } from "@/src/components/ui/ui";
 import { router } from "expo-router";
 import React from "react";
 import { FlatList, RefreshControl } from "react-native";
-import { Spinner, YStack } from "tamagui";
-import { useGetOpenJobsQuery } from "../../../src/api/profikApi";
+import { Spinner, Text as TamaguiText, YStack } from "tamagui";
 
-export default function OpenJobsRoute() {
+export default function OpenJobsTab() {
   const { data, isLoading, isFetching, error, refetch } = useGetOpenJobsQuery(
     undefined,
     {
@@ -55,7 +55,7 @@ export default function OpenJobsRoute() {
         justifyContent="center"
         paddingHorizontal="$4"
       >
-        <Text fontSize={16} color="$gray12">
+        <Text fontSize={16} color="#9e9e9e">
           No open jobs right now.
         </Text>
       </YStack>
@@ -68,6 +68,11 @@ export default function OpenJobsRoute() {
         data={jobs}
         keyExtractor={(item: any) => item.id}
         contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
+        ListHeaderComponent={
+          <TamaguiText fontSize={28} fontWeight='bold' marginBottom="$4">
+            Open Jobs
+          </TamaguiText>
+        }
         refreshControl={
           <RefreshControl refreshing={isFetching} onRefresh={refetch} />
         }
@@ -86,3 +91,4 @@ export default function OpenJobsRoute() {
     </YStack>
   );
 }
+

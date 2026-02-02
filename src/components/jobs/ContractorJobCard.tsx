@@ -1,17 +1,23 @@
-import { Circle, MapPin } from "@tamagui/lucide-icons";
+import { MapPin, Send } from "@tamagui/lucide-icons";
 import React from "react";
 import { Card, Separator, Text, XStack, YStack } from "tamagui";
+import type { MyOffer } from "../../api/types";
 
 interface ContractorJobCardProps {
   job: any;
+  myOffer?: MyOffer | null;
   onPress?: () => void;
 }
 
-export function ContractorJobCard({ job, onPress }: ContractorJobCardProps) {
+export function ContractorJobCard({
+  job,
+  myOffer,
+  onPress,
+}: ContractorJobCardProps) {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "open":
-        return { color: "$green10", bg: "$green3", text: "Open", icon: Circle };
+        return { color: "$green10", bg: "$green3", text: "Open" };
       case "in_progress":
         return { color: "$blue10", bg: "$blue3", text: "In Progress" };
       case "completed":
@@ -23,31 +29,54 @@ export function ContractorJobCard({ job, onPress }: ContractorJobCardProps) {
           color: "$gray10",
           bg: "$gray3",
           text: status || "Open",
-          icon: Circle,
         };
     }
   };
 
+  const getOfferStatusConfig = (status: string) => {
+    switch (status) {
+      case "pending":
+        return { color: "$orange10", bg: "$orange3", text: "Pending" };
+      case "accepted":
+        return { color: "$green10", bg: "$green3", text: "Accepted" };
+      case "declined":
+        return { color: "$red10", bg: "$red3", text: "Declined" };
+      default:
+        return { color: "$gray10", bg: "$gray3", text: status };
+    }
+  };
+
   const statusConfig = getStatusConfig(job?.status ?? "open");
+  const offerStatusConfig = myOffer
+    ? getOfferStatusConfig(myOffer.status)
+    : null;
 
   const locationString =
     [job?.city, job?.country].filter(Boolean).join(", ") ||
     "Remote / No address";
 
-  const priceLabel =
-    typeof job?.price === "number"
-      ? `${job.price.toLocaleString()} Kč`
-      : new Intl.NumberFormat("cs-CZ", {
-          style: "currency",
-          currency: "CZK",
-        }).format(job?.price ?? 0);
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("cs-CZ", {
+      style: "currency",
+      currency: "CZK",
+      maximumFractionDigits: 0,
+    }).format(price);
+
+  const jobPriceLabel = formatPrice(job?.price ?? 0);
+  const offerPriceLabel = myOffer ? formatPrice(myOffer.price) : null;
 
   return (
     <Card
       onPress={onPress}
       bordered
       borderWidth={1}
-      borderColor="$borderColor"
+      borderColor={
+        myOffer?.status === "accepted"
+          ? "$green6"
+          : myOffer?.status === "declined"
+            ? "$red6"
+            : "$borderColor"
+      }
       backgroundColor="$background"
       borderRadius="$6"
       padding="$0"
@@ -67,10 +96,18 @@ export function ContractorJobCard({ job, onPress }: ContractorJobCardProps) {
             </Text>
           </YStack>
 
-          <YStack alignItems="flex-end">
+          <YStack alignItems="flex-end" gap="$1">
             <Text fontSize="$6" fontWeight="700" color="$color">
-              {priceLabel}
+              {jobPriceLabel}
             </Text>
+            {myOffer && (
+              <XStack alignItems="center" gap="$1.5">
+                <Send size={12} color="$blue10" />
+                <Text fontSize="$3" fontWeight="600" color="$blue10">
+                  {offerPriceLabel}
+                </Text>
+              </XStack>
+            )}
           </YStack>
         </XStack>
       </YStack>
@@ -95,22 +132,43 @@ export function ContractorJobCard({ job, onPress }: ContractorJobCardProps) {
           </XStack>
         </XStack>
 
-        <XStack
-          backgroundColor={statusConfig.bg}
-          paddingVertical={4}
-          paddingHorizontal={10}
-          borderRadius={100}
-          alignItems="center"
-          gap="$1.5"
-        >
-          <Text
-            fontSize="$2"
-            fontWeight="700"
-            color={statusConfig.color}
-            textTransform="uppercase"
+        <XStack gap="$2" alignItems="center">
+          {offerStatusConfig && (
+            <XStack
+              backgroundColor={offerStatusConfig.bg}
+              paddingVertical={4}
+              paddingHorizontal={10}
+              borderRadius={100}
+              alignItems="center"
+              gap="$1.5"
+            >
+              <Text
+                fontSize="$2"
+                fontWeight="700"
+                color={offerStatusConfig.color}
+                textTransform="uppercase"
+              >
+                {offerStatusConfig.text}
+              </Text>
+            </XStack>
+          )}
+          <XStack
+            backgroundColor={statusConfig.bg}
+            paddingVertical={4}
+            paddingHorizontal={10}
+            borderRadius={100}
+            alignItems="center"
+            gap="$1.5"
           >
-            {statusConfig.text}
-          </Text>
+            <Text
+              fontSize="$2"
+              fontWeight="700"
+              color={statusConfig.color}
+              textTransform="uppercase"
+            >
+              {statusConfig.text}
+            </Text>
+          </XStack>
         </XStack>
       </XStack>
     </Card>
