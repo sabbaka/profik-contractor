@@ -22,6 +22,16 @@ export function useAuth(): UseAuthReturn {
     try {
       const loginParams: LoginParams = { phone, password };
       const res = await loginMutation(loginParams).unwrap();
+
+      // Role-based login restriction: only contractors can log into the contractor app
+      if (res.user.role !== "contractor") {
+        Alert.alert(
+          "Wrong App",
+          "This account is for clients only. Please use the client app."
+        );
+        return { success: false, error: "Wrong app for this account type" };
+      }
+
       dispatch(setToken(res.token));
       // Clear RTK Query cache so user-specific queries (e.g., /auth/me) refetch with the new token
       // This prevents showing previous user's cached data after switching accounts
