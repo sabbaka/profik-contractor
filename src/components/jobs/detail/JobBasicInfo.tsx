@@ -1,3 +1,4 @@
+import { formatCzk } from "@/src/utils/currency";
 import { Clock, MapPin } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
 import { Text, XStack, YStack } from "tamagui";
@@ -17,12 +18,7 @@ export const JobBasicInfo = ({
   createdAt,
   city,
 }: JobBasicInfoProps) => {
-  const formattedPrice = useMemo(() => {
-    return new Intl.NumberFormat("cs-CZ", {
-      style: "currency",
-      currency: "CZK",
-    }).format(price);
-  }, [price]);
+  const formattedPrice = useMemo(() => formatCzk(price), [price]);
 
   const formattedDate = useMemo(() => {
     if (!createdAt) return "";

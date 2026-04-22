@@ -40,6 +40,9 @@ export const JobDetail = () => {
 
   const {
     isContractor,
+    mode,
+    setMode,
+    clientPrice,
     price,
     setPrice,
     message,
@@ -51,12 +54,12 @@ export const JobDetail = () => {
     offerIdForChat,
     isSubmitting,
     submitOffer,
+    acceptClientPrice,
   } = useJobOffer({
     jobId: id,
+    jobPrice: job?.price ?? 0,
     onSuccess: refetch,
   });
-
-  console.log(job);
 
   if (isLoading) {
     return (
@@ -133,10 +136,14 @@ export const JobDetail = () => {
                   myOfferMessage={myOfferMessage}
                   myOfferStatus={myOfferStatus}
                   offerIdForChat={offerIdForChat}
+                  clientPrice={clientPrice}
+                  mode={mode}
+                  setMode={setMode}
                   price={price}
                   setPrice={setPrice}
                   message={message}
                   setMessage={setMessage}
+                  onAcceptClientPrice={acceptClientPrice}
                   onSubmitOffer={submitOffer}
                   isSubmitting={isSubmitting}
                   onInputFocus={handleInputFocus}
