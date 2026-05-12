@@ -1,13 +1,14 @@
 import { useGetOfferMessagesQuery, useMeQuery, useSendOfferMessageMutation } from '@/src/api/profikApi';
-import { colors } from '@/src/theme';
+import { useThemeColors } from '@/src/theme';
 import { ArrowLeft } from '@tamagui/lucide-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet } from 'react-native';
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Input, Spinner, Text, XStack, YStack } from 'tamagui';
 
 export default function OfferChatRoute() {
+  const colors = useThemeColors();
   const { offerId } = useLocalSearchParams<{ offerId: string }>();
 
   const { data: me } = useMeQuery();
@@ -37,7 +38,7 @@ export default function OfferChatRoute() {
 
   if (!offerId) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
         <YStack flex={1} alignItems="center" justifyContent="center">
           <Text color={colors.textSecondary}>Invalid offer</Text>
         </YStack>
@@ -46,7 +47,7 @@ export default function OfferChatRoute() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
       <YStack flex={1}>
         <XStack paddingHorizontal="$4" paddingVertical="$3" alignItems="center" justifyContent="space-between">
         <Button
@@ -64,7 +65,7 @@ export default function OfferChatRoute() {
           <XStack width="$6" />
         </XStack>
 
-        <Pressable style={styles.messagesWrapper} onPress={Keyboard.dismiss}>
+        <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
           {isLoading && !messages ? (
             <YStack flex={1} alignItems="center" justifyContent="center">
               <Spinner size="large" color={colors.accent} />
@@ -104,7 +105,7 @@ export default function OfferChatRoute() {
             paddingVertical="$2"
             alignItems="center"
             gap="$2"
-            borderTopWidth={StyleSheet.hairlineWidth}
+            borderTopWidth={0.5}
             borderTopColor={colors.border}
             backgroundColor={colors.bgSecondary}
           >
@@ -138,13 +139,3 @@ export default function OfferChatRoute() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.bgPrimary,
-  },
-  messagesWrapper: {
-    flex: 1,
-  },
-});

@@ -1,10 +1,11 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
 import { Button, Text, XStack } from "tamagui";
 
 export function JobDetailHeader() {
+  const colors = useThemeColors();
   return (
     <XStack paddingVertical="$2" paddingHorizontal="$3" alignItems="center">
       <Button

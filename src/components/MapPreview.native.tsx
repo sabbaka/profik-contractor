@@ -1,8 +1,8 @@
+import { useThemeColors } from '@/src/theme';
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { useTheme } from 'tamagui';
 
 type Props =
   | { lat: number; lng: number; height?: number }
@@ -10,7 +10,7 @@ type Props =
 
 export default function MapPreview(props: Props) {
   const height = (props as any).height ?? 180;
-  const theme = useTheme();
+  const colors = useThemeColors();
 
   const hasCoords = (p: Props): p is { lat: number; lng: number; height?: number } =>
     (p as any).lat != null && (p as any).lng != null;
@@ -55,11 +55,11 @@ export default function MapPreview(props: Props) {
           styles.placeholder,
           {
             height,
-            backgroundColor: '#1A1D2E',
+            backgroundColor: colors.bgSecondary,
           },
         ]}
       >
-        <Text style={{ color: '#9CA3AF' }}>Locating…</Text>
+        <Text style={{ color: colors.textMuted }}>Locating…</Text>
       </View>
     );
   }

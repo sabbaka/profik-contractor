@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { MapPin } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
 import { Text, XStack, YStack } from "tamagui";
@@ -21,6 +21,7 @@ export const JobLocation = ({
   lat,
   lng,
 }: JobLocationProps) => {
+  const colors = useThemeColors();
   const addressText = useMemo(() => {
     return [addressLine, city, postalCode, country].filter(Boolean).join(", ");
   }, [addressLine, city, postalCode, country]);

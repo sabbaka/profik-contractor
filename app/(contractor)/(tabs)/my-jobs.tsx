@@ -3,7 +3,7 @@ import type { OfferStatus } from "@/src/api/types";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useJobsFilter } from "@/src/context/JobsFilterContext";
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, RefreshControl, ScrollView } from "react-native";
@@ -22,6 +22,7 @@ interface FilterChipProps {
 }
 
 function FilterChip({ label, isActive, onPress }: FilterChipProps) {
+  const colors = useThemeColors();
   return (
     <XStack
       onPress={onPress}
@@ -54,6 +55,7 @@ const FILTER_LABELS = {
 };
 
 function PageHeader({ filter, setFilter }: { filter: OfferStatus; setFilter: (f: OfferStatus) => void }) {
+  const colors = useThemeColors();
   return (
     <YStack paddingHorizontal="$4" paddingTop="$4" paddingBottom="$3">
       <Text fontSize={28} fontWeight="bold" color={colors.textPrimary} marginBottom="$3">
@@ -81,6 +83,7 @@ function PageHeader({ filter, setFilter }: { filter: OfferStatus; setFilter: (f:
 }
 
 export default function MyJobsTab() {
+  const colors = useThemeColors();
   const { filter, setFilter } = useJobsFilter();
   const [isFilterChanging, setIsFilterChanging] = useState(false);
   const prevFilterRef = useRef(filter);

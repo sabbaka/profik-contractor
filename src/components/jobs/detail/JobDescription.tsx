@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { Text, YStack } from "tamagui";
 
 interface JobDescriptionProps {
@@ -6,6 +6,7 @@ interface JobDescriptionProps {
 }
 
 export const JobDescription = ({ description }: JobDescriptionProps) => {
+  const colors = useThemeColors();
   if (!description) return null;
 
   return (

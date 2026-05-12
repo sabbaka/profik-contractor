@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { Control, Controller } from "react-hook-form";
 import { Input, InputProps, Label, Text, YStack } from "tamagui";
 
@@ -19,6 +19,8 @@ export const FormInput = ({
   flex = 1,
   ...props
 }: FormInputProps) => {
+  const colors = useThemeColors();
+
   return (
     <Controller
       control={control}

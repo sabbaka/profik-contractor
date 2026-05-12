@@ -1,10 +1,11 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { router } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useGetOpenJobsQuery } from "../api/profikApi";
 
 export default function OpenJobsMapWeb() {
+  const colors = useThemeColors();
   const {
     data: jobs,
     error,
@@ -17,9 +18,9 @@ export default function OpenJobsMapWeb() {
 
   if (error) {
     return (
-      <View style={styles.center}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 16, backgroundColor: colors.bgPrimary }}>
         <Text style={{ marginBottom: 8, color: colors.textPrimary }}>Failed to load open jobs</Text>
-        <TouchableOpacity onPress={refetch as any} style={styles.retryBtn}>
+        <TouchableOpacity onPress={refetch as any} style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 6, backgroundColor: colors.bgCard }}>
           <Text style={{ color: colors.textPrimary }}>Retry</Text>
         </TouchableOpacity>
       </View>
@@ -27,12 +28,12 @@ export default function OpenJobsMapWeb() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1, padding: 16, backgroundColor: colors.bgPrimary }}>
       <Text style={{ marginBottom: 8, color: colors.textSecondary }}>Map preview not available on web.</Text>
       {(jobs || []).map((j: any) => (
         <TouchableOpacity
           key={j.id}
-          style={styles.card}
+          style={{ padding: 12, borderRadius: 8, marginBottom: 10, borderWidth: 1, backgroundColor: colors.bgCard, borderColor: colors.border }}
           onPress={() =>
             router.push({
               pathname: "/(contractor)/jobs/[id]",
@@ -40,8 +41,8 @@ export default function OpenJobsMapWeb() {
             })
           }
         >
-          <Text style={styles.title}>{j.title}</Text>
-          <Text style={styles.muted}>
+          <Text style={{ fontWeight: "600", color: colors.textPrimary }}>{j.title}</Text>
+          <Text style={{ marginBottom: 4, color: colors.textSecondary }}>
             {j.category}
           </Text>
           <Text style={{ color: colors.textSecondary }} numberOfLines={2}>{j.description}</Text>
@@ -50,30 +51,3 @@ export default function OpenJobsMapWeb() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-    backgroundColor: colors.bgPrimary,
-  },
-  container: { flex: 1, padding: 16, backgroundColor: colors.bgPrimary },
-  retryBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 6,
-    backgroundColor: colors.bgCard,
-  },
-  card: {
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-    borderWidth: 1,
-    backgroundColor: colors.bgCard,
-    borderColor: colors.border,
-  },
-  title: { fontWeight: "600", color: colors.textPrimary },
-  muted: { marginBottom: 4, color: colors.textSecondary },
-});

@@ -1,7 +1,7 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import React, { useEffect, useRef, useState } from "react";
 import { Keyboard, Platform, TextInput } from "react-native";
-import { Text, XStack, YStack, styled } from "tamagui";
+import { Text, XStack, YStack } from "tamagui";
 
 interface OTPInputProps {
   length?: number;
@@ -11,43 +11,6 @@ interface OTPInputProps {
   autoFocus?: boolean;
 }
 
-const OTPBox = styled(XStack, {
-  width: 52,
-  height: 60,
-  borderRadius: 12,
-  backgroundColor: colors.surfaceInput,
-  alignItems: "center",
-  justifyContent: "center",
-  borderWidth: 2,
-  borderColor: "transparent",
-
-  variants: {
-    focused: {
-      true: {
-        borderColor: colors.accent,
-        backgroundColor: colors.bgCard,
-      },
-    },
-    filled: {
-      true: {
-        backgroundColor: colors.bgCard,
-      },
-    },
-    hasError: {
-      true: {
-        borderColor: colors.error,
-      },
-    },
-  } as const,
-});
-
-const OTPDigit = styled(Text, {
-  fontSize: 28,
-  fontWeight: "700",
-  color: colors.textPrimary,
-  textAlign: "center",
-});
-
 export const OTPInput = ({
   length = 6,
   value,
@@ -55,15 +18,14 @@ export const OTPInput = ({
   error,
   autoFocus = true,
 }: OTPInputProps) => {
+  const colors = useThemeColors();
   const inputRef = useRef<TextInput>(null);
   const [focused, setFocused] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
   useEffect(() => {
     if (autoFocus) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
+      setTimeout(() => { inputRef.current?.focus(); }, 100);
     }
   }, [autoFocus]);
 
@@ -74,16 +36,10 @@ export const OTPInput = ({
   const handleChange = (text: string) => {
     const cleaned = text.replace(/[^0-9]/g, "").slice(0, length);
     onChange(cleaned);
-
-    if (cleaned.length === length) {
-      Keyboard.dismiss();
-    }
+    if (cleaned.length === length) Keyboard.dismiss();
   };
 
-  const handlePress = () => {
-    inputRef.current?.focus();
-  };
-
+  const handlePress = () => { inputRef.current?.focus(); };
   const digits = value.split("");
 
   return (
@@ -95,16 +51,23 @@ export const OTPInput = ({
           const isFilled = digit !== "";
 
           return (
-            <OTPBox
+            <XStack
               key={index}
-              focused={isFocused}
-              filled={isFilled}
-              hasError={!!error}
+              width={52}
+              height={60}
+              borderRadius={12}
+              backgroundColor={isFilled ? colors.bgCard : colors.surfaceInput}
+              alignItems="center"
+              justifyContent="center"
+              borderWidth={2}
+              borderColor={error ? colors.error : isFocused ? colors.accent : "transparent"}
               animation="quick"
               pressStyle={{ scale: 0.98 }}
               onPress={handlePress}
             >
-              <OTPDigit>{digit}</OTPDigit>
+              <Text fontSize={28} fontWeight="700" color={colors.textPrimary} textAlign="center">
+                {digit}
+              </Text>
               {isFocused && !digit && (
                 <XStack
                   position="absolute"
@@ -115,7 +78,7 @@ export const OTPInput = ({
                   opacity={1}
                 />
               )}
-            </OTPBox>
+            </XStack>
           );
         })}
       </XStack>

@@ -1,5 +1,5 @@
 import { useMeQuery } from '@/src/api/profikApi';
-import { colors } from '@/src/theme';
+import { useThemeColors } from '@/src/theme';
 import { logout } from '@/src/store/authSlice';
 import { ChevronRight, LogOut, User } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
@@ -16,6 +16,7 @@ export default function ContractorProfileSheet({
   open,
   onOpenChange,
 }: ContractorProfileSheetProps) {
+  const colors = useThemeColors();
   const { data: user, isLoading } = useMeQuery();
   const dispatch = useDispatch();
 

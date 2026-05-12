@@ -1,5 +1,5 @@
 import type { OfferStatus } from "@/src/api/types";
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { router } from "expo-router";
 import { Button, Input, Text, XStack, YStack } from "tamagui";
@@ -25,19 +25,6 @@ interface ContractorOfferSectionProps {
   onInputFocus: () => void;
 }
 
-const getStatusConfig = (status?: OfferStatus) => {
-  switch (status) {
-    case "pending":
-      return { color: colors.statusPendingText, bg: colors.statusPending, text: "Pending" };
-    case "accepted":
-      return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Accepted" };
-    case "declined":
-      return { color: colors.statusCancelledText, bg: colors.statusCancelled, text: "Declined" };
-    default:
-      return { color: colors.textSecondary, bg: colors.bgCard, text: "Unknown" };
-  }
-};
-
 export const ContractorOfferSection = ({
   hasOffered,
   myOfferPrice,
@@ -56,8 +43,22 @@ export const ContractorOfferSection = ({
   isSubmitting,
   onInputFocus,
 }: ContractorOfferSectionProps) => {
+  const colors = useThemeColors();
   const formattedOfferPrice = formatCzk(myOfferPrice || 0);
   const formattedClientPrice = formatCzk(clientPrice);
+
+  const getStatusConfig = (status?: OfferStatus) => {
+    switch (status) {
+      case "pending":
+        return { color: colors.statusPendingText, bg: colors.statusPending, text: "Pending" };
+      case "accepted":
+        return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Accepted" };
+      case "declined":
+        return { color: colors.statusCancelledText, bg: colors.statusCancelled, text: "Declined" };
+      default:
+        return { color: colors.textSecondary, bg: colors.bgCard, text: "Unknown" };
+    }
+  };
 
   const statusConfig = getStatusConfig(myOfferStatus);
 

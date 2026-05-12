@@ -6,7 +6,7 @@ import {
   Text,
 } from "@/src/components/ui/ui";
 import { useTopupForm } from "@/src/features/balance/forms";
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
 export default function BalanceRoute() {
+  const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");

@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import React, { useEffect } from "react";
 import {
   Button as TamaguiButton,
@@ -9,6 +9,7 @@ import {
   Input,
   styled,
   YStack,
+  type GetProps,
 } from "tamagui";
 
 export const Button = styled(TamaguiButton, {
@@ -19,21 +20,20 @@ export const Button = styled(TamaguiButton, {
     variant: {
       default: {
         height: "auto",
-        backgroundColor: colors.accent,
-        color: colors.textInverse,
+        backgroundColor: "#FF6C00",
+        color: "#FFFFFF",
         paddingVertical: "$4",
         pressStyle: {
           opacity: 0.9,
           scale: 0.97,
         },
       },
-
       primary: {
         height: "auto",
-        backgroundColor: colors.accent,
-        color: colors.textInverse,
+        backgroundColor: "#FF6C00",
+        color: "#FFFFFF",
         pressStyle: {
-          backgroundColor: colors.accentGradientEnd,
+          backgroundColor: "#E85D00",
           borderWidth: 0,
         },
         paddingVertical: "$4",
@@ -41,34 +41,34 @@ export const Button = styled(TamaguiButton, {
       },
       secondary: {
         height: "auto",
-        backgroundColor: colors.bgCard,
-        color: colors.textPrimary,
+        backgroundColor: "$backgroundPress",
+        color: "$color",
         paddingVertical: "$4",
       },
       bordered: {
         backgroundColor: "transparent",
         borderWidth: 1,
-        borderColor: colors.border,
-        color: colors.textPrimary,
+        borderColor: "$borderColor",
+        color: "$color",
       },
       borderedProminent: {
-        backgroundColor: colors.accent,
-        color: colors.textInverse,
+        backgroundColor: "#FF6C00",
+        color: "#FFFFFF",
         fontWeight: "600",
       },
       outlined: {
         backgroundColor: "transparent",
         borderWidth: 0,
-        color: colors.textSecondary,
+        color: "$colorPress",
       },
       contained: {
         height: "auto",
-        backgroundColor: colors.accent,
-        color: colors.textInverse,
+        backgroundColor: "#FF6C00",
+        color: "#FFFFFF",
         paddingVertical: "$4",
         fontSize: 17,
         pressStyle: {
-          backgroundColor: colors.accentGradientEnd,
+          backgroundColor: "#E85D00",
           borderWidth: 0,
         },
       },
@@ -84,15 +84,15 @@ export const TextInput = styled(Input, {
   borderWidth: 0,
   paddingVertical: "$5",
   fontSize: 16,
-  color: colors.textPrimary,
-  backgroundColor: colors.surfaceInput,
+  color: "$color",
+  backgroundColor: "$backgroundPress",
   height: "auto",
   borderRadius: 12,
-  placeholderTextColor: colors.textMuted,
+  placeholderTextColor: "$placeholderColor",
 
   focusStyle: {
-    color: colors.textPrimary,
-    borderColor: colors.border,
+    color: "$color",
+    borderColor: "$borderColor",
     borderWidth: 1,
   },
 
@@ -106,7 +106,7 @@ export const TextInput = styled(Input, {
 });
 
 export const Text = styled(TextElement, {
-  color: colors.textPrimary,
+  color: "$color",
   variants: {
     large: {
       true: {
@@ -157,14 +157,14 @@ export const Text = styled(TextElement, {
       link: {
         lineHeight: 30,
         fontSize: 16,
-        color: colors.accent,
+        color: "#FF6C00",
       },
     },
   },
 });
 
 export const ThemedView = styled(TamaguiView, {
-  backgroundColor: colors.bgPrimary,
+  backgroundColor: "$background",
 });
 
 export const ActivityIndicator = TamaguiSpinner;
@@ -174,8 +174,8 @@ export const Card = Object.assign(
     padding: "$4",
     borderRadius: "$6",
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.bgCard,
+    borderColor: "$borderColor",
+    backgroundColor: "$background",
   }),
   {
     Title: ({ title, subtitle }: { title: string; subtitle?: string }) => (
@@ -184,7 +184,7 @@ export const Card = Object.assign(
           {title}
         </Text>
         {subtitle && (
-          <Text fontSize={14} color={colors.textSecondary}>
+          <Text fontSize={14} color="$colorPress">
             {subtitle}
           </Text>
         )}
@@ -207,6 +207,8 @@ export function Snackbar({
   duration?: number;
   children: React.ReactNode;
 }) {
+  const colors = useThemeColors();
+
   useEffect(() => {
     if (visible && duration > 0) {
       const timer = setTimeout(() => {

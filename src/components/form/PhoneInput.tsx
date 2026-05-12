@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { Control, Controller } from "react-hook-form";
 import MaskInput from "react-native-mask-input";
 import { Label, Text, YStack } from "tamagui";
@@ -14,41 +14,11 @@ interface PhoneInputProps {
 }
 
 const CZECH_PHONE_MASK = [
-  "+",
-  "4",
-  "2",
-  "0",
-  " ",
-  /\d/,
-  /\d/,
-  /\d/,
-  " ",
-  /\d/,
-  /\d/,
-  /\d/,
-  " ",
-  /\d/,
-  /\d/,
-  /\d/,
+  "+", "4", "2", "0", " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/,
 ];
 
 const INTERNATIONAL_PHONE_MASK = [
-  "+",
-  /\d/,
-  /\d/,
-  /\d/,
-  " ",
-  /\d/,
-  /\d/,
-  /\d/,
-  " ",
-  /\d/,
-  /\d/,
-  /\d/,
-  " ",
-  /\d/,
-  /\d/,
-  /\d/,
+  "+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/,
 ];
 
 export const PhoneInput = ({
@@ -60,8 +30,8 @@ export const PhoneInput = ({
   placeholder = "+420 XXX XXX XXX",
   defaultCountryCode = "CZ",
 }: PhoneInputProps) => {
-  const mask =
-    defaultCountryCode === "CZ" ? CZECH_PHONE_MASK : INTERNATIONAL_PHONE_MASK;
+  const colors = useThemeColors();
+  const mask = defaultCountryCode === "CZ" ? CZECH_PHONE_MASK : INTERNATIONAL_PHONE_MASK;
 
   return (
     <Controller
@@ -81,9 +51,7 @@ export const PhoneInput = ({
             mask={mask}
             value={value?.toString() || ""}
             onBlur={onBlur}
-            onChangeText={(masked, unmasked) => {
-              onChange(masked);
-            }}
+            onChangeText={(masked) => { onChange(masked); }}
             placeholder={placeholder}
             keyboardType="phone-pad"
             autoComplete="tel"

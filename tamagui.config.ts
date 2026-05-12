@@ -1,34 +1,42 @@
 import { config } from "@tamagui/config/v3";
-import { createTamagui, createTokens } from "tamagui";
-
-const profikDarkTheme = {
-  background: "#0F1117",
-  backgroundHover: "#1A1D2E",
-  backgroundPress: "#222639",
-  backgroundFocus: "#1A1D2E",
-  backgroundStrong: "#1A1D2E",
-  backgroundTransparent: "rgba(15, 17, 23, 0)",
-  color: "#F0F1F4",
-  colorHover: "#FFFFFF",
-  colorPress: "#9CA3AF",
-  colorFocus: "#F0F1F4",
-  colorTransparent: "rgba(240, 241, 244, 0)",
-  borderColor: "#2D3148",
-  borderColorHover: "#3D4160",
-  borderColorFocus: "#FF6C00",
-  borderColorPress: "#2D3148",
-  placeholderColor: "#6B7280",
-  shadowColor: "rgba(0, 0, 0, 0.3)",
-  shadowColorHover: "rgba(0, 0, 0, 0.4)",
-  shadowColorPress: "rgba(0, 0, 0, 0.3)",
-  shadowColorFocus: "rgba(0, 0, 0, 0.3)",
-} as const;
+import { createTamagui } from "tamagui";
 
 const tamaguiConfig = createTamagui({
   ...config,
   themes: {
     ...config.themes,
-    dark_profik: profikDarkTheme,
+    light: {
+      ...config.themes.light,
+      background: "#FFFFFF",
+      backgroundStrong: "#F7F8FA",
+      backgroundHover: "#F7F8FA",
+      backgroundPress: "#F3F4F6",
+      backgroundFocus: "#F7F8FA",
+      color: "#1A1D2E",
+      colorHover: "#000000",
+      colorPress: "#6B7280",
+      borderColor: "#E5E7EB",
+      borderColorHover: "#D1D5DB",
+      borderColorFocus: "#FF6C00",
+      placeholderColor: "#9CA3AF",
+      shadowColor: "rgba(0,0,0,0.04)",
+    },
+    dark: {
+      ...config.themes.dark,
+      background: "#0F1117",
+      backgroundStrong: "#1A1D2E",
+      backgroundHover: "#1A1D2E",
+      backgroundPress: "#222639",
+      backgroundFocus: "#1A1D2E",
+      color: "#F0F1F4",
+      colorHover: "#FFFFFF",
+      colorPress: "#9CA3AF",
+      borderColor: "#2D3148",
+      borderColorHover: "#3D4160",
+      borderColorFocus: "#FF6C00",
+      placeholderColor: "#6B7280",
+      shadowColor: "rgba(0,0,0,0.3)",
+    },
   },
 });
 

@@ -1,13 +1,14 @@
 import { useGetOpenJobsQuery } from "@/src/api/profikApi";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { Button, Text } from "@/src/components/ui/ui";
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { router } from "expo-router";
 import React from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { Spinner, YStack } from "tamagui";
 
 export default function OpenJobsTab() {
+  const colors = useThemeColors();
   const { data, isLoading, isFetching, error, refetch } = useGetOpenJobsQuery(
     undefined,
     {

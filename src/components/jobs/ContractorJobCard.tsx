@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { MapPin, Send } from "@tamagui/lucide-icons";
 import React from "react";
 import { Card, Separator, Text, XStack, YStack } from "tamagui";
@@ -15,12 +15,13 @@ export function ContractorJobCard({
   myOffer,
   onPress,
 }: ContractorJobCardProps) {
+  const colors = useThemeColors();
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "open":
         return { color: colors.statusOpenText, bg: colors.statusOpen, text: "Open" };
       case "in_progress":
-        return { color: "#60A5FA", bg: "#1E3A5F", text: "In Progress" };
+        return { color: colors.statusOpenText, bg: colors.statusOpen, text: "In Progress" };
       case "completed":
         return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Completed" };
       case "canceled":

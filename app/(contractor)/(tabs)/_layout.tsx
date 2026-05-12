@@ -1,11 +1,13 @@
 import ContractorHeader from "@/src/components/layout/ContractorHeader";
 import { JobsFilterProvider } from "@/src/context/JobsFilterContext";
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { Briefcase, Search } from "@tamagui/lucide-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 
 export default function TabsLayout() {
+  const colors = useThemeColors();
+
   return (
     <JobsFilterProvider>
       <ContractorHeader />
@@ -26,20 +28,8 @@ export default function TabsLayout() {
           },
         }}
       >
-        <Tabs.Screen
-          name="open"
-          options={{
-            title: "Open Jobs",
-            tabBarIcon: ({ color, size }) => <Search size={size} color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="my-jobs"
-          options={{
-            title: "My Jobs",
-            tabBarIcon: ({ color, size }) => <Briefcase size={size} color={color} />,
-          }}
-        />
+        <Tabs.Screen name="open" options={{ title: "Open Jobs", tabBarIcon: ({ color, size }) => <Search size={size} color={color} /> }} />
+        <Tabs.Screen name="my-jobs" options={{ title: "My Jobs", tabBarIcon: ({ color, size }) => <Briefcase size={size} color={color} /> }} />
       </Tabs>
     </JobsFilterProvider>
   );

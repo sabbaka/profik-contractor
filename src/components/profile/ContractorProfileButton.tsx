@@ -1,4 +1,4 @@
-import { colors } from '@/src/theme';
+import { useThemeColors } from '@/src/theme';
 import { User } from '@tamagui/lucide-icons';
 import { Button, YStack } from 'tamagui';
 
@@ -7,6 +7,7 @@ interface ContractorProfileButtonProps {
 }
 
 export default function ContractorProfileButton({ onPress }: ContractorProfileButtonProps) {
+  const colors = useThemeColors();
   return (
     <Button unstyled onPress={onPress} pressStyle={{ opacity: 0.5 }}>
       <YStack

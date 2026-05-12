@@ -1,12 +1,11 @@
 import { useGetJobByIdQuery } from "@/src/api/profikApi";
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useRef } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   ScrollView as RNScrollView,
-  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ScrollView, Separator, Spinner, Text, YStack } from "tamagui";
@@ -18,6 +17,7 @@ import { JobLocation } from "./JobLocation";
 import { useJobOffer } from "./hooks/useJobOffer";
 
 export const JobDetail = () => {
+  const colors = useThemeColors();
   const params = useLocalSearchParams<{ id: string }>();
   const id = params.id as string;
 
@@ -101,13 +101,13 @@ export const JobDetail = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
       <YStack flex={1}>
         <JobDetailHeader />
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.flex}
+          style={{ flex: 1 }}
         >
           <ScrollView
             ref={scrollViewRef}
@@ -163,13 +163,3 @@ export const JobDetail = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.bgPrimary,
-  },
-  flex: {
-    flex: 1,
-  },
-});

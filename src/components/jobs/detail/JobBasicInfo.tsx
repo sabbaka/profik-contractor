@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme";
+import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { Clock, MapPin } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
@@ -19,6 +19,7 @@ export const JobBasicInfo = ({
   createdAt,
   city,
 }: JobBasicInfoProps) => {
+  const colors = useThemeColors();
   const formattedPrice = useMemo(() => formatCzk(price), [price]);
 
   const formattedDate = useMemo(() => {
