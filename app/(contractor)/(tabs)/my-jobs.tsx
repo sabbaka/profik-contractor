@@ -3,6 +3,7 @@ import type { OfferStatus } from "@/src/api/types";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useJobsFilter } from "@/src/context/JobsFilterContext";
+import { colors } from "@/src/theme";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, RefreshControl, ScrollView } from "react-native";
@@ -24,7 +25,7 @@ function FilterChip({ label, isActive, onPress }: FilterChipProps) {
   return (
     <XStack
       onPress={onPress}
-      backgroundColor={isActive ? "$gray12" : "$gray3"}
+      backgroundColor={isActive ? colors.accent : colors.bgCard}
       paddingVertical={14}
       paddingHorizontal={16}
       borderRadius={50}
@@ -32,11 +33,13 @@ function FilterChip({ label, isActive, onPress }: FilterChipProps) {
       justifyContent="center"
       pressStyle={{ opacity: 0.8, scale: 0.97 }}
       animation="quick"
+      borderWidth={isActive ? 0 : 1}
+      borderColor={colors.border}
     >
       <TamaguiText
         fontSize={14}
         fontWeight={isActive ? "700" : "500"}
-        color={isActive ? "white" : "$gray11"}
+        color={isActive ? colors.textInverse : colors.textSecondary}
       >
         {label}
       </TamaguiText>
@@ -53,9 +56,9 @@ const FILTER_LABELS = {
 function PageHeader({ filter, setFilter }: { filter: OfferStatus; setFilter: (f: OfferStatus) => void }) {
   return (
     <YStack paddingHorizontal="$4" paddingTop="$4" paddingBottom="$3">
-      <TamaguiText fontSize={28} fontWeight="bold" marginBottom="$3">
+      <Text fontSize={28} fontWeight="bold" color={colors.textPrimary} marginBottom="$3">
         My Jobs
-      </TamaguiText>
+      </Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -111,8 +114,8 @@ export default function MyJobsTab() {
     if (showLoading) {
       return (
         <YStack flex={1} alignItems="center" justifyContent="center">
-          <Spinner size="large" color="$gray10" />
-          <Text marginTop="$3" fontSize={16} color="$gray11">
+          <Spinner size="large" color={colors.accent} />
+          <Text marginTop="$3" fontSize={16} color={colors.textSecondary}>
             Loading {FILTER_LABELS[filter]}...
           </Text>
         </YStack>
@@ -125,7 +128,7 @@ export default function MyJobsTab() {
           <Text fontSize={18} fontWeight="700" marginBottom="$3">
             Failed to load data
           </Text>
-          <Button variant="outlined" onPress={refetch}>
+          <Button variant="bordered" onPress={refetch}>
             Retry
           </Button>
         </YStack>
@@ -135,7 +138,7 @@ export default function MyJobsTab() {
     if (jobs.length === 0) {
       return (
         <YStack flex={1} alignItems="center" justifyContent="center">
-          <Text fontSize={16} color="#9e9e9e">
+          <Text fontSize={16} color={colors.textMuted}>
             No {FILTER_LABELS[filter]}.
           </Text>
         </YStack>
@@ -148,7 +151,11 @@ export default function MyJobsTab() {
         keyExtractor={(item: any) => item.job.id}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
         refreshControl={
-          <RefreshControl refreshing={isFetching && !isFilterChanging} onRefresh={refetch} />
+          <RefreshControl
+            refreshing={isFetching && !isFilterChanging}
+            onRefresh={refetch}
+            tintColor={colors.accent}
+          />
         }
         renderItem={({ item }: { item: any }) => (
           <ContractorJobCard
@@ -167,10 +174,9 @@ export default function MyJobsTab() {
   };
 
   return (
-    <YStack flex={1}>
+    <YStack flex={1} backgroundColor={colors.bgSecondary}>
       <PageHeader filter={filter} setFilter={setFilter} />
       {renderContent()}
     </YStack>
   );
 }
-

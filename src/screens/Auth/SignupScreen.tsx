@@ -1,10 +1,11 @@
 import { FormInput, OTPInput, PhoneInput } from "@/src/components/form";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useSignupForm } from "@/src/features/auth/forms/useSignupForm";
+import { colors } from "@/src/theme";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 
 export type SignupScreenProps = {
   onGoToLogin?: () => void;
@@ -41,18 +42,32 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
       <YStack
         flex={1}
         gap="$1"
-        padding="$4"
+        padding="$5"
         justifyContent="center"
-        backgroundColor="$background"
+        backgroundColor={colors.bgPrimary}
       >
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
 
         <YStack gap="$2" display={step === "form" ? "flex" : "none"}>
-          <Text large style={{ color: "#000" }} marginBottom="$4">
-            Sign Up
+          <YStack
+            width={48}
+            height={48}
+            borderRadius={14}
+            backgroundColor="#7C3AED"
+            alignItems="center"
+            justifyContent="center"
+            marginBottom="$3"
+          >
+            <Text fontSize={24} color={colors.textInverse}>👤</Text>
+          </YStack>
+          <Text fontSize={28} fontWeight="bold" color={colors.textPrimary}>
+            Create account
+          </Text>
+          <Text fontSize={15} color={colors.textSecondary} marginBottom="$4">
+            Join us and start taking jobs
           </Text>
 
-          <YStack gap="$4">
+          <YStack gap="$3">
             <PhoneInput
               flex={0}
               name="phone"
@@ -87,25 +102,32 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
             />
           </YStack>
 
-          <YStack gap="$2">
+          <YStack gap="$3" marginTop="$4">
             <Button
-              borderRadius="$10"
-              backgroundColor="$gray12"
-              fontWeight="bold"
+              variant="primary"
               onPress={() => {
                 dismissKeyboard();
                 handleRequestCode();
               }}
               disabled={isLoading}
-              marginTop="$4"
               opacity={isLoading ? 0.7 : 1}
             >
               {isLoading ? "Sending..." : "Sign Up"}
             </Button>
 
-            <Button variant="outlined" onPress={onGoToLogin} marginTop="$2">
-              Already have an account? Login
-            </Button>
+            <XStack justifyContent="center" gap="$1">
+              <Text color={colors.textSecondary} fontSize={14}>
+                Already have an account?
+              </Text>
+              <Text
+                color={colors.accent}
+                fontSize={14}
+                fontWeight="600"
+                onPress={onGoToLogin}
+              >
+                Login
+              </Text>
+            </XStack>
           </YStack>
         </YStack>
 
@@ -115,12 +137,12 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
           display={step === "otp" ? "flex" : "none"}
         >
           <YStack gap="$3" alignItems="center">
-            <Text large style={{ color: "#000" }}>
+            <Text fontSize={28} fontWeight="bold" color={colors.textPrimary}>
               Enter SMS Code
             </Text>
             <Text
-              color="$gray10"
-              fontSize="$4"
+              color={colors.textSecondary}
+              fontSize={15}
               textAlign="center"
               marginBottom="$4"
             >
@@ -139,12 +161,9 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
             autoFocus
           />
 
-          <YStack width="100%" gap="$2" marginTop="$6">
+          <YStack width="100%" gap="$3" marginTop="$6">
             <Button
-              borderRadius="$10"
-              backgroundColor="$gray12"
-              pressStyle={{ opacity: 0.9, scale: 0.97 }}
-              fontWeight="bold"
+              variant="primary"
               onPress={async () => {
                 if (otpCode.length !== 6) {
                   setOtpError("Enter 6 digits");
@@ -159,7 +178,7 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
               {isLoading ? "Verifying..." : "Verify Code"}
             </Button>
 
-            <Button variant="outlined" onPress={handleBackToForm} marginTop="$2">
+            <Button variant="outlined" onPress={handleBackToForm}>
               Back
             </Button>
           </YStack>

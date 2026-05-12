@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme';
 import { User } from '@tamagui/lucide-icons';
 import { Button, YStack } from 'tamagui';
 
@@ -12,11 +13,11 @@ export default function ContractorProfileButton({ onPress }: ContractorProfileBu
         width="$4"
         height="$4"
         borderRadius="$10"
-        backgroundColor="$gray7"
+        backgroundColor={colors.accent}
         alignItems="center"
         justifyContent="center"
       >
-        <User size="$2" color="black" />
+        <User size="$2" color={colors.textInverse} />
       </YStack>
     </Button>
   );

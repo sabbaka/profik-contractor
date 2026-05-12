@@ -1,25 +1,26 @@
+import { colors } from "@/src/theme";
 import React, { useEffect } from "react";
 import {
-  Input,
-  styled,
   Button as TamaguiButton,
   Card as TamaguiCard,
   Spinner as TamaguiSpinner,
   View as TamaguiView,
   Text as TextElement,
+  Input,
+  styled,
   YStack,
 } from "tamagui";
 
 export const Button = styled(TamaguiButton, {
-  borderRadius: "$10",
+  borderRadius: 9999,
   fontSize: 17,
 
   variants: {
     variant: {
       default: {
         height: "auto",
-        backgroundColor: "$gray12",
-        color: "white",
+        backgroundColor: colors.accent,
+        color: colors.textInverse,
         paddingVertical: "$4",
         pressStyle: {
           opacity: 0.9,
@@ -29,10 +30,10 @@ export const Button = styled(TamaguiButton, {
 
       primary: {
         height: "auto",
-        backgroundColor: "#181818",
-        color: "white",
+        backgroundColor: colors.accent,
+        color: colors.textInverse,
         pressStyle: {
-          backgroundColor: "#333333",
+          backgroundColor: colors.accentGradientEnd,
           borderWidth: 0,
         },
         paddingVertical: "$4",
@@ -40,33 +41,34 @@ export const Button = styled(TamaguiButton, {
       },
       secondary: {
         height: "auto",
-        backgroundColor: "#181818",
-        color: "white",
+        backgroundColor: colors.bgCard,
+        color: colors.textPrimary,
         paddingVertical: "$4",
       },
       bordered: {
         backgroundColor: "transparent",
         borderWidth: 1,
-        borderColor: "#181818",
-        color: "#181818",
+        borderColor: colors.border,
+        color: colors.textPrimary,
       },
       borderedProminent: {
-        backgroundColor: "#181818",
-        color: "white",
+        backgroundColor: colors.accent,
+        color: colors.textInverse,
         fontWeight: "600",
       },
       outlined: {
         backgroundColor: "transparent",
         borderWidth: 0,
+        color: colors.textSecondary,
       },
       contained: {
         height: "auto",
-        backgroundColor: "#181818",
-        color: "white",
+        backgroundColor: colors.accent,
+        color: colors.textInverse,
         paddingVertical: "$4",
         fontSize: 17,
         pressStyle: {
-          backgroundColor: "#333333",
+          backgroundColor: colors.accentGradientEnd,
           borderWidth: 0,
         },
       },
@@ -82,13 +84,16 @@ export const TextInput = styled(Input, {
   borderWidth: 0,
   paddingVertical: "$5",
   fontSize: 16,
-  color: "$gray12",
+  color: colors.textPrimary,
+  backgroundColor: colors.surfaceInput,
   height: "auto",
-  borderRadius: 10,
+  borderRadius: 12,
+  placeholderTextColor: colors.textMuted,
 
   focusStyle: {
-    color: "$gray12",
-    borderColor: "$gray10",
+    color: colors.textPrimary,
+    borderColor: colors.border,
+    borderWidth: 1,
   },
 
   variants: {
@@ -101,7 +106,7 @@ export const TextInput = styled(Input, {
 });
 
 export const Text = styled(TextElement, {
-  color: "$gray12",
+  color: colors.textPrimary,
   variants: {
     large: {
       true: {
@@ -152,28 +157,25 @@ export const Text = styled(TextElement, {
       link: {
         lineHeight: 30,
         fontSize: 16,
-        color: "#181818",
+        color: colors.accent,
       },
     },
   },
 });
 
-// ThemedView replacement - just use YStack or XStack with backgroundColor
 export const ThemedView = styled(TamaguiView, {
-  backgroundColor: "$background",
+  backgroundColor: colors.bgPrimary,
 });
 
-// ActivityIndicator replacement
 export const ActivityIndicator = TamaguiSpinner;
 
-// Card component
 export const Card = Object.assign(
   styled(TamaguiCard, {
     padding: "$4",
     borderRadius: "$6",
     borderWidth: 1,
-    borderColor: "$borderColor",
-    backgroundColor: "$background",
+    borderColor: colors.border,
+    backgroundColor: colors.bgCard,
   }),
   {
     Title: ({ title, subtitle }: { title: string; subtitle?: string }) => (
@@ -182,7 +184,7 @@ export const Card = Object.assign(
           {title}
         </Text>
         {subtitle && (
-          <Text fontSize={14} color="$gray10">
+          <Text fontSize={14} color={colors.textSecondary}>
             {subtitle}
           </Text>
         )}
@@ -194,7 +196,6 @@ export const Card = Object.assign(
   }
 );
 
-// Snackbar/Toast component
 export function Snackbar({
   visible,
   onDismiss,
@@ -223,13 +224,15 @@ export function Snackbar({
       bottom="$4"
       left="$4"
       right="$4"
-      backgroundColor="$gray12"
+      backgroundColor={colors.bgCard}
       padding="$4"
       borderRadius="$4"
       elevation="$4"
       zIndex={9999}
+      borderWidth={1}
+      borderColor={colors.border}
     >
-      <Text color="white">{children}</Text>
+      <Text color={colors.textPrimary}>{children}</Text>
     </YStack>
   );
 }

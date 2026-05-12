@@ -55,11 +55,11 @@ export default function MapPreview(props: Props) {
           styles.placeholder,
           {
             height,
-            backgroundColor: theme?.gray2?.val ?? '#f2f2f2',
+            backgroundColor: '#1A1D2E',
           },
         ]}
       >
-        <Text>Locating…</Text>
+        <Text style={{ color: '#9CA3AF' }}>Locating…</Text>
       </View>
     );
   }

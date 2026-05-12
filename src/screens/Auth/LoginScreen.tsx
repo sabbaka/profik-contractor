@@ -1,10 +1,11 @@
 import { FormInput, PhoneInput } from "@/src/components/form";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useLoginForm } from "@/src/features/auth/forms";
+import { colors } from "@/src/theme";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 
 export type LoginScreenProps = {
   onGoToSignup?: () => void;
@@ -27,16 +28,30 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
       <YStack
         flex={1}
         gap={"$1"}
-        padding="$4"
+        padding="$5"
         justifyContent="center"
-        backgroundColor="$background"
+        backgroundColor={colors.bgPrimary}
       >
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <YStack gap="$2">
-          <Text large style={{ color: "#000" }} marginBottom={"$4"}>
-            Login
+          <YStack
+            width={48}
+            height={48}
+            borderRadius={14}
+            backgroundColor={colors.accent}
+            alignItems="center"
+            justifyContent="center"
+            marginBottom="$3"
+          >
+            <Text fontSize={24}>✦</Text>
+          </YStack>
+          <Text fontSize={28} fontWeight="bold" color={colors.textPrimary}>
+            Welcome back
           </Text>
-          <YStack gap="$4">
+          <Text fontSize={15} color={colors.textSecondary} marginBottom="$4">
+            Sign in to manage your jobs
+          </Text>
+          <YStack gap="$3">
             <PhoneInput
               flex={0}
               name="phone"
@@ -55,25 +70,34 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
               error={errors.password?.message}
             />
           </YStack>
-          <YStack gap="$2">
+          <YStack gap="$3" marginTop="$4">
             <Button
-              borderRadius="$10"
-              backgroundColor="$gray12"
-              pressStyle={{ opacity: 0.9, scale: 0.97 }}
-              fontWeight="bold"
+              variant="primary"
               onPress={() => {
                 Keyboard.dismiss();
                 submit();
               }}
               disabled={isLoading}
-              marginTop="$4"
               opacity={isLoading ? 0.7 : 1}
             >
               {isLoading ? "Logging in..." : "Login"}
             </Button>
-            <Button variant="outlined" onPress={onGoToSignup} marginTop="$2">
-              Create account
-            </Button>
+            <YStack alignItems="center" gap="$3">
+              <Text color={colors.textMuted} fontSize={14}>or</Text>
+              <XStack gap="$1">
+                <Text color={colors.textSecondary} fontSize={14}>
+                  Don't have an account?
+                </Text>
+                <Text
+                  color={colors.accent}
+                  fontSize={14}
+                  fontWeight="600"
+                  onPress={onGoToSignup}
+                >
+                  Sign Up
+                </Text>
+              </XStack>
+            </YStack>
           </YStack>
         </YStack>
       </YStack>

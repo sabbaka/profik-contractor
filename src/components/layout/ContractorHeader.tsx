@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { useSegments } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -33,13 +34,13 @@ export default function ContractorHeader() {
 const styles = StyleSheet.create({
   header: {
     height: "auto",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: colors.bgSecondary,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingBottom: 8,
-    borderBottomColor: "#eee",
+    borderBottomColor: colors.border,
   },
   spacer: {
     flex: 1,

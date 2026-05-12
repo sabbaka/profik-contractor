@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { Control, Controller } from "react-hook-form";
 import { Input, InputProps, Label, Text, YStack } from "tamagui";
 
@@ -28,7 +29,7 @@ export const FormInput = ({
         return (
           <YStack gap="$2" flex={flex}>
           {label && (
-            <Label fontSize="$3" color="$gray10">
+            <Label fontSize="$3" color={colors.textSecondary}>
               {label}
             </Label>
           )}
@@ -38,13 +39,17 @@ export const FormInput = ({
             onBlur={onBlur}
             onChangeText={onChange}
             borderWidth={displayError ? 1 : 0}
-            borderColor={displayError ? "$red8" : "$gray6"}
-            focusStyle={{ borderColor: displayError ? "$red8" : "$red8" }}
+            borderColor={displayError ? colors.error : colors.border}
+            backgroundColor={colors.surfaceInput}
+            color={colors.textPrimary}
+            placeholderTextColor={colors.textMuted}
+            focusStyle={{ borderColor: displayError ? colors.error : colors.border, borderWidth: 1 }}
             paddingVertical={"$4"}
             height={"auto"}
+            borderRadius={12}
           />
           {displayError ? (
-            <Text color="$red10" fontSize="$2" marginLeft="$1">
+            <Text color={colors.error} fontSize="$2" marginLeft="$1">
               {displayError}
             </Text>
           ) : null}

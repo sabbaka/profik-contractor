@@ -1,4 +1,5 @@
 import { useGetOfferMessagesQuery, useMeQuery, useSendOfferMessageMutation } from '@/src/api/profikApi';
+import { colors } from '@/src/theme';
 import { ArrowLeft } from '@tamagui/lucide-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useState } from 'react';
@@ -38,7 +39,7 @@ export default function OfferChatRoute() {
     return (
       <SafeAreaView style={styles.container}>
         <YStack flex={1} alignItems="center" justifyContent="center">
-          <Text>Invalid offer</Text>
+          <Text color={colors.textSecondary}>Invalid offer</Text>
         </YStack>
       </SafeAreaView>
     );
@@ -55,9 +56,9 @@ export default function OfferChatRoute() {
         size="$2"
         scaleIcon={1.5}
         onPress={() => router.back()}
-        color="$color"
+        color={colors.textPrimary}
       />
-          <Text fontSize="$5" fontWeight="700">
+          <Text fontSize="$5" fontWeight="700" color={colors.textPrimary}>
             Chat
           </Text>
           <XStack width="$6" />
@@ -66,7 +67,7 @@ export default function OfferChatRoute() {
         <Pressable style={styles.messagesWrapper} onPress={Keyboard.dismiss}>
           {isLoading && !messages ? (
             <YStack flex={1} alignItems="center" justifyContent="center">
-              <Spinner size="large" color="$gray10" />
+              <Spinner size="large" color={colors.accent} />
             </YStack>
           ) : (
             <YStack flex={1} paddingHorizontal="$4" paddingVertical="$2" gap="$2">
@@ -76,12 +77,12 @@ export default function OfferChatRoute() {
                   <YStack
                     key={message.id}
                     alignSelf={isMine ? 'flex-end' : 'flex-start'}
-                    backgroundColor={isMine ? '$blue10' : '$gray3'}
+                    backgroundColor={isMine ? colors.accent : colors.bgCard}
                     borderRadius="$6"
                     padding="$3"
                     maxWidth="80%"
                   >
-                    <Text color={isMine ? 'white' : '$gray12'} fontSize="$4">
+                    <Text color={isMine ? colors.textInverse : colors.textPrimary} fontSize="$4">
                       {message.content}
                     </Text>
                   </YStack>
@@ -90,7 +91,7 @@ export default function OfferChatRoute() {
 
               {!messages?.length && !isLoading && !isFetching && (
                 <YStack flex={1} alignItems="center" justifyContent="center">
-                  <Text color="$gray10">No messages yet</Text>
+                  <Text color={colors.textMuted}>No messages yet</Text>
                 </YStack>
               )}
             </YStack>
@@ -104,23 +105,28 @@ export default function OfferChatRoute() {
             alignItems="center"
             gap="$2"
             borderTopWidth={StyleSheet.hairlineWidth}
-            borderTopColor="#E5E5E5"
-            backgroundColor="white"
+            borderTopColor={colors.border}
+            backgroundColor={colors.bgSecondary}
           >
             <Input
               flex={1}
               size="$4"
               placeholder="Type a message"
+              placeholderTextColor={colors.textMuted}
               value={content}
               onChangeText={setContent}
               autoCorrect
               multiline
+              backgroundColor={colors.surfaceInput}
+              color={colors.textPrimary}
+              borderWidth={0}
+              borderRadius={12}
             />
             <Button
               size="$4"
               borderRadius="$10"
-              backgroundColor="$gray12"
-              color="white"
+              backgroundColor={colors.accent}
+              color={colors.textInverse}
               onPress={handleSend}
               disabled={isSending || !content.trim()}
             >
@@ -136,7 +142,7 @@ export default function OfferChatRoute() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.bgPrimary,
   },
   messagesWrapper: {
     flex: 1,

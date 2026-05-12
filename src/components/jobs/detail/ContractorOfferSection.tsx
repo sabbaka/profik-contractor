@@ -1,4 +1,5 @@
 import type { OfferStatus } from "@/src/api/types";
+import { colors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { router } from "expo-router";
 import { Button, Input, Text, XStack, YStack } from "tamagui";
@@ -27,13 +28,13 @@ interface ContractorOfferSectionProps {
 const getStatusConfig = (status?: OfferStatus) => {
   switch (status) {
     case "pending":
-      return { color: "$orange10", bg: "$orange3", text: "Pending" };
+      return { color: colors.statusPendingText, bg: colors.statusPending, text: "Pending" };
     case "accepted":
-      return { color: "$green10", bg: "$green3", text: "Accepted" };
+      return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Accepted" };
     case "declined":
-      return { color: "$red10", bg: "$red3", text: "Declined" };
+      return { color: colors.statusCancelledText, bg: colors.statusCancelled, text: "Declined" };
     default:
-      return { color: "$gray10", bg: "$gray3", text: "Unknown" };
+      return { color: colors.textSecondary, bg: colors.bgCard, text: "Unknown" };
   }
 };
 
@@ -65,13 +66,13 @@ export const ContractorOfferSection = ({
       <YStack paddingHorizontal="$4" gap="$3">
         <YStack
           padding="$4"
-          borderRadius="$6"
-          backgroundColor="$background"
+          borderRadius={16}
+          backgroundColor={colors.bgCard}
           borderWidth={1}
-          borderColor="$gray4"
+          borderColor={colors.border}
         >
           <XStack justifyContent="space-between" alignItems="center" marginBottom="$2">
-            <Text fontSize={16} fontWeight="700">
+            <Text fontSize={16} fontWeight="700" color={colors.textPrimary}>
               Your Offer
             </Text>
             <XStack
@@ -90,13 +91,13 @@ export const ContractorOfferSection = ({
               </Text>
             </XStack>
           </XStack>
-          <Text fontSize={14} marginBottom="$2">
+          <Text fontSize={14} marginBottom="$2" color={colors.textPrimary}>
             Price: {formattedOfferPrice}
           </Text>
           {myOfferMessage ? (
-            <Text fontSize={14}>Message: {myOfferMessage}</Text>
+            <Text fontSize={14} color={colors.textPrimary}>Message: {myOfferMessage}</Text>
           ) : (
-            <Text fontSize={14} color="$gray10">
+            <Text fontSize={14} color={colors.textMuted}>
               Message: —
             </Text>
           )}
@@ -104,10 +105,13 @@ export const ContractorOfferSection = ({
           {!!offerIdForChat && (
             <Button
               size="$5"
-              variant="outlined"
               fontWeight="600"
-              borderRadius="$10"
+              borderRadius={9999}
               marginTop="$3"
+              backgroundColor={colors.bgSecondary}
+              borderWidth={1}
+              borderColor={colors.border}
+              color={colors.textPrimary}
               onPress={() =>
                 router.push({
                   pathname: "/(contractor)/offer-chat/[offerId]" as any,
@@ -136,19 +140,22 @@ export const ContractorOfferSection = ({
       <YStack paddingHorizontal="$4" gap="$3">
         <YStack
           padding="$4"
-          borderRadius="$6"
-          backgroundColor="$background"
+          borderRadius={16}
+          backgroundColor={colors.bgCard}
           borderWidth={1}
-          borderColor="$gray4"
+          borderColor={colors.border}
         >
           <XStack justifyContent="space-between" alignItems="center" marginBottom="$3">
-            <Text fontSize={16} fontWeight="700">
+            <Text fontSize={16} fontWeight="700" color={colors.textPrimary}>
               Counter Offer
             </Text>
             <Button
               size="$2"
-              variant="outlined"
-              borderRadius="$10"
+              borderRadius={9999}
+              backgroundColor={colors.bgSecondary}
+              borderWidth={1}
+              borderColor={colors.border}
+              color={colors.textPrimary}
               onPress={() => setMode("idle")}
               disabled={isSubmitting}
             >
@@ -162,6 +169,11 @@ export const ContractorOfferSection = ({
               onChangeText={setPrice}
               keyboardType="decimal-pad"
               onFocus={onInputFocus}
+              backgroundColor={colors.surfaceInput}
+              color={colors.textPrimary}
+              placeholderTextColor={colors.textMuted}
+              borderWidth={0}
+              borderRadius={12}
             />
             <Input
               placeholder='Explain your price (e.g. "I will bring professional equipment")'
@@ -170,11 +182,16 @@ export const ContractorOfferSection = ({
               multiline
               numberOfLines={3}
               onFocus={onInputFocus}
+              backgroundColor={colors.surfaceInput}
+              color={colors.textPrimary}
+              placeholderTextColor={colors.textMuted}
+              borderWidth={0}
+              borderRadius={12}
             />
             <Button
-              borderRadius="$10"
-              backgroundColor="$gray12"
-              color="white"
+              borderRadius={9999}
+              backgroundColor={colors.accent}
+              color={colors.textInverse}
               onPress={onSubmitOffer}
               disabled={!canSubmit}
               opacity={canSubmit ? 1 : 0.5}
@@ -191,19 +208,19 @@ export const ContractorOfferSection = ({
     <YStack paddingHorizontal="$4" gap="$3">
       <YStack
         padding="$4"
-        borderRadius="$6"
-        backgroundColor="$background"
+        borderRadius={16}
+        backgroundColor={colors.bgCard}
         borderWidth={1}
-        borderColor="$gray4"
+        borderColor={colors.border}
       >
-        <Text fontSize={16} fontWeight="700" marginBottom="$3">
+        <Text fontSize={16} fontWeight="700" marginBottom="$3" color={colors.textPrimary}>
           Respond to this job
         </Text>
         <YStack gap="$3">
           <Button
-            borderRadius="$10"
-            backgroundColor="$gray12"
-            color="white"
+            borderRadius={9999}
+            backgroundColor={colors.accent}
+            color={colors.textInverse}
             onPress={onAcceptClientPrice}
             disabled={isSubmitting}
             opacity={isSubmitting ? 0.7 : 1}
@@ -211,9 +228,12 @@ export const ContractorOfferSection = ({
             {isSubmitting ? "Submitting..." : `Accept for ${formattedClientPrice}`}
           </Button>
           <Button
-            borderRadius="$10"
-            variant="outlined"
+            borderRadius={9999}
             fontWeight="600"
+            backgroundColor={colors.bgSecondary}
+            borderWidth={1}
+            borderColor={colors.border}
+            color={colors.textPrimary}
             onPress={() => setMode("counter")}
             disabled={isSubmitting}
           >

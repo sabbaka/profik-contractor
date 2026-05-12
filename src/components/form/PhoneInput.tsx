@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { Control, Controller } from "react-hook-form";
 import MaskInput from "react-native-mask-input";
 import { Label, Text, YStack } from "tamagui";
@@ -72,7 +73,7 @@ export const PhoneInput = ({
         return (
           <YStack gap="$2" flex={flex}>
           {label && (
-            <Label fontSize="$3" color="$gray10">
+            <Label fontSize="$3" color={colors.textSecondary}>
               {label}
             </Label>
           )}
@@ -87,19 +88,19 @@ export const PhoneInput = ({
             keyboardType="phone-pad"
             autoComplete="tel"
             style={{
-              backgroundColor: "#f5f5f5",
+              backgroundColor: colors.surfaceInput,
               borderRadius: 12,
               paddingHorizontal: 16,
               paddingVertical: 16,
               fontSize: 16,
-              color: "#1a1a1a",
+              color: colors.textPrimary,
               borderWidth: displayError ? 1 : 0,
-              borderColor: displayError ? "#e54545" : "transparent",
+              borderColor: displayError ? colors.error : "transparent",
             }}
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.textMuted}
           />
           {displayError ? (
-            <Text color="$red10" fontSize="$2" marginLeft="$1">
+            <Text color={colors.error} fontSize="$2" marginLeft="$1">
               {displayError}
             </Text>
           ) : null}
@@ -110,14 +111,11 @@ export const PhoneInput = ({
   );
 };
 
-// Хелпер для извлечения чистого номера (без маски)
 export const extractPhoneNumber = (maskedPhone: string): string => {
   return maskedPhone.replace(/\D/g, "");
 };
 
-// Хелпер для валидации чешского номера
 export const isValidCzechPhone = (phone: string): boolean => {
   const digits = extractPhoneNumber(phone);
-  // Чешский номер: 420 + 9 цифр = 12 цифр
   return digits.length === 12 && digits.startsWith("420");
 };

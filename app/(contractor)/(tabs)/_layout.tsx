@@ -1,5 +1,6 @@
 import ContractorHeader from "@/src/components/layout/ContractorHeader";
 import { JobsFilterProvider } from "@/src/context/JobsFilterContext";
+import { colors } from "@/src/theme";
 import { Briefcase, Search } from "@tamagui/lucide-icons";
 import { Tabs } from "expo-router";
 import React from "react";
@@ -11,11 +12,11 @@ export default function TabsLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: "#000",
-          tabBarInactiveTintColor: "#999",
+          tabBarActiveTintColor: colors.accent,
+          tabBarInactiveTintColor: colors.textMuted,
           tabBarStyle: {
-            backgroundColor: "#fff",
-            borderTopColor: "#eee",
+            backgroundColor: colors.bgPrimary,
+            borderTopColor: colors.border,
             paddingTop: 8,
             height: 85,
           },
@@ -43,4 +44,3 @@ export default function TabsLayout() {
     </JobsFilterProvider>
   );
 }
-

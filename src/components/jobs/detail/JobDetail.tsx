@@ -1,4 +1,5 @@
 import { useGetJobByIdQuery } from "@/src/api/profikApi";
+import { colors } from "@/src/theme";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useRef } from "react";
 import {
@@ -63,9 +64,9 @@ export const JobDetail = () => {
 
   if (isLoading) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
-        <Spinner size="large" color="$gray10" />
-        <Text marginTop="$3" fontSize={16} color="$gray11">
+      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgPrimary}>
+        <Spinner size="large" color={colors.accent} />
+        <Text marginTop="$3" fontSize={16} color={colors.textSecondary}>
           Loading job...
         </Text>
       </YStack>
@@ -74,11 +75,17 @@ export const JobDetail = () => {
 
   if (error) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
-        <Text fontSize={18} fontWeight="700" marginBottom="$3">
+      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgPrimary}>
+        <Text fontSize={18} fontWeight="700" color={colors.textPrimary} marginBottom="$3">
           Failed to load job
         </Text>
-        <Button variant="outlined" onPress={refetch} disabled={isFetching}>
+        <Button
+          variant="outlined"
+          onPress={refetch}
+          disabled={isFetching}
+          borderColor={colors.border}
+          color={colors.textPrimary}
+        >
           Retry
         </Button>
       </YStack>
@@ -87,8 +94,8 @@ export const JobDetail = () => {
 
   if (!job) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
-        <Text fontSize={16}>No job found.</Text>
+      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgPrimary}>
+        <Text fontSize={16} color={colors.textSecondary}>No job found.</Text>
       </YStack>
     );
   }
@@ -116,7 +123,7 @@ export const JobDetail = () => {
                 city={job.city}
               />
 
-              <Separator borderColor="$gray4" marginHorizontal="$4" />
+              <Separator borderColor={colors.border} marginHorizontal="$4" />
 
               <JobDescription description={job.description} />
 
@@ -160,7 +167,7 @@ export const JobDetail = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.bgPrimary,
   },
   flex: {
     flex: 1,

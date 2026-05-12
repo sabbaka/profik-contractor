@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { Clock, MapPin } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
@@ -34,28 +35,28 @@ export const JobBasicInfo = ({
   return (
     <YStack paddingHorizontal="$4" paddingTop="$2" gap="$2">
       {category && (
-        <Text fontSize={12} color="$gray10">
+        <Text fontSize={12} color={colors.textSecondary}>
           {category}
         </Text>
       )}
-      <Text fontSize={28} fontWeight="800" lineHeight={34}>
+      <Text fontSize={28} fontWeight="800" lineHeight={34} color={colors.textPrimary}>
         {title}
       </Text>
-      <Text fontSize={24} fontWeight="800" color="$color" letterSpacing={-0.5}>
+      <Text fontSize={24} fontWeight="800" color={colors.accent} letterSpacing={-0.5}>
         {formattedPrice}
       </Text>
       <XStack gap="$4" marginTop="$2">
         {formattedDate && (
           <XStack gap="$2" alignItems="center">
-            <Clock size={18} color="$gray10" />
-            <Text fontSize={14} color="$gray11">
+            <Clock size={18} color={colors.textMuted} />
+            <Text fontSize={14} color={colors.textSecondary}>
               {formattedDate}
             </Text>
           </XStack>
         )}
         <XStack gap="$2" alignItems="center">
-          <MapPin size={18} color="$gray10" />
-          <Text fontSize={14} color="$gray11">
+          <MapPin size={18} color={colors.textMuted} />
+          <Text fontSize={14} color={colors.textSecondary}>
             {cityText}
           </Text>
         </XStack>
@@ -63,4 +64,3 @@ export const JobBasicInfo = ({
     </YStack>
   );
 };
-

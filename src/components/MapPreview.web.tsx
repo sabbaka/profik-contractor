@@ -55,12 +55,12 @@ export default function MapPreview(props: Props) {
         styles.box,
         {
           height,
-          backgroundColor: theme?.gray2?.val ?? '#f2f2f2',
+          backgroundColor: '#1A1D2E',
         },
       ]}
     >
-      <Text>Map preview not available on web</Text>
-      <Text>{label}</Text>
+      <Text style={{ color: '#9CA3AF' }}>Map preview not available on web</Text>
+      <Text style={{ color: '#6B7280' }}>{label}</Text>
     </View>
   );
 }

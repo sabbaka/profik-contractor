@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { Text, YStack } from "tamagui";
 
 interface JobDescriptionProps {
@@ -9,13 +10,12 @@ export const JobDescription = ({ description }: JobDescriptionProps) => {
 
   return (
     <YStack paddingHorizontal="$4" gap="$2">
-      <Text fontSize={16} fontWeight="700">
+      <Text fontSize={16} fontWeight="700" color={colors.textPrimary}>
         Description
       </Text>
-      <Text fontSize={14} color="$gray11" lineHeight={24}>
+      <Text fontSize={14} color={colors.textSecondary} lineHeight={24}>
         {description}
       </Text>
     </YStack>
   );
 };
-

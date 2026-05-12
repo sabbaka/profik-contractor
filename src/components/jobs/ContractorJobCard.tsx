@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { MapPin, Send } from "@tamagui/lucide-icons";
 import React from "react";
 import { Card, Separator, Text, XStack, YStack } from "tamagui";
@@ -17,17 +18,17 @@ export function ContractorJobCard({
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "open":
-        return { color: "$green10", bg: "$green3", text: "Open" };
+        return { color: colors.statusOpenText, bg: colors.statusOpen, text: "Open" };
       case "in_progress":
-        return { color: "$blue10", bg: "$blue3", text: "In Progress" };
+        return { color: "#60A5FA", bg: "#1E3A5F", text: "In Progress" };
       case "completed":
-        return { color: "$gray10", bg: "$gray4", text: "Completed" };
+        return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Completed" };
       case "canceled":
-        return { color: "$red10", bg: "$red3", text: "Canceled" };
+        return { color: colors.statusCancelledText, bg: colors.statusCancelled, text: "Canceled" };
       default:
         return {
-          color: "$gray10",
-          bg: "$gray3",
+          color: colors.textSecondary,
+          bg: colors.bgCard,
           text: status || "Open",
         };
     }
@@ -36,13 +37,13 @@ export function ContractorJobCard({
   const getOfferStatusConfig = (status: string) => {
     switch (status) {
       case "pending":
-        return { color: "$orange10", bg: "$orange3", text: "Pending" };
+        return { color: colors.statusPendingText, bg: colors.statusPending, text: "Pending" };
       case "accepted":
-        return { color: "$green10", bg: "$green3", text: "Accepted" };
+        return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Accepted" };
       case "declined":
-        return { color: "$red10", bg: "$red3", text: "Declined" };
+        return { color: colors.statusCancelledText, bg: colors.statusCancelled, text: "Declined" };
       default:
-        return { color: "$gray10", bg: "$gray3", text: status };
+        return { color: colors.textSecondary, bg: colors.bgCard, text: status };
     }
   };
 
@@ -72,38 +73,38 @@ export function ContractorJobCard({
       borderWidth={1}
       borderColor={
         myOffer?.status === "accepted"
-          ? "$green6"
+          ? colors.success
           : myOffer?.status === "declined"
-            ? "$red6"
-            : "$borderColor"
+            ? colors.error
+            : colors.border
       }
-      backgroundColor="$background"
+      backgroundColor={colors.bgCard}
       borderRadius="$6"
       padding="$0"
-      elevation="$1"
+      elevation="$0"
       marginBottom="$4"
       animation="bouncy"
-      pressStyle={{ scale: 0.98, borderColor: "$gray8" }}
+      pressStyle={{ scale: 0.98, borderColor: colors.accent }}
     >
       <YStack padding="$4" gap="$2">
         <XStack justifyContent="space-between" alignItems="flex-start">
           <YStack flex={1} gap="$2" marginRight="$3">
-            <Text fontSize="$3" color="$gray10" marginTop="$1">
+            <Text fontSize="$3" color={colors.textSecondary} marginTop="$1">
               {job?.category}
             </Text>
-            <Text fontSize="$6" fontWeight="800" color="$color" lineHeight={24}>
+            <Text fontSize="$6" fontWeight="800" color={colors.textPrimary} lineHeight={24}>
               {job?.title}
             </Text>
           </YStack>
 
           <YStack alignItems="flex-end" gap="$1">
-            <Text fontSize="$6" fontWeight="700" color="$color">
+            <Text fontSize="$6" fontWeight="700" color={colors.textPrimary}>
               {jobPriceLabel}
             </Text>
             {myOffer && (
               <XStack alignItems="center" gap="$1.5">
-                <Send size={12} color="$blue10" />
-                <Text fontSize="$3" fontWeight="600" color="$blue10">
+                <Send size={12} color={colors.accent} />
+                <Text fontSize="$3" fontWeight="600" color={colors.accent}>
                   {offerPriceLabel}
                 </Text>
               </XStack>
@@ -112,21 +113,21 @@ export function ContractorJobCard({
         </XStack>
       </YStack>
 
-      <Separator borderColor="$gray4" />
+      <Separator borderColor={colors.border} />
 
       <XStack
         padding="$3"
         paddingHorizontal="$4"
         justifyContent="space-between"
         alignItems="center"
-        backgroundColor="$gray1"
+        backgroundColor={colors.bgSecondary}
         borderBottomLeftRadius="$6"
         borderBottomRightRadius="$6"
       >
         <XStack gap="$3" alignItems="center" flex={1}>
           <XStack gap="$1.5" alignItems="center" flex={1}>
-            <MapPin size={14} color="$gray9" />
-            <Text fontSize="$3" color="$gray10" numberOfLines={1}>
+            <MapPin size={14} color={colors.textMuted} />
+            <Text fontSize="$3" color={colors.textSecondary} numberOfLines={1}>
               {locationString}
             </Text>
           </XStack>

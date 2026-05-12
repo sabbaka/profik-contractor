@@ -1,10 +1,11 @@
 import { useGetOpenJobsQuery } from "@/src/api/profikApi";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { Button, Text } from "@/src/components/ui/ui";
+import { colors } from "@/src/theme";
 import { router } from "expo-router";
 import React from "react";
 import { FlatList, RefreshControl } from "react-native";
-import { Spinner, Text as TamaguiText, YStack } from "tamagui";
+import { Spinner, YStack } from "tamagui";
 
 export default function OpenJobsTab() {
   const { data, isLoading, isFetching, error, refetch } = useGetOpenJobsQuery(
@@ -25,9 +26,10 @@ export default function OpenJobsTab() {
         alignItems="center"
         justifyContent="center"
         paddingHorizontal="$4"
+        backgroundColor={colors.bgSecondary}
       >
-        <Spinner size="large" color="$gray10" />
-        <Text marginTop="$3" fontSize={16} color="$gray11">
+        <Spinner size="large" color={colors.accent} />
+        <Text marginTop="$3" fontSize={16} color={colors.textSecondary}>
           Loading open jobs...
         </Text>
       </YStack>
@@ -36,11 +38,11 @@ export default function OpenJobsTab() {
 
   if (error) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
+      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
         <Text fontSize={18} fontWeight="700" marginBottom="$3">
           Failed to load open jobs
         </Text>
-        <Button variant="outlined" onPress={refetch}>
+        <Button variant="bordered" onPress={refetch}>
           Retry
         </Button>
       </YStack>
@@ -54,8 +56,9 @@ export default function OpenJobsTab() {
         alignItems="center"
         justifyContent="center"
         paddingHorizontal="$4"
+        backgroundColor={colors.bgSecondary}
       >
-        <Text fontSize={16} color="#9e9e9e">
+        <Text fontSize={16} color={colors.textMuted}>
           No open jobs right now.
         </Text>
       </YStack>
@@ -63,18 +66,22 @@ export default function OpenJobsTab() {
   }
 
   return (
-    <YStack flex={1}>
+    <YStack flex={1} backgroundColor={colors.bgSecondary}>
       <FlatList
         data={jobs}
         keyExtractor={(item: any) => item.id}
         contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
         ListHeaderComponent={
-          <TamaguiText fontSize={28} fontWeight='bold' marginBottom="$4">
+          <Text fontSize={28} fontWeight="bold" color={colors.textPrimary} marginBottom="$4">
             Open Jobs
-          </TamaguiText>
+          </Text>
         }
         refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={refetch}
+            tintColor={colors.accent}
+          />
         }
         renderItem={({ item }: { item: any }) => (
           <ContractorJobCard
@@ -91,4 +98,3 @@ export default function OpenJobsTab() {
     </YStack>
   );
 }
-

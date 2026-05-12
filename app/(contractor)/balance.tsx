@@ -6,6 +6,7 @@ import {
   Text,
 } from "@/src/components/ui/ui";
 import { useTopupForm } from "@/src/features/balance/forms";
+import { colors } from "@/src/theme";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -42,9 +43,10 @@ export default function BalanceRoute() {
         alignItems="center"
         justifyContent="center"
         paddingHorizontal="$4"
+        backgroundColor={colors.bgPrimary}
       >
-        <ActivityIndicator size="large" color="$gray10" />
-        <Text marginTop="$3">Loading balance...</Text>
+        <ActivityIndicator size="large" color={colors.accent} />
+        <Text marginTop="$3" color={colors.textSecondary}>Loading balance...</Text>
       </YStack>
     );
   }
@@ -56,37 +58,36 @@ export default function BalanceRoute() {
         alignItems="center"
         justifyContent="center"
         paddingHorizontal="$4"
+        backgroundColor={colors.bgPrimary}
       >
         <Text variant="titleMedium" marginBottom="$3">
-          ❌ Failed to load balance
+          Failed to load balance
         </Text>
-        <Button onPress={refetchBalance}>Retry</Button>
+        <Button variant="bordered" onPress={refetchBalance}>Retry</Button>
       </YStack>
     );
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <YStack flex={1} paddingTop={insets.top}>
+      <YStack flex={1} paddingTop={insets.top} backgroundColor={colors.bgPrimary}>
         <XStack
           paddingHorizontal="$3"
           paddingVertical="$2"
           alignItems="center"
-          backgroundColor="transparent"
         >
           <Pressable
             onPress={() => router.back()}
             style={styles.backButton}
             hitSlop={8}
           >
-            <ArrowLeft size={28} color="$gray12" />
+            <ArrowLeft size={28} color={colors.textPrimary} />
           </Pressable>
-      
         </XStack>
         <YStack flex={1} padding="$4" gap="$4">
           <YStack gap="$2">
             <Text variant="titleLarge">Your Balance</Text>
-            <Text variant="headlineSmall" marginTop="$2">
+            <Text variant="headlineSmall" marginTop="$2" color={colors.accent}>
               {new Intl.NumberFormat("cs-CZ", {
                 style: "currency",
                 currency: "CZK",
@@ -95,7 +96,7 @@ export default function BalanceRoute() {
           </YStack>
           <YStack gap="$3">
             <FormInput
-            flex={0}
+              flex={0}
               control={control}
               name="amount"
               placeholder="Top-up amount (CZK)"
@@ -109,7 +110,7 @@ export default function BalanceRoute() {
             >
               {isLoading ? "Processing..." : "Top Up"}
             </Button>
-            <Text fontSize={14} color="$gray10" marginTop="$2">
+            <Text fontSize={14} color={colors.textMuted} marginTop="$2">
               You&apos;ll complete payment in a secure web view and return to
               the app automatically.
             </Text>

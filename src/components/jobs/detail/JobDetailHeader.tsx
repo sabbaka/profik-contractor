@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { ArrowLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -13,7 +14,7 @@ export function JobDetailHeader() {
         size="$2"
         scaleIcon={1.5}
         onPress={() => router.back()}
-        color="$color"
+        color={colors.textPrimary}
       />
       <Text
         fontSize="$6"
@@ -21,6 +22,7 @@ export function JobDetailHeader() {
         numberOfLines={1}
         flex={1}
         textAlign="center"
+        color={colors.textPrimary}
       >
         Details
       </Text>

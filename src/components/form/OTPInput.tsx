@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import React, { useEffect, useRef, useState } from "react";
 import { Keyboard, Platform, TextInput } from "react-native";
 import { Text, XStack, YStack, styled } from "tamagui";
@@ -14,7 +15,7 @@ const OTPBox = styled(XStack, {
   width: 52,
   height: 60,
   borderRadius: 12,
-  backgroundColor: "$gray3",
+  backgroundColor: colors.surfaceInput,
   alignItems: "center",
   justifyContent: "center",
   borderWidth: 2,
@@ -23,18 +24,18 @@ const OTPBox = styled(XStack, {
   variants: {
     focused: {
       true: {
-        borderColor: "$gray12",
-        backgroundColor: "$gray2",
+        borderColor: colors.accent,
+        backgroundColor: colors.bgCard,
       },
     },
     filled: {
       true: {
-        backgroundColor: "$gray4",
+        backgroundColor: colors.bgCard,
       },
     },
     hasError: {
       true: {
-        borderColor: "$gray12",
+        borderColor: colors.error,
       },
     },
   } as const,
@@ -43,7 +44,7 @@ const OTPBox = styled(XStack, {
 const OTPDigit = styled(Text, {
   fontSize: 28,
   fontWeight: "700",
-  color: "$gray12",
+  color: colors.textPrimary,
   textAlign: "center",
 });
 
@@ -109,7 +110,7 @@ export const OTPInput = ({
                   position="absolute"
                   width={2}
                   height={28}
-                  backgroundColor="$gray12"
+                  backgroundColor={colors.accent}
                   animation="quick"
                   opacity={1}
                 />
@@ -120,12 +121,11 @@ export const OTPInput = ({
       </XStack>
 
       {error && (
-        <Text color="$red10" fontSize="$3" textAlign="center">
+        <Text color={colors.error} fontSize="$3" textAlign="center">
           {error}
         </Text>
       )}
 
-      {/* Hidden input for keyboard */}
       <TextInput
         ref={inputRef}
         value={value}

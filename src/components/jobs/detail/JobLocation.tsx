@@ -1,3 +1,4 @@
+import { colors } from "@/src/theme";
 import { MapPin } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
 import { Text, XStack, YStack } from "tamagui";
@@ -30,13 +31,13 @@ export const JobLocation = ({
 
   return (
     <YStack paddingHorizontal="$4" gap="$3">
-      <Text fontSize={16} fontWeight="700">
+      <Text fontSize={16} fontWeight="700" color={colors.textPrimary}>
         Location
       </Text>
       {addressText && (
         <XStack gap="$2" alignItems="center">
-          <MapPin size={20} color="$gray10" />
-          <Text fontSize={14} color="$gray11">
+          <MapPin size={20} color={colors.textMuted} />
+          <Text fontSize={14} color={colors.textSecondary}>
             {addressText}
           </Text>
         </XStack>
@@ -51,4 +52,3 @@ export const JobLocation = ({
     </YStack>
   );
 };
-
