@@ -5,6 +5,7 @@ import { extractErrorMessage } from "@/src/features/auth/types";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { ChevronRight, LogOut, Settings, Trash2, WalletCards } from "@tamagui/lucide-icons";
+import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
@@ -102,6 +103,10 @@ export default function ContractorProfileSheet({ open, onOpenChange }: Contracto
             <YStack height={1} backgroundColor={colors.divider} marginHorizontal={16} />
             <ProfileRow icon={<Trash2 size={18} color={colors.error} />} label={isDeleting ? "Deleting…" : "Delete account"} destructive colors={colors} onPress={isDeleting ? undefined : confirmDelete} />
           </YStack>
+
+          <Text variant="caption" textAlign="center" style={{ color: colors.textMuted }}>
+            Version {Constants.expoConfig?.version ?? "—"}
+          </Text>
         </YStack>
       </Sheet.Frame>
     </Sheet>

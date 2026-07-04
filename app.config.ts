@@ -5,7 +5,7 @@ const LOCATION_WHEN_IN_USE_PERMISSION =
 const config = {
   name: 'profik-contractor',
   slug: 'profik-contractor',
-  version: '1.0.3',
+  version: '1.0.4',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'profikcontractor',
