@@ -8,7 +8,7 @@ import {
   ScrollView as RNScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, ScrollView, Separator, Spinner, Text, YStack } from "tamagui";
+import { Button, ScrollView, Spinner, Text, YStack } from "tamagui";
 import { ContractorOfferSection } from "./ContractorOfferSection";
 import { JobBasicInfo } from "./JobBasicInfo";
 import { JobDescription } from "./JobDescription";
@@ -64,7 +64,7 @@ export const JobDetail = () => {
 
   if (isLoading) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgPrimary}>
+      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
         <Spinner size="large" color={colors.accent} />
         <Text marginTop="$3" fontSize={16} color={colors.textSecondary}>
           Loading job...
@@ -75,7 +75,7 @@ export const JobDetail = () => {
 
   if (error) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgPrimary}>
+      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
         <Text fontSize={18} fontWeight="700" color={colors.textPrimary} marginBottom="$3">
           Failed to load job
         </Text>
@@ -94,14 +94,14 @@ export const JobDetail = () => {
 
   if (!job) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgPrimary}>
+      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
         <Text fontSize={16} color={colors.textSecondary}>No job found.</Text>
       </YStack>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgSecondary }}>
       <YStack flex={1}>
         <JobDetailHeader />
 
@@ -114,7 +114,7 @@ export const JobDetail = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <YStack gap="$5" paddingBottom="$10">
+            <YStack gap={12} paddingHorizontal={20} paddingTop={8} paddingBottom={40}>
               <JobBasicInfo
                 category={job.category}
                 title={job.title}
@@ -122,8 +122,6 @@ export const JobDetail = () => {
                 createdAt={job.createdAt}
                 city={job.city}
               />
-
-              <Separator borderColor={colors.border} marginHorizontal="$4" />
 
               <JobDescription description={job.description} />
 

@@ -1,141 +1,69 @@
-import { useGetOfferMessagesQuery, useMeQuery, useSendOfferMessageMutation } from '@/src/api/profikApi';
-import { useThemeColors } from '@/src/theme';
-import { ArrowLeft } from '@tamagui/lucide-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Input, Spinner, Text, XStack, YStack } from 'tamagui';
+import { useGetOfferMessagesQuery, useMeQuery, useSendOfferMessageMutation } from "@/src/api/profikApi";
+import { Text } from "@/src/components/ui/ui";
+import { useThemeColors } from "@/src/theme";
+import { ChevronLeft, MessageCircle, Send } from "@tamagui/lucide-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Spinner, XStack, YStack } from "tamagui";
 
 export default function OfferChatRoute() {
   const colors = useThemeColors();
   const { offerId } = useLocalSearchParams<{ offerId: string }>();
-
   const { data: me } = useMeQuery();
-
-  const {
-    data: messages,
-    isLoading,
-    isFetching,
-  } = useGetOfferMessagesQuery(offerId, {
-    skip: !offerId,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const [content, setContent] = useState('');
-  const [sendOfferMessage, { isLoading: isSending }] = useSendOfferMessageMutation();
+  const { data: messages, isLoading, isFetching } = useGetOfferMessagesQuery(offerId, { skip: !offerId, refetchOnMountOrArgChange: true });
+  const [content, setContent] = useState("");
+  const [sendMessage, { isLoading: isSending }] = useSendOfferMessageMutation();
 
   const handleSend = useCallback(async () => {
     if (!offerId || !content.trim()) return;
+    try { await sendMessage({ offerId, content: content.trim() }).unwrap(); setContent(""); }
+    catch { Alert.alert("Message not sent", "Please try again."); }
+  }, [offerId, content, sendMessage]);
 
-    try {
-      await sendOfferMessage({ offerId, content: content.trim() }).unwrap();
-      setContent('');
-    } catch (_error) {
-      Alert.alert('Error', 'Failed to send message');
-    }
-  }, [offerId, content, sendOfferMessage]);
-
-  if (!offerId) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
-        <YStack flex={1} alignItems="center" justifyContent="center">
-          <Text color={colors.textSecondary}>Invalid offer</Text>
-        </YStack>
-      </SafeAreaView>
-    );
-  }
+  if (!offerId) return <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgSecondary }}><YStack flex={1} alignItems="center" justifyContent="center"><Text variant="bodySm">Invalid offer</Text></YStack></SafeAreaView>;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
-      <YStack flex={1}>
-        <XStack paddingHorizontal="$4" paddingVertical="$3" alignItems="center" justifyContent="space-between">
-        <Button
-        icon={ArrowLeft}
-        chromeless
-        circular
-        size="$2"
-        scaleIcon={1.5}
-        onPress={() => router.back()}
-        color={colors.textPrimary}
-      />
-          <Text fontSize="$5" fontWeight="700" color={colors.textPrimary}>
-            Chat
-          </Text>
-          <XStack width="$6" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgSecondary }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <XStack height={50} paddingHorizontal={16} alignItems="center" justifyContent="space-between">
+          <Pressable onPress={() => router.back()} hitSlop={10}><XStack alignItems="center"><ChevronLeft size={25} color={colors.textPrimary} /><Text style={{ color: colors.textPrimary, fontSize: 16 }}>Back</Text></XStack></Pressable>
+          <YStack alignItems="center"><Text variant="h5">Customer chat</Text><Text style={{ color: colors.success, fontFamily: "Inter_500Medium", fontSize: 10 }}>OFFER CONVERSATION</Text></YStack>
+          <XStack width={58} />
         </XStack>
 
-        <Pressable style={{ flex: 1 }} onPress={Keyboard.dismiss}>
-          {isLoading && !messages ? (
-            <YStack flex={1} alignItems="center" justifyContent="center">
-              <Spinner size="large" color={colors.accent} />
-            </YStack>
-          ) : (
-            <YStack flex={1} paddingHorizontal="$4" paddingVertical="$2" gap="$2">
-              {messages?.map((message: any) => {
-                const isMine = message.senderId === me?.id;
-                return (
-                  <YStack
-                    key={message.id}
-                    alignSelf={isMine ? 'flex-end' : 'flex-start'}
-                    backgroundColor={isMine ? colors.accent : colors.bgCard}
-                    borderRadius="$6"
-                    padding="$3"
-                    maxWidth="80%"
-                  >
-                    <Text color={isMine ? colors.textInverse : colors.textPrimary} fontSize="$4">
-                      {message.content}
-                    </Text>
-                  </YStack>
-                );
-              })}
-
-              {!messages?.length && !isLoading && !isFetching && (
-                <YStack flex={1} alignItems="center" justifyContent="center">
-                  <Text color={colors.textMuted}>No messages yet</Text>
+        {isLoading && !messages ? (
+          <YStack flex={1} alignItems="center" justifyContent="center"><Spinner color={colors.accent} /></YStack>
+        ) : (
+          <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingVertical: 18, gap: 8, justifyContent: messages?.length ? "flex-end" : "center" }} keyboardShouldPersistTaps="handled">
+            {messages?.map((message: any) => {
+              const mine = message.senderId === me?.id;
+              return (
+                <YStack key={message.id} alignSelf={mine ? "flex-end" : "flex-start"} maxWidth="82%" borderRadius={19} overflow="hidden" paddingHorizontal={15} paddingVertical={11} backgroundColor={mine ? "transparent" : colors.bgCard} borderWidth={mine ? 0 : 1} borderColor={colors.borderSubtle}>
+                  {mine ? <LinearGradient colors={["#FF8A2B", "#E85D00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /> : null}
+                  <Text style={{ color: mine ? "#FFFFFF" : colors.textPrimary, fontFamily: "Inter_400Regular", fontSize: 15, lineHeight: 21 }}>{message.content}</Text>
                 </YStack>
-              )}
-            </YStack>
-          )}
-        </Pressable>
+              );
+            })}
+            {!messages?.length && !isLoading && !isFetching ? (
+              <YStack alignItems="center" gap={10}>
+                <YStack width={72} height={72} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center"><MessageCircle size={29} color={colors.accent} /></YStack>
+                <Text variant="h4">Start the conversation</Text>
+                <Text variant="bodySm" textAlign="center">Ask a question or confirm the details of your offer.</Text>
+              </YStack>
+            ) : null}
+          </ScrollView>
+        )}
 
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={80}>
-          <XStack
-            paddingHorizontal="$4"
-            paddingVertical="$2"
-            alignItems="center"
-            gap="$2"
-            borderTopWidth={0.5}
-            borderTopColor={colors.border}
-            backgroundColor={colors.bgSecondary}
-          >
-            <Input
-              flex={1}
-              size="$4"
-              placeholder="Type a message"
-              placeholderTextColor={colors.textMuted}
-              value={content}
-              onChangeText={setContent}
-              autoCorrect
-              multiline
-              backgroundColor={colors.surfaceInput}
-              color={colors.textPrimary}
-              borderWidth={0}
-              borderRadius={12}
-            />
-            <Button
-              size="$4"
-              borderRadius="$10"
-              backgroundColor={colors.accent}
-              color={colors.textInverse}
-              onPress={handleSend}
-              disabled={isSending || !content.trim()}
-            >
-              Send
-            </Button>
-          </XStack>
-        </KeyboardAvoidingView>
-      </YStack>
+        <XStack paddingHorizontal={16} paddingVertical={10} alignItems="flex-end" gap={9} backgroundColor={colors.bgPrimary} borderTopWidth={1} borderTopColor={colors.borderSubtle}>
+          <TextInput value={content} onChangeText={setContent} placeholder="Write a message…" placeholderTextColor={colors.textMuted} multiline maxLength={1000} style={{ flex: 1, minHeight: 44, maxHeight: 110, borderRadius: 22, backgroundColor: colors.surfaceInput, color: colors.textPrimary, paddingHorizontal: 16, paddingVertical: 11, fontSize: 15, fontFamily: "Inter_400Regular" }} />
+          <Pressable disabled={isSending || !content.trim()} onPress={handleSend} style={({ pressed }) => ({ opacity: isSending || !content.trim() ? 0.45 : pressed ? 0.8 : 1 })}>
+            <YStack width={44} height={44} borderRadius={9999} overflow="hidden" alignItems="center" justifyContent="center"><LinearGradient colors={["#FF8A2B", "#E85D00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} /><Send size={18} color="#FFFFFF" /></YStack>
+          </Pressable>
+        </XStack>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

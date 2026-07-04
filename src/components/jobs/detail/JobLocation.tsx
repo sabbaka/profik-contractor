@@ -1,8 +1,9 @@
 import { useThemeColors } from "@/src/theme";
+import { Text } from "@/src/components/ui/ui";
 import { MapPin } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
-import { Text, XStack, YStack } from "tamagui";
-import MapPreview from "../../MapPreview.native";
+import { XStack, YStack } from "tamagui";
+import MapPreview from "../../MapPreview";
 
 interface JobLocationProps {
   addressLine?: string;
@@ -31,14 +32,14 @@ export const JobLocation = ({
   if (!hasLocation) return null;
 
   return (
-    <YStack paddingHorizontal="$4" gap="$3">
-      <Text fontSize={16} fontWeight="700" color={colors.textPrimary}>
+    <YStack padding={18} gap={12} borderRadius={18} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle}>
+      <Text variant="h5">
         Location
       </Text>
       {addressText && (
         <XStack gap="$2" alignItems="center">
           <MapPin size={20} color={colors.textMuted} />
-          <Text fontSize={14} color={colors.textSecondary}>
+          <Text variant="bodySm" flex={1}>
             {addressText}
           </Text>
         </XStack>

@@ -1,22 +1,14 @@
+import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { Text, YStack } from "tamagui";
+import { YStack } from "tamagui";
 
-interface JobDescriptionProps {
-  description?: string;
-}
-
-export const JobDescription = ({ description }: JobDescriptionProps) => {
+export const JobDescription = ({ description }: { description?: string }) => {
   const colors = useThemeColors();
   if (!description) return null;
-
   return (
-    <YStack paddingHorizontal="$4" gap="$2">
-      <Text fontSize={16} fontWeight="700" color={colors.textPrimary}>
-        Description
-      </Text>
-      <Text fontSize={14} color={colors.textSecondary} lineHeight={24}>
-        {description}
-      </Text>
+    <YStack padding={18} borderRadius={18} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle} gap={8}>
+      <Text variant="h5">About this job</Text>
+      <Text variant="body" style={{ lineHeight: 23 }}>{description}</Text>
     </YStack>
   );
 };

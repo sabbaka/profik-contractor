@@ -1,67 +1,35 @@
-import { useThemeColors } from "@/src/theme";
+import { Text } from "@/src/components/ui/ui";
 import { formatCzk } from "@/src/utils/currency";
-import { Clock, MapPin } from "@tamagui/lucide-icons";
+import { Calendar, MapPin } from "@tamagui/lucide-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
-import { Text, XStack, YStack } from "tamagui";
+import { StyleSheet } from "react-native";
+import { XStack, YStack } from "tamagui";
 
-interface JobBasicInfoProps {
-  category?: string;
-  title: string;
-  price: number;
-  createdAt?: string;
-  city?: string;
-}
+interface JobBasicInfoProps { category?: string; title: string; price: number; createdAt?: string; city?: string }
 
-export const JobBasicInfo = ({
-  category,
-  title,
-  price,
-  createdAt,
-  city,
-}: JobBasicInfoProps) => {
-  const colors = useThemeColors();
-  const formattedPrice = useMemo(() => formatCzk(price), [price]);
-
-  const formattedDate = useMemo(() => {
+export const JobBasicInfo = ({ category, title, price, createdAt, city }: JobBasicInfoProps) => {
+  const date = useMemo(() => {
     if (!createdAt) return "";
-    try {
-      return new Intl.DateTimeFormat("en-US").format(new Date(createdAt));
-    } catch {
-      return "";
-    }
+    try { return new Date(createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }); } catch { return ""; }
   }, [createdAt]);
 
-  const cityText = city || "Remote";
-
   return (
-    <YStack paddingHorizontal="$4" paddingTop="$2" gap="$2">
-      {category && (
-        <Text fontSize={12} color={colors.textSecondary}>
-          {category}
-        </Text>
-      )}
-      <Text fontSize={28} fontWeight="800" lineHeight={34} color={colors.textPrimary}>
-        {title}
-      </Text>
-      <Text fontSize={24} fontWeight="800" color={colors.accent} letterSpacing={-0.5}>
-        {formattedPrice}
-      </Text>
-      <XStack gap="$4" marginTop="$2">
-        {formattedDate && (
-          <XStack gap="$2" alignItems="center">
-            <Clock size={18} color={colors.textMuted} />
-            <Text fontSize={14} color={colors.textSecondary}>
-              {formattedDate}
-            </Text>
-          </XStack>
-        )}
-        <XStack gap="$2" alignItems="center">
-          <MapPin size={18} color={colors.textMuted} />
-          <Text fontSize={14} color={colors.textSecondary}>
-            {cityText}
-          </Text>
-        </XStack>
+    <YStack borderRadius={24} overflow="hidden" padding={22} gap={16}>
+      <LinearGradient colors={["#FF8A2B", "#E85D00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+      <YStack position="relative" zIndex={1} gap={7}>
+        <Text style={{ color: "rgba(255,255,255,0.8)", fontFamily: "Inter_600SemiBold", fontSize: 12, textTransform: "uppercase", letterSpacing: 0.6 }}>{category || "Service request"}</Text>
+        <Text style={{ color: "#FFFFFF", fontFamily: "Geist_700Bold", fontSize: 27, lineHeight: 33 }}>{title}</Text>
+        <Text style={{ color: "#FFFFFF", fontFamily: "GeistMono_700Bold", fontSize: 25, lineHeight: 31 }}>{formatCzk(price)}</Text>
+      </YStack>
+      <XStack position="relative" zIndex={1} gap={18} flexWrap="wrap">
+        {date ? <Meta icon={<Calendar size={15} color="#FFFFFF" />} label={date} /> : null}
+        <Meta icon={<MapPin size={15} color="#FFFFFF" />} label={city || "Remote"} />
       </XStack>
     </YStack>
   );
 };
+
+function Meta({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return <XStack alignItems="center" gap={6}>{icon}<Text style={{ color: "rgba(255,255,255,0.88)", fontFamily: "Inter_500Medium", fontSize: 13 }}>{label}</Text></XStack>;
+}
