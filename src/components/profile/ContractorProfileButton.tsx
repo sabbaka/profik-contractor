@@ -1,25 +1,22 @@
-import { useThemeColors } from '@/src/theme';
-import { User } from '@tamagui/lucide-icons';
-import { Button, YStack } from 'tamagui';
+import { useMeQuery } from '@/src/api/profikApi';
+import { Text } from '@/src/components/ui/ui';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Pressable, StyleSheet } from 'react-native';
+import { YStack } from 'tamagui';
 
 interface ContractorProfileButtonProps {
   onPress: () => void;
 }
 
 export default function ContractorProfileButton({ onPress }: ContractorProfileButtonProps) {
-  const colors = useThemeColors();
+  const { data: user } = useMeQuery();
+  const initial = (user?.name?.[0] ?? 'P').toUpperCase();
   return (
-    <Button unstyled onPress={onPress} pressStyle={{ opacity: 0.5 }}>
-      <YStack
-        width="$4"
-        height="$4"
-        borderRadius="$10"
-        backgroundColor={colors.accent}
-        alignItems="center"
-        justifyContent="center"
-      >
-        <User size="$2" color={colors.textInverse} />
+    <Pressable onPress={onPress} hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
+      <YStack width={44} height={44} borderRadius={9999} overflow="hidden" alignItems="center" justifyContent="center">
+        <LinearGradient colors={['#FF8A2B', '#E85D00']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
+        <Text position="relative" zIndex={1} style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 17 }}>{initial}</Text>
       </YStack>
-    </Button>
+    </Pressable>
   );
 }

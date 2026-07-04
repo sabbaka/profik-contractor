@@ -1,7 +1,8 @@
 import { useThemeColors } from "@/src/theme";
 import { useSegments } from "expo-router";
-import { View } from "react-native";
+import { Text as UIText } from "@/src/components/ui/ui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { XStack, YStack } from "tamagui";
 import ContractorProfileHeaderButton from "../profile/ContractorProfileHeaderButton";
 
 export default function ContractorHeader() {
@@ -18,21 +19,21 @@ export default function ContractorHeader() {
   }
 
   return (
-    <View
-      style={{
-        height: "auto",
-        backgroundColor: colors.bgSecondary,
-        alignItems: "center",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingHorizontal: 16,
-        paddingBottom: 8,
-        borderBottomColor: colors.border,
-        paddingTop: insets.top,
-      }}
+    <XStack
+      backgroundColor={colors.bgSecondary}
+      alignItems="center"
+      justifyContent="space-between"
+      paddingHorizontal={20}
+      paddingTop={insets.top + 8}
+      paddingBottom={8}
     >
-      <View style={{ flex: 1 }} />
+      <YStack gap={1}>
+        <UIText style={{ fontFamily: "Geist_700Bold", fontSize: 19, lineHeight: 23, color: colors.textPrimary }}>
+          Profik <UIText style={{ color: colors.accent, fontFamily: "Geist_700Bold" }}>Pro</UIText>
+        </UIText>
+        <UIText variant="caption">Contractor workspace</UIText>
+      </YStack>
       <ContractorProfileHeaderButton />
-    </View>
+    </XStack>
   );
 }

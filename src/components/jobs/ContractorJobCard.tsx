@@ -1,8 +1,11 @@
+import type { MyOffer } from "@/src/api/types";
+import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { MapPin, Send } from "@tamagui/lucide-icons";
+import { formatCzk } from "@/src/utils/currency";
+import { BriefcaseBusiness, Calendar, ChevronRight, MapPin, Send } from "@tamagui/lucide-icons";
 import React from "react";
-import { Card, Separator, Text, XStack, YStack } from "tamagui";
-import type { MyOffer } from "../../api/types";
+import { Pressable } from "react-native";
+import { XStack, YStack } from "tamagui";
 
 interface ContractorJobCardProps {
   job: any;
@@ -10,169 +13,84 @@ interface ContractorJobCardProps {
   onPress?: () => void;
 }
 
-export function ContractorJobCard({
-  job,
-  myOffer,
-  onPress,
-}: ContractorJobCardProps) {
+function dateLabel(value?: string) {
+  if (!value) return null;
+  try {
+    return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  } catch {
+    return null;
+  }
+}
+
+function OfferPill({ status }: { status: string }) {
   const colors = useThemeColors();
-  const getStatusConfig = (status: string) => {
-    switch (status) {
-      case "open":
-        return { color: colors.statusOpenText, bg: colors.statusOpen, text: "Open" };
-      case "in_progress":
-        return { color: colors.statusOpenText, bg: colors.statusOpen, text: "In Progress" };
-      case "completed":
-        return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Completed" };
-      case "canceled":
-        return { color: colors.statusCancelledText, bg: colors.statusCancelled, text: "Canceled" };
-      default:
-        return {
-          color: colors.textSecondary,
-          bg: colors.bgCard,
-          text: status || "Open",
-        };
-    }
-  };
+  const config = status === "accepted"
+    ? { bg: colors.statusCompleted, text: colors.statusCompletedText, label: "Accepted" }
+    : status === "declined"
+      ? { bg: colors.statusCancelled, text: colors.statusCancelledText, label: "Declined" }
+      : { bg: colors.statusPending, text: colors.statusPendingText, label: "Pending" };
+  return (
+    <XStack backgroundColor={config.bg} paddingHorizontal={10} paddingVertical={5} borderRadius={9999} alignItems="center" gap={5}>
+      <YStack width={6} height={6} borderRadius={9999} backgroundColor={config.text} />
+      <Text style={{ color: config.text, fontFamily: "Inter_600SemiBold", fontSize: 11 }}>{config.label}</Text>
+    </XStack>
+  );
+}
 
-  const getOfferStatusConfig = (status: string) => {
-    switch (status) {
-      case "pending":
-        return { color: colors.statusPendingText, bg: colors.statusPending, text: "Pending" };
-      case "accepted":
-        return { color: colors.statusCompletedText, bg: colors.statusCompleted, text: "Accepted" };
-      case "declined":
-        return { color: colors.statusCancelledText, bg: colors.statusCancelled, text: "Declined" };
-      default:
-        return { color: colors.textSecondary, bg: colors.bgCard, text: status };
-    }
-  };
-
-  const statusConfig = getStatusConfig(job?.status ?? "open");
-  const offerStatusConfig = myOffer
-    ? getOfferStatusConfig(myOffer.status)
-    : null;
-
-  const locationString =
-    [job?.city, job?.country].filter(Boolean).join(", ") ||
-    "Remote / No address";
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("cs-CZ", {
-      style: "currency",
-      currency: "CZK",
-      maximumFractionDigits: 0,
-    }).format(price);
-
-  const jobPriceLabel = formatPrice(job?.price ?? 0);
-  const offerPriceLabel = myOffer ? formatPrice(myOffer.price) : null;
+export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardProps) {
+  const colors = useThemeColors();
+  const location = [job?.city, job?.country].filter(Boolean).join(", ") || "Location not provided";
+  const date = dateLabel(job?.createdAt);
 
   return (
-    <Card
-      onPress={onPress}
-      bordered
-      borderWidth={1}
-      borderColor={
-        myOffer?.status === "accepted"
-          ? colors.success
-          : myOffer?.status === "declined"
-            ? colors.error
-            : colors.border
-      }
-      backgroundColor={colors.bgCard}
-      borderRadius="$6"
-      padding="$0"
-      elevation="$0"
-      marginBottom="$4"
-      animation="bouncy"
-      pressStyle={{ scale: 0.98, borderColor: colors.accent }}
-    >
-      <YStack padding="$4" gap="$2">
-        <XStack justifyContent="space-between" alignItems="flex-start">
-          <YStack flex={1} gap="$2" marginRight="$3">
-            <Text fontSize="$3" color={colors.textSecondary} marginTop="$1">
-              {job?.category}
-            </Text>
-            <Text fontSize="$6" fontWeight="800" color={colors.textPrimary} lineHeight={24}>
-              {job?.title}
-            </Text>
+    <Pressable onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.96 : 1, transform: [{ scale: pressed ? 0.99 : 1 }] })}>
+      <YStack backgroundColor={colors.bgCard} borderRadius={20} borderWidth={1} borderColor={colors.borderSubtle} marginBottom={12} overflow="hidden">
+        <XStack padding={16} paddingBottom={14} gap={12}>
+          <YStack width={48} height={48} borderRadius={14} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
+            <BriefcaseBusiness size={22} color={colors.accent} />
           </YStack>
-
-          <YStack alignItems="flex-end" gap="$1">
-            <Text fontSize="$6" fontWeight="700" color={colors.textPrimary}>
-              {jobPriceLabel}
-            </Text>
-            {myOffer && (
-              <XStack alignItems="center" gap="$1.5">
-                <Send size={12} color={colors.accent} />
-                <Text fontSize="$3" fontWeight="600" color={colors.accent}>
-                  {offerPriceLabel}
-                </Text>
+          <YStack flex={1} gap={4}>
+            <XStack justifyContent="space-between" alignItems="center" gap={8}>
+              <Text variant="chip" numberOfLines={1} flex={1}>{job?.category || "Service"}</Text>
+              <Text variant="price">{formatCzk(job?.price ?? 0)}</Text>
+            </XStack>
+            <Text variant="cardTitle" numberOfLines={2}>{job?.title || "Untitled job"}</Text>
+            <YStack gap={5} marginTop={4}>
+              <XStack alignItems="center" gap={6}>
+                <MapPin size={14} color={colors.textMuted} />
+                <Text variant="caption" numberOfLines={1} flex={1}>{location}</Text>
               </XStack>
-            )}
+              {date ? (
+                <XStack alignItems="center" gap={6}>
+                  <Calendar size={14} color={colors.textMuted} />
+                  <Text variant="caption">Posted {date}</Text>
+                </XStack>
+              ) : null}
+            </YStack>
           </YStack>
         </XStack>
-      </YStack>
-
-      <Separator borderColor={colors.border} />
-
-      <XStack
-        padding="$3"
-        paddingHorizontal="$4"
-        justifyContent="space-between"
-        alignItems="center"
-        backgroundColor={colors.bgSecondary}
-        borderBottomLeftRadius="$6"
-        borderBottomRightRadius="$6"
-      >
-        <XStack gap="$3" alignItems="center" flex={1}>
-          <XStack gap="$1.5" alignItems="center" flex={1}>
-            <MapPin size={14} color={colors.textMuted} />
-            <Text fontSize="$3" color={colors.textSecondary} numberOfLines={1}>
-              {locationString}
-            </Text>
-          </XStack>
-        </XStack>
-
-        <XStack gap="$2" alignItems="center">
-          {offerStatusConfig && (
-            <XStack
-              backgroundColor={offerStatusConfig.bg}
-              paddingVertical={4}
-              paddingHorizontal={10}
-              borderRadius={100}
-              alignItems="center"
-              gap="$1.5"
-            >
-              <Text
-                fontSize="$2"
-                fontWeight="700"
-                color={offerStatusConfig.color}
-                textTransform="uppercase"
-              >
-                {offerStatusConfig.text}
-              </Text>
+        <YStack height={1} backgroundColor={colors.divider} />
+        <XStack paddingHorizontal={16} paddingVertical={12} alignItems="center" justifyContent="space-between">
+          {myOffer ? (
+            <XStack alignItems="center" gap={8}>
+              <OfferPill status={myOffer.status} />
+              <XStack alignItems="center" gap={4}>
+                <Send size={13} color={colors.accent} />
+                <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 13 }}>{formatCzk(myOffer.price)}</Text>
+              </XStack>
+            </XStack>
+          ) : (
+            <XStack alignItems="center" gap={6}>
+              <YStack width={7} height={7} borderRadius={9999} backgroundColor={colors.statusOpenText} />
+              <Text variant="caption" style={{ color: colors.statusOpenText, fontFamily: "Inter_600SemiBold" }}>Open for offers</Text>
             </XStack>
           )}
-          <XStack
-            backgroundColor={statusConfig.bg}
-            paddingVertical={4}
-            paddingHorizontal={10}
-            borderRadius={100}
-            alignItems="center"
-            gap="$1.5"
-          >
-            <Text
-              fontSize="$2"
-              fontWeight="700"
-              color={statusConfig.color}
-              textTransform="uppercase"
-            >
-              {statusConfig.text}
-            </Text>
+          <XStack alignItems="center" gap={3}>
+            <Text style={{ color: colors.accent, fontFamily: "Inter_500Medium", fontSize: 13 }}>Details</Text>
+            <ChevronRight size={16} color={colors.accent} />
           </XStack>
         </XStack>
-      </XStack>
-    </Card>
+      </YStack>
+    </Pressable>
   );
 }
