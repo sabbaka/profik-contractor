@@ -1,9 +1,10 @@
 import { useRegisterPushTokenMutation } from '@/src/api/profikApi';
-import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
+
+const PROJECT_ID = '40e934e5-f375-4c9d-a65d-de5f48d4ae49';
 
 // Show notifications in foreground
 Notifications.setNotificationHandler({
@@ -26,9 +27,6 @@ export function usePushNotifications(enabled: boolean) {
     async function register() {
       if (!Device.isDevice) return;
 
-      const projectId = Constants.expoConfig?.extra?.eas?.projectId;
-      if (!projectId) return;
-
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
 
@@ -47,7 +45,9 @@ export function usePushNotifications(enabled: boolean) {
         });
       }
 
-      const token = await Notifications.getExpoPushTokenAsync({ projectId });
+      const token = await Notifications.getExpoPushTokenAsync({
+        projectId: PROJECT_ID,
+      });
 
       await registerPushToken(token.data);
       registered.current = true;

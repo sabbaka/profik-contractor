@@ -3,8 +3,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { logout } from '../store/authSlice';
 import type { GetOfferedJobsParams, OfferedJobItem } from './types';
 
+// Base query with auth header
+const API_URL = process.env.EXPO_PUBLIC_API_URL as string;
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000',
+  baseUrl: API_URL,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as any).auth.token;
     if (token) {
