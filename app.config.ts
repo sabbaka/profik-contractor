@@ -22,7 +22,7 @@ const config = {
   android: {
     package: 'com.profik.contractor',
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
+      backgroundColor: '#E85D00',
       foregroundImage: './assets/images/android-icon-foreground.png',
       backgroundImage: './assets/images/android-icon-background.png',
       monochromeImage: './assets/images/android-icon-monochrome.png',
@@ -47,8 +47,8 @@ const config = {
         image: './assets/images/splash-icon.png',
         imageWidth: 200,
         resizeMode: 'contain',
-        backgroundColor: '#ffffff',
-        dark: { backgroundColor: '#000000' },
+        backgroundColor: '#EE6C00',
+        dark: { backgroundColor: '#EE6C00' },
       },
     ],
     'expo-font',
