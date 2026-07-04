@@ -1,0 +1,24 @@
+app_identifier "com.profik.contractor"
+
+# Authentication is handled in the Fastfile via the App Store Connect API key
+# (env vars ASC_KEY_ID / ASC_ISSUER_ID / ASC_KEY_FILEPATH). No username here.
+
+# The current marketing version we are filling metadata for.
+# Bump this when you submit a new version.
+app_version "1.0.3"
+
+# Path to the metadata folder
+metadata_path "./fastlane/metadata"
+
+# Path to the screenshots folder (will be ignored unless you populate it)
+screenshots_path "./fastlane/screenshots"
+
+# Don't open the HTML preview during upload
+force true
+
+# Don't auto-submit; we want to review the listing in ASC first
+submit_for_review false
+automatic_release false
+
+# Don't try to read in-app purchase metadata
+precheck_include_in_app_purchases false

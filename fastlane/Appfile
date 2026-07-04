@@ -1,0 +1,8 @@
+app_identifier("com.profik.contractor")
+
+# `apple_id` is not needed when authenticating with an App Store Connect API
+# key (see the Fastfile). It's kept here for reference only.
+apple_id("sabbakaz@gmail.com")
+
+# Team IDs are also not needed for API-key auth; left blank intentionally.
+# Fastlane will infer the team from the API key's permissions.

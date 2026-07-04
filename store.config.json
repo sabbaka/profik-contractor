@@ -1,0 +1,89 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "copyright": "© 2026 TODO_LEGAL_ENTITY",
+    "categories": ["BUSINESS", "LIFESTYLE"],
+    "release": {
+      "automaticRelease": false,
+      "phasedRelease": false
+    },
+    "review": {
+      "firstName": "TODO_REVIEWER_FIRST_NAME",
+      "lastName": "TODO_REVIEWER_LAST_NAME",
+      "email": "sabbakaz@gmail.com",
+      "phone": "+420 TODO_PHONE_NUMBER",
+      "demoUsername": "TODO_DEMO_CONTRACTOR_PHONE_NUMBER",
+      "demoPassword": "TODO_DEMO_PASSWORD",
+      "notes": "Profik Pro is the contractor-side app of the Profik marketplace, which connects customers with vetted professionals for home cleaning services in the Czech Republic. The customer-side app ('Profik') is a separate app.\n\nThe provided demo account is a contractor account. Sign-in flow:\n\n1. On the welcome screen, tap 'Log in'.\n2. Enter the demo phone number listed in Sign-In Information above, with the country code '+420' pre-selected.\n3. Enter the password listed above.\n4. You will land on the Open Jobs tab.\n\nPrimary user flow to evaluate:\n\n1. Open Jobs tab → browse open cleaning jobs on the list and map (location permission will be requested — Allow, it is used to show jobs near you and their distance).\n2. Tap a job to open the job detail: service type, property details, location, and the client's budget.\n3. Tap 'Send offer', set your price and an optional message, and submit.\n4. The offer appears in the My Jobs tab (Pending / Accepted / Declined filters).\n5. Open an offer to chat with the client in the built-in Offer chat.\n6. The demo account has at least one open job visible and one active offer chat prepared for review.\n\nPermissions used:\n- Location (while using the app): to show open jobs near the contractor on the map and the distance to each job.\n- Notifications: to alert the contractor about new client messages and offer updates.\n\nBalance top-up: contractors can add funds to their platform balance, which is used to pay platform fees. The top-up is completed in an external Stripe web checkout page opened in the browser — not via In-App Purchase. This is compliant because the balance is used for real-world physical services (home cleaning) delivered outside the app, per App Store Review Guideline 3.1.5(a). The app sells no digital content or features.\n\nPlease contact the email above if any clarification is needed.",
+      "demoRequired": true
+    },
+    "info": {
+      "en-US": {
+        "title": "Profik Pro",
+        "subtitle": "Find cleaning jobs near you",
+        "description": "Profik Pro is the app for cleaning professionals who want a steady stream of local jobs — without cold calls, ads, or chasing leads.\n\nBrowse open jobs near you, send your price, and win work directly from customers.\n\n— HOW IT WORKS —\n\n1. Browse open jobs\nSee new cleaning jobs on a map and in a list — service type, property details, location, and the client's budget up front.\n\n2. Send your offer\nSet your price and add a short intro so the client knows why you're the right pick.\n\n3. Chat with clients\nAgree on details in the built-in chat — no need to share your phone number.\n\n4. Get the job done\nTrack your jobs from accepted to completed and collect real reviews that win you more work.\n\n— WHY PROFIK PRO —\n\n• New local jobs with full details and budgets shown up front\n• You set your own price on every offer\n• Built-in chat with clients\n• Push notifications for new messages and offer updates\n• Ratings and reviews that build your reputation\n• Simple in-app balance for platform fees\n\n— WHO IT'S FOR —\n\nIndependent cleaners, cleaning teams, and small cleaning businesses looking for standard, deep, and post-renovation cleaning jobs in their area.\n\nDownload Profik Pro and send your first offer today.",
+        "keywords": [
+          "cleaning jobs",
+          "cleaner",
+          "work",
+          "gigs",
+          "contractor",
+          "leads",
+          "offers",
+          "clients",
+          "earn",
+          "marketplace"
+        ],
+        "releaseNotes": "Welcome to Profik Pro! Browse open cleaning jobs near you, send offers, chat with clients, and grow your business.",
+        "marketingUrl": "https://TODO-set-marketing-url.example.com",
+        "privacyPolicyUrl": "https://TODO-set-privacy-policy-url.example.com",
+        "supportUrl": "https://TODO-set-support-url.example.com",
+        "promoText": "New cleaning jobs near you, every day. Send your price, chat with the client, win the job, and build your reputation — all in one app."
+      },
+      "cs": {
+        "title": "Profik Pro",
+        "subtitle": "Úklidové zakázky kolem vás",
+        "description": "Profik Pro je aplikace pro úklidové profesionály, kteří chtějí stálý přísun zakázek ve svém okolí — bez obvolávání, inzerce a shánění poptávek.\n\nProhlížejte otevřené zakázky ve vašem okolí, pošlete svou cenu a získávejte práci přímo od zákazníků.\n\n— JAK TO FUNGUJE —\n\n1. Prohlížejte otevřené zakázky\nNové úklidové zakázky uvidíte na mapě i v seznamu — typ služby, detaily nemovitosti, lokalitu i rozpočet klienta hned na první pohled.\n\n2. Pošlete nabídku\nNastavte si vlastní cenu a přidejte krátké představení, aby klient věděl, proč jste ta správná volba.\n\n3. Chatujte s klienty\nDetaily si domluvíte ve vestavěném chatu — telefonní číslo sdílet nemusíte.\n\n4. Odveďte práci\nSledujte zakázky od přijetí po dokončení a sbírejte skutečné recenze, které vám přinesou další práci.\n\n— PROČ PROFIK PRO —\n\n• Nové zakázky ve vašem okolí s detaily a rozpočtem předem\n• Cenu si u každé nabídky určujete sami\n• Vestavěný chat s klienty\n• Push oznámení o nových zprávách a změnách nabídek\n• Hodnocení a recenze, které budují vaši reputaci\n• Jednoduchý kredit v aplikaci na platformní poplatky\n\n— PRO KOHO JE APLIKACE —\n\nPro samostatné uklízečky a uklízeče, úklidové týmy i malé úklidové firmy, které hledají standardní, generální i porekonstrukční úklidy ve svém okolí.\n\nStáhněte si Profik Pro a pošlete svou první nabídku ještě dnes.",
+        "keywords": [
+          "úklidové zakázky",
+          "úklid",
+          "práce",
+          "uklízečka",
+          "nabídky",
+          "klienti",
+          "výdělek",
+          "zakázky",
+          "profík",
+          "brigáda"
+        ],
+        "releaseNotes": "Vítejte v Profik Pro! Prohlížejte otevřené úklidové zakázky ve vašem okolí, posílejte nabídky, chatujte s klienty a rozvíjejte své podnikání.",
+        "marketingUrl": "https://TODO-set-marketing-url.example.com",
+        "privacyPolicyUrl": "https://TODO-set-privacy-policy-url.example.com",
+        "supportUrl": "https://TODO-set-support-url.example.com",
+        "promoText": "Nové úklidové zakázky ve vašem okolí každý den. Pošlete svou cenu, domluvte se v chatu, získejte zakázku a budujte si reputaci — vše v jedné aplikaci."
+      },
+      "sk": {
+        "title": "Profik Pro",
+        "subtitle": "Upratovacie zákazky blízko vás",
+        "description": "Profik Pro je aplikácia pre upratovacích profesionálov, ktorí chcú stály prísun zákaziek vo svojom okolí — bez obvolávania, inzercie a naháňania dopytov.\n\nPrezerajte si otvorené zákazky vo vašom okolí, pošlite svoju cenu a získavajte prácu priamo od zákazníkov.\n\n— AKO TO FUNGUJE —\n\n1. Prezerajte si otvorené zákazky\nNové upratovacie zákazky uvidíte na mape aj v zozname — typ služby, detaily nehnuteľnosti, lokalitu aj rozpočet klienta hneď na prvý pohľad.\n\n2. Pošlite ponuku\nNastavte si vlastnú cenu a pridajte krátke predstavenie, aby klient vedel, prečo ste tá správna voľba.\n\n3. Chatujte s klientmi\nDetaily si dohodnete vo vstavanom chate — telefónne číslo zdieľať nemusíte.\n\n4. Odveďte prácu\nSledujte zákazky od prijatia po dokončenie a zbierajte skutočné recenzie, ktoré vám prinesú ďalšiu prácu.\n\n— PREČO PROFIK PRO —\n\n• Nové zákazky vo vašom okolí s detailmi a rozpočtom vopred\n• Cenu si pri každej ponuke určujete sami\n• Vstavaný chat s klientmi\n• Push oznámenia o nových správach a zmenách ponúk\n• Hodnotenia a recenzie, ktoré budujú vašu reputáciu\n• Jednoduchý kredit v aplikácii na platformové poplatky\n\n— PRE KOHO JE APLIKÁCIA —\n\nPre samostatné upratovačky a upratovačov, upratovacie tímy aj malé upratovacie firmy, ktoré hľadajú štandardné, generálne aj porekonštrukčné upratovanie vo svojom okolí.\n\nStiahnite si Profik Pro a pošlite svoju prvú ponuku ešte dnes.",
+        "keywords": [
+          "upratovacie zákazky",
+          "upratovanie",
+          "práca",
+          "upratovačka",
+          "ponuky",
+          "klienti",
+          "zárobok",
+          "zákazky",
+          "profík",
+          "brigáda"
+        ],
+        "releaseNotes": "Vitajte v Profik Pro! Prezerajte si otvorené upratovacie zákazky vo vašom okolí, posielajte ponuky, chatujte s klientmi a rozvíjajte svoje podnikanie.",
+        "marketingUrl": "https://TODO-set-marketing-url.example.com",
+        "privacyPolicyUrl": "https://TODO-set-privacy-policy-url.example.com",
+        "supportUrl": "https://TODO-set-support-url.example.com",
+        "promoText": "Nové upratovacie zákazky vo vašom okolí každý deň. Pošlite svoju cenu, dohodnite sa v chate, získajte zákazku a budujte si reputáciu — všetko v jednej aplikácii."
+      }
+    }
+  }
+}
