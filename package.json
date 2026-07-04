@@ -8,9 +8,12 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "eslint app src --no-warn-ignored"
   },
   "dependencies": {
+    "@expo-google-fonts/geist": "^0.4.2",
+    "@expo-google-fonts/geist-mono": "^0.4.2",
+    "@expo-google-fonts/inter": "^0.4.2",
     "@expo/vector-icons": "^15.0.3",
     "@hookform/resolvers": "^5.2.2",
     "@react-navigation/bottom-tabs": "^7.4.0",
@@ -27,6 +30,7 @@
     "expo-font": "~14.0.9",
     "expo-haptics": "~15.0.7",
     "expo-image": "~3.0.10",
+    "expo-linear-gradient": "~15.0.8",
     "expo-linking": "~8.0.8",
     "expo-location": "~19.0.7",
     "expo-router": "~6.0.13",
