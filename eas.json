@@ -16,6 +16,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "sabbakaz@gmail.com"
+      }
+    }
   }
 }
