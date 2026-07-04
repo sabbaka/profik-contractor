@@ -58,9 +58,10 @@ export const PhoneInput = ({
             style={{
               backgroundColor: colors.surfaceInput,
               borderRadius: 12,
+              height: 52,
               paddingHorizontal: 16,
-              paddingVertical: 16,
-              fontSize: 16,
+              fontSize: 15,
+              fontFamily: "Inter_400Regular",
               color: colors.textPrimary,
               borderWidth: displayError ? 1 : 0,
               borderColor: displayError ? colors.error : "transparent",
@@ -68,7 +69,7 @@ export const PhoneInput = ({
             placeholderTextColor={colors.textMuted}
           />
           {displayError ? (
-            <Text color={colors.error} fontSize="$2" marginLeft="$1">
+            <Text color={colors.error} fontSize={12} fontFamily="Inter_500Medium" marginLeft="$1">
               {displayError}
             </Text>
           ) : null}

@@ -46,12 +46,14 @@ export const FormInput = ({
             color={colors.textPrimary}
             placeholderTextColor={colors.textMuted}
             focusStyle={{ borderColor: displayError ? colors.error : colors.border, borderWidth: 1 }}
-            paddingVertical={"$4"}
-            height={"auto"}
+            paddingHorizontal={16}
+            height={52}
             borderRadius={12}
+            fontSize={15}
+            fontFamily="Inter_400Regular"
           />
           {displayError ? (
-            <Text color={colors.error} fontSize="$2" marginLeft="$1">
+            <Text color={colors.error} fontSize={12} fontFamily="Inter_500Medium" marginLeft="$1">
               {displayError}
             </Text>
           ) : null}
