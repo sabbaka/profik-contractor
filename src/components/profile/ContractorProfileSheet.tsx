@@ -28,6 +28,11 @@ export default function ContractorProfileSheet({ open, onOpenChange }: Contracto
     router.push("/(contractor)/balance" as any);
   };
 
+  const goToAccountSettings = () => {
+    onOpenChange(false);
+    router.push("/(contractor)/profile/account-settings" as any);
+  };
+
   const handleDeleteConfirmed = async () => {
     try {
       await deleteAccount().unwrap();
@@ -91,7 +96,7 @@ export default function ContractorProfileSheet({ open, onOpenChange }: Contracto
           </Pressable>
 
           <YStack borderRadius={16} borderWidth={1} borderColor={colors.borderSubtle} overflow="hidden">
-            <ProfileRow icon={<Settings size={18} color={colors.textSecondary} />} label="Account settings" colors={colors} />
+            <ProfileRow icon={<Settings size={18} color={colors.textSecondary} />} label="Account settings" colors={colors} onPress={goToAccountSettings} />
             <YStack height={1} backgroundColor={colors.divider} marginHorizontal={16} />
             <ProfileRow icon={<LogOut size={18} color={colors.error} />} label="Log out" destructive colors={colors} onPress={() => { onOpenChange(false); logout(); }} />
             <YStack height={1} backgroundColor={colors.divider} marginHorizontal={16} />
