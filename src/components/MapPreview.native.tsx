@@ -8,39 +8,44 @@ type Props =
   | { lat: number; lng: number; height?: number }
   | { address: string; height?: number };
 
+const hasCoords = (
+  props: Props,
+): props is { lat: number; lng: number; height?: number } =>
+  'lat' in props && 'lng' in props;
+
 export default function MapPreview(props: Props) {
-  const height = (props as any).height ?? 180;
+  const height = props.height ?? 180;
   const colors = useThemeColors();
 
-  const hasCoords = (p: Props): p is { lat: number; lng: number; height?: number } =>
-    (p as any).lat != null && (p as any).lng != null;
+  const lat = hasCoords(props) ? props.lat : undefined;
+  const lng = hasCoords(props) ? props.lng : undefined;
+  const address = hasCoords(props) ? undefined : props.address;
 
   const [geo, setGeo] = useState<{ lat: number; lng: number } | null>(
-    hasCoords(props) ? { lat: props.lat, lng: props.lng } : null,
+    lat != null && lng != null ? { lat, lng } : null,
   );
-  const address = !hasCoords(props) ? (props as any).address : undefined;
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      if (!hasCoords(props) && address) {
+      if (address) {
         try {
           const results = await Location.geocodeAsync(address);
           const first = results?.[0];
           if (!cancelled && first && typeof first.latitude === 'number' && typeof first.longitude === 'number') {
             setGeo({ lat: first.latitude, lng: first.longitude });
           }
-        } catch (e) {
+        } catch {
           // silent: keep placeholder
         }
-      } else if (hasCoords(props)) {
-        setGeo({ lat: props.lat, lng: props.lng });
+      } else if (lat != null && lng != null) {
+        setGeo({ lat, lng });
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [address, (props as any).lat, (props as any).lng]);
+  }, [address, lat, lng]);
 
   const region = useMemo(() =>
     geo
