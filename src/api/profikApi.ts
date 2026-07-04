@@ -90,6 +90,13 @@ export const profikApi = createApi({
     topupBalance: builder.mutation<{ url: string }, { amount: number; returnUrl?: string }>({
       query: ({ amount, returnUrl }) => ({ url: '/payments/topup', method: 'POST', body: { amount, returnUrl } }),
     }),
+    registerPushToken: builder.mutation<void, string>({
+      query: (pushToken) => ({
+        url: '/users/me/push-token',
+        method: 'PATCH',
+        body: { pushToken },
+      }),
+    }),
   }),
 });
 
@@ -108,4 +115,5 @@ export const {
   useGetOfferMessagesQuery,
   useSendOfferMessageMutation,
   useTopupBalanceMutation,
+  useRegisterPushTokenMutation,
 } = profikApi;

@@ -16,6 +16,7 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import { usePushNotifications } from '@/src/hooks/usePushNotifications';
 import { ThemeProvider, useThemeColors, useThemeMode } from '@/src/theme';
 import { PortalProvider } from '@tamagui/portal';
 import React, { useEffect } from 'react';
@@ -55,6 +56,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const { token, loading } = useAppSelector((s) => s.auth);
   const segments = useSegments() as unknown as string[];
   const colors = useThemeColors();
+
+  usePushNotifications(!!token);
 
   useEffect(() => {
     // @ts-ignore hydrate token on app start
