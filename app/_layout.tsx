@@ -16,8 +16,10 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import { ErrorBoundary } from '@/src/components/ui/ErrorBoundary';
 import { usePushNotifications } from '@/src/hooks/usePushNotifications';
 import { ThemeProvider, useThemeColors, useThemeMode } from '@/src/theme';
+import { setupGlobalErrorHandlers } from '@/src/utils/setupGlobalErrorHandlers';
 import { PortalProvider } from '@tamagui/portal';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
@@ -30,6 +32,10 @@ import { store } from '../src/store';
 import { loadTokenFromStorage } from '../src/store/authSlice';
 import { useAppSelector } from '../src/store/hooks';
 import tamaguiConfig from '../tamagui.config';
+
+// Wire up global JS error / unhandled-rejection handlers as early as possible,
+// before any feature code runs.
+setupGlobalErrorHandlers();
 
 function PaperThemeProvider({ children }: { children: React.ReactNode }) {
   const colors = useThemeColors();
@@ -94,9 +100,11 @@ function ThemedApp() {
     <TamaguiProvider config={tamaguiConfig} defaultTheme={mode}>
       <PaperThemeProvider>
         <PortalProvider>
-          <AuthGate>
-            <Slot />
-          </AuthGate>
+          <ErrorBoundary context="root">
+            <AuthGate>
+              <Slot />
+            </AuthGate>
+          </ErrorBoundary>
           <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
         </PortalProvider>
       </PaperThemeProvider>
