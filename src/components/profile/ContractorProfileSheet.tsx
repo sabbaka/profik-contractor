@@ -1,14 +1,14 @@
-import { useMeQuery } from "@/src/api/profikApi";
+import { useDeleteAccountMutation, useMeQuery } from "@/src/api/profikApi";
 import { Text } from "@/src/components/ui/ui";
+import { useAuth } from "@/src/features/auth/hooks/useAuth";
+import { extractErrorMessage } from "@/src/features/auth/types";
 import { useThemeColors } from "@/src/theme";
-import { logout } from "@/src/store/authSlice";
 import { formatCzk } from "@/src/utils/currency";
-import { ChevronRight, LogOut, Settings, WalletCards } from "@tamagui/lucide-icons";
+import { ChevronRight, LogOut, Settings, Trash2, WalletCards } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { useDispatch } from "react-redux";
+import { Alert, Pressable, StyleSheet } from "react-native";
 import { Sheet, XStack, YStack } from "tamagui";
 
 interface ContractorProfileSheetProps {
@@ -19,7 +19,8 @@ interface ContractorProfileSheetProps {
 export default function ContractorProfileSheet({ open, onOpenChange }: ContractorProfileSheetProps) {
   const colors = useThemeColors();
   const { data: user, isLoading } = useMeQuery();
-  const dispatch = useDispatch();
+  const { logout } = useAuth();
+  const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccountMutation();
   const initial = (user?.name?.[0] ?? "P").toUpperCase();
 
   const goToBalance = () => {
@@ -27,8 +28,39 @@ export default function ContractorProfileSheet({ open, onOpenChange }: Contracto
     router.push("/(contractor)/balance" as any);
   };
 
+  const handleDeleteConfirmed = async () => {
+    try {
+      await deleteAccount().unwrap();
+      Alert.alert(
+        "Account deleted",
+        "Your account and personal data have been deleted.",
+        [{ text: "OK", onPress: logout }]
+      );
+    } catch (error) {
+      Alert.alert("Error", extractErrorMessage(error) || "Could not delete your account. Please try again.");
+    }
+  };
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Delete account?",
+      "This permanently deletes your account and personal data. Your sent offers and messages will be anonymized. This cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            onOpenChange(false);
+            void handleDeleteConfirmed();
+          },
+        },
+      ]
+    );
+  };
+
   return (
-    <Sheet modal open={open} onOpenChange={onOpenChange} snapPoints={[54]} dismissOnSnapToBottom zIndex={100_000} animation="medium">
+    <Sheet modal open={open} onOpenChange={onOpenChange} snapPoints={[60]} dismissOnSnapToBottom zIndex={100_000} animation="medium">
       <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} backgroundColor="rgba(17,24,39,0.28)" />
       <Sheet.Frame backgroundColor={colors.bgCard} borderTopLeftRadius={28} borderTopRightRadius={28}>
         <YStack alignItems="center" paddingTop={10} paddingBottom={18}>
@@ -61,7 +93,9 @@ export default function ContractorProfileSheet({ open, onOpenChange }: Contracto
           <YStack borderRadius={16} borderWidth={1} borderColor={colors.borderSubtle} overflow="hidden">
             <ProfileRow icon={<Settings size={18} color={colors.textSecondary} />} label="Account settings" colors={colors} />
             <YStack height={1} backgroundColor={colors.divider} marginHorizontal={16} />
-            <ProfileRow icon={<LogOut size={18} color={colors.error} />} label="Log out" destructive colors={colors} onPress={() => { onOpenChange(false); dispatch(logout()); }} />
+            <ProfileRow icon={<LogOut size={18} color={colors.error} />} label="Log out" destructive colors={colors} onPress={() => { onOpenChange(false); logout(); }} />
+            <YStack height={1} backgroundColor={colors.divider} marginHorizontal={16} />
+            <ProfileRow icon={<Trash2 size={18} color={colors.error} />} label={isDeleting ? "Deleting…" : "Delete account"} destructive colors={colors} onPress={isDeleting ? undefined : confirmDelete} />
           </YStack>
         </YStack>
       </Sheet.Frame>

@@ -97,6 +97,9 @@ export const profikApi = createApi({
         body: { pushToken },
       }),
     }),
+    deleteAccount: builder.mutation<void, void>({
+      query: () => ({ url: '/users/me', method: 'DELETE' }),
+    }),
   }),
 });
 
@@ -116,4 +119,5 @@ export const {
   useSendOfferMessageMutation,
   useTopupBalanceMutation,
   useRegisterPushTokenMutation,
+  useDeleteAccountMutation,
 } = profikApi;
