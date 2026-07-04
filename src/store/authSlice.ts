@@ -13,7 +13,6 @@ const initialState: AuthState = {
 
 export const loadTokenFromStorage = createAsyncThunk('auth/loadToken', async () => {
   const token = await getToken();
-  console.log('🔑 Loaded token from SecureStore:', token);
   return token;
 });
 
