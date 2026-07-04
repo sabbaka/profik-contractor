@@ -3,6 +3,7 @@ import { Button, Text } from "@/src/components/ui/ui";
 import { useLoginForm } from "@/src/features/auth/forms";
 import { useThemeColors } from "@/src/theme";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import React from "react";
 import { Keyboard, Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -35,6 +36,15 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
             <YStack backgroundColor={colors.bgCard} borderRadius={24} borderWidth={1} borderColor={colors.borderSubtle} padding={20} gap={16}>
               <PhoneInput name="phone" control={control} placeholder="+420 XXX XXX XXX" error={errors.phone?.message} defaultCountryCode="CZ" flex={0} />
               <FormInput name="password" control={control} placeholder="Password" secureTextEntry error={errors.password?.message} flex={0} />
+              <XStack justifyContent="flex-end" marginTop={-4}>
+                <Pressable
+                  onPress={() => router.push("/auth/forgot-password" as any)}
+                  hitSlop={8}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                >
+                  <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 13 }}>Forgot password?</Text>
+                </Pressable>
+              </XStack>
               <Button loading={isLoading} onPress={() => { Keyboard.dismiss(); submit(); }}>Sign in</Button>
             </YStack>
 

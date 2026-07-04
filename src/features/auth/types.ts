@@ -28,6 +28,16 @@ export interface SignupParams {
   role: string;
 }
 
+export interface ForgotPasswordRequestParams {
+  phone: string;
+}
+
+export interface ForgotPasswordVerifyParams {
+  phone: string;
+  code: string;
+  newPassword: string;
+}
+
 export type SmsPurpose = "register";
 
 export interface RequestSmsCodeParams {

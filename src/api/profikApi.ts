@@ -1,5 +1,11 @@
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type {
+  AuthResponse,
+  ForgotPasswordRequestParams,
+  ForgotPasswordVerifyParams,
+  SmsRequestResponse,
+} from '../features/auth/types';
 import { logout } from '../store/authSlice';
 import type { GetOfferedJobsParams, OfferedJobItem } from './types';
 
@@ -47,6 +53,12 @@ export const profikApi = createApi({
       { phone: string; code: string; email?: string; password: string; name: string; role: 'client' | 'contractor' }
     >({
       query: (body) => ({ url: '/auth/sms/verify', method: 'POST', body }),
+    }),
+    forgotPasswordRequestCode: builder.mutation<SmsRequestResponse, ForgotPasswordRequestParams>({
+      query: (body) => ({ url: '/auth/forgot-password/request-code', method: 'POST', body }),
+    }),
+    forgotPasswordVerify: builder.mutation<AuthResponse, ForgotPasswordVerifyParams>({
+      query: (body) => ({ url: '/auth/forgot-password/verify', method: 'POST', body }),
     }),
     me: builder.query<{ id: string; email: string; role: string; name: string; balance: number }, void>({
       query: () => ({ url: '/auth/me', method: 'GET' }),
@@ -110,6 +122,8 @@ export const {
   useLoginMutation,
   useRequestSmsCodeMutation,
   useVerifySmsCodeMutation,
+  useForgotPasswordRequestCodeMutation,
+  useForgotPasswordVerifyMutation,
   useMeQuery,
   useGetOpenJobsQuery,
   useGetOfferedJobsQuery,
