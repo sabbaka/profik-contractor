@@ -1,20 +1,22 @@
 import { Text } from "@/src/components/ui/ui";
 import { useMeQuery } from "@/src/api/profikApi";
-import { useThemeColors } from "@/src/theme";
-import { Bell, ChevronLeft, ChevronRight, HelpCircle, Info, Shield } from "@tamagui/lucide-icons";
+import { useThemeColors, useThemeMode } from "@/src/theme";
+import { Bell, ChevronLeft, ChevronRight, HelpCircle, Info, Moon, Shield } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
-import { Linking, Pressable, ScrollView } from "react-native";
+import { Alert, Linking, Pressable, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
 function SettingsRow({
   icon,
   label,
+  value,
   onPress,
 }: {
   icon: React.ReactNode;
   label: string;
+  value?: string;
   onPress?: () => void;
 }) {
   const colors = useThemeColors();
@@ -25,7 +27,10 @@ function SettingsRow({
           {icon}
           <Text style={{ color: colors.textPrimary, fontFamily: "Inter_500Medium", fontSize: 15 }}>{label}</Text>
         </XStack>
-        <ChevronRight size={18} color={colors.textMuted} />
+        <XStack alignItems="center" gap={6}>
+          {value ? <Text variant="bodySm">{value}</Text> : null}
+          <ChevronRight size={18} color={colors.textMuted} />
+        </XStack>
       </XStack>
     </Pressable>
   );
@@ -45,6 +50,19 @@ export default function AccountSettingsScreen() {
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const { data: user } = useMeQuery();
+  const { preference, setPreference } = useThemeMode();
+
+  const appearanceLabel =
+    preference === "system" ? "System" : preference === "dark" ? "Dark" : "Light";
+
+  const handleAppearancePress = () => {
+    Alert.alert("Appearance", undefined, [
+      { text: "System", onPress: () => setPreference("system") },
+      { text: "Light", onPress: () => setPreference("light") },
+      { text: "Dark", onPress: () => setPreference("dark") },
+      { text: "Cancel", style: "cancel" },
+    ]);
+  };
 
   return (
     <YStack flex={1} backgroundColor={colors.bgSecondary} paddingTop={insets.top}>
@@ -68,13 +86,20 @@ export default function AccountSettingsScreen() {
 
         <YStack borderRadius={16} borderWidth={1} borderColor={colors.borderSubtle} backgroundColor={colors.bgCard} overflow="hidden">
           <SettingsRow
-            icon={<Bell size={18} color="#D97706" />}
+            icon={<Bell size={18} color={colors.warningText} />}
             label="Notifications"
             onPress={() => Linking.openSettings()}
           />
           <YStack height={1} backgroundColor={colors.divider} marginHorizontal={16} />
           <SettingsRow
-            icon={<Shield size={18} color="#16A34A" />}
+            icon={<Moon size={18} color={colors.purple} />}
+            label="Appearance"
+            value={appearanceLabel}
+            onPress={handleAppearancePress}
+          />
+          <YStack height={1} backgroundColor={colors.divider} marginHorizontal={16} />
+          <SettingsRow
+            icon={<Shield size={18} color={colors.greenStrong} />}
             label="Privacy Policy"
             onPress={() => router.push("/(contractor)/profile/privacy-policy" as any)}
           />

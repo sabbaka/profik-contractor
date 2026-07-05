@@ -70,6 +70,7 @@ export const Button = forwardRef<any, ButtonProps>(function Button(
   { variant = "primary", loading, disabled, size = "lg", fullWidth = true, children, iconLeft, iconRight, ...props },
   ref,
 ) {
+  const colors = useThemeColors();
   const dims = buttonSizes[size];
   const isPrimary = variant === "primary" || variant === "contained";
   const isDisabled = disabled || loading || variant === "primaryDisabled";
@@ -86,12 +87,12 @@ export const Button = forwardRef<any, ButtonProps>(function Button(
 
   const content = (
     <XStack alignItems="center" justifyContent="center" gap={8}>
-      {loading ? <RNActivityIndicator color={isPrimary ? "#FFFFFF" : "#FF6C00"} /> : (
+      {loading ? <RNActivityIndicator color={isPrimary ? "#FFFFFF" : colors.accent} /> : (
         <>
           {iconLeft}
           {typeof children === "string" ? (
             <Text style={{
-              color: isPrimary && !isDisabled ? "#FFFFFF" : variant === "white" || variant === "soft" || variant === "ghost" ? "#FF6C00" : "#6B7280",
+              color: isPrimary && !isDisabled ? "#FFFFFF" : variant === "white" || variant === "soft" || variant === "ghost" ? colors.accent : colors.textSecondary,
               fontSize: dims.font,
               lineHeight: dims.font + 4,
               fontFamily: "Inter_600SemiBold",
@@ -111,11 +112,11 @@ export const Button = forwardRef<any, ButtonProps>(function Button(
       style={({ pressed }) => [
         base,
         !isPrimary && {
-          backgroundColor: variant === "soft" ? "#FFF4EB" : variant === "white" ? "#FFFFFF" : "transparent",
+          backgroundColor: variant === "soft" ? colors.accentLight : variant === "white" ? "#FFFFFF" : "transparent",
           borderWidth: variant === "secondary" || variant === "bordered" || variant === "outlined" ? 1.5 : 0,
-          borderColor: "#E5E7EB",
+          borderColor: colors.border,
         },
-        isDisabled && { opacity: 0.55, backgroundColor: isPrimary ? "#E5E7EB" : undefined },
+        isDisabled && { opacity: 0.55, backgroundColor: isPrimary ? colors.border : undefined },
         pressed && { opacity: 0.85, transform: [{ scale: 0.98 }] },
       ]}
     >

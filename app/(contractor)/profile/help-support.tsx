@@ -80,7 +80,7 @@ export default function HelpSupportScreen() {
 
         <YStack gap={10}>
           <Text variant="sectionLabel">Still need help?</Text>
-          <Button variant="secondary" iconLeft={<Mail size={16} color="#6B7280" />} onPress={handleContactSupport}>
+          <Button variant="secondary" iconLeft={<Mail size={16} color={colors.textSecondary} />} onPress={handleContactSupport}>
             Email Support
           </Button>
         </YStack>

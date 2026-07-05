@@ -3,7 +3,7 @@ import { AlertTriangle } from "@tamagui/lucide-icons";
 import React from "react";
 import { ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { YStack } from "tamagui";
+import { useTheme, YStack } from "tamagui";
 import { Button, Text } from "./ui";
 
 interface ErrorBoundaryProps {
@@ -66,6 +66,7 @@ function DefaultFallback({
   onReset: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
   return (
     <YStack flex={1} backgroundColor="$bgPrimary">
       <ScrollView
@@ -84,9 +85,9 @@ function DefaultFallback({
             borderRadius={20}
             ai="center"
             jc="center"
-            backgroundColor="#FEF2F2"
+            backgroundColor="$dangerBg"
           >
-            <AlertTriangle size={32} color="#EF4444" />
+            <AlertTriangle size={32} color={theme.danger?.val} />
           </YStack>
           <YStack ai="center" gap={8}>
             <Text variant="display" textAlign="center">

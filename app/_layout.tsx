@@ -132,7 +132,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ReduxProvider store={store}>
-          <ThemeProvider defaultMode="light">
+          <ThemeProvider>
             <ThemedApp />
           </ThemeProvider>
         </ReduxProvider>
