@@ -27,11 +27,20 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as ReduxProvider, useDispatch } from 'react-redux';
+import * as Sentry from '@sentry/react-native';
 import { TamaguiProvider } from 'tamagui';
 import { store } from '../src/store';
 import { loadTokenFromStorage } from '../src/store/authSlice';
 import { useAppSelector } from '../src/store/hooks';
 import tamaguiConfig from '../tamagui.config';
+
+// Crash reporting. Without EXPO_PUBLIC_SENTRY_DSN (e.g. local dev) this is a
+// no-op, so the app runs fine before the Sentry project exists.
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  enabled: !!process.env.EXPO_PUBLIC_SENTRY_DSN,
+  sendDefaultPii: false,
+});
 
 // Wire up global JS error / unhandled-rejection handlers as early as possible,
 // before any feature code runs.
@@ -112,7 +121,9 @@ function ThemedApp() {
   );
 }
 
-export default function RootLayout() {
+export default Sentry.wrap(RootLayout);
+
+function RootLayout() {
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,

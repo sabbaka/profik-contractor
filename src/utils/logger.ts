@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react-native";
 import { Alert } from "react-native";
 
 /**
@@ -38,8 +39,11 @@ export function logError(
     Alert.alert(`Caught error${context ? ` · ${context}` : ""}`, body);
   }
 
-  // 3. TODO: forward to Sentry / Bugsnag here. Single integration point.
-  // Sentry?.captureException(error, { tags: { context }, extra });
+  // 3. Forward to Sentry. No-op when the SDK is disabled (no DSN, e.g. dev).
+  Sentry.captureException(
+    error instanceof Error ? error : new Error(normalized.message),
+    { tags: context ? { context } : undefined, extra },
+  );
 }
 
 interface NormalizedError {

@@ -70,6 +70,15 @@ const config = {
         iosDisplayInForeground: true,
       },
     ],
+    [
+      '@sentry/react-native/expo',
+      {
+        // Must match the org/project slugs created at sentry.io. Sourcemap
+        // upload only runs on builds where SENTRY_AUTH_TOKEN is set.
+        organization: 'profik',
+        project: 'profik-contractor',
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
