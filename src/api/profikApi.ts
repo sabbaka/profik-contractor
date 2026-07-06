@@ -114,6 +114,16 @@ export const profikApi = createApi({
     deleteAccount: builder.mutation<void, void>({
       query: () => ({ url: '/users/me', method: 'DELETE' }),
     }),
+    updateProfile: builder.mutation<
+      { id: string; email: string; role: string; name: string; balance: number },
+      { name?: string; email?: string }
+    >({
+      query: (body) => ({ url: '/users/me', method: 'PATCH', body }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        dispatch(profikApi.util.updateQueryData('me', undefined, () => data));
+      },
+    }),
   }),
 });
 
@@ -136,4 +146,5 @@ export const {
   useTopupBalanceMutation,
   useRegisterPushTokenMutation,
   useDeleteAccountMutation,
+  useUpdateProfileMutation,
 } = profikApi;

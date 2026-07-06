@@ -1,3 +1,8 @@
 export { useAuth, type UseAuthReturn } from "./useAuth";
+export {
+  useEditProfileForm,
+  type EditProfileFormValues,
+  type UseEditProfileFormReturn,
+} from "./useEditProfileForm";
 export { useForgotPassword, type UseForgotPasswordReturn } from "./useForgotPassword";
 export { useSignup, type SignupData, type UseSignupReturn } from "./useSignup";
