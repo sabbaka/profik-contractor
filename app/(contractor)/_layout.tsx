@@ -13,7 +13,6 @@ export default function ContractorLayout() {
       <Stack.Screen name="jobs/[id]" />
       <Stack.Screen name="offer-chat/[offerId]" />
       <Stack.Screen name="profile/index" />
-      <Stack.Screen name="profile/account-settings" />
       <Stack.Screen name="profile/privacy-policy" />
       <Stack.Screen name="profile/help-support" />
       <Stack.Screen name="profile/about" />
