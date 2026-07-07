@@ -4,7 +4,7 @@ This folder lets you push all App Store listing text (description, keywords, sup
 
 The app's store title is **Profik Pro** (bundle ID `com.profik.contractor`). Because the bundle ID is new, the App Store Connect app record has to be created first — either during your first `eas submit -p ios`, via fastlane `produce`, or manually in the ASC UI (New App → iOS → name "Profik Pro" → bundle ID `com.profik.contractor`).
 
-After you fill in the **TODOs** below and run `fastlane push_metadata`, the only things left to do in the App Store Connect UI are:
+After you create the demo contractor account below and run `fastlane push_metadata`, the only things left to do in the App Store Connect UI are:
 
 - Upload screenshots (Fastlane can do this too — drop PNGs into `fastlane/screenshots/<locale>/` and run `push_metadata_and_screenshots`)
 - Set Age Rating (questionnaire — not exposed via Fastlane)
@@ -14,17 +14,10 @@ After you fill in the **TODOs** below and run `fastlane push_metadata`, the only
 
 ## Before running
 
-Fill these TODOs (`grep -R TODO fastlane/`):
+Fill the remaining demo account TODOs (`grep -R TODO fastlane/`):
 
 | File | What goes there |
 |---|---|
-| `fastlane/metadata/copyright.txt` | Legal entity, e.g. `© 2026 Your Company s.r.o.` |
-| `fastlane/metadata/en-US/support_url.txt` (and cs/, sk/) | Live support URL |
-| `fastlane/metadata/en-US/marketing_url.txt` (and cs/, sk/) | Marketing site URL (or delete the file if you don't want one) |
-| `fastlane/metadata/en-US/privacy_url.txt` (and cs/, sk/) | Live privacy policy URL |
-| `fastlane/metadata/review_information/first_name.txt` | Your first name (for Apple review contact) |
-| `fastlane/metadata/review_information/last_name.txt` | Your last name |
-| `fastlane/metadata/review_information/phone_number.txt` | Your phone with country code |
 | `fastlane/metadata/review_information/demo_user.txt` | Demo **contractor** account phone number (the app uses phone + password login) |
 | `fastlane/metadata/review_information/demo_password.txt` | Demo account password |
 

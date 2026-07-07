@@ -2,24 +2,26 @@ Profik Pro is the contractor-side app of the Profik marketplace, which connects 
 
 The provided demo account is a contractor account. Sign-in flow:
 
-1. On the welcome screen, tap 'Log in'.
-2. Enter the demo phone number listed in Sign-In Information above, with the country code '+420' pre-selected.
-3. Enter the password listed above.
-4. You will land on the Open Jobs tab.
+1. On first launch a short 3-screen onboarding appears. Tap 'I already have an account', then sign in with the demo phone number listed in Sign-In Information above, with the country code '+420' pre-selected, and the password above.
+2. You will land on the Open Jobs tab.
 
 Primary user flow to evaluate:
 
 1. Open Jobs tab → browse open cleaning jobs on the list and map (location permission will be requested — Allow, it is used to show jobs near you and their distance).
 2. Tap a job to open the job detail: service type, property details, location, and the client's budget.
-3. Tap 'Send offer', set your price and an optional message, and submit.
+3. Tap 'Make a counter offer' to set your price and message, or tap 'Accept' to accept the client's budget.
 4. The offer appears in the My Jobs tab (Pending / Accepted / Declined filters).
 5. Open an offer to chat with the client in the built-in Offer chat.
 6. The demo account has at least one open job visible and one active offer chat prepared for review.
+
+Login required: Profik Pro is account-based for contractors. Offers are submitted under the contractor's identity, balance top-ups and platform fees are tied to a prepaid account balance, offer chat and review reputation belong to the contractor profile, and job listings include client locations and budgets. There is no meaningful anonymous contractor mode, so job data is shown only to registered contractors.
 
 Permissions used:
 - Location (while using the app): to show open jobs near the contractor on the map and the distance to each job.
 - Notifications: to alert the contractor about new client messages and offer updates.
 
 Balance top-up: contractors can add funds to their platform balance, which is used to pay platform fees. The top-up is completed in an external Stripe web checkout page opened in the browser — not via In-App Purchase. This is compliant because the balance is used for real-world physical services (home cleaning) delivered outside the app, per App Store Review Guideline 3.1.5(a). The app sells no digital content or features.
+
+The app supports English and Czech. Language follows the device locale and can also be changed from the Profile tab.
 
 Please contact the email above if any clarification is needed.

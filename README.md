@@ -48,4 +48,6 @@ eas build --platform ios --profile production
 eas submit --platform ios
 ```
 
-Store listing metadata (title, descriptions, keywords in en/cs/sk, review notes) is maintained in `store.config.json` and mirrored as Fastlane metadata. See [fastlane/README.md](fastlane/README.md) for pushing metadata to App Store Connect and the remaining pre-submission checklist (TODO URLs, demo contractor account, screenshots, age rating, pricing).
+Store listing metadata (title, descriptions, keywords in en/cs/sk, review notes) is maintained in `store.config.json` and mirrored as Fastlane metadata. See [fastlane/README.md](fastlane/README.md) for pushing metadata to App Store Connect and the remaining pre-submission checklist (demo contractor account, screenshots, age rating, pricing).
+
+Before the first App Store submission, create the App Store Connect app record for `com.profik.contractor`. Once Apple assigns the app ID, add it as `"ascAppId"` under `submit.production.ios` in `eas.json` (the client app uses the same field, e.g. `6759965214`).
