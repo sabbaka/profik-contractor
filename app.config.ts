@@ -13,7 +13,7 @@ const config = {
   newArchEnabled: true,
   ios: {
     bundleIdentifier: 'com.profik.contractor',
-    buildNumber: '2',
+    buildNumber: '3',
     supportsTablet: false,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
