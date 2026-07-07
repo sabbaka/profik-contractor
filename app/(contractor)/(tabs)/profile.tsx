@@ -8,9 +8,15 @@ import { extractErrorMessage } from "@/src/features/auth/types";
 import { useThemeColors, useThemeMode } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import {
+  getStoredLanguage,
+  setStoredLanguage,
+  type AppLanguage,
+} from "@/src/utils/languageStorage";
+import {
   Bell,
   ChevronRight,
   Edit3,
+  Globe,
   HelpCircle,
   Info,
   LogOut,
@@ -22,7 +28,8 @@ import {
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Linking, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
@@ -84,26 +91,54 @@ function Divider() {
 }
 
 export default function ProfileRoute() {
+  const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
   const { data: user } = useMeQuery();
   const { logout } = useAuth();
   const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccountMutation();
   const { preference, setPreference } = useThemeMode();
+  const [language, setLanguage] = useState<AppLanguage>(
+    (i18n.language as AppLanguage) === "cs" ? "cs" : "en"
+  );
+
+  useEffect(() => {
+    getStoredLanguage().then((stored) => {
+      if (stored) setLanguage(stored);
+    });
+  }, []);
 
   const name = user?.name ?? "—";
   const email = user?.email ?? "";
   const initial = (name[0] ?? "P").toUpperCase();
 
   const appearanceLabel =
-    preference === "system" ? "System" : preference === "dark" ? "Dark" : "Light";
+    preference === "system"
+      ? t("profile.appearance.system")
+      : preference === "dark"
+        ? t("profile.appearance.dark")
+        : t("profile.appearance.light");
 
   const handleAppearancePress = () => {
-    Alert.alert("Appearance", undefined, [
-      { text: "System", onPress: () => setPreference("system") },
-      { text: "Light", onPress: () => setPreference("light") },
-      { text: "Dark", onPress: () => setPreference("dark") },
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("profile.appearance.title"), undefined, [
+      { text: t("profile.appearance.system"), onPress: () => setPreference("system") },
+      { text: t("profile.appearance.light"), onPress: () => setPreference("light") },
+      { text: t("profile.appearance.dark"), onPress: () => setPreference("dark") },
+      { text: t("common.cancel"), style: "cancel" },
+    ]);
+  };
+
+  const handleChangeLanguage = async (lng: AppLanguage) => {
+    setLanguage(lng);
+    await i18n.changeLanguage(lng);
+    await setStoredLanguage(lng);
+  };
+
+  const handleLanguagePress = () => {
+    Alert.alert(t("profile.language.title"), undefined, [
+      { text: t("profile.language.english"), onPress: () => handleChangeLanguage("en") },
+      { text: t("profile.language.czech"), onPress: () => handleChangeLanguage("cs") },
+      { text: t("common.cancel"), style: "cancel" },
     ]);
   };
 
@@ -111,26 +146,26 @@ export default function ProfileRoute() {
     try {
       await deleteAccount().unwrap();
       Alert.alert(
-        "Account deleted",
-        "Your account and personal data have been deleted.",
-        [{ text: "OK", onPress: logout }]
+        t("profile.deleteSuccessTitle"),
+        t("profile.deleteSuccessMessage"),
+        [{ text: t("common.ok"), onPress: logout }]
       );
     } catch (error) {
       Alert.alert(
-        "Error",
-        extractErrorMessage(error) || "Could not delete your account. Please try again."
+        t("common.error"),
+        extractErrorMessage(error) || t("profile.deleteFailed")
       );
     }
   };
 
   const confirmDelete = () => {
     Alert.alert(
-      "Delete account?",
-      "This permanently deletes your account and personal data. Your sent offers and messages will be anonymized. This cannot be undone.",
+      t("profile.deleteTitle"),
+      t("profile.deleteDescription"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("profile.deleteCancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("profile.deleteConfirm"),
           style: "destructive",
           onPress: () => {
             void handleDeleteConfirmed();
@@ -197,7 +232,7 @@ export default function ProfileRoute() {
           >
             <Edit3 size={14} color={colors.textSecondary} />
             <Text variant="caption" style={{ fontFamily: "Inter_500Medium" }}>
-              Edit Profile
+              {t("profile.editProfile")}
             </Text>
           </XStack>
         </Pressable>
@@ -236,7 +271,7 @@ export default function ProfileRoute() {
                   fontSize: 13,
                 }}
               >
-                AVAILABLE BALANCE
+                {t("profile.balance.available")}
               </Text>
               <WalletCards size={20} color="#FFFFFF" />
             </XStack>
@@ -260,7 +295,7 @@ export default function ProfileRoute() {
                 fontSize: 12,
               }}
             >
-              Tap to add funds
+              {t("profile.balance.tapToAddFunds")}
             </Text>
           </YStack>
         </Pressable>
@@ -274,14 +309,26 @@ export default function ProfileRoute() {
           overflow="hidden"
         >
           <ProfileRow
-            label="Notifications"
+            label={t("profile.menu.notifications")}
             iconBg={colors.warningBg}
             icon={<Bell size={18} color={colors.warningText} />}
             onPress={() => Linking.openSettings()}
           />
           <Divider />
           <ProfileRow
-            label="Appearance"
+            label={t("profile.menu.language")}
+            iconBg={colors.infoBg}
+            icon={<Globe size={18} color={colors.infoStrong} />}
+            value={
+              language === "cs"
+                ? t("profile.language.czech")
+                : t("profile.language.english")
+            }
+            onPress={handleLanguagePress}
+          />
+          <Divider />
+          <ProfileRow
+            label={t("profile.menu.appearance")}
             iconBg={colors.infoBg}
             icon={<Moon size={18} color={colors.purple} />}
             value={appearanceLabel}
@@ -298,7 +345,7 @@ export default function ProfileRoute() {
           overflow="hidden"
         >
           <ProfileRow
-            label="Privacy Policy"
+            label={t("profile.menu.privacyPolicy")}
             iconBg={colors.greenSoftBg}
             icon={<Shield size={18} color={colors.greenStrong} />}
             onPress={() =>
@@ -307,7 +354,7 @@ export default function ProfileRoute() {
           />
           <Divider />
           <ProfileRow
-            label="Help & Support"
+            label={t("profile.menu.helpSupport")}
             iconBg={colors.accentLight}
             icon={<HelpCircle size={18} color={colors.accent} />}
             onPress={() =>
@@ -316,7 +363,7 @@ export default function ProfileRoute() {
           />
           <Divider />
           <ProfileRow
-            label="About"
+            label={t("profile.menu.about")}
             iconBg={colors.surfaceInput}
             icon={<Info size={18} color={colors.textSecondary} />}
             onPress={() => router.push("/(contractor)/profile/about" as any)}
@@ -346,7 +393,7 @@ export default function ProfileRoute() {
                 fontFamily: "Inter_600SemiBold",
               }}
             >
-              Log Out
+              {t("profile.logout")}
             </Text>
           </XStack>
         </Pressable>
@@ -376,11 +423,13 @@ export default function ProfileRoute() {
                   fontFamily: "Inter_600SemiBold",
                 }}
               >
-                {isDeleting ? "Deleting Account..." : "Delete Account"}
+                {isDeleting
+                  ? t("profile.deletingAccount")
+                  : t("profile.deleteAccount")}
               </Text>
             </XStack>
             <Text variant="caption" style={{ color: colors.textMuted }}>
-              Permanently delete your account and remove access to the app.
+              {t("profile.deleteHelp")}
             </Text>
           </YStack>
         </Pressable>
@@ -390,7 +439,7 @@ export default function ProfileRoute() {
           textAlign="center"
           style={{ color: colors.textMuted }}
         >
-          Version {Constants.expoConfig?.version ?? "—"}
+          {t("profile.version", { version: Constants.expoConfig?.version ?? "—" })}
         </Text>
       </ScrollView>
     </YStack>

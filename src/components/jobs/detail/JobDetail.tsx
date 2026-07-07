@@ -2,6 +2,7 @@ import { useGetJobByIdQuery } from "@/src/api/profikApi";
 import { useThemeColors } from "@/src/theme";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -17,6 +18,7 @@ import { JobLocation } from "./JobLocation";
 import { useJobOffer } from "./hooks/useJobOffer";
 
 export const JobDetail = () => {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const params = useLocalSearchParams<{ id: string }>();
   const id = params.id as string;
@@ -67,7 +69,7 @@ export const JobDetail = () => {
       <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
         <Spinner size="large" color={colors.accent} />
         <Text marginTop="$3" fontSize={16} color={colors.textSecondary}>
-          Loading job...
+          {t("job.loading")}
         </Text>
       </YStack>
     );
@@ -77,7 +79,7 @@ export const JobDetail = () => {
     return (
       <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
         <Text fontSize={18} fontWeight="700" color={colors.textPrimary} marginBottom="$3">
-          Failed to load job
+          {t("job.failedLoad")}
         </Text>
         <Button
           variant="outlined"
@@ -86,7 +88,7 @@ export const JobDetail = () => {
           borderColor={colors.border}
           color={colors.textPrimary}
         >
-          Retry
+          {t("common.retry")}
         </Button>
       </YStack>
     );
@@ -95,7 +97,7 @@ export const JobDetail = () => {
   if (!job) {
     return (
       <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
-        <Text fontSize={16} color={colors.textSecondary}>No job found.</Text>
+        <Text fontSize={16} color={colors.textSecondary}>{t("job.notFound")}</Text>
       </YStack>
     );
   }

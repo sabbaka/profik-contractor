@@ -1,5 +1,6 @@
 import { useThemeColors } from '@/src/theme';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet } from 'react-native';
 
 type Props =
@@ -12,6 +13,7 @@ const hasCoords = (
   'lat' in props && 'lng' in props;
 
 export default function MapPreview(props: Props) {
+  const { t } = useTranslation();
   const height = props.height ?? 180;
   const colors = useThemeColors();
   const lat = hasCoords(props) ? props.lat : undefined;
@@ -49,10 +51,10 @@ export default function MapPreview(props: Props) {
   }, [address, lat, lng]);
 
   const label = useMemo(() => {
-    if (coords) return `Lat: ${coords.lat.toFixed(5)} Lng: ${coords.lng.toFixed(5)}`;
-    if (address) return 'Resolving address…';
-    return 'Map preview not available on web';
-  }, [coords, address]);
+    if (coords) return t('map.coordinates', { lat: coords.lat.toFixed(5), lng: coords.lng.toFixed(5) });
+    if (address) return t('map.resolvingAddress');
+    return t('map.previewUnavailableWeb');
+  }, [coords, address, t]);
 
   return (
     <View
@@ -64,7 +66,7 @@ export default function MapPreview(props: Props) {
         },
       ]}
     >
-      <Text style={{ color: colors.textMuted }}>Map preview not available on web</Text>
+      <Text style={{ color: colors.textMuted }}>{t('map.previewUnavailableWeb')}</Text>
       <Text style={{ color: colors.textSecondary }}>{label}</Text>
     </View>
   );

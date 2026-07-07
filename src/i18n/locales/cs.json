@@ -1,0 +1,339 @@
+{
+  "common": {
+    "retry": "Zkusit znovu",
+    "success": "Úspěch",
+    "error": "Chyba",
+    "cancel": "Zrušit",
+    "back": "Zpět",
+    "ok": "OK",
+    "loading": "Načítám...",
+    "validation": "Validace"
+  },
+  "auth": {
+    "labels": {
+      "phone": "Telefon",
+      "name": "Jméno",
+      "email": "E-mail",
+      "password": "Heslo"
+    },
+    "errors": {
+      "phoneRequired": "Telefon je povinný",
+      "phoneComplete": "Zadejte celé telefonní číslo (+420 XXX XXX XXX)",
+      "nameRequired": "Jméno je povinné",
+      "nameMin": "Jméno musí mít alespoň 2 znaky",
+      "emailInvalid": "Zadejte platný e-mail",
+      "passwordRequired": "Heslo je povinné",
+      "passwordMin": "Heslo musí mít alespoň 6 znaků",
+      "otpAllDigits": "Zadejte všech 6 číslic",
+      "otpSixDigit": "Zadejte 6místný kód",
+      "validationFailed": "Validace selhala"
+    },
+    "placeholders": {
+      "phone": "+420 XXX XXX XXX",
+      "password": "Heslo",
+      "newPassword": "Vytvořte nové heslo",
+      "name": "Celé jméno",
+      "email": "E-mail",
+      "emailExample": "vy@priklad.cz"
+    },
+    "login": {
+      "title": "Vítejte zpět",
+      "subtitle": "Přihlaste se, najděte práci a spravujte své nabídky.",
+      "forgotPassword": "Zapomněli jste heslo?",
+      "signIn": "Přihlásit se",
+      "newTo": "Poprvé v Profik Pro?",
+      "createAccount": "Vytvořit účet",
+      "wrongAppTitle": "Nesprávná aplikace",
+      "wrongAppMessage": "Tento účet je pouze pro klienty. Použijte prosím klientskou aplikaci.",
+      "wrongAppError": "Nesprávná aplikace pro tento typ účtu",
+      "failed": "Přihlášení selhalo"
+    },
+    "signup": {
+      "title": "Pracujte s Profikem",
+      "subtitle": "Vytvořte si profil profesionála a začněte získávat zakázky.",
+      "createAccount": "Vytvořit účet",
+      "alreadyHave": "Už máte účet?",
+      "signIn": "Přihlásit se",
+      "checkPhone": "Zkontrolujte telefon",
+      "codeSentPrompt": "Zadejte 6místný ověřovací kód, který jsme vám poslali.",
+      "verifyCode": "Ověřit kód",
+      "codeSentTitle": "Kód odeslán",
+      "codeSentMessage": "SMS kód jsme poslali na váš telefon. Zadejte ho a klepněte na Ověřit kód.",
+      "failed": "Registrace selhala"
+    },
+    "forgot": {
+      "title": "Obnovit heslo",
+      "subtitle": "Zadejte telefon a nové heslo - pošleme vám ověřovací kód.",
+      "sendCode": "Poslat kód",
+      "backToLogin": "Zpět na přihlášení",
+      "enterCodeTitle": "Zadejte kód",
+      "enterCodeSubtitle": "6místný kód jsme poslali na\n{{phone}}",
+      "phoneFallback": "váš telefon",
+      "resetPassword": "Obnovit heslo",
+      "failedSendCode": "Nepodařilo se poslat kód",
+      "invalidCode": "Neplatný kód"
+    }
+  },
+  "tabs": {
+    "openJobs": "ZAKÁZKY",
+    "myJobs": "MOJE ZAKÁZKY",
+    "profile": "PROFIL"
+  },
+  "header": {
+    "workspace": "Pracovní prostor"
+  },
+  "open": {
+    "title": "Otevřené zakázky",
+    "finding": "Hledám příležitosti...",
+    "available_one": "{{count}} zakázka ve vašem okolí",
+    "available_few": "{{count}} zakázky ve vašem okolí",
+    "available_other": "{{count}} zakázek ve vašem okolí",
+    "loading": "Načítám otevřené zakázky...",
+    "errorTitle": "Zakázky se nepodařilo načíst",
+    "errorBody": "Zkontrolujte připojení a zkuste to znovu.",
+    "emptyTitle": "Vše máte zkontrolováno",
+    "emptyBody": "Nové zákaznické zakázky se zde objeví hned po zveřejnění."
+  },
+  "my": {
+    "title": "Moje zakázky",
+    "subtitle": "Sledujte nabídky a aktivní práci",
+    "filters": {
+      "pending": "Čekající",
+      "accepted": "Přijaté",
+      "declined": "Odmítnuté"
+    },
+    "labels": {
+      "pending": "čekající nabídky",
+      "accepted": "přijaté zakázky",
+      "declined": "odmítnuté nabídky"
+    },
+    "loading": "Načítám {{label}}...",
+    "errorTitle": "Vaše zakázky se nepodařilo načíst",
+    "emptyTitle": "Žádné {{label}}",
+    "emptyBody": "Když se stav nabídky změní, zakázka se sem automaticky přesune."
+  },
+  "job": {
+    "back": "Zpět",
+    "details": "Detail zakázky",
+    "loading": "Načítám zakázku...",
+    "failedLoad": "Zakázku se nepodařilo načíst",
+    "notFound": "Zakázka nebyla nalezena.",
+    "serviceRequest": "Poptávka služby",
+    "remote": "Vzdáleně",
+    "locationNotProvided": "Lokalita není uvedena",
+    "service": "Služba",
+    "untitled": "Zakázka bez názvu",
+    "posted": "Zveřejněno {{date}}",
+    "openForOffers": "Otevřeno nabídkám",
+    "detailsCta": "Detail",
+    "about": "O této zakázce",
+    "location": "Lokalita",
+    "status": {
+      "pending": "Čekající",
+      "accepted": "Přijatá",
+      "declined": "Odmítnutá"
+    }
+  },
+  "offer": {
+    "yourOffer": "Vaše nabídka",
+    "sentToCustomer": "Odesláno zákazníkovi",
+    "yourPrice": "VAŠE CENA",
+    "messageCustomer": "Napsat zákazníkovi",
+    "makeCounterTitle": "Navrhnout vlastní cenu",
+    "makeCounterBody": "Nastavte férovou cenu a popište zákazníkovi, co je v ní zahrnuto.",
+    "pricePlaceholder": "Vaše cena v Kč",
+    "messagePlaceholder": "Popište, co je zahrnuto...",
+    "sendCounter": "Odeslat nabídku",
+    "interestedTitle": "Máte o zakázku zájem?",
+    "interestedBody": "Odpovězte hned a oslovte zákazníka mezi prvními.",
+    "acceptFor": "Přijmout za {{price}}",
+    "makeCounter": "Navrhnout vlastní cenu",
+    "unauthorizedTitle": "Neoprávněný přístup",
+    "unauthorizedBody": "Nabídky mohou posílat pouze kontraktoři.",
+    "submitted": "Nabídka byla úspěšně odeslána",
+    "failedSubmit": "Nabídku se nepodařilo odeslat",
+    "validation": {
+      "priceRequired": "Zadejte prosím cenu nabídky.",
+      "pricePositive": "Cena musí být kladné číslo.",
+      "messageRequired": "Vysvětlete prosím klientovi svou cenu."
+    }
+  },
+  "chat": {
+    "title": "Chat se zákazníkem",
+    "eyebrow": "KONVERZACE K NABÍDCE",
+    "invalidOffer": "Neplatná nabídka",
+    "notSentTitle": "Zpráva nebyla odeslána",
+    "notSentBody": "Zkuste to prosím znovu.",
+    "emptyTitle": "Začněte konverzaci",
+    "emptyBody": "Zeptejte se na detail nebo potvrďte podmínky své nabídky.",
+    "placeholders": {
+      "message": "Napište zprávu..."
+    }
+  },
+  "map": {
+    "previewUnavailableWeb": "Náhled mapy není na webu dostupný",
+    "previewUnavailableWebSentence": "Náhled mapy není na webu dostupný.",
+    "resolvingAddress": "Vyhledávám adresu...",
+    "locating": "Zjišťuji polohu...",
+    "coordinates": "Šířka: {{lat}} Délka: {{lng}}",
+    "openJobsFailed": "Otevřené zakázky se nepodařilo načíst"
+  },
+  "balance": {
+    "title": "Zůstatek",
+    "loading": "Načítám zůstatek...",
+    "loadFailed": "Zůstatek se nepodařilo načíst",
+    "available": "DOSTUPNÝ ZŮSTATEK",
+    "tapToAddFunds": "Klepnutím přidáte kredit",
+    "usedFor": "Používá se pro služby kontraktora a přístup k zakázkám.",
+    "addFunds": "Přidat kredit",
+    "amountBody": "Zadejte částku, kterou chcete přidat.",
+    "amountPlaceholder": "Částka v Kč",
+    "continuePayment": "Pokračovat k platbě",
+    "secureBody": "Platba proběhne bezpečně ve webovém zobrazení a potom se automaticky vrátíte sem.",
+    "updatedTo": "Zůstatek aktualizován na {{amount}}",
+    "topupFailed": "Nepodařilo se spustit doplnění kreditu",
+    "errors": {
+      "amountRequired": "Částka je povinná",
+      "amountNumber": "Musí být platné číslo",
+      "amountPositive": "Částka musí být větší než 0"
+    }
+  },
+  "profile": {
+    "logout": "Odhlásit se",
+    "editProfile": "Upravit profil",
+    "name": "Jméno",
+    "email": "E-mail",
+    "phone": "Telefon",
+    "saveChanges": "Uložit změny",
+    "updateSuccess": "Profil byl úspěšně aktualizován",
+    "updateFailed": "Profil se nepodařilo aktualizovat",
+    "deleteAccount": "Smazat účet",
+    "deletingAccount": "Mažu účet...",
+    "deleteHelp": "Trvale smaže váš účet a odebere přístup do aplikace.",
+    "deleteTitle": "Smazat účet?",
+    "deleteDescription": "Tímto trvale smažete svůj účet a osobní údaje. Vaše odeslané nabídky a zprávy budou anonymizovány. Tuto akci nelze vrátit zpět.",
+    "deleteCancel": "Zrušit",
+    "deleteConfirm": "Smazat",
+    "deleteSuccessTitle": "Účet byl smazán",
+    "deleteSuccessMessage": "Váš účet a osobní údaje byly smazány.",
+    "deleteFailed": "Účet se nepodařilo smazat. Zkuste to prosím znovu.",
+    "version": "Verze {{version}}",
+    "balance": {
+      "available": "DOSTUPNÝ ZŮSTATEK",
+      "tapToAddFunds": "Klepnutím přidáte kredit"
+    },
+    "placeholders": {
+      "name": "Vaše jméno",
+      "email": "vy@priklad.cz"
+    },
+    "menu": {
+      "notifications": "Oznámení",
+      "language": "Jazyk",
+      "appearance": "Vzhled",
+      "privacyPolicy": "Zásady ochrany osobních údajů",
+      "helpSupport": "Nápověda a podpora",
+      "about": "O aplikaci"
+    },
+    "language": {
+      "title": "Vyberte jazyk",
+      "english": "English",
+      "czech": "Čeština"
+    },
+    "appearance": {
+      "title": "Vzhled",
+      "system": "Systém",
+      "light": "Světlý",
+      "dark": "Tmavý"
+    }
+  },
+  "privacy": {
+    "title": "Zásady ochrany osobních údajů",
+    "intro": "Tyto zásady vysvětlují, jaké informace Profik Pro shromažďuje a jak jsou používány. Profik Pro je kontraktorská aplikace tržiště Profik, které spojuje zákazníky s úklidovými profesionály v České republice.",
+    "dataCollectedTitle": "Informace, které shromažďujeme",
+    "dataCollected": "Údaje o účtu, které zadáte (jméno, e-mail, telefonní číslo, heslo), nabídky a zprávy, které posíláte klientům, a historii doplnění kreditu.",
+    "locationTitle": "Poloha",
+    "location": "Při používání aplikace používáme polohu vašeho zařízení, abychom zobrazili otevřené zakázky ve vašem okolí na mapě a vzdálenost každé zakázky od vaší aktuální polohy. Poloha není sledována na pozadí.",
+    "notificationsTitle": "Oznámení",
+    "notifications": "Používáme token push oznámení vašeho zařízení, abychom vás upozornili na nové zprávy od klientů a změny nabídek.",
+    "balanceTitle": "Doplnění kreditu",
+    "balance": "Doplnění kreditu probíhá na externí zabezpečené stránce Stripe Checkout otevřené v prohlížeči - Profik Pro neukládá údaje o vaší kartě.",
+    "sharingTitle": "Jak jsou vaše údaje sdíleny",
+    "sharing": "Klienti vidí vaše jméno, profil a nabídky, které jim pošlete na jejich zakázky. Vaše telefonní číslo není nikdy sdíleno s klienty - veškerá komunikace probíhá přes chat k nabídce v aplikaci.",
+    "retentionTitle": "Uchovávání a mazání údajů",
+    "retention": "Vaše údaje jsou uchovávány po dobu, kdy je účet aktivní. Účet můžete kdykoli trvale smazat v nastavení účtu -> Smazat účet; vaše minulé nabídky a zprávy se anonymizují, aby historie zakázek klientům zůstala zachována.",
+    "contactTitle": "Kontaktujte nás",
+    "contact": "Pokud máte dotazy ohledně těchto zásad, kontaktujte nás na {{email}}."
+  },
+  "support": {
+    "title": "Nápověda a podpora",
+    "intro": "Potřebujete s něčím poradit? Zde najdete odpovědi na časté dotazy, případně nás můžete kontaktovat přímo.",
+    "faqTitle": "Často kladené dotazy",
+    "faq1Q": "Jak najdu zakázky?",
+    "faq1A": "Na kartě Otevřené zakázky procházejte zakázky ve vašem okolí na mapě i v seznamu. Klepnutím na zakázku zobrazíte typ služby, detaily nemovitosti, lokalitu a rozpočet klienta.",
+    "faq2Q": "Jak pošlu nabídku?",
+    "faq2A": "Otevřete zakázku, klepněte na Odeslat nabídku, nastavte cenu a volitelnou zprávu a odešlete ji. Stav sledujte v Moje zakázky v sekcích Čekající / Přijaté / Odmítnuté.",
+    "faq3Q": "Jak napíšu klientovi?",
+    "faq3A": "Otevřete svou nabídku a přejděte do Chatu k nabídce, kde můžete klientovi napsat přímo - telefonní číslo sdílet nemusíte.",
+    "faq4Q": "Jak přidám kredit na zůstatek?",
+    "faq4A": "V profilu otevřete Zůstatek, zadejte částku a pokračujte na zabezpečenou platební stránku. Zůstatek se používá k úhradě platformních poplatků.",
+    "faq5Q": "Jak smažu svůj účet?",
+    "faq5A": "Přejděte do nastavení účtu a sjeďte na Smazat účet. Tím účet trvale odstraníte a akci nelze vrátit zpět.",
+    "contactTitle": "Stále potřebujete pomoc?",
+    "contactButton": "Napsat podpoře",
+    "contactSubject": "Podpora Profik Pro",
+    "contactFallback": "Nepodařilo se otevřít e-mailovou aplikaci. Napište nám prosím na {{email}}."
+  },
+  "about": {
+    "title": "O aplikaci",
+    "tagline": "Úklidové zakázky kolem vás",
+    "description": "Profik Pro je aplikace pro úklidové profesionály, kteří chtějí stálý přísun zakázek ve svém okolí. Prohlížejte otevřené zakázky, pošlete svou cenu, chatujte s klienty a odveďte práci - vše v jedné aplikaci.",
+    "version": "Verze {{version}}",
+    "copyright": "© {{year}} Profik"
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Vítejte v Profik Pro",
+      "body": "Najděte úklidové zakázky ve vašem okolí, nabídněte svou cenu a získejte práci - vše v jedné aplikaci.",
+      "getStarted": "Začít",
+      "login": "Už mám účet"
+    },
+    "about": {
+      "title": "Co je Profik Pro?",
+      "p1": "Profik Pro spojuje úklidové profesionály s klienty, kteří potřebují práci ve svém okolí. Nové zakázky se zobrazují na mapě i v seznamu - s typem služby, detaily nemovitosti, lokalitou a rozpočtem klienta předem.",
+      "p2": "Vy rozhodujete, které zakázky vezmete a jakou cenu nabídnete. Bez obvolávání, bez inzerce, bez shánění poptávek.",
+      "p3": "Chatujte s klienty přímo v aplikaci, získejte zakázku a budujte si reputaci skutečnými recenzemi.",
+      "next": "Další"
+    },
+    "how": {
+      "title": "Jak to funguje",
+      "steps": {
+        "browse": {
+          "title": "Prohlížejte otevřené zakázky",
+          "description": "Nové úklidové zakázky ve vašem okolí uvidíte na mapě i v seznamu, včetně detailů a rozpočtu klienta."
+        },
+        "offer": {
+          "title": "Pošlete nabídku",
+          "description": "Nastavte si vlastní cenu a přidejte krátkou zprávu, aby klient věděl, proč jste správná volba."
+        },
+        "chat": {
+          "title": "Domluvte se v chatu",
+          "description": "Detaily si dohodnete ve vestavěném chatu - telefonní číslo sdílet nemusíte."
+        },
+        "paid": {
+          "title": "Odveďte práci a získejte zaplaceno",
+          "description": "Dokončete práci, sbírejte recenze, které vám přinesou další zakázky, a doplňujte zůstatek na platformní poplatky."
+        }
+      },
+      "createAccount": "Vytvořit účet",
+      "signIn": "Přihlásit se"
+    }
+  },
+  "errorBoundary": {
+    "title": "Něco se pokazilo",
+    "body": "Na obrazovce došlo k neočekávané chybě. Můžete se vrátit a zkusit to znovu - postup na předchozích obrazovkách je zachován.",
+    "tryAgain": "Zkusit znovu"
+  },
+  "notFound": {
+    "title": "Nenalezeno"
+  }
+}

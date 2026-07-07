@@ -1,10 +1,12 @@
 import { useThemeColors } from "@/src/theme";
 import { router } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useGetOpenJobsQuery } from "../api/profikApi";
 
 export default function OpenJobsMapWeb() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const {
     data: jobs,
@@ -19,9 +21,9 @@ export default function OpenJobsMapWeb() {
   if (error) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 16, backgroundColor: colors.bgPrimary }}>
-        <Text style={{ marginBottom: 8, color: colors.textPrimary }}>Failed to load open jobs</Text>
+        <Text style={{ marginBottom: 8, color: colors.textPrimary }}>{t("map.openJobsFailed")}</Text>
         <TouchableOpacity onPress={refetch as any} style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 6, backgroundColor: colors.bgCard }}>
-          <Text style={{ color: colors.textPrimary }}>Retry</Text>
+          <Text style={{ color: colors.textPrimary }}>{t("common.retry")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -29,7 +31,7 @@ export default function OpenJobsMapWeb() {
 
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: colors.bgPrimary }}>
-      <Text style={{ marginBottom: 8, color: colors.textSecondary }}>Map preview not available on web.</Text>
+      <Text style={{ marginBottom: 8, color: colors.textSecondary }}>{t("map.previewUnavailableWebSentence")}</Text>
       {(jobs || []).map((j: any) => (
         <TouchableOpacity
           key={j.id}

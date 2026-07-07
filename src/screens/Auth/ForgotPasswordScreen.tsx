@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Keyboard,
@@ -34,6 +35,7 @@ function GradientBadge() {
 }
 
 export default function ForgotPasswordScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState<Step>("phone");
@@ -59,13 +61,13 @@ export default function ForgotPasswordScreen() {
       setOtpCode("");
       setOtpError(undefined);
     } else {
-      Alert.alert("Error", result.error || "Failed to send code");
+      Alert.alert(t("common.error"), result.error || t("auth.forgot.failedSendCode"));
     }
   };
 
   const handleVerify = async () => {
     if (otpCode.length !== 6) {
-      setOtpError("Enter the 6-digit code");
+      setOtpError(t("auth.errors.otpSixDigit"));
       return;
     }
 
@@ -74,7 +76,7 @@ export default function ForgotPasswordScreen() {
 
     const result = await verifyAndReset(phone, otpCode, newPassword);
     if (!result.success) {
-      setOtpError(result.error || "Invalid code");
+      setOtpError(result.error || t("auth.forgot.invalidCode"));
     }
   };
 
@@ -103,11 +105,8 @@ export default function ForgotPasswordScreen() {
               <YStack gap={16}>
                 <GradientBadge />
                 <YStack gap={8}>
-                  <Text variant="display">Reset password</Text>
-                  <Text variant="body">
-                    Enter your phone and a new password — we&apos;ll send you a
-                    verification code.
-                  </Text>
+                  <Text variant="display">{t("auth.forgot.title")}</Text>
+                  <Text variant="body">{t("auth.forgot.subtitle")}</Text>
                 </YStack>
               </YStack>
 
@@ -115,7 +114,7 @@ export default function ForgotPasswordScreen() {
                 <PhoneInput
                   name="phone"
                   control={control}
-                  placeholder="+420 XXX XXX XXX"
+                  placeholder={t("auth.placeholders.phone")}
                   error={errors.phone?.message}
                   defaultCountryCode="CZ"
                   flex={0}
@@ -123,7 +122,7 @@ export default function ForgotPasswordScreen() {
                 <FormInput
                   name="newPassword"
                   control={control}
-                  placeholder="Create a new password"
+                  placeholder={t("auth.placeholders.newPassword")}
                   secureTextEntry
                   error={errors.newPassword?.message}
                   flex={0}
@@ -136,10 +135,10 @@ export default function ForgotPasswordScreen() {
                   onPress={handleSubmit(handleRequestCode)}
                   loading={isLoading}
                 >
-                  Send code
+                  {t("auth.forgot.sendCode")}
                 </Button>
                 <Button variant="ghost" onPress={() => router.back()}>
-                  Back to login
+                  {t("auth.forgot.backToLogin")}
                 </Button>
               </YStack>
             </YStack>
@@ -149,11 +148,12 @@ export default function ForgotPasswordScreen() {
                 <GradientBadge />
                 <YStack gap={8} alignItems="center">
                   <Text variant="display" textAlign="center">
-                    Enter the code
+                    {t("auth.forgot.enterCodeTitle")}
                   </Text>
                   <Text variant="body" textAlign="center">
-                    We sent a 6-digit code to{"\n"}
-                    {phoneValue || "your phone"}
+                    {t("auth.forgot.enterCodeSubtitle", {
+                      phone: phoneValue || t("auth.forgot.phoneFallback"),
+                    })}
                   </Text>
                 </YStack>
               </YStack>
@@ -176,10 +176,10 @@ export default function ForgotPasswordScreen() {
                   onPress={handleVerify}
                   loading={isLoading}
                 >
-                  Reset password
+                  {t("auth.forgot.resetPassword")}
                 </Button>
                 <Button variant="ghost" onPress={handleBackToForm}>
-                  Back
+                  {t("common.back")}
                 </Button>
               </YStack>
             </YStack>

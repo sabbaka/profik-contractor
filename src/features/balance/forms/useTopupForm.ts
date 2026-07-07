@@ -1,26 +1,29 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { useTopup } from "../hooks/useTopup";
 import { TopupResult } from "../types";
 
-const topupSchema = z.object({
-  amount: z
-    .string()
-    .min(1, "Amount is required")
-    .refine((val) => !isNaN(Number(val)), "Must be a valid number")
-    .refine((val) => Number(val) > 0, "Amount must be greater than 0"),
-});
-
-export type TopupFormValues = z.infer<typeof topupSchema>;
+export type TopupFormValues = {
+  amount: string;
+};
 
 interface UseTopupFormOptions {
   onSuccess?: (balanceUpdated: boolean, newBalance?: number) => void;
 }
 
 export function useTopupForm(options?: UseTopupFormOptions) {
+  const { t } = useTranslation();
   const { topup, isLoading, balance, isBalanceLoading, refetchBalance } =
     useTopup();
+  const topupSchema = z.object({
+    amount: z
+      .string()
+      .min(1, t("balance.errors.amountRequired"))
+      .refine((val) => !isNaN(Number(val)), t("balance.errors.amountNumber"))
+      .refine((val) => Number(val) > 0, t("balance.errors.amountPositive")),
+  });
 
   const form = useForm<TopupFormValues>({
     resolver: zodResolver(topupSchema),
@@ -49,4 +52,3 @@ export function useTopupForm(options?: UseTopupFormOptions) {
     submit: form.handleSubmit(onSubmit),
   };
 }
-

@@ -2,6 +2,7 @@ import { profikApi, useLoginMutation } from "@/src/api/profikApi";
 import { logout as logoutAction, setToken } from "@/src/store/authSlice";
 import { router } from "expo-router";
 import { Alert } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { AuthResult, extractErrorMessage, LoginParams } from "../types";
 
@@ -12,6 +13,7 @@ export interface UseAuthReturn {
 }
 
 export function useAuth(): UseAuthReturn {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [loginMutation, { isLoading }] = useLoginMutation();
 
@@ -26,10 +28,10 @@ export function useAuth(): UseAuthReturn {
       // Role-based login restriction: only contractors can log into the contractor app
       if (res.user.role !== "contractor") {
         Alert.alert(
-          "Wrong App",
-          "This account is for clients only. Please use the client app."
+          t("auth.login.wrongAppTitle"),
+          t("auth.login.wrongAppMessage")
         );
-        return { success: false, error: "Wrong app for this account type" };
+        return { success: false, error: t("auth.login.wrongAppError") };
       }
 
       dispatch(setToken(res.token));
@@ -42,8 +44,8 @@ export function useAuth(): UseAuthReturn {
       router.replace("/(contractor)/open" as any);
       return { success: true };
     } catch (err: unknown) {
-      const errorMessage = extractErrorMessage(err) || "Login failed";
-      Alert.alert("Error", errorMessage);
+      const errorMessage = extractErrorMessage(err) || t("auth.login.failed");
+      Alert.alert(t("common.error"), errorMessage);
       return { success: false, error: errorMessage };
     }
   };

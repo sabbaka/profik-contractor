@@ -5,11 +5,13 @@ import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
 export default function AboutScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const version = Constants.expoConfig?.version ?? "1.0.0";
@@ -21,10 +23,10 @@ export default function AboutScreen() {
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <XStack alignItems="center" gap={2}>
             <ChevronLeft size={25} color={colors.textPrimary} />
-            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Back</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t("common.back")}</Text>
           </XStack>
         </Pressable>
-        <Text variant="h5">About</Text>
+        <Text variant="h5">{t("about.title")}</Text>
         <XStack width={58} />
       </XStack>
 
@@ -36,21 +38,19 @@ export default function AboutScreen() {
           </YStack>
           <Text variant="h3">Profik Pro</Text>
           <Text variant="body" textAlign="center">
-            Find cleaning jobs near you
+            {t("about.tagline")}
           </Text>
         </YStack>
 
         <YStack paddingTop={12}>
           <Text variant="body">
-            Profik Pro is the app for cleaning professionals who want a steady stream of local jobs.
-            Browse open jobs near you, send your price, chat with clients, and get the job done — all
-            in one app.
+            {t("about.description")}
           </Text>
         </YStack>
 
         <YStack alignItems="center" gap={4} paddingTop={32}>
-          <Text variant="caption">Version {version}</Text>
-          <Text variant="caption">© {year} Profik</Text>
+          <Text variant="caption">{t("about.version", { version })}</Text>
+          <Text variant="caption">{t("about.copyright", { year })}</Text>
         </YStack>
       </ScrollView>
     </YStack>

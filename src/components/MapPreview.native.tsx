@@ -1,5 +1,6 @@
 import { useThemeColors } from '@/src/theme';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -14,6 +15,7 @@ const hasCoords = (
   'lat' in props && 'lng' in props;
 
 export default function MapPreview(props: Props) {
+  const { t } = useTranslation();
   const height = props.height ?? 180;
   const colors = useThemeColors();
 
@@ -64,7 +66,7 @@ export default function MapPreview(props: Props) {
           },
         ]}
       >
-        <Text style={{ color: colors.textMuted }}>Locating…</Text>
+        <Text style={{ color: colors.textMuted }}>{t('map.locating')}</Text>
       </View>
     );
   }

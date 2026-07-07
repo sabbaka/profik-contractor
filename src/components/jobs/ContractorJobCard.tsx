@@ -4,6 +4,7 @@ import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { BriefcaseBusiness, Calendar, ChevronRight, MapPin, Send } from "@tamagui/lucide-icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { XStack, YStack } from "tamagui";
 
@@ -13,22 +14,23 @@ interface ContractorJobCardProps {
   onPress?: () => void;
 }
 
-function dateLabel(value?: string) {
+function dateLabel(value?: string, locale?: string) {
   if (!value) return null;
   try {
-    return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    return new Date(value).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
   } catch {
     return null;
   }
 }
 
 function OfferPill({ status }: { status: string }) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const config = status === "accepted"
-    ? { bg: colors.statusCompleted, text: colors.statusCompletedText, label: "Accepted" }
+    ? { bg: colors.statusCompleted, text: colors.statusCompletedText, label: t("job.status.accepted") }
     : status === "declined"
-      ? { bg: colors.statusCancelled, text: colors.statusCancelledText, label: "Declined" }
-      : { bg: colors.statusPending, text: colors.statusPendingText, label: "Pending" };
+      ? { bg: colors.statusCancelled, text: colors.statusCancelledText, label: t("job.status.declined") }
+      : { bg: colors.statusPending, text: colors.statusPendingText, label: t("job.status.pending") };
   return (
     <XStack backgroundColor={config.bg} paddingHorizontal={10} paddingVertical={5} borderRadius={9999} alignItems="center" gap={5}>
       <YStack width={6} height={6} borderRadius={9999} backgroundColor={config.text} />
@@ -38,9 +40,10 @@ function OfferPill({ status }: { status: string }) {
 }
 
 export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardProps) {
+  const { t, i18n } = useTranslation();
   const colors = useThemeColors();
-  const location = [job?.city, job?.country].filter(Boolean).join(", ") || "Location not provided";
-  const date = dateLabel(job?.createdAt);
+  const location = [job?.city, job?.country].filter(Boolean).join(", ") || t("job.locationNotProvided");
+  const date = dateLabel(job?.createdAt, i18n.language);
 
   return (
     <Pressable onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.96 : 1, transform: [{ scale: pressed ? 0.99 : 1 }] })}>
@@ -51,10 +54,10 @@ export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardPr
           </YStack>
           <YStack flex={1} gap={4}>
             <XStack justifyContent="space-between" alignItems="center" gap={8}>
-              <Text variant="chip" numberOfLines={1} flex={1}>{job?.category || "Service"}</Text>
+              <Text variant="chip" numberOfLines={1} flex={1}>{job?.category || t("job.service")}</Text>
               <Text variant="price">{formatCzk(job?.price ?? 0)}</Text>
             </XStack>
-            <Text variant="cardTitle" numberOfLines={2}>{job?.title || "Untitled job"}</Text>
+            <Text variant="cardTitle" numberOfLines={2}>{job?.title || t("job.untitled")}</Text>
             <YStack gap={5} marginTop={4}>
               <XStack alignItems="center" gap={6}>
                 <MapPin size={14} color={colors.textMuted} />
@@ -63,7 +66,7 @@ export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardPr
               {date ? (
                 <XStack alignItems="center" gap={6}>
                   <Calendar size={14} color={colors.textMuted} />
-                  <Text variant="caption">Posted {date}</Text>
+                  <Text variant="caption">{t("job.posted", { date })}</Text>
                 </XStack>
               ) : null}
             </YStack>
@@ -82,11 +85,11 @@ export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardPr
           ) : (
             <XStack alignItems="center" gap={6}>
               <YStack width={7} height={7} borderRadius={9999} backgroundColor={colors.statusOpenText} />
-              <Text variant="caption" style={{ color: colors.statusOpenText, fontFamily: "Inter_600SemiBold" }}>Open for offers</Text>
+              <Text variant="caption" style={{ color: colors.statusOpenText, fontFamily: "Inter_600SemiBold" }}>{t("job.openForOffers")}</Text>
             </XStack>
           )}
           <XStack alignItems="center" gap={3}>
-            <Text style={{ color: colors.accent, fontFamily: "Inter_500Medium", fontSize: 13 }}>Details</Text>
+            <Text style={{ color: colors.accent, fontFamily: "Inter_500Medium", fontSize: 13 }}>{t("job.detailsCta")}</Text>
             <ChevronRight size={16} color={colors.accent} />
           </XStack>
         </XStack>

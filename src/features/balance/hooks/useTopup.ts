@@ -2,6 +2,7 @@ import { useMeQuery, useTopupBalanceMutation } from "@/src/api/profikApi";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 import { Alert } from "react-native";
+import { useTranslation } from "react-i18next";
 import { TopupResult } from "../types";
 
 export interface UseTopupReturn {
@@ -13,6 +14,7 @@ export interface UseTopupReturn {
 }
 
 export function useTopup(): UseTopupReturn {
+  const { t } = useTranslation();
   const {
     data: user,
     isLoading: isBalanceLoading,
@@ -66,8 +68,8 @@ export function useTopup(): UseTopupReturn {
       return { success: true, balanceUpdated: false };
     } catch (err: unknown) {
       const errorMessage =
-        (err as any)?.data?.message || "Failed to start top-up session";
-      Alert.alert("Error", errorMessage);
+        (err as any)?.data?.message || t("balance.topupFailed");
+      Alert.alert(t("common.error"), errorMessage);
       return { success: false, error: errorMessage };
     }
   };
@@ -80,4 +82,3 @@ export function useTopup(): UseTopupReturn {
     refetchBalance,
   };
 }
-

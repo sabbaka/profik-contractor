@@ -3,6 +3,7 @@ import { useThemeColors } from "@/src/theme";
 import { ChevronLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
@@ -19,6 +20,7 @@ function Section({ title, body }: { title: string; body: string }) {
 }
 
 export default function PrivacyPolicyScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
 
@@ -28,45 +30,43 @@ export default function PrivacyPolicyScreen() {
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <XStack alignItems="center" gap={2}>
             <ChevronLeft size={25} color={colors.textPrimary} />
-            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Back</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t("common.back")}</Text>
           </XStack>
         </Pressable>
-        <Text variant="h5">Privacy Policy</Text>
+        <Text variant="h5">{t("privacy.title")}</Text>
         <XStack width={58} />
       </XStack>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: insets.bottom + 24, gap: 20 }}>
         <Text variant="body">
-          This policy explains what information Profik Pro collects and how it is used. Profik Pro is
-          the contractor-side app of the Profik marketplace, which connects customers with cleaning
-          professionals in the Czech Republic.
+          {t("privacy.intro")}
         </Text>
 
         <Section
-          title="Information we collect"
-          body="Account details you provide (name, email, phone number, password), the offers and messages you send to clients, and your balance top-up history."
+          title={t("privacy.dataCollectedTitle")}
+          body={t("privacy.dataCollected")}
         />
         <Section
-          title="Location"
-          body="While you are using the app, we use your device location to show open jobs near you on the map and how far each job is from your current position. Location is not tracked in the background."
+          title={t("privacy.locationTitle")}
+          body={t("privacy.location")}
         />
         <Section
-          title="Notifications"
-          body="We use your device's push notification token to alert you about new client messages and offer updates."
+          title={t("privacy.notificationsTitle")}
+          body={t("privacy.notifications")}
         />
         <Section
-          title="Balance top-ups"
-          body="Adding funds to your balance is completed in an external, secure Stripe checkout page opened in your browser — Profik Pro does not store your card details."
+          title={t("privacy.balanceTitle")}
+          body={t("privacy.balance")}
         />
         <Section
-          title="How your information is shared"
-          body="Clients can see your name, profile, and the offers you send on their jobs. Your phone number is never shared with clients — all communication happens through the in-app offer chat."
+          title={t("privacy.sharingTitle")}
+          body={t("privacy.sharing")}
         />
         <Section
-          title="Data retention & deletion"
-          body="Your data is kept for as long as your account is active. You can permanently delete your account at any time from Account settings → Delete account; your past offers and messages are anonymized rather than removed, so job history for clients stays intact."
+          title={t("privacy.retentionTitle")}
+          body={t("privacy.retention")}
         />
-        <Section title="Contact us" body={`If you have questions about this policy, contact us at ${SUPPORT_EMAIL}.`} />
+        <Section title={t("privacy.contactTitle")} body={t("privacy.contact", { email: SUPPORT_EMAIL })} />
       </ScrollView>
     </YStack>
   );

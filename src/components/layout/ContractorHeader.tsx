@@ -1,11 +1,13 @@
 import { useThemeColors } from "@/src/theme";
 import { useSegments } from "expo-router";
 import { Text as UIText } from "@/src/components/ui/ui";
+import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 import ContractorProfileHeaderButton from "../profile/ContractorProfileHeaderButton";
 
 export default function ContractorHeader() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const segments = useSegments() as string[];
@@ -31,7 +33,7 @@ export default function ContractorHeader() {
         <UIText style={{ fontFamily: "Geist_700Bold", fontSize: 19, lineHeight: 23, color: colors.textPrimary }}>
           Profik <UIText style={{ color: colors.accent, fontFamily: "Geist_700Bold" }}>Pro</UIText>
         </UIText>
-        <UIText variant="caption">Contractor workspace</UIText>
+        <UIText variant="caption">{t("header.workspace")}</UIText>
       </YStack>
       <ContractorProfileHeaderButton />
     </XStack>

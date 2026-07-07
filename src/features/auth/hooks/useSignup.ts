@@ -6,6 +6,7 @@ import {
 import { setToken } from "@/src/store/authSlice";
 import { router } from "expo-router";
 import { Alert } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import {
   AuthResult,
@@ -28,6 +29,7 @@ export interface UseSignupReturn {
 }
 
 export function useSignup(): UseSignupReturn {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [requestSmsCode, { isLoading: requesting }] =
     useRequestSmsCodeMutation();
@@ -37,8 +39,8 @@ export function useSignup(): UseSignupReturn {
     const { phone, email, password, name, code } = data;
 
     if (!phone) {
-      const errorMessage = "Phone is required";
-      Alert.alert("❌ Error", errorMessage);
+      const errorMessage = t("auth.errors.phoneRequired");
+      Alert.alert(t("common.error"), errorMessage);
       return { success: false, error: errorMessage };
     }
 
@@ -52,10 +54,7 @@ export function useSignup(): UseSignupReturn {
 
         await requestSmsCode(params).unwrap();
 
-        Alert.alert(
-          "✅ Code sent",
-          "We sent an SMS code to your phone. Enter it and tap Verify Code."
-        );
+        Alert.alert(t("auth.signup.codeSentTitle"), t("auth.signup.codeSentMessage"));
 
         return { success: true };
       }
@@ -80,8 +79,8 @@ export function useSignup(): UseSignupReturn {
 
       return { success: true };
     } catch (err: unknown) {
-      const errorMessage = extractErrorMessage(err) || "Signup failed";
-      Alert.alert("❌ Error", errorMessage);
+      const errorMessage = extractErrorMessage(err) || t("auth.signup.failed");
+      Alert.alert(t("common.error"), errorMessage);
       return { success: false, error: errorMessage };
     }
   };

@@ -2,6 +2,7 @@ import { useThemeColors } from "@/src/theme";
 import { Text } from "@/src/components/ui/ui";
 import { MapPin } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
 import MapPreview from "../../MapPreview";
 
@@ -22,6 +23,7 @@ export const JobLocation = ({
   lat,
   lng,
 }: JobLocationProps) => {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const addressText = useMemo(() => {
     return [addressLine, city, postalCode, country].filter(Boolean).join(", ");
@@ -34,7 +36,7 @@ export const JobLocation = ({
   return (
     <YStack padding={18} gap={12} borderRadius={18} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle}>
       <Text variant="h5">
-        Location
+        {t("job.location")}
       </Text>
       {addressText && (
         <XStack gap="$2" alignItems="center">

@@ -5,6 +5,7 @@ import {
   useMeQuery,
 } from "@/src/api/profikApi";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 
 type OfferMode = "idle" | "counter";
@@ -16,6 +17,7 @@ interface UseJobOfferOptions {
 }
 
 export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) => {
+  const { t } = useTranslation();
   const { data: me } = useMeQuery();
   const [createOffer, { isLoading: isSubmitting }] = useCreateOfferMutation();
 
@@ -71,7 +73,7 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
 
   const acceptClientPrice = useCallback(async () => {
     if (!isContractor) {
-      Alert.alert("Unauthorized", "Only contractors can submit offers.");
+      Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return;
     }
 
@@ -81,7 +83,7 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
         price: jobPrice,
       }).unwrap();
 
-      Alert.alert("Success", "Offer submitted successfully");
+      Alert.alert(t("common.success"), t("offer.submitted"));
       setLastOffer({ price: jobPrice });
       setLastOfferId((created as any)?.id ?? null);
       setModeState("idle");
@@ -89,32 +91,32 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
       setMessage("");
       onSuccess?.();
     } catch (err: any) {
-      const msg = err?.data?.message || "Failed to submit offer";
-      Alert.alert("Error", msg);
+      const msg = err?.data?.message || t("offer.failedSubmit");
+      Alert.alert(t("common.error"), msg);
     }
-  }, [isContractor, jobId, jobPrice, createOffer, onSuccess]);
+  }, [isContractor, jobId, jobPrice, createOffer, onSuccess, t]);
 
   const submitOffer = useCallback(async () => {
     if (!isContractor) {
-      Alert.alert("Unauthorized", "Only contractors can submit offers.");
+      Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return;
     }
 
     if (!price.trim()) {
-      Alert.alert("Validation", "Please enter your offer price.");
+      Alert.alert(t("common.validation"), t("offer.validation.priceRequired"));
       return;
     }
 
     const priceNum = Number(price);
     if (isNaN(priceNum) || priceNum <= 0) {
-      Alert.alert("Validation", "Price must be a positive number.");
+      Alert.alert(t("common.validation"), t("offer.validation.pricePositive"));
       return;
     }
 
     if (mode === "counter" && !message.trim()) {
       Alert.alert(
-        "Validation",
-        "Please explain your price to the client.",
+        t("common.validation"),
+        t("offer.validation.messageRequired"),
       );
       return;
     }
@@ -126,7 +128,7 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
         message: message.trim() || undefined,
       }).unwrap();
 
-      Alert.alert("Success", "Offer submitted successfully");
+      Alert.alert(t("common.success"), t("offer.submitted"));
       setLastOffer({ price: priceNum, message: message.trim() || undefined });
       setLastOfferId((created as any)?.id ?? null);
       setModeState("idle");
@@ -134,10 +136,10 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
       setPrice("");
       onSuccess?.();
     } catch (err: any) {
-      const msg = err?.data?.message || "Failed to submit offer";
-      Alert.alert("Error", msg);
+      const msg = err?.data?.message || t("offer.failedSubmit");
+      Alert.alert(t("common.error"), msg);
     }
-  }, [isContractor, price, message, mode, jobId, createOffer, onSuccess]);
+  }, [isContractor, price, message, mode, jobId, createOffer, onSuccess, t]);
 
   return {
     isContractor,

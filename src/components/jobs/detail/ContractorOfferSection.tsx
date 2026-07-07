@@ -4,6 +4,7 @@ import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { MessageCircle, Send, Sparkles } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
 
 type OfferMode = "idle" | "counter";
@@ -15,21 +16,22 @@ interface Props {
 }
 
 export const ContractorOfferSection = (props: Props) => {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, offerIdForChat, clientPrice, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
   const status = myOfferStatus === "accepted"
-    ? { bg: colors.statusCompleted, color: colors.statusCompletedText, label: "Accepted" }
+    ? { bg: colors.statusCompleted, color: colors.statusCompletedText, label: t("job.status.accepted") }
     : myOfferStatus === "declined"
-      ? { bg: colors.statusCancelled, color: colors.statusCancelledText, label: "Declined" }
-      : { bg: colors.statusPending, color: colors.statusPendingText, label: "Pending" };
+      ? { bg: colors.statusCancelled, color: colors.statusCancelledText, label: t("job.status.declined") }
+      : { bg: colors.statusPending, color: colors.statusPendingText, label: t("job.status.pending") };
 
   if (hasOffered) {
     return (
       <YStack padding={18} borderRadius={20} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle} gap={15}>
         <XStack alignItems="center" justifyContent="space-between">
           <YStack gap={3}>
-            <Text variant="h5">Your offer</Text>
-            <Text variant="caption">Sent to the customer</Text>
+            <Text variant="h5">{t("offer.yourOffer")}</Text>
+            <Text variant="caption">{t("offer.sentToCustomer")}</Text>
           </YStack>
           <XStack backgroundColor={status.bg} paddingVertical={5} paddingHorizontal={11} borderRadius={9999} alignItems="center" gap={5}>
             <YStack width={6} height={6} borderRadius={9999} backgroundColor={status.color} />
@@ -37,12 +39,12 @@ export const ContractorOfferSection = (props: Props) => {
           </XStack>
         </XStack>
         <YStack padding={16} borderRadius={16} backgroundColor={colors.accentLight} gap={5}>
-          <Text variant="caption">YOUR PRICE</Text>
+          <Text variant="caption">{t("offer.yourPrice")}</Text>
           <Text variant="priceLg" style={{ color: colors.accent }}>{formatCzk(myOfferPrice ?? 0)}</Text>
           {myOfferMessage ? <Text variant="bodySm" style={{ color: colors.textPrimary, marginTop: 5 }}>{myOfferMessage}</Text> : null}
         </YStack>
         {offerIdForChat ? (
-          <Button variant="secondary" size="md" iconLeft={<MessageCircle size={17} color={colors.textSecondary} />} onPress={() => router.push({ pathname: "/(contractor)/offer-chat/[offerId]" as any, params: { offerId: offerIdForChat } })}>Message customer</Button>
+          <Button variant="secondary" size="md" iconLeft={<MessageCircle size={17} color={colors.textSecondary} />} onPress={() => router.push({ pathname: "/(contractor)/offer-chat/[offerId]" as any, params: { offerId: offerIdForChat } })}>{t("offer.messageCustomer")}</Button>
         ) : null}
       </YStack>
     );
@@ -54,15 +56,15 @@ export const ContractorOfferSection = (props: Props) => {
     return (
       <YStack padding={18} borderRadius={20} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle} gap={15}>
         <YStack gap={3}>
-          <Text variant="h5">Make a counter offer</Text>
-          <Text variant="bodySm">Set a fair price and tell the customer what’s included.</Text>
+          <Text variant="h5">{t("offer.makeCounterTitle")}</Text>
+          <Text variant="bodySm">{t("offer.makeCounterBody")}</Text>
         </YStack>
         <YStack gap={10}>
-          <TextInput placeholder="Your price in CZK" value={price} onChangeText={setPrice} keyboardType="decimal-pad" onFocus={onInputFocus} />
-          <TextInput placeholder="Explain what’s included…" value={message} onChangeText={setMessage} multiline numberOfLines={4} onFocus={onInputFocus} height={104} textAlignVertical="top" paddingTop={14} />
+          <TextInput placeholder={t("offer.pricePlaceholder")} value={price} onChangeText={setPrice} keyboardType="decimal-pad" onFocus={onInputFocus} />
+          <TextInput placeholder={t("offer.messagePlaceholder")} value={message} onChangeText={setMessage} multiline numberOfLines={4} onFocus={onInputFocus} height={104} textAlignVertical="top" paddingTop={14} />
         </YStack>
-        <Button loading={isSubmitting} disabled={!valid} iconLeft={<Send size={17} color="#FFFFFF" />} onPress={onSubmitOffer}>Send counter offer</Button>
-        <Button variant="ghost" size="sm" onPress={() => setMode("idle")}>Cancel</Button>
+        <Button loading={isSubmitting} disabled={!valid} iconLeft={<Send size={17} color="#FFFFFF" />} onPress={onSubmitOffer}>{t("offer.sendCounter")}</Button>
+        <Button variant="ghost" size="sm" onPress={() => setMode("idle")}>{t("common.cancel")}</Button>
       </YStack>
     );
   }
@@ -74,12 +76,12 @@ export const ContractorOfferSection = (props: Props) => {
           <Sparkles size={20} color={colors.accent} />
         </YStack>
         <YStack flex={1} gap={2}>
-          <Text variant="h5">Interested in this job?</Text>
-          <Text variant="caption">Respond now to reach the customer early.</Text>
+          <Text variant="h5">{t("offer.interestedTitle")}</Text>
+          <Text variant="caption">{t("offer.interestedBody")}</Text>
         </YStack>
       </XStack>
-      <Button loading={isSubmitting} onPress={onAcceptClientPrice}>Accept for {formatCzk(clientPrice)}</Button>
-      <Button variant="secondary" onPress={() => setMode("counter")} disabled={isSubmitting}>Make a counter offer</Button>
+      <Button loading={isSubmitting} onPress={onAcceptClientPrice}>{t("offer.acceptFor", { price: formatCzk(clientPrice) })}</Button>
+      <Button variant="secondary" onPress={() => setMode("counter")} disabled={isSubmitting}>{t("offer.makeCounter")}</Button>
     </YStack>
   );
 };

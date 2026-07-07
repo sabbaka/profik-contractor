@@ -3,6 +3,7 @@ import { useThemeColors } from "@/src/theme";
 import { ChevronLeft, Mail } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Linking, Pressable, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
@@ -19,11 +20,12 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function HelpSupportScreen() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
 
   const handleContactSupport = async () => {
-    const url = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent("Profik Pro Support")}`;
+    const url = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(t("support.contactSubject"))}`;
     try {
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
@@ -33,7 +35,7 @@ export default function HelpSupportScreen() {
     } catch {
       // fall through to the alert below
     }
-    Alert.alert("", `Couldn't open your email app. Please email us at ${SUPPORT_EMAIL} instead.`);
+    Alert.alert(t("common.error"), t("support.contactFallback", { email: SUPPORT_EMAIL }));
   };
 
   return (
@@ -42,46 +44,46 @@ export default function HelpSupportScreen() {
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <XStack alignItems="center" gap={2}>
             <ChevronLeft size={25} color={colors.textPrimary} />
-            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Back</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t("common.back")}</Text>
           </XStack>
         </Pressable>
-        <Text variant="h5">Help & Support</Text>
+        <Text variant="h5">{t("support.title")}</Text>
         <XStack width={58} />
       </XStack>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: insets.bottom + 24, gap: 24 }}>
         <Text variant="body">
-          Need a hand with something? Here are answers to common questions, or you can reach us directly.
+          {t("support.intro")}
         </Text>
 
         <YStack gap={16}>
-          <Text variant="sectionLabel">Frequently asked questions</Text>
+          <Text variant="sectionLabel">{t("support.faqTitle")}</Text>
           <FaqItem
-            question="How do I find jobs?"
-            answer="On the Open Jobs tab, browse jobs near you on the map and list. Tap a job to see its service type, property details, location, and the client's budget."
+            question={t("support.faq1Q")}
+            answer={t("support.faq1A")}
           />
           <FaqItem
-            question="How do I send an offer?"
-            answer="Open a job, tap Send Offer, set your price and an optional message, then submit. Track it in My Jobs under Pending / Accepted / Declined."
+            question={t("support.faq2Q")}
+            answer={t("support.faq2A")}
           />
           <FaqItem
-            question="How do I message a client?"
-            answer="Open your offer and tap into the Offer Chat to message the client directly — no need to share your phone number."
+            question={t("support.faq3Q")}
+            answer={t("support.faq3A")}
           />
           <FaqItem
-            question="How do I add funds to my balance?"
-            answer="Open Balance from your profile, enter an amount, and continue to the secure payment page. Your balance is used to pay platform fees."
+            question={t("support.faq4Q")}
+            answer={t("support.faq4A")}
           />
           <FaqItem
-            question="How do I delete my account?"
-            answer="Go to Account settings and scroll to Delete account. This permanently removes your account and cannot be undone."
+            question={t("support.faq5Q")}
+            answer={t("support.faq5A")}
           />
         </YStack>
 
         <YStack gap={10}>
-          <Text variant="sectionLabel">Still need help?</Text>
+          <Text variant="sectionLabel">{t("support.contactTitle")}</Text>
           <Button variant="secondary" iconLeft={<Mail size={16} color={colors.textSecondary} />} onPress={handleContactSupport}>
-            Email Support
+            {t("support.contactButton")}
           </Button>
         </YStack>
       </ScrollView>

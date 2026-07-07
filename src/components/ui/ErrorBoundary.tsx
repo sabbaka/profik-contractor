@@ -1,3 +1,4 @@
+import i18n from "@/src/i18n";
 import { logError } from "@/src/utils/logger";
 import { AlertTriangle } from "@tamagui/lucide-icons";
 import React from "react";
@@ -91,11 +92,10 @@ function DefaultFallback({
           </YStack>
           <YStack ai="center" gap={8}>
             <Text variant="display" textAlign="center">
-              Something went wrong
+              {i18n.t("errorBoundary.title")}
             </Text>
             <Text variant="body" textAlign="center" style={{ maxWidth: 320 }}>
-              The screen ran into an unexpected error. You can go back and try
-              again — your progress on the previous screens is safe.
+              {i18n.t("errorBoundary.body")}
             </Text>
           </YStack>
         </YStack>
@@ -132,7 +132,7 @@ function DefaultFallback({
         <YStack flex={1} />
 
         <Button variant="primary" onPress={onReset}>
-          Try again
+          {i18n.t("errorBoundary.tryAgain")}
         </Button>
       </ScrollView>
     </YStack>

@@ -14,14 +14,19 @@ import {
 } from '@expo-google-fonts/inter';
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
+import '../src/i18n';
 import 'react-native-reanimated';
 
 import { ErrorBoundary } from '@/src/components/ui/ErrorBoundary';
 import { usePushNotifications } from '@/src/hooks/usePushNotifications';
 import { ThemeProvider, useThemeColors, useThemeMode } from '@/src/theme';
+import {
+  getHasSeenOnboarding,
+  subscribeToOnboardingState,
+} from '@/src/utils/onboardingStorage';
 import { setupGlobalErrorHandlers } from '@/src/utils/setupGlobalErrorHandlers';
 import { PortalProvider } from '@tamagui/portal';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, Provider as PaperProvider } from 'react-native-paper';
@@ -71,6 +76,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const { token, loading } = useAppSelector((s) => s.auth);
   const segments = useSegments() as unknown as string[];
   const colors = useThemeColors();
+  const [hasSeenOnboarding, setHasSeenOnboardingState] = useState<
+    boolean | null
+  >(null);
 
   usePushNotifications(!!token);
 
@@ -79,7 +87,31 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     dispatch(loadTokenFromStorage());
   }, [dispatch]);
 
-  if (loading) {
+  useEffect(() => {
+    let mounted = true;
+    const unsubscribe = subscribeToOnboardingState((value) => {
+      if (mounted) setHasSeenOnboardingState(value);
+    });
+
+    getHasSeenOnboarding()
+      .then((value) => {
+        if (mounted) {
+          setHasSeenOnboardingState(value);
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setHasSeenOnboardingState(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
+  }, []);
+
+  if (loading || hasSeenOnboarding === null) {
     return (
       <View
         style={{
@@ -95,8 +127,13 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   }
 
   const isAuthRoute = segments[0] === 'auth';
+  const isOnboardingRoute = segments[0] === 'onboarding';
 
-  if (!token && !isAuthRoute) {
+  if (!token && !isAuthRoute && !isOnboardingRoute) {
+    if (!hasSeenOnboarding) {
+      return <Redirect href={"/onboarding/welcome" as any} />;
+    }
+
     return <Redirect href={"/auth/login" as any} />;
   }
   return <>{children}</>;

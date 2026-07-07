@@ -5,6 +5,7 @@ import { useThemeColors } from "@/src/theme";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Keyboard, Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
@@ -12,6 +13,7 @@ import { XStack, YStack } from "tamagui";
 export type LoginScreenProps = { onGoToSignup?: () => void };
 
 export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const { form, isLoading, submit } = useLoginForm();
@@ -28,30 +30,30 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
                 <Text position="relative" zIndex={1} style={{ color: "#FFFFFF", fontFamily: "Geist_700Bold", fontSize: 24 }}>P</Text>
               </YStack>
               <YStack gap={6}>
-                <Text variant="display">Welcome back</Text>
-                <Text variant="body">Sign in to find work and manage your offers.</Text>
+                <Text variant="display">{t("auth.login.title")}</Text>
+                <Text variant="body">{t("auth.login.subtitle")}</Text>
               </YStack>
             </YStack>
 
             <YStack backgroundColor={colors.bgCard} borderRadius={24} borderWidth={1} borderColor={colors.borderSubtle} padding={20} gap={16}>
-              <PhoneInput name="phone" control={control} placeholder="+420 XXX XXX XXX" error={errors.phone?.message} defaultCountryCode="CZ" flex={0} />
-              <FormInput name="password" control={control} placeholder="Password" secureTextEntry error={errors.password?.message} flex={0} />
+              <PhoneInput name="phone" control={control} placeholder={t("auth.placeholders.phone")} error={errors.phone?.message} defaultCountryCode="CZ" flex={0} />
+              <FormInput name="password" control={control} placeholder={t("auth.placeholders.password")} secureTextEntry error={errors.password?.message} flex={0} />
               <XStack justifyContent="flex-end" marginTop={-4}>
                 <Pressable
                   onPress={() => router.push("/auth/forgot-password" as any)}
                   hitSlop={8}
                   style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                 >
-                  <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 13 }}>Forgot password?</Text>
+                  <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 13 }}>{t("auth.login.forgotPassword")}</Text>
                 </Pressable>
               </XStack>
-              <Button loading={isLoading} onPress={() => { Keyboard.dismiss(); submit(); }}>Sign in</Button>
+              <Button loading={isLoading} onPress={() => { Keyboard.dismiss(); submit(); }}>{t("auth.login.signIn")}</Button>
             </YStack>
 
             <XStack justifyContent="center" gap={4}>
-              <Text variant="bodySm">New to Profik?</Text>
+              <Text variant="bodySm">{t("auth.login.newTo")}</Text>
               <Pressable onPress={onGoToSignup} hitSlop={8}>
-                <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 14 }}>Create account</Text>
+                <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 14 }}>{t("auth.login.createAccount")}</Text>
               </Pressable>
             </XStack>
           </YStack>

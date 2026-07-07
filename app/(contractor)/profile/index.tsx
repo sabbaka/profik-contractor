@@ -7,6 +7,7 @@ import { ChevronLeft } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -20,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
 export default function EditProfileScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
   const { data: user, isLoading: isLoadingUser } = useMeQuery();
@@ -46,10 +48,10 @@ export default function EditProfileScreen() {
   const handleSubmit = async () => {
     const result = await submit();
     if (result.success) {
-      Alert.alert("Success", "Profile updated successfully");
+      Alert.alert(t("common.success"), t("profile.updateSuccess"));
       router.back();
     } else {
-      Alert.alert("Error", result.error);
+      Alert.alert(t("common.error"), result.error || t("profile.updateFailed"));
     }
   };
 
@@ -80,10 +82,10 @@ export default function EditProfileScreen() {
           <Pressable onPress={() => router.back()} hitSlop={10}>
             <XStack alignItems="center" gap={2}>
               <ChevronLeft size={25} color={colors.textPrimary} />
-              <Text style={{ color: colors.textPrimary, fontSize: 16 }}>Back</Text>
+              <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t("common.back")}</Text>
             </XStack>
           </Pressable>
-          <Text variant="h5">Edit Profile</Text>
+          <Text variant="h5">{t("profile.editProfile")}</Text>
           <XStack width={58} />
         </XStack>
 
@@ -133,8 +135,8 @@ export default function EditProfileScreen() {
               <FormInput
                 name="name"
                 control={control}
-                label="Name"
-                placeholder="Your name"
+                label={t("profile.name")}
+                placeholder={t("profile.placeholders.name")}
                 error={errors.name?.message}
                 autoCapitalize="words"
                 autoCorrect={false}
@@ -144,8 +146,8 @@ export default function EditProfileScreen() {
               <FormInput
                 name="email"
                 control={control}
-                label="Email"
-                placeholder="you@example.com"
+                label={t("profile.email")}
+                placeholder={t("profile.placeholders.email")}
                 error={errors.email?.message}
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -161,7 +163,7 @@ export default function EditProfileScreen() {
               onPress={handleSubmit}
               loading={isLoading}
             >
-              Save Changes
+              {t("profile.saveChanges")}
             </Button>
           </YStack>
         </ScrollView>

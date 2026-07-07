@@ -4,6 +4,7 @@ import { useSignupForm } from "@/src/features/auth/forms/useSignupForm";
 import { useThemeColors } from "@/src/theme";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Keyboard, Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
@@ -11,6 +12,7 @@ import { XStack, YStack } from "tamagui";
 export type SignupScreenProps = { onGoToLogin?: () => void };
 
 export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState<"form" | "otp">("form");
@@ -22,7 +24,7 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
   const { control } = form;
 
   const verify = async () => {
-    if (otpCode.length !== 6) { setOtpError("Enter all 6 digits"); return; }
+    if (otpCode.length !== 6) { setOtpError(t("auth.errors.otpAllDigits")); return; }
     setOtpError(undefined);
     await handleVerifyCode(otpCode);
   };
@@ -39,32 +41,32 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
                   <Text position="relative" zIndex={1} style={{ color: "#FFFFFF", fontFamily: "Geist_700Bold", fontSize: 24 }}>P</Text>
                 </YStack>
                 <YStack gap={6}>
-                  <Text variant="display">Work with Profik</Text>
-                  <Text variant="body">Create your contractor profile and start winning jobs.</Text>
+                  <Text variant="display">{t("auth.signup.title")}</Text>
+                  <Text variant="body">{t("auth.signup.subtitle")}</Text>
                 </YStack>
               </YStack>
               <YStack backgroundColor={colors.bgCard} borderRadius={24} borderWidth={1} borderColor={colors.borderSubtle} padding={20} gap={14}>
-                <PhoneInput name="phone" control={control} placeholder="+420 XXX XXX XXX" defaultCountryCode="CZ" flex={0} />
-                <FormInput name="name" control={control} placeholder="Full name" autoCapitalize="words" flex={0} />
-                <FormInput name="email" control={control} placeholder="Email" autoCapitalize="none" keyboardType="email-address" flex={0} />
-                <FormInput name="password" control={control} placeholder="Password" secureTextEntry flex={0} />
-                <Button loading={isLoading} onPress={() => { Keyboard.dismiss(); handleRequestCode(); }}>Create account</Button>
+                <PhoneInput name="phone" control={control} placeholder={t("auth.placeholders.phone")} defaultCountryCode="CZ" flex={0} />
+                <FormInput name="name" control={control} placeholder={t("auth.placeholders.name")} autoCapitalize="words" flex={0} />
+                <FormInput name="email" control={control} placeholder={t("auth.placeholders.email")} autoCapitalize="none" keyboardType="email-address" flex={0} />
+                <FormInput name="password" control={control} placeholder={t("auth.placeholders.password")} secureTextEntry flex={0} />
+                <Button loading={isLoading} onPress={() => { Keyboard.dismiss(); handleRequestCode(); }}>{t("auth.signup.createAccount")}</Button>
               </YStack>
               <XStack justifyContent="center" gap={4}>
-                <Text variant="bodySm">Already have an account?</Text>
-                <Pressable onPress={onGoToLogin} hitSlop={8}><Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 14 }}>Sign in</Text></Pressable>
+                <Text variant="bodySm">{t("auth.signup.alreadyHave")}</Text>
+                <Pressable onPress={onGoToLogin} hitSlop={8}><Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 14 }}>{t("auth.signup.signIn")}</Text></Pressable>
               </XStack>
             </YStack>
           ) : (
             <YStack gap={28} alignItems="center">
               <YStack alignItems="center" gap={8}>
-                <Text variant="display" textAlign="center">Check your phone</Text>
-                <Text variant="body" textAlign="center">Enter the 6-digit verification code we sent you.</Text>
+                <Text variant="display" textAlign="center">{t("auth.signup.checkPhone")}</Text>
+                <Text variant="body" textAlign="center">{t("auth.signup.codeSentPrompt")}</Text>
               </YStack>
               <OTPInput length={6} value={otpCode} onChange={(value) => { setOtpCode(value); setOtpError(undefined); }} error={otpError} autoFocus />
               <YStack width="100%" gap={10}>
-                <Button loading={isLoading} disabled={otpCode.length !== 6} onPress={verify}>Verify code</Button>
-                <Button variant="ghost" onPress={() => { setStep("form"); setOtpCode(""); setOtpError(undefined); }}>Back</Button>
+                <Button loading={isLoading} disabled={otpCode.length !== 6} onPress={verify}>{t("auth.signup.verifyCode")}</Button>
+                <Button variant="ghost" onPress={() => { setStep("form"); setOtpCode(""); setOtpError(undefined); }}>{t("common.back")}</Button>
               </YStack>
             </YStack>
           )}

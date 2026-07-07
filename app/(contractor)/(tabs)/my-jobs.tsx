@@ -7,18 +7,18 @@ import { useThemeColors } from "@/src/theme";
 import { FolderOpen } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, RefreshControl } from "react-native";
 import { Spinner, XStack, YStack } from "tamagui";
 
-const FILTERS: { key: OfferStatus; label: string }[] = [
-  { key: "pending", label: "Pending" },
-  { key: "accepted", label: "Accepted" },
-  { key: "declined", label: "Declined" },
+const FILTERS: { key: OfferStatus; labelKey: string }[] = [
+  { key: "pending", labelKey: "my.filters.pending" },
+  { key: "accepted", labelKey: "my.filters.accepted" },
+  { key: "declined", labelKey: "my.filters.declined" },
 ];
 
-const labels = { pending: "pending offers", accepted: "accepted jobs", declined: "declined offers" };
-
 export default function MyJobsTab() {
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const { filter, setFilter } = useJobsFilter();
   const [changing, setChanging] = useState(false);
@@ -39,13 +39,14 @@ export default function MyJobsTab() {
 
   const jobs = data ?? [];
   const loading = isLoading || changing || (isFetching && !jobs.length);
+  const currentLabel = t(`my.labels.${filter}`);
 
   return (
     <YStack flex={1} backgroundColor={colors.bgSecondary}>
       <YStack paddingHorizontal={20} paddingTop={12} paddingBottom={16} gap={15}>
         <YStack gap={3}>
-          <Text variant="h1">My Jobs</Text>
-          <Text variant="bodySm">Track your offers and active work</Text>
+          <Text variant="h1">{t("my.title")}</Text>
+          <Text variant="bodySm">{t("my.subtitle")}</Text>
         </YStack>
         <XStack gap={8}>
           {FILTERS.map((item) => {
@@ -53,7 +54,7 @@ export default function MyJobsTab() {
             return (
               <Pressable key={item.key} onPress={() => setFilter(item.key)} style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
                 <YStack height={34} paddingHorizontal={16} borderRadius={9999} alignItems="center" justifyContent="center" backgroundColor={active ? colors.accent : colors.bgPrimary} borderWidth={active ? 0 : 1} borderColor={colors.borderSubtle}>
-                  <Text style={{ color: active ? "#FFFFFF" : colors.textSecondary, fontFamily: active ? "Inter_600SemiBold" : "Inter_500Medium", fontSize: 13 }}>{item.label}</Text>
+                  <Text style={{ color: active ? "#FFFFFF" : colors.textSecondary, fontFamily: active ? "Inter_600SemiBold" : "Inter_500Medium", fontSize: 13 }}>{t(item.labelKey)}</Text>
                 </YStack>
               </Pressable>
             );
@@ -64,12 +65,12 @@ export default function MyJobsTab() {
       {loading ? (
         <YStack flex={1} alignItems="center" justifyContent="center" gap={12}>
           <Spinner color={colors.accent} />
-          <Text variant="bodySm">Loading {labels[filter]}…</Text>
+          <Text variant="bodySm">{t("my.loading", { label: currentLabel })}</Text>
         </YStack>
       ) : error ? (
         <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingHorizontal={28}>
-          <Text variant="h4">Couldn’t load your jobs</Text>
-          <Button variant="secondary" size="md" fullWidth={false} onPress={refetch}>Retry</Button>
+          <Text variant="h4">{t("my.errorTitle")}</Text>
+          <Button variant="secondary" size="md" fullWidth={false} onPress={refetch}>{t("common.retry")}</Button>
         </YStack>
       ) : (
         <FlatList
@@ -82,8 +83,8 @@ export default function MyJobsTab() {
               <YStack width={80} height={80} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
                 <FolderOpen size={32} color={colors.accent} />
               </YStack>
-              <Text variant="h4">No {labels[filter]}</Text>
-              <Text variant="bodySm" textAlign="center" maxWidth={270}>When your offer status changes, the job will move here automatically.</Text>
+              <Text variant="h4">{t("my.emptyTitle", { label: currentLabel })}</Text>
+              <Text variant="bodySm" textAlign="center" maxWidth={270}>{t("my.emptyBody")}</Text>
             </YStack>
           }
           renderItem={({ item }: { item: any }) => (
