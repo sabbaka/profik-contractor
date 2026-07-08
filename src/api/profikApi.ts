@@ -5,9 +5,40 @@ import type {
   ForgotPasswordRequestParams,
   ForgotPasswordVerifyParams,
   SmsRequestResponse,
+  UploadAvatarParams,
 } from '../features/auth/types';
 import { logout } from '../store/authSlice';
 import type { GetOfferedJobsParams, OfferedJobItem } from './types';
+
+// Shape returned by GET /auth/me and PATCH /users/me.
+export interface MeResponse {
+  id: string;
+  email: string;
+  role: string;
+  name: string;
+  phone: string;
+  balance: number;
+  avatarUrl?: string | null;
+}
+
+// Best-effort MIME inference for image URIs returned by expo-image-picker
+// (we always have a local file:// URI, so the extension is reliable).
+function guessMimeFromUri(uri: string): string {
+  const ext = uri.split("?")[0].split(".").pop()?.toLowerCase();
+  switch (ext) {
+    case "png":
+      return "image/png";
+    case "webp":
+      return "image/webp";
+    case "heic":
+    case "heif":
+      return "image/heic";
+    case "jpg":
+    case "jpeg":
+    default:
+      return "image/jpeg";
+  }
+}
 
 // Base query with auth header
 const API_URL = process.env.EXPO_PUBLIC_API_URL as string;
@@ -60,7 +91,7 @@ export const profikApi = createApi({
     forgotPasswordVerify: builder.mutation<AuthResponse, ForgotPasswordVerifyParams>({
       query: (body) => ({ url: '/auth/forgot-password/verify', method: 'POST', body }),
     }),
-    me: builder.query<{ id: string; email: string; role: string; name: string; balance: number }, void>({
+    me: builder.query<MeResponse, void>({
       query: () => ({ url: '/auth/me', method: 'GET' }),
     }),
     getOpenJobs: builder.query<any[], void>({
@@ -115,10 +146,33 @@ export const profikApi = createApi({
       query: () => ({ url: '/users/me', method: 'DELETE' }),
     }),
     updateProfile: builder.mutation<
-      { id: string; email: string; role: string; name: string; balance: number },
+      MeResponse,
       { name?: string; email?: string }
     >({
       query: (body) => ({ url: '/users/me', method: 'PATCH', body }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        dispatch(profikApi.util.updateQueryData('me', undefined, () => data));
+      },
+    }),
+    uploadAvatar: builder.mutation<MeResponse, UploadAvatarParams>({
+      query: ({ uri, fileName, mimeType }) => {
+        const inferredMime = mimeType ?? guessMimeFromUri(uri);
+        const inferredName =
+          fileName ?? `avatar.${inferredMime.split("/")[1] ?? "jpg"}`;
+        const formData = new FormData();
+        formData.append("file", {
+          uri,
+          name: inferredName,
+          type: inferredMime,
+        } as any);
+        return {
+          url: "/users/me/avatar",
+          method: "POST",
+          body: formData,
+          formData: true,
+        };
+      },
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         dispatch(profikApi.util.updateQueryData('me', undefined, () => data));
@@ -147,4 +201,5 @@ export const {
   useRegisterPushTokenMutation,
   useDeleteAccountMutation,
   useUpdateProfileMutation,
+  useUploadAvatarMutation,
 } = profikApi;

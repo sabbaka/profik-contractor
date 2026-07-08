@@ -5,6 +5,7 @@ import {
 import { Text } from "@/src/components/ui/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { extractErrorMessage } from "@/src/features/auth/types";
+import { resolveAvatarUrl } from "@/src/features/auth/utils";
 import { useThemeColors, useThemeMode } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import {
@@ -26,6 +27,7 @@ import {
   WalletCards,
 } from "@tamagui/lucide-icons";
 import Constants from "expo-constants";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -111,6 +113,7 @@ export default function ProfileRoute() {
   const name = user?.name ?? "—";
   const email = user?.email ?? "";
   const initial = (name[0] ?? "P").toUpperCase();
+  const avatarUrl = resolveAvatarUrl(user?.avatarUrl);
 
   const appearanceLabel =
     preference === "system"
@@ -185,32 +188,46 @@ export default function ProfileRoute() {
         alignItems="center"
         gap={14}
       >
-        <YStack
-          width={80}
-          height={80}
-          borderRadius={9999}
-          overflow="hidden"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <LinearGradient
-            colors={["#FF8A2B", "#E85D00"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={StyleSheet.absoluteFill}
+        {avatarUrl ? (
+          <Image
+            source={{ uri: avatarUrl }}
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 9999,
+              backgroundColor: colors.surfaceInput,
+            }}
+            contentFit="cover"
+            transition={200}
           />
-          <Text
-            position="relative"
-            zIndex={1}
-            fontSize={32}
-            lineHeight={40}
-            fontFamily="Geist_700Bold"
-            color="#FFFFFF"
-            textAlign="center"
+        ) : (
+          <YStack
+            width={80}
+            height={80}
+            borderRadius={9999}
+            overflow="hidden"
+            alignItems="center"
+            justifyContent="center"
           >
-            {initial}
-          </Text>
-        </YStack>
+            <LinearGradient
+              colors={["#FF8A2B", "#E85D00"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Text
+              position="relative"
+              zIndex={1}
+              fontSize={32}
+              lineHeight={40}
+              fontFamily="Geist_700Bold"
+              color="#FFFFFF"
+              textAlign="center"
+            >
+              {initial}
+            </Text>
+          </YStack>
+        )}
         <YStack alignItems="center" gap={2}>
           <Text variant="h3">{name}</Text>
           <Text variant="bodySm">{email}</Text>

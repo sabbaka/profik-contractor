@@ -1,10 +1,13 @@
 import { useMeQuery } from "@/src/api/profikApi";
 import { FormInput } from "@/src/components/form/FormInput";
+import { AvatarCircle } from "@/src/components/ui/GradientCircle";
+import { NavHeader } from "@/src/components/ui/NavHeader";
 import { Button, Text } from "@/src/components/ui/ui";
-import { useEditProfileForm } from "@/src/features/auth/hooks";
+import { useEditProfileForm, useUploadAvatar } from "@/src/features/auth/hooks";
+import { resolveAvatarUrl } from "@/src/features/auth/utils";
 import { useThemeColors } from "@/src/theme";
-import { ChevronLeft } from "@tamagui/lucide-icons";
-import { LinearGradient } from "expo-linear-gradient";
+import { Camera } from "@tamagui/lucide-icons";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,7 +17,6 @@ import {
   Keyboard,
   Pressable,
   ScrollView,
-  StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,6 +27,7 @@ export default function EditProfileScreen() {
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
   const { data: user, isLoading: isLoadingUser } = useMeQuery();
+  const { pickAndUpload, isUploading } = useUploadAvatar();
 
   const { form, isLoading, submit } = useEditProfileForm({
     name: user?.name ?? "",
@@ -55,7 +58,16 @@ export default function EditProfileScreen() {
     }
   };
 
+  const handleChangeAvatar = async () => {
+    const result = await pickAndUpload();
+    if (!result.success && !result.cancelled) {
+      Alert.alert(t("common.error"), result.error);
+    }
+  };
+
   const initial = ((user?.name ?? "P")[0] ?? "P").toUpperCase();
+  const avatarUrl = resolveAvatarUrl(user?.avatarUrl);
+  const hasAvatar = !!avatarUrl;
 
   if (isLoadingUser && !user) {
     return (
@@ -72,22 +84,10 @@ export default function EditProfileScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <YStack flex={1} backgroundColor={colors.bgPrimary} paddingTop={insets.top}>
-        <XStack
-          height={48}
-          paddingHorizontal={16}
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Pressable onPress={() => router.back()} hitSlop={10}>
-            <XStack alignItems="center" gap={2}>
-              <ChevronLeft size={25} color={colors.textPrimary} />
-              <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t("common.back")}</Text>
-            </XStack>
-          </Pressable>
-          <Text variant="h5">{t("profile.editProfile")}</Text>
-          <XStack width={58} />
-        </XStack>
+      <YStack flex={1} backgroundColor={colors.bgPrimary}>
+        <YStack paddingTop={insets.top + 4}>
+          <NavHeader title={t("profile.editProfile")} showBackLabel={false} />
+        </YStack>
 
         <ScrollView
           contentContainerStyle={{
@@ -101,33 +101,90 @@ export default function EditProfileScreen() {
         >
           <YStack gap={28} flex={1}>
             {/* Avatar */}
-            <YStack alignItems="center">
-              <YStack
-                width={96}
-                height={96}
-                borderRadius={9999}
-                overflow="hidden"
-                alignItems="center"
-                justifyContent="center"
+            <YStack alignItems="center" gap={12}>
+              <Pressable
+                onPress={handleChangeAvatar}
+                disabled={isUploading}
+                hitSlop={6}
+                style={({ pressed }) => [
+                  { position: "relative" },
+                  pressed && { opacity: 0.85 },
+                ]}
               >
-                <LinearGradient
-                  colors={["#FF8A2B", "#E85D00"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Text
-                  position="relative"
-                  zIndex={1}
-                  fontSize={36}
-                  lineHeight={44}
-                  fontFamily="Geist_700Bold"
-                  color="#FFFFFF"
-                  textAlign="center"
+                {hasAvatar ? (
+                  <Image
+                    source={{ uri: avatarUrl }}
+                    style={{
+                      width: 96,
+                      height: 96,
+                      borderRadius: 9999,
+                      backgroundColor: colors.surfaceInput,
+                    }}
+                    contentFit="cover"
+                    transition={200}
+                  />
+                ) : (
+                  <AvatarCircle size={96}>
+                    <Text
+                      fontSize={36}
+                      lineHeight={44}
+                      fontFamily="Geist_700Bold"
+                      color="#FFFFFF"
+                      textAlign="center"
+                    >
+                      {initial}
+                    </Text>
+                  </AvatarCircle>
+                )}
+
+                {/* Camera badge */}
+                <YStack
+                  position="absolute"
+                  bottom={0}
+                  right={0}
+                  width={32}
+                  height={32}
+                  borderRadius={9999}
+                  alignItems="center"
+                  justifyContent="center"
+                  backgroundColor={colors.bgPrimary}
+                  borderWidth={2}
+                  borderColor={colors.bgPrimary}
                 >
-                  {initial}
+                  <YStack
+                    width={28}
+                    height={28}
+                    borderRadius={9999}
+                    alignItems="center"
+                    justifyContent="center"
+                    backgroundColor={colors.accent}
+                  >
+                    {isUploading ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <Camera size={15} color="#FFFFFF" />
+                    )}
+                  </YStack>
+                </YStack>
+              </Pressable>
+
+              <Pressable
+                onPress={handleChangeAvatar}
+                disabled={isUploading}
+                hitSlop={8}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Text
+                  fontSize={14}
+                  lineHeight={20}
+                  fontFamily="Inter_600SemiBold"
+                  color={colors.accent}
+                >
+                  {isUploading
+                    ? t("profile.uploadingAvatar")
+                    : t("profile.changeAvatar")}
                 </Text>
-              </YStack>
+              </Pressable>
             </YStack>
 
             {/* Fields */}
@@ -154,6 +211,31 @@ export default function EditProfileScreen() {
                 autoCorrect={false}
                 returnKeyType="done"
               />
+
+              {/* Phone — read only */}
+              <YStack gap={6}>
+                <Text variant="sectionLabel">{t("profile.phone")}</Text>
+                <XStack
+                  height={52}
+                  paddingHorizontal={16}
+                  borderRadius={12}
+                  alignItems="center"
+                  backgroundColor={colors.surfaceInput}
+                  opacity={0.6}
+                >
+                  <Text
+                    fontSize={15}
+                    lineHeight={20}
+                    fontFamily="Inter_400Regular"
+                    color={colors.textSecondary}
+                  >
+                    {user?.phone ?? "—"}
+                  </Text>
+                </XStack>
+                <Text variant="caption" style={{ color: colors.textMuted }}>
+                  {t("profile.phoneReadOnly")}
+                </Text>
+              </YStack>
             </YStack>
 
             <YStack flex={1} />

@@ -8,7 +8,14 @@ export interface User {
   name: string;
   role: string;
   balance: number;
+  avatarUrl?: string | null;
   createdAt: string;
+}
+
+export interface UploadAvatarParams {
+  uri: string;
+  fileName?: string;
+  mimeType?: string;
 }
 
 export interface AuthResponse {

@@ -6,3 +6,4 @@ export {
 } from "./useEditProfileForm";
 export { useForgotPassword, type UseForgotPasswordReturn } from "./useForgotPassword";
 export { useSignup, type SignupData, type UseSignupReturn } from "./useSignup";
+export { useUploadAvatar, type UseUploadAvatarReturn } from "./useUploadAvatar";
