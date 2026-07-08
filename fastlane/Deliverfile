@@ -5,7 +5,7 @@ app_identifier "com.profik.contractor"
 
 # The current marketing version we are filling metadata for.
 # Bump this when you submit a new version.
-app_version "1.0.4"
+app_version "1.0.5"
 
 # Path to the metadata folder
 metadata_path "./fastlane/metadata"
