@@ -28,7 +28,12 @@ export function useTopup(): UseTopupReturn {
 
   const topup = async (amount: number): Promise<TopupResult> => {
     try {
-      const returnUrl = AuthSession.makeRedirectUri({ scheme: "profik" });
+      // Stripe rejects bare-scheme URLs ("profikcontractor://") as invalid,
+      // so the redirect URI must include a path.
+      const returnUrl = AuthSession.makeRedirectUri({
+        scheme: "profikcontractor",
+        path: "payments/return",
+      });
       WebBrowser.maybeCompleteAuthSession();
 
       const res = await topupMutation({ amount, returnUrl }).unwrap();
