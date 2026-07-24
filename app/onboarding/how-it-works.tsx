@@ -36,6 +36,11 @@ export default function HowItWorksScreen() {
     },
   ];
 
+  const handleBrowseJobs = async () => {
+    await setHasSeenOnboarding();
+    router.replace("/(contractor)/(tabs)/open" as any);
+  };
+
   const handleCreateAccount = async () => {
     await setHasSeenOnboarding();
     router.replace("/auth/signup" as any);
@@ -106,7 +111,10 @@ export default function HowItWorksScreen() {
       </ScrollView>
 
       <YStack paddingHorizontal={24} paddingBottom={32} paddingTop={8} gap={8}>
-        <Button variant="primary" onPress={handleCreateAccount}>
+        <Button variant="primary" onPress={handleBrowseJobs}>
+          {t("onboarding.how.browseJobs")}
+        </Button>
+        <Button variant="ghost" onPress={handleCreateAccount}>
           {t("onboarding.how.createAccount")}
         </Button>
         <Button variant="ghost" onPress={handleSignIn}>

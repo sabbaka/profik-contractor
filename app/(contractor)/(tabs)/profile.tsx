@@ -2,8 +2,9 @@ import {
   useDeleteAccountMutation,
   useMeQuery,
 } from "@/src/api/profikApi";
-import { Text } from "@/src/components/ui/ui";
+import { Button, Text } from "@/src/components/ui/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
+import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { extractErrorMessage } from "@/src/features/auth/types";
 import { resolveAvatarUrl } from "@/src/features/auth/utils";
 import { useThemeColors, useThemeMode } from "@/src/theme";
@@ -96,7 +97,8 @@ export default function ProfileRoute() {
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
-  const { data: user } = useMeQuery();
+  const isGuest = useIsGuest();
+  const { data: user } = useMeQuery(undefined, { skip: isGuest });
   const { logout } = useAuth();
   const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccountMutation();
   const { preference, setPreference } = useThemeMode();
@@ -188,7 +190,50 @@ export default function ProfileRoute() {
         alignItems="center"
         gap={14}
       >
-        {avatarUrl ? (
+        {isGuest ? (
+          <>
+            <YStack
+              width={80}
+              height={80}
+              borderRadius={9999}
+              overflow="hidden"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <LinearGradient
+                colors={["#FF8A2B", "#E85D00"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Text
+                position="relative"
+                zIndex={1}
+                fontSize={32}
+                lineHeight={40}
+                fontFamily="Geist_700Bold"
+                color="#FFFFFF"
+                textAlign="center"
+              >
+                P
+              </Text>
+            </YStack>
+            <YStack alignItems="center" gap={2}>
+              <Text variant="h3">{t("guest.profileTitle")}</Text>
+              <Text variant="bodySm" textAlign="center" maxWidth={280}>
+                {t("guest.profileBody")}
+              </Text>
+            </YStack>
+            <YStack gap={8} width="100%" maxWidth={280}>
+              <Button variant="primary" onPress={() => router.push("/auth/login" as any)}>
+                {t("guest.signIn")}
+              </Button>
+              <Button variant="ghost" onPress={() => router.push("/auth/signup" as any)}>
+                {t("guest.createAccount")}
+              </Button>
+            </YStack>
+          </>
+        ) : avatarUrl ? (
           <Image
             source={{ uri: avatarUrl }}
             style={{
@@ -228,31 +273,35 @@ export default function ProfileRoute() {
             </Text>
           </YStack>
         )}
-        <YStack alignItems="center" gap={2}>
-          <Text variant="h3">{name}</Text>
-          <Text variant="bodySm">{email}</Text>
-        </YStack>
-        <Pressable
-          style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-          onPress={() => router.push("/(contractor)/profile" as any)}
-          hitSlop={6}
-        >
-          <XStack
-            height={36}
-            paddingHorizontal={20}
-            borderRadius={9999}
-            borderWidth={1.5}
-            borderColor={colors.border}
-            alignItems="center"
-            justifyContent="center"
-            gap={6}
-          >
-            <Edit3 size={14} color={colors.textSecondary} />
-            <Text variant="caption" style={{ fontFamily: "Inter_500Medium" }}>
-              {t("profile.editProfile")}
-            </Text>
-          </XStack>
-        </Pressable>
+        {!isGuest && (
+          <>
+            <YStack alignItems="center" gap={2}>
+              <Text variant="h3">{name}</Text>
+              <Text variant="bodySm">{email}</Text>
+            </YStack>
+            <Pressable
+              style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+              onPress={() => router.push("/(contractor)/profile" as any)}
+              hitSlop={6}
+            >
+              <XStack
+                height={36}
+                paddingHorizontal={20}
+                borderRadius={9999}
+                borderWidth={1.5}
+                borderColor={colors.border}
+                alignItems="center"
+                justifyContent="center"
+                gap={6}
+              >
+                <Edit3 size={14} color={colors.textSecondary} />
+                <Text variant="caption" style={{ fontFamily: "Inter_500Medium" }}>
+                  {t("profile.editProfile")}
+                </Text>
+              </XStack>
+            </Pressable>
+          </>
+        )}
       </YStack>
 
       <ScrollView
@@ -264,6 +313,7 @@ export default function ProfileRoute() {
         showsVerticalScrollIndicator={false}
       >
         {/* Balance */}
+        {!isGuest && (
         <Pressable
           onPress={() => router.push("/(contractor)/balance" as any)}
           style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
@@ -316,6 +366,7 @@ export default function ProfileRoute() {
             </Text>
           </YStack>
         </Pressable>
+        )}
 
         {/* Settings */}
         <YStack
@@ -325,13 +376,17 @@ export default function ProfileRoute() {
           borderColor={colors.borderSubtle}
           overflow="hidden"
         >
-          <ProfileRow
-            label={t("profile.menu.notifications")}
-            iconBg={colors.warningBg}
-            icon={<Bell size={18} color={colors.warningText} />}
-            onPress={() => Linking.openSettings()}
-          />
-          <Divider />
+          {!isGuest && (
+            <>
+              <ProfileRow
+                label={t("profile.menu.notifications")}
+                iconBg={colors.warningBg}
+                icon={<Bell size={18} color={colors.warningText} />}
+                onPress={() => Linking.openSettings()}
+              />
+              <Divider />
+            </>
+          )}
           <ProfileRow
             label={t("profile.menu.language")}
             iconBg={colors.infoBg}
@@ -388,6 +443,7 @@ export default function ProfileRoute() {
         </YStack>
 
         {/* Logout */}
+        {!isGuest && (
         <Pressable
           onPress={logout}
           style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
@@ -414,7 +470,9 @@ export default function ProfileRoute() {
             </Text>
           </XStack>
         </Pressable>
+        )}
 
+        {!isGuest && (
         <Pressable
           onPress={confirmDelete}
           disabled={isDeleting}
@@ -450,6 +508,7 @@ export default function ProfileRoute() {
             </Text>
           </YStack>
         </Pressable>
+        )}
 
         <Text
           variant="caption"

@@ -10,13 +10,13 @@ import { Keyboard, Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback }
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
-export type LoginScreenProps = { onGoToSignup?: () => void };
+export type LoginScreenProps = { onGoToSignup?: () => void; returnTo?: string };
 
-export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
+export default function LoginScreen({ onGoToSignup, returnTo }: LoginScreenProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
-  const { form, isLoading, submit } = useLoginForm();
+  const { form, isLoading, submit } = useLoginForm(returnTo);
   const { control, formState: { errors } } = form;
 
   return (
@@ -54,6 +54,16 @@ export default function LoginScreen({ onGoToSignup }: LoginScreenProps) {
               <Text variant="bodySm">{t("auth.login.newTo")}</Text>
               <Pressable onPress={onGoToSignup} hitSlop={8}>
                 <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 14 }}>{t("auth.login.createAccount")}</Text>
+              </Pressable>
+            </XStack>
+
+            <XStack justifyContent="center">
+              <Pressable
+                onPress={() => router.replace("/(contractor)/(tabs)/open" as any)}
+                hitSlop={8}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 14 }}>{t("guest.browseJobs")}</Text>
               </Pressable>
             </XStack>
           </YStack>

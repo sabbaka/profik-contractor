@@ -28,7 +28,7 @@ export interface UseSignupReturn {
   isLoading: boolean;
 }
 
-export function useSignup(): UseSignupReturn {
+export function useSignup(returnTo?: string): UseSignupReturn {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const [requestSmsCode, { isLoading: requesting }] =
@@ -75,7 +75,7 @@ export function useSignup(): UseSignupReturn {
       // @ts-ignore - util is available on the api instance
       dispatch(profikApi.util.resetApiState());
 
-      router.replace("/(contractor)/open" as any);
+      router.replace((returnTo ?? "/(contractor)/(tabs)/open") as any);
 
       return { success: true };
     } catch (err: unknown) {

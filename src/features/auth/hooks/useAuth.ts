@@ -7,7 +7,11 @@ import { useDispatch } from "react-redux";
 import { AuthResult, extractErrorMessage, LoginParams } from "../types";
 
 export interface UseAuthReturn {
-  login: (phone: string, password: string) => Promise<AuthResult>;
+  login: (
+    phone: string,
+    password: string,
+    returnTo?: string
+  ) => Promise<AuthResult>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -19,7 +23,8 @@ export function useAuth(): UseAuthReturn {
 
   const login = async (
     phone: string,
-    password: string
+    password: string,
+    returnTo?: string
   ): Promise<AuthResult> => {
     try {
       const loginParams: LoginParams = { phone, password };
@@ -40,8 +45,8 @@ export function useAuth(): UseAuthReturn {
       // @ts-ignore - util is available on the api instance
       dispatch(profikApi.util.resetApiState());
 
-      // Navigate to Home immediately
-      router.replace("/(contractor)/open" as any);
+      // Navigate back to where the guest came from, or Home
+      router.replace((returnTo ?? "/(contractor)/(tabs)/open") as any);
       return { success: true };
     } catch (err: unknown) {
       const errorMessage = extractErrorMessage(err) || t("auth.login.failed");

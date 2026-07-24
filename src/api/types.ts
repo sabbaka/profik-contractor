@@ -9,13 +9,15 @@ export interface Job {
   clientId: string;
   contractorId: string | null;
   status: string;
-  addressLine: string;
-  city: string;
-  postalCode: string;
-  country: string;
-  lat: number;
-  lng: number;
-  placeId: string;
+  // Location fields are null for anonymous (guest) API responses — the
+  // backend strips the exact address and coarsens coordinates.
+  addressLine: string | null;
+  city: string | null;
+  postalCode: string | null;
+  country: string | null;
+  lat: number | null;
+  lng: number | null;
+  placeId: string | null;
   createdAt: string;
   updatedAt: string;
 }

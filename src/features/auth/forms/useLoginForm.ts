@@ -10,7 +10,7 @@ export type LoginFormValues = {
   password: string;
 };
 
-export function useLoginForm() {
+export function useLoginForm(returnTo?: string) {
   const { t } = useTranslation();
   const { login, isLoading } = useAuth();
   const loginSchema = z.object({
@@ -30,7 +30,7 @@ export function useLoginForm() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    await login(data.phone, data.password);
+    await login(data.phone, data.password, returnTo);
   };
 
   return {

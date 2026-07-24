@@ -14,11 +14,12 @@ export type SignupFormData = {
 
 interface UseSignupFormOptions {
   onCodeSent?: () => void;
+  returnTo?: string;
 }
 
 export function useSignupForm(options?: UseSignupFormOptions) {
   const { t } = useTranslation();
-  const { signup, isLoading } = useSignup();
+  const { signup, isLoading } = useSignup(options?.returnTo);
   const signupSchema = z.object({
     phone: z
       .string()

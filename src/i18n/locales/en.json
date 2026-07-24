@@ -327,6 +327,7 @@
           "description": "Complete the work, collect reviews that win you more jobs, and top up your balance to cover platform fees."
         }
       },
+      "browseJobs": "Browse jobs",
       "createAccount": "Create Account",
       "signIn": "Sign In"
     }
@@ -338,5 +339,16 @@
   },
   "notFound": {
     "title": "Not Found"
+  },
+  "guest": {
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "browseJobs": "Browse jobs without an account",
+    "myJobsTitle": "Sign in to see your jobs",
+    "myJobsBody": "Create a free account to send offers and track their status here.",
+    "profileTitle": "You're browsing as a guest",
+    "profileBody": "Sign in to manage your profile, balance and offers.",
+    "signInToOffer": "Sign in to make an offer",
+    "signInToOfferBody": "Browsing is free — create a free account to send the client your offer."
   }
 }

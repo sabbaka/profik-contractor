@@ -1,7 +1,18 @@
+import { normalizeAuthReturnTo } from '@/src/features/auth/authReturnTo';
 import LoginScreen from '@/src/screens/Auth/LoginScreen';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 
 export default function LoginRoute() {
-  return <LoginScreen onGoToSignup={() => router.push('/auth/signup' as any)} />;
+  const params = useLocalSearchParams<{ returnTo?: string }>();
+  const returnTo = normalizeAuthReturnTo(params.returnTo);
+
+  return (
+    <LoginScreen
+      returnTo={returnTo}
+      onGoToSignup={() =>
+        router.push({ pathname: '/auth/signup', params: { returnTo } } as any)
+      }
+    />
+  );
 }

@@ -59,7 +59,10 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   extraOptions,
 ) => {
   const result = await rawBaseQuery(args, api, extraOptions);
-  if (result && 'error' in result && (result as any).error?.status === 401) {
+  // Only force a logout when there is a token to invalidate — guests may
+  // legitimately receive 401s from protected endpoints while browsing.
+  const hasToken = !!(api.getState() as any).auth?.token;
+  if (result && 'error' in result && (result as any).error?.status === 401 && hasToken) {
     api.dispatch(logout());
   }
   return result as any;

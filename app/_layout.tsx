@@ -18,6 +18,7 @@ import '../src/i18n';
 import 'react-native-reanimated';
 
 import { ErrorBoundary } from '@/src/components/ui/ErrorBoundary';
+import { isGuestAccessibleRoute } from '@/src/features/auth/guestRoutes';
 import { usePushNotifications } from '@/src/hooks/usePushNotifications';
 import { ThemeProvider, useThemeColors, useThemeMode } from '@/src/theme';
 import {
@@ -134,7 +135,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       return <Redirect href={"/onboarding/welcome" as any} />;
     }
 
-    return <Redirect href={"/auth/login" as any} />;
+    if (!isGuestAccessibleRoute(segments)) {
+      return <Redirect href={"/(contractor)/(tabs)/open" as any} />;
+    }
   }
   return <>{children}</>;
 }

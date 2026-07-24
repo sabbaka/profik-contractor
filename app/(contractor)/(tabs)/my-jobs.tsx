@@ -3,8 +3,9 @@ import type { OfferStatus } from "@/src/api/types";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useJobsFilter } from "@/src/context/JobsFilterContext";
+import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useThemeColors } from "@/src/theme";
-import { FolderOpen } from "@tamagui/lucide-icons";
+import { FolderOpen, Lock } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,9 +22,11 @@ export default function MyJobsTab() {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const { filter, setFilter } = useJobsFilter();
+  const isGuest = useIsGuest();
   const [changing, setChanging] = useState(false);
   const previous = useRef(filter);
   const { data, isLoading, isFetching, error, refetch } = useGetOfferedJobsQuery({ status: filter }, {
+    skip: isGuest,
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     refetchOnFocus: true,
@@ -40,6 +43,28 @@ export default function MyJobsTab() {
   const jobs = data ?? [];
   const loading = isLoading || changing || (isFetching && !jobs.length);
   const currentLabel = t(`my.labels.${filter}`);
+
+  if (isGuest) {
+    return (
+      <YStack flex={1} backgroundColor={colors.bgSecondary}>
+        <YStack paddingHorizontal={20} paddingTop={12} paddingBottom={16} gap={3}>
+          <Text variant="h1">{t("my.title")}</Text>
+          <Text variant="bodySm">{t("my.subtitle")}</Text>
+        </YStack>
+        <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingHorizontal={28} paddingBottom={80}>
+          <YStack width={80} height={80} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
+            <Lock size={32} color={colors.accent} />
+          </YStack>
+          <Text variant="h4">{t("guest.myJobsTitle")}</Text>
+          <Text variant="bodySm" textAlign="center" maxWidth={270}>{t("guest.myJobsBody")}</Text>
+          <YStack gap={8} width="100%" maxWidth={280} marginTop={8}>
+            <Button variant="primary" onPress={() => router.push("/auth/login" as any)}>{t("guest.signIn")}</Button>
+            <Button variant="ghost" onPress={() => router.push("/auth/signup" as any)}>{t("guest.createAccount")}</Button>
+          </YStack>
+        </YStack>
+      </YStack>
+    );
+  }
 
   return (
     <YStack flex={1} backgroundColor={colors.bgSecondary}>

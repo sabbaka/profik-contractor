@@ -10,7 +10,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ScrollView, Spinner, Text, YStack } from "tamagui";
+import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { ContractorOfferSection } from "./ContractorOfferSection";
+import { GuestOfferCta } from "./GuestOfferCta";
 import { JobBasicInfo } from "./JobBasicInfo";
 import { JobDescription } from "./JobDescription";
 import { JobDetailHeader } from "./JobDetailHeader";
@@ -22,6 +24,7 @@ export const JobDetail = () => {
   const colors = useThemeColors();
   const params = useLocalSearchParams<{ id: string }>();
   const id = params.id as string;
+  const isGuest = useIsGuest();
 
   const {
     data: job,
@@ -135,6 +138,8 @@ export const JobDetail = () => {
                 lat={job.lat}
                 lng={job.lng}
               />
+
+              {isGuest && <GuestOfferCta jobId={id} />}
 
               {isContractor && (
                 <ContractorOfferSection

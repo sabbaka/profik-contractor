@@ -327,6 +327,7 @@
           "description": "Dokončete práci, sbírejte recenze, které vám přinesou další zakázky, a doplňujte zůstatek na platformní poplatky."
         }
       },
+      "browseJobs": "Prohlížet zakázky",
       "createAccount": "Vytvořit účet",
       "signIn": "Přihlásit se"
     }
@@ -338,5 +339,16 @@
   },
   "notFound": {
     "title": "Nenalezeno"
+  },
+  "guest": {
+    "signIn": "Přihlásit se",
+    "createAccount": "Vytvořit účet",
+    "browseJobs": "Prohlížet zakázky bez účtu",
+    "myJobsTitle": "Přihlaste se a uvidíte své zakázky",
+    "myJobsBody": "Vytvořte si zdarma účet, posílejte nabídky a sledujte zde jejich stav.",
+    "profileTitle": "Prohlížíte jako host",
+    "profileBody": "Přihlaste se pro správu profilu, kreditu a nabídek.",
+    "signInToOffer": "Přihlaste se a pošlete nabídku",
+    "signInToOfferBody": "Prohlížení je zdarma — vytvořte si účet zdarma a pošlete klientovi svou nabídku."
   }
 }

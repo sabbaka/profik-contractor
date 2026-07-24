@@ -9,9 +9,9 @@ import { Keyboard, Pressable, ScrollView, StyleSheet, TouchableWithoutFeedback }
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
-export type SignupScreenProps = { onGoToLogin?: () => void };
+export type SignupScreenProps = { onGoToLogin?: () => void; returnTo?: string };
 
-export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
+export default function SignupScreen({ onGoToLogin, returnTo }: SignupScreenProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
@@ -20,6 +20,7 @@ export default function SignupScreen({ onGoToLogin }: SignupScreenProps) {
   const [otpError, setOtpError] = useState<string>();
   const { form, isLoading, handleRequestCode, handleVerifyCode } = useSignupForm({
     onCodeSent: () => { setStep("otp"); setOtpCode(""); setOtpError(undefined); },
+    returnTo,
   });
   const { control } = form;
 

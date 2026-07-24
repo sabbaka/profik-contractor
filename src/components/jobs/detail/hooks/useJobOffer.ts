@@ -4,6 +4,7 @@ import {
   useHasOfferedQuery,
   useMeQuery,
 } from "@/src/api/profikApi";
+import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
@@ -18,7 +19,8 @@ interface UseJobOfferOptions {
 
 export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) => {
   const { t } = useTranslation();
-  const { data: me } = useMeQuery();
+  const isGuest = useIsGuest();
+  const { data: me } = useMeQuery(undefined, { skip: isGuest });
   const [createOffer, { isLoading: isSubmitting }] = useCreateOfferMutation();
 
   const [mode, setModeState] = useState<OfferMode>("idle");
