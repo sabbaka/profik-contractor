@@ -132,7 +132,8 @@
       "pending": "Pending",
       "accepted": "Accepted",
       "declined": "Declined"
-    }
+    },
+    "exactAddressAfterAccept": "Exact address and precise location are shared once your offer is accepted."
   },
   "offer": {
     "yourOffer": "Your offer",

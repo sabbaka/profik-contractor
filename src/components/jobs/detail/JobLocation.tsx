@@ -46,6 +46,11 @@ export const JobLocation = ({
           </Text>
         </XStack>
       )}
+      {!addressLine && (
+        <Text variant="caption" style={{ color: colors.textMuted }}>
+          {t("job.exactAddressAfterAccept")}
+        </Text>
+      )}
       <YStack height="auto" borderRadius="$6" overflow="hidden">
         {lat && lng ? (
           <MapPreview lat={lat} lng={lng} />

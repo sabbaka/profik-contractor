@@ -132,7 +132,8 @@
       "pending": "Čekající",
       "accepted": "Přijatá",
       "declined": "Odmítnutá"
-    }
+    },
+    "exactAddressAfterAccept": "Přesná adresa a poloha se zobrazí po přijetí vaší nabídky."
   },
   "offer": {
     "yourOffer": "Vaše nabídka",
