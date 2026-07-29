@@ -86,7 +86,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     boolean | null
   >(null);
 
-  usePushNotifications(!!token);
+  usePushNotifications(token);
 
   useEffect(() => {
     // @ts-ignore hydrate token on app start

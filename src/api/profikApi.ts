@@ -148,6 +148,12 @@ export const profikApi = createApi({
         body: { pushToken },
       }),
     }),
+    unregisterPushToken: builder.mutation<void, void>({
+      query: () => ({
+        url: '/users/me/push-token',
+        method: 'DELETE',
+      }),
+    }),
     deleteAccount: builder.mutation<void, void>({
       query: () => ({ url: '/users/me', method: 'DELETE' }),
     }),
@@ -205,6 +211,7 @@ export const {
   useSendOfferMessageMutation,
   useTopupBalanceMutation,
   useRegisterPushTokenMutation,
+  useUnregisterPushTokenMutation,
   useDeleteAccountMutation,
   useUpdateProfileMutation,
   useUploadAvatarMutation,

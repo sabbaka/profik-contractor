@@ -1,4 +1,5 @@
 import { profikApi, useLoginMutation } from "@/src/api/profikApi";
+import { useUnregisterPushToken } from "@/src/hooks/usePushNotifications";
 import { logout as logoutAction, setToken } from "@/src/store/authSlice";
 import { router } from "expo-router";
 import { Alert } from "react-native";
@@ -12,13 +13,14 @@ export interface UseAuthReturn {
     password: string,
     returnTo?: string
   ) => Promise<AuthResult>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
 export function useAuth(): UseAuthReturn {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const unregisterPushToken = useUnregisterPushToken();
   const [loginMutation, { isLoading }] = useLoginMutation();
 
   const login = async (
@@ -55,7 +57,12 @@ export function useAuth(): UseAuthReturn {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    // Drop this device's push token server-side first — it needs the auth
+    // header, and without it the next contractor to sign in on this device
+    // keeps receiving the previous one's job notifications.
+    await unregisterPushToken();
+
     // Clear auth state (token, user)
     dispatch(logoutAction());
 
