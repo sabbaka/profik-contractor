@@ -13,6 +13,7 @@ import {
   Inter_700Bold,
 } from '@expo-google-fonts/inter';
 import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import '../src/i18n';
 import 'react-native-reanimated';
@@ -51,6 +52,10 @@ Sentry.init({
 // Wire up global JS error / unhandled-rejection handlers as early as possible,
 // before any feature code runs.
 setupGlobalErrorHandlers();
+
+// Hold the native splash until fonts are ready. Without this the splash hides
+// immediately and the user stares at a blank screen while Geist/Inter load.
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function PaperThemeProvider({ children }: { children: React.ReactNode }) {
   const colors = useThemeColors();
@@ -176,6 +181,12 @@ function RootLayout() {
     GeistMono_500Medium,
     GeistMono_700Bold,
   });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [fontsLoaded]);
 
   if (!fontsLoaded) return null;
 
