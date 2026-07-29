@@ -17,6 +17,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { YStack } from "tamagui";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 interface ForgotPasswordFormData {
   phone: string;
@@ -43,7 +45,19 @@ export default function ForgotPasswordScreen() {
   const [otpError, setOtpError] = useState<string | undefined>();
   const { requestCode, verifyAndReset, isLoading } = useForgotPassword();
 
+  // Without a resolver this form validated nothing, so an empty password
+  // reached the API and errors.newPassword could never populate. Min 8 matches
+  // the backend's @MinLength(8) on the reset DTO.
+  const forgotPasswordSchema = z.object({
+    phone: z.string().trim().min(1, t("auth.errors.phoneRequired")),
+    newPassword: z
+      .string()
+      .min(1, t("auth.errors.passwordRequired"))
+      .min(8, t("auth.errors.passwordMin")),
+  });
+
   const form = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { phone: "", newPassword: "" },
   });
 

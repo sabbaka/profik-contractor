@@ -40,7 +40,7 @@ export function useForgotPassword(): UseForgotPasswordReturn {
       dispatch(setToken(res.token));
       // @ts-ignore
       dispatch(profikApi.util.resetApiState());
-      router.replace("/(contractor)/open" as any);
+      router.replace("/(contractor)/(tabs)/open" as any);
       return { success: true };
     } catch (err: unknown) {
       return { success: false, error: extractErrorMessage(err) };

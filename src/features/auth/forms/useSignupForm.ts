@@ -27,7 +27,7 @@ export function useSignupForm(options?: UseSignupFormOptions) {
       .refine(isValidCzechPhone, t("auth.errors.phoneComplete")),
     name: z.string().min(2, t("auth.errors.nameMin")),
     email: z.email(t("auth.errors.emailInvalid")).or(z.literal("")),
-    password: z.string().min(6, t("auth.errors.passwordMin")),
+    password: z.string().min(8, t("auth.errors.passwordMin")),
   });
 
   const form = useForm<SignupFormData>({

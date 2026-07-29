@@ -23,7 +23,7 @@
       "nameMin": "Jméno musí mít alespoň 2 znaky",
       "emailInvalid": "Zadejte platný e-mail",
       "passwordRequired": "Heslo je povinné",
-      "passwordMin": "Heslo musí mít alespoň 6 znaků",
+      "passwordMin": "Heslo musí mít alespoň 8 znaků",
       "otpAllDigits": "Zadejte všech 6 číslic",
       "otpSixDigit": "Zadejte 6místný kód",
       "validationFailed": "Validace selhala"

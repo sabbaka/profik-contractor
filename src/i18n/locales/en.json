@@ -23,7 +23,7 @@
       "nameMin": "Name must be at least 2 characters",
       "emailInvalid": "Enter a valid email",
       "passwordRequired": "Password is required",
-      "passwordMin": "Password must be at least 6 characters",
+      "passwordMin": "Password must be at least 8 characters",
       "otpAllDigits": "Enter all 6 digits",
       "otpSixDigit": "Enter the 6-digit code",
       "validationFailed": "Validation failed"

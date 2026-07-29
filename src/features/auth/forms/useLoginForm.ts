@@ -18,7 +18,7 @@ export function useLoginForm(returnTo?: string) {
       .string()
       .min(1, t("auth.errors.phoneRequired"))
       .refine(isValidCzechPhone, t("auth.errors.phoneComplete")),
-    password: z.string().min(6, t("auth.errors.passwordMin")),
+    password: z.string().min(8, t("auth.errors.passwordMin")),
   });
 
   const form = useForm<LoginFormValues>({
