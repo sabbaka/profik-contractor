@@ -64,6 +64,9 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   const hasToken = !!(api.getState() as any).auth?.token;
   if (result && 'error' in result && (result as any).error?.status === 401 && hasToken) {
     api.dispatch(logout());
+    // Without this the previous user's cached /auth/me — name, email, balance —
+    // survives the expiry and is rendered to whoever signs in next.
+    api.dispatch(profikApi.util.resetApiState());
   }
   return result as any;
 };
