@@ -226,10 +226,7 @@ export default function ProfileRoute() {
             </YStack>
             <YStack gap={8} width="100%" maxWidth={280}>
               <Button variant="primary" onPress={() => router.push("/auth/login" as any)}>
-                {t("guest.signIn")}
-              </Button>
-              <Button variant="ghost" onPress={() => router.push("/auth/signup" as any)}>
-                {t("guest.createAccount")}
+                {t("auth.continueWithPhone")}
               </Button>
             </YStack>
           </>

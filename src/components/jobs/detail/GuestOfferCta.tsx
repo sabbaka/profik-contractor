@@ -31,15 +31,7 @@ export const GuestOfferCta = ({ jobId }: { jobId: string }) => {
           router.push({ pathname: "/auth/login", params: { returnTo } } as any)
         }
       >
-        {t("guest.signIn")}
-      </Button>
-      <Button
-        variant="ghost"
-        onPress={() =>
-          router.push({ pathname: "/auth/signup", params: { returnTo } } as any)
-        }
-      >
-        {t("guest.createAccount")}
+        {t("auth.continueWithPhone")}
       </Button>
     </YStack>
   );

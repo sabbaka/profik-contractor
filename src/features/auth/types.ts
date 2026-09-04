@@ -3,9 +3,11 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 export interface User {
   id: string;
-  email: string;
-  phone?: string;
-  name: string;
+  /** Null until the user sets one — an OTP account starts without an email. */
+  email: string | null;
+  phone: string;
+  /** Null until the user sets one. Render a fallback, never the raw value. */
+  name: string | null;
   role: string;
   balance: number;
   avatarUrl?: string | null;
@@ -23,53 +25,31 @@ export interface AuthResponse {
   token: string;
 }
 
-export interface LoginParams {
-  phone: string;
-  password: string;
-}
-
-export interface SignupParams {
-  email: string;
-  password: string;
-  name: string;
-  role: string;
-}
-
-export interface ForgotPasswordRequestParams {
+export interface RequestOtpParams {
+  /** E.164 — run the raw field through `normalizePhone` first. */
   phone: string;
 }
 
-export interface ForgotPasswordVerifyParams {
+export interface VerifyOtpParams {
   phone: string;
   code: string;
-  newPassword: string;
-}
-
-export type SmsPurpose = "register";
-
-export interface RequestSmsCodeParams {
-  phone: string;
-  purpose: SmsPurpose;
-}
-
-export interface SmsRequestResponse {
-  success: boolean;
-}
-
-export interface VerifySmsCodeParams {
-  phone: string;
-  code: string;
+  /**
+   * Which app is asking. On an unknown phone this picks the role the new
+   * account gets; on an existing one a mismatch is a 403.
+   */
+  role: "client" | "contractor";
+  name?: string;
   email?: string;
-  password: string;
-  name: string;
-  role: "contractor";
+}
+
+export interface OtpRequestResponse {
+  success: boolean;
 }
 
 export type AuthResult = { success: true } | { success: false; error: string };
 
 export type ApiError =
-  | (FetchBaseQueryError & { data?: { message?: string } })
-  | SerializedError;
+  (FetchBaseQueryError & { data?: { message?: string } }) | SerializedError;
 
 export function extractErrorMessage(error: unknown): string {
   if (error && typeof error === "object") {

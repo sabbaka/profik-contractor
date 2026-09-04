@@ -10,68 +10,49 @@
     "validation": "Validace"
   },
   "auth": {
+    "continueWithPhone": "Pokračovat s telefonem",
     "labels": {
-      "phone": "Telefon",
+      "phone": "Telefonní číslo",
       "name": "Jméno",
-      "email": "E-mail",
-      "password": "Heslo"
+      "email": "E-mail"
     },
     "errors": {
       "phoneRequired": "Telefon je povinný",
-      "phoneComplete": "Zadejte celé telefonní číslo (+420 XXX XXX XXX)",
+      "phoneInvalid": "Zadejte platné telefonní číslo",
       "nameRequired": "Jméno je povinné",
-      "nameMin": "Jméno musí mít alespoň 2 znaky",
       "emailInvalid": "Zadejte platný e-mail",
-      "passwordRequired": "Heslo je povinné",
-      "passwordMin": "Heslo musí mít alespoň 8 znaků",
-      "otpAllDigits": "Zadejte všech 6 číslic",
-      "otpSixDigit": "Zadejte 6místný kód",
-      "validationFailed": "Validace selhala"
+      "validationFailed": "Ověření se nezdařilo"
     },
     "placeholders": {
-      "phone": "+420 XXX XXX XXX",
-      "password": "Heslo",
-      "newPassword": "Vytvořte nové heslo",
+      "phone": "777 123 456",
       "name": "Celé jméno",
-      "email": "E-mail",
-      "emailExample": "vy@priklad.cz"
+      "email": "vy@priklad.cz"
     },
-    "login": {
-      "title": "Vítejte zpět",
-      "subtitle": "Přihlaste se, najděte práci a spravujte své nabídky.",
-      "forgotPassword": "Zapomněli jste heslo?",
-      "signIn": "Přihlásit se",
-      "newTo": "Poprvé v Profik Pro?",
-      "createAccount": "Vytvořit účet",
-      "wrongAppTitle": "Nesprávná aplikace",
-      "wrongAppMessage": "Tento účet je pouze pro klienty. Použijte prosím klientskou aplikaci.",
-      "wrongAppError": "Nesprávná aplikace pro tento typ účtu",
-      "failed": "Přihlášení selhalo"
+    "phone": {
+      "title": "Zadejte svůj telefon",
+      "subtitle": "Pošleme vám kód přes SMS. Heslo nepotřebujete — pokud jste tu poprvé, vytvoříme vám účet.",
+      "continue": "Pokračovat",
+      "legal": "Pokračováním souhlasíte s našimi podmínkami a zásadami ochrany osobních údajů."
     },
-    "signup": {
-      "title": "Pracujte s Profikem",
-      "subtitle": "Vytvořte si profil profesionála a začněte získávat zakázky.",
-      "createAccount": "Vytvořit účet",
-      "alreadyHave": "Už máte účet?",
-      "signIn": "Přihlásit se",
-      "checkPhone": "Zkontrolujte telefon",
-      "codeSentPrompt": "Zadejte 6místný ověřovací kód, který jsme vám poslali.",
-      "verifyCode": "Ověřit kód",
-      "codeSentTitle": "Kód odeslán",
-      "codeSentMessage": "SMS kód jsme poslali na váš telefon. Zadejte ho a klepněte na Ověřit kód.",
-      "failed": "Registrace selhala"
+    "otp": {
+      "title": "Zadejte kód",
+      "subtitle": "Poslali jsme šestimístný kód na {{phone}}.",
+      "resend": "Poslat kód znovu",
+      "resendIn": "Nový kód si můžete vyžádat za {{seconds}} s",
+      "changeNumber": "Použít jiné číslo",
+      "errors": {
+        "invalidCode": "Tento kód nesouhlasí. Zkontrolujte SMS a zkuste to znovu.",
+        "expired": "Platnost kódu vypršela. Vyžádejte si nový.",
+        "wrongApp": "Tento účet je registrovaný jako zákazník. Použijte prosím klientskou aplikaci Profik.",
+        "tooManyAttempts": "Příliš mnoho pokusů. Počkejte pár minut a zkuste to znovu.",
+        "network": "Bez připojení. Zkontrolujte internet a zkuste to znovu.",
+        "unknown": "Něco se pokazilo. Zkuste to prosím znovu."
+      }
     },
-    "forgot": {
-      "title": "Obnovit heslo",
-      "subtitle": "Zadejte telefon a nové heslo - pošleme vám ověřovací kód.",
-      "sendCode": "Poslat kód",
-      "backToLogin": "Zpět na přihlášení",
-      "enterCodeTitle": "Zadejte kód",
-      "enterCodeSubtitle": "6místný kód jsme poslali na\n{{phone}}",
-      "phoneFallback": "váš telefon",
-      "resetPassword": "Obnovit heslo",
-      "failedSendCode": "Nepodařilo se poslat kód",
-      "invalidCode": "Neplatný kód"
+    "name": {
+      "title": "Jak vám máme říkat?",
+      "subtitle": "Zákazníci uvidí toto jméno u vaší nabídky, když si vybírají, koho najmou.",
+      "save": "Uložit a pokračovat"
     }
   },
   "tabs": {
@@ -328,9 +309,7 @@
           "description": "Dokončete práci, sbírejte recenze, které vám přinesou další zakázky, a doplňujte zůstatek na platformní poplatky."
         }
       },
-      "browseJobs": "Prohlížet zakázky",
-      "createAccount": "Vytvořit účet",
-      "signIn": "Přihlásit se"
+      "browseJobs": "Prohlížet zakázky"
     }
   },
   "errorBoundary": {
@@ -343,13 +322,12 @@
   },
   "guest": {
     "signIn": "Přihlásit se",
-    "createAccount": "Vytvořit účet",
     "browseJobs": "Prohlížet zakázky bez účtu",
     "myJobsTitle": "Přihlaste se a uvidíte své zakázky",
-    "myJobsBody": "Vytvořte si zdarma účet, posílejte nabídky a sledujte zde jejich stav.",
+    "myJobsBody": "Přihlaste se telefonem, abyste mohli posílat nabídky a sledovat jejich stav.",
     "profileTitle": "Prohlížíte jako host",
     "profileBody": "Přihlaste se pro správu profilu, kreditu a nabídek.",
     "signInToOffer": "Přihlaste se a pošlete nabídku",
-    "signInToOfferBody": "Prohlížení je zdarma — vytvořte si účet zdarma a pošlete klientovi svou nabídku."
+    "signInToOfferBody": "Prohlížení je zdarma — přihlaste se telefonním číslem a pošlete zákazníkovi nabídku."
   }
 }

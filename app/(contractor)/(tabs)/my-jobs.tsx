@@ -58,8 +58,7 @@ export default function MyJobsTab() {
           <Text variant="h4">{t("guest.myJobsTitle")}</Text>
           <Text variant="bodySm" textAlign="center" maxWidth={270}>{t("guest.myJobsBody")}</Text>
           <YStack gap={8} width="100%" maxWidth={280} marginTop={8}>
-            <Button variant="primary" onPress={() => router.push("/auth/login" as any)}>{t("guest.signIn")}</Button>
-            <Button variant="ghost" onPress={() => router.push("/auth/signup" as any)}>{t("guest.createAccount")}</Button>
+            <Button variant="primary" onPress={() => router.push("/auth/login" as any)}>{t("auth.continueWithPhone")}</Button>
           </YStack>
         </YStack>
       </YStack>

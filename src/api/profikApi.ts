@@ -2,10 +2,10 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type {
   AuthResponse,
-  ForgotPasswordRequestParams,
-  ForgotPasswordVerifyParams,
-  SmsRequestResponse,
+  OtpRequestResponse,
+  RequestOtpParams,
   UploadAvatarParams,
+  VerifyOtpParams,
 } from '../features/auth/types';
 import { logout } from '../store/authSlice';
 import type { GetOfferedJobsParams, OfferedJobItem } from './types';
@@ -13,9 +13,11 @@ import type { GetOfferedJobsParams, OfferedJobItem } from './types';
 // Shape returned by GET /auth/me and PATCH /users/me.
 export interface MeResponse {
   id: string;
-  email: string;
+  /** Null until the user sets one — an OTP account starts without an email. */
+  email: string | null;
   role: string;
-  name: string;
+  /** Null until the user sets one. Render a fallback, never the raw value. */
+  name: string | null;
   phone: string;
   balance: number;
   avatarUrl?: string | null;
@@ -76,26 +78,15 @@ export const profikApi = createApi({
   tagTypes: ['Jobs', 'OfferMessages', 'Offers'],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    signup: builder.mutation<{ token: string }, { email: string; password: string; role: string; name?: string; phone?: string }>({
-      query: (body) => ({ url: '/auth/register', method: 'POST', body }),
+    // Passwordless sign-in. One pair of endpoints serves both login and
+    // registration: an unknown phone creates the account on verify, a known
+    // one signs in. The request answers identically either way, so it cannot
+    // be used to probe which numbers are registered.
+    requestOtpCode: builder.mutation<OtpRequestResponse, RequestOtpParams>({
+      query: (body) => ({ url: '/auth/otp/request-code', method: 'POST', body }),
     }),
-    login: builder.mutation<{ user: { id: string; role: string; name: string; phone: string; email: string | null; balance: number; createdAt: string }; token: string }, { phone: string; password: string }>({
-      query: (body) => ({ url: '/auth/login', method: 'POST', body }),
-    }),
-    requestSmsCode: builder.mutation<{ success: boolean }, { phone: string; purpose: 'register' }>({
-      query: (body) => ({ url: '/auth/sms/request-code', method: 'POST', body }),
-    }),
-    verifySmsCode: builder.mutation<
-      { token: string },
-      { phone: string; code: string; email?: string; password: string; name: string; role: 'client' | 'contractor' }
-    >({
-      query: (body) => ({ url: '/auth/sms/verify', method: 'POST', body }),
-    }),
-    forgotPasswordRequestCode: builder.mutation<SmsRequestResponse, ForgotPasswordRequestParams>({
-      query: (body) => ({ url: '/auth/forgot-password/request-code', method: 'POST', body }),
-    }),
-    forgotPasswordVerify: builder.mutation<AuthResponse, ForgotPasswordVerifyParams>({
-      query: (body) => ({ url: '/auth/forgot-password/verify', method: 'POST', body }),
+    verifyOtpCode: builder.mutation<AuthResponse, VerifyOtpParams>({
+      query: (body) => ({ url: '/auth/otp/verify', method: 'POST', body }),
     }),
     me: builder.query<MeResponse, void>({
       query: () => ({ url: '/auth/me', method: 'GET' }),
@@ -194,12 +185,8 @@ export const profikApi = createApi({
 });
 
 export const {
-  useSignupMutation,
-  useLoginMutation,
-  useRequestSmsCodeMutation,
-  useVerifySmsCodeMutation,
-  useForgotPasswordRequestCodeMutation,
-  useForgotPasswordVerifyMutation,
+  useRequestOtpCodeMutation,
+  useVerifyOtpCodeMutation,
   useMeQuery,
   useGetOpenJobsQuery,
   useGetOfferedJobsQuery,

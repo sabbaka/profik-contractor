@@ -1,61 +1,18 @@
-import { profikApi, useLoginMutation } from "@/src/api/profikApi";
+import { profikApi } from "@/src/api/profikApi";
 import { useUnregisterPushToken } from "@/src/hooks/usePushNotifications";
-import { logout as logoutAction, setToken } from "@/src/store/authSlice";
-import { router } from "expo-router";
-import { Alert } from "react-native";
-import { useTranslation } from "react-i18next";
+import { logout as logoutAction } from "@/src/store/authSlice";
 import { useDispatch } from "react-redux";
-import { AuthResult, extractErrorMessage, LoginParams } from "../types";
 
 export interface UseAuthReturn {
-  login: (
-    phone: string,
-    password: string,
-    returnTo?: string
-  ) => Promise<AuthResult>;
   logout: () => Promise<void>;
-  isLoading: boolean;
 }
 
+/**
+ * Signing in lives in `usePhoneAuth` — this is only the way back out.
+ */
 export function useAuth(): UseAuthReturn {
-  const { t } = useTranslation();
   const dispatch = useDispatch();
   const unregisterPushToken = useUnregisterPushToken();
-  const [loginMutation, { isLoading }] = useLoginMutation();
-
-  const login = async (
-    phone: string,
-    password: string,
-    returnTo?: string
-  ): Promise<AuthResult> => {
-    try {
-      const loginParams: LoginParams = { phone, password };
-      const res = await loginMutation(loginParams).unwrap();
-
-      // Role-based login restriction: only contractors can log into the contractor app
-      if (res.user.role !== "contractor") {
-        Alert.alert(
-          t("auth.login.wrongAppTitle"),
-          t("auth.login.wrongAppMessage")
-        );
-        return { success: false, error: t("auth.login.wrongAppError") };
-      }
-
-      dispatch(setToken(res.token));
-      // Clear RTK Query cache so user-specific queries (e.g., /auth/me) refetch with the new token
-      // This prevents showing previous user's cached data after switching accounts
-      // @ts-ignore - util is available on the api instance
-      dispatch(profikApi.util.resetApiState());
-
-      // Navigate back to where the guest came from, or Home
-      router.replace((returnTo ?? "/(contractor)/(tabs)/open") as any);
-      return { success: true };
-    } catch (err: unknown) {
-      const errorMessage = extractErrorMessage(err) || t("auth.login.failed");
-      Alert.alert(t("common.error"), errorMessage);
-      return { success: false, error: errorMessage };
-    }
-  };
 
   const logout = async () => {
     // Drop this device's push token server-side first — it needs the auth
@@ -74,5 +31,5 @@ export function useAuth(): UseAuthReturn {
     // when it detects token is null
   };
 
-  return { login, logout, isLoading };
+  return { logout };
 }

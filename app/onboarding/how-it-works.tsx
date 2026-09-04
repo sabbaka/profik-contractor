@@ -41,11 +41,6 @@ export default function HowItWorksScreen() {
     router.replace("/(contractor)/(tabs)/open" as any);
   };
 
-  const handleCreateAccount = async () => {
-    await setHasSeenOnboarding();
-    router.replace("/auth/signup" as any);
-  };
-
   const handleSignIn = async () => {
     await setHasSeenOnboarding();
     router.replace("/auth/login" as any);
@@ -114,11 +109,8 @@ export default function HowItWorksScreen() {
         <Button variant="primary" onPress={handleBrowseJobs}>
           {t("onboarding.how.browseJobs")}
         </Button>
-        <Button variant="ghost" onPress={handleCreateAccount}>
-          {t("onboarding.how.createAccount")}
-        </Button>
         <Button variant="ghost" onPress={handleSignIn}>
-          {t("onboarding.how.signIn")}
+          {t("auth.continueWithPhone")}
         </Button>
       </YStack>
     </YStack>
