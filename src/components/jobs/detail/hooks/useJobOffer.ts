@@ -5,6 +5,7 @@ import {
   useMeQuery,
 } from "@/src/api/profikApi";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
+import { useNameGate } from "@/src/features/auth/hooks/useNameGate";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
@@ -22,6 +23,7 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
   const isGuest = useIsGuest();
   const { data: me } = useMeQuery(undefined, { skip: isGuest });
   const [createOffer, { isLoading: isSubmitting }] = useCreateOfferMutation();
+  const { withName, nameSheetProps } = useNameGate();
 
   const [mode, setModeState] = useState<OfferMode>("idle");
   const [price, setPrice] = useState("");
@@ -73,7 +75,7 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
     [jobPrice],
   );
 
-  const acceptClientPrice = useCallback(async () => {
+  const sendOfferAtClientPrice = useCallback(async () => {
     if (!isContractor) {
       Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return;
@@ -98,7 +100,7 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
     }
   }, [isContractor, jobId, jobPrice, createOffer, onSuccess, t]);
 
-  const submitOffer = useCallback(async () => {
+  const sendOffer = useCallback(async () => {
     if (!isContractor) {
       Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return;
@@ -143,7 +145,52 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
     }
   }, [isContractor, price, message, mode, jobId, createOffer, onSuccess, t]);
 
+  // Everything the contractor can get wrong is checked here, before the name
+  // sheet can appear — being asked for your name and only then told the price
+  // is missing is the wrong order to learn it in.
+  const isOfferValid = useCallback(() => {
+    if (!isContractor) {
+      Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
+      return false;
+    }
+    if (!price.trim()) {
+      Alert.alert(t("common.validation"), t("offer.validation.priceRequired"));
+      return false;
+    }
+    const priceNum = Number(price);
+    if (isNaN(priceNum) || priceNum <= 0) {
+      Alert.alert(t("common.validation"), t("offer.validation.pricePositive"));
+      return false;
+    }
+    if (mode === "counter" && !message.trim()) {
+      Alert.alert(
+        t("common.validation"),
+        t("offer.validation.messageRequired"),
+      );
+      return false;
+    }
+    return true;
+  }, [isContractor, price, mode, message, t]);
+
+  // An account can exist with no name at all — signing up only takes a phone
+  // number. The client picks between offers by who they are from, so this is
+  // where we ask, rather than putting the field in front of everyone at
+  // registration.
+  const acceptClientPrice = useCallback(() => {
+    if (!isContractor) {
+      Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
+      return;
+    }
+    withName(() => void sendOfferAtClientPrice());
+  }, [isContractor, sendOfferAtClientPrice, t, withName]);
+
+  const submitOffer = useCallback(() => {
+    if (!isOfferValid()) return;
+    withName(() => void sendOffer());
+  }, [isOfferValid, sendOffer, withName]);
+
   return {
+    nameSheetProps,
     isContractor,
     mode,
     setMode,

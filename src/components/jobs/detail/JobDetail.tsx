@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, ScrollView, Spinner, Text, YStack } from "tamagui";
+import { NamePromptSheet } from "@/src/components/auth";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { ContractorOfferSection } from "./ContractorOfferSection";
 import { GuestOfferCta } from "./GuestOfferCta";
@@ -45,6 +46,7 @@ export const JobDetail = () => {
   }, []);
 
   const {
+    nameSheetProps,
     isContractor,
     mode,
     setMode,
@@ -165,6 +167,8 @@ export const JobDetail = () => {
           </ScrollView>
         </KeyboardAvoidingView>
       </YStack>
+
+      <NamePromptSheet {...nameSheetProps} />
     </SafeAreaView>
   );
 };

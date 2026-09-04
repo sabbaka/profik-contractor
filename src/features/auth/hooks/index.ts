@@ -6,6 +6,11 @@ export {
 } from "./useEditProfileForm";
 export { useIsGuest } from "./useIsGuest";
 export {
+  useNameGate,
+  type NameGateSheetProps,
+  type UseNameGateReturn,
+} from "./useNameGate";
+export {
   usePhoneAuth,
   type PhoneAuthStep,
   type UsePhoneAuthReturn,
