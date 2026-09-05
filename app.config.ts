@@ -25,6 +25,7 @@ const config = {
   },
   android: {
     package: 'com.profik.contractor',
+    versionCode: 7,
     adaptiveIcon: {
       backgroundColor: '#E85D00',
       foregroundImage: './assets/images/android-icon-foreground.png',
