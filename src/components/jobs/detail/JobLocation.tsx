@@ -29,7 +29,7 @@ export const JobLocation = ({
     return [addressLine, city, postalCode, country].filter(Boolean).join(", ");
   }, [addressLine, city, postalCode, country]);
 
-  const hasLocation = addressText || (lat && lng);
+  const hasLocation = addressText || (lat != null && lng != null);
 
   if (!hasLocation) return null;
 
@@ -52,7 +52,7 @@ export const JobLocation = ({
         </Text>
       )}
       <YStack height="auto" borderRadius="$6" overflow="hidden">
-        {lat && lng ? (
+        {lat != null && lng != null ? (
           <MapPreview lat={lat} lng={lng} />
         ) : addressText ? (
           <MapPreview address={addressText} />
