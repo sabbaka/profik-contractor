@@ -43,6 +43,10 @@ app-example
 /android
 .env
 
+# Google Cloud service-account keys — private credentials, never committed.
+# eas.json points at the client repo's copy; this guards a local copy landing here.
+iron-bedrock-507417-m5-*.json
+
 # Fastlane
 fastlane/report.xml
 fastlane/Preview.html

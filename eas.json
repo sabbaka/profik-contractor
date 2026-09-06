@@ -25,6 +25,10 @@
       "ios": {
         "appleId": "sabbakaz@gmail.com",
         "ascAppId": "6787445540"
+      },
+      "android": {
+        "serviceAccountKeyPath": "../profik/iron-bedrock-507417-m5-5dfea5feff32.json",
+        "track": "internal"
       }
     }
   }
