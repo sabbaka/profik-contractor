@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
+import { geocodeAddress } from '@/src/utils/geocode';
 
 type Props =
   | { lat: number; lng: number; height?: number }
@@ -12,7 +12,19 @@ type Props =
 const hasCoords = (
   props: Props,
 ): props is { lat: number; lng: number; height?: number } =>
-  'lat' in props && 'lng' in props;
+  'lat' in props && props.lat != null && 'lng' in props && props.lng != null;
+
+/**
+ * Static, non-interactive map showing one pinned location.
+ *
+ * Takes either coordinates or a written address. **Pass coordinates whenever
+ * the caller has them** — the address path costs a geocoding round trip and can
+ * fail outright, which is how this component ended up showing a permanent
+ * "Locating…" on Android before `geocodeAddress` gained its Google fallback.
+ *
+ * Three states: resolving, resolved (the map), and unresolvable. The last one
+ * is terminal and says so, rather than pretending it is still working.
+ */
 
 export default function MapPreview(props: Props) {
   const { t } = useTranslation();
@@ -26,24 +38,31 @@ export default function MapPreview(props: Props) {
   const [geo, setGeo] = useState<{ lat: number; lng: number } | null>(
     lat != null && lng != null ? { lat, lng } : null,
   );
+  const [resolving, setResolving] = useState(address != null);
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      if (address) {
-        try {
-          const results = await Location.geocodeAsync(address);
-          const first = results?.[0];
-          if (!cancelled && first && typeof first.latitude === 'number' && typeof first.longitude === 'number') {
-            setGeo({ lat: first.latitude, lng: first.longitude });
-          }
-        } catch {
-          // silent: keep placeholder
-        }
-      } else if (lat != null && lng != null) {
-        setGeo({ lat, lng });
-      }
+
+    if (lat != null && lng != null) {
+      setGeo({ lat, lng });
+      setResolving(false);
+      return;
+    }
+
+    if (!address) {
+      setGeo(null);
+      setResolving(false);
+      return;
+    }
+
+    setResolving(true);
+    void (async () => {
+      const coords = await geocodeAddress(address);
+      if (cancelled) return;
+      setGeo(coords);
+      setResolving(false);
     })();
+
     return () => {
       cancelled = true;
     };
@@ -66,7 +85,9 @@ export default function MapPreview(props: Props) {
           },
         ]}
       >
-        <Text style={{ color: colors.textMuted }}>{t('map.locating')}</Text>
+        <Text style={{ color: colors.textMuted }}>
+          {resolving ? t('map.locating') : t('map.unavailable')}
+        </Text>
       </View>
     );
   }

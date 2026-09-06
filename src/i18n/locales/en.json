@@ -157,6 +157,7 @@
     "previewUnavailableWebSentence": "Map preview not available on web.",
     "resolvingAddress": "Resolving address...",
     "locating": "Locating...",
+    "unavailable": "Map unavailable",
     "coordinates": "Lat: {{lat}} Lng: {{lng}}",
     "openJobsFailed": "Failed to load open jobs"
   },
