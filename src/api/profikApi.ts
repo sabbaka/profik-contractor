@@ -268,7 +268,15 @@ export const profikApi = createApi({
       query: (body) => ({ url: "/users/me", method: "PATCH", body }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
-        dispatch(profikApi.util.updateQueryData("me", undefined, () => data));
+        // Merge, never replace. This answers with a UserResponseDto, which is
+        // not the shape GET /auth/me returns — `unreadMessages` rides along
+        // with /auth/me only. Overwriting the whole cache entry drops it, and
+        // anything else /auth/me grows later.
+        dispatch(
+          profikApi.util.updateQueryData("me", undefined, (draft) => {
+            Object.assign(draft, data);
+          }),
+        );
       },
     }),
     uploadAvatar: builder.mutation<MeResponse, UploadAvatarParams>({
@@ -295,7 +303,14 @@ export const profikApi = createApi({
       },
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
-        dispatch(profikApi.util.updateQueryData("me", undefined, () => data));
+        // Merged for the same reason as updateProfile above — and this is
+        // where it was caught: replacing the entry sent the phone number on
+        // the profile screen to "—" the moment the avatar changed.
+        dispatch(
+          profikApi.util.updateQueryData("me", undefined, (draft) => {
+            Object.assign(draft, data);
+          }),
+        );
       },
     }),
   }),
