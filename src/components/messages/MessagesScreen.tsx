@@ -52,7 +52,6 @@ export function MessagesScreen() {
   const {
     data,
     isLoading,
-    isFetching,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
@@ -72,8 +71,8 @@ export function MessagesScreen() {
   );
   const [markAllRead, { isLoading: isMarking }] = useMarkAllReadMutation();
 
-  // `isFetching` from the query is true for the 15s background poll too, not
-  // just a manual pull — binding the pull-to-refresh spinner to it made the
+  // The query's own fetching flag is true for the 15s background poll too,
+  // not just a manual pull — binding the pull-to-refresh spinner to it made the
   // list jump every poll tick even though nothing the contractor did caused
   // it. Track the manual refresh separately instead.
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -96,10 +95,13 @@ export function MessagesScreen() {
     setBucket(next);
   }, []);
 
+  // Guarded on `isFetchingNextPage`, not `isFetching`: the latter is true on
+  // every 15s poll tick, so a scroll that lands in that window would be
+  // silently dropped and the list would simply stop growing.
   const handleEndReached = useCallback(() => {
-    if (!hasNextPage || isFetching) return;
+    if (!hasNextPage || isFetchingNextPage) return;
     fetchNextPage();
-  }, [hasNextPage, isFetching, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleMarkAllRead = useCallback(async () => {
     try {
