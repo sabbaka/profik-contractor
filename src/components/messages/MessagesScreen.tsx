@@ -6,8 +6,10 @@ import {
 } from "@/src/api/profikApi";
 import type { Conversation, ConversationBucket } from "@/src/api/types";
 import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
+import { ListFooterSpinner } from "@/src/components/ui/ListFooterSpinner";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
+import { useManualRefresh } from "@/src/hooks/useManualRefresh";
 import { useThemeColors } from "@/src/theme";
 import { logError } from "@/src/utils/logger";
 import { CheckCheck, Lock, MessageCircle } from "@tamagui/lucide-icons";
@@ -71,19 +73,7 @@ export function MessagesScreen() {
   );
   const [markAllRead, { isLoading: isMarking }] = useMarkAllReadMutation();
 
-  // The query's own fetching flag is true for the 15s background poll too,
-  // not just a manual pull — binding the pull-to-refresh spinner to it made the
-  // list jump every poll tick even though nothing the contractor did caused
-  // it. Track the manual refresh separately instead.
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
+  const { isRefreshing, handleRefresh } = useManualRefresh(refetch);
 
   const conversations = useMemo(
     () => data?.pages.flatMap((page) => page.items) ?? [],
@@ -241,13 +231,7 @@ export function MessagesScreen() {
               onPress={() => router.replace("/(contractor)/(tabs)/open" as any)}
             />
           }
-          ListFooterComponent={
-            isFetchingNextPage ? (
-              <YStack paddingVertical={16} alignItems="center">
-                <Spinner color={colors.accent} />
-              </YStack>
-            ) : null
-          }
+          ListFooterComponent={isFetchingNextPage ? <ListFooterSpinner /> : null}
           renderItem={({ item, index }) => (
             <YStack
               backgroundColor={colors.bgCard}
