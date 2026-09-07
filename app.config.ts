@@ -20,6 +20,12 @@ const config = {
   newArchEnabled: true,
   ios: {
     bundleIdentifier: 'com.profik.contractor',
+    // Seed for the remote counter, not the counter itself. EAS owns the
+    // build number now (cli.appVersionSource: "remote") and initialises it
+    // from this value on the first remote build, then increments it there.
+    // Delete this line and android.versionCode once that build has run —
+    // after it they are inert, and inert version numbers rot (see the
+    // Deliverfile, which was seven releases behind).
     buildNumber: '14',
     supportsTablet: false,
     infoPlist: {
