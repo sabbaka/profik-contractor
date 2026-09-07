@@ -1,14 +1,16 @@
-import { useGetOfferedJobsQuery } from "@/src/api/profikApi";
+import { useGetOfferedJobsInfiniteQuery } from "@/src/api/profikApi";
 import type { OfferStatus } from "@/src/api/types";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
+import { ListFooterSpinner } from "@/src/components/ui/ListFooterSpinner";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useJobsFilter } from "@/src/context/JobsFilterContext";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
+import { useManualRefresh } from "@/src/hooks/useManualRefresh";
 import { useThemeColors } from "@/src/theme";
 import { FolderOpen, Lock } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, RefreshControl } from "react-native";
 import { Spinner, XStack, YStack } from "tamagui";
@@ -31,7 +33,16 @@ export default function MyJobsTab() {
   const [changing, setChanging] = useState(false);
   const previousFilter = useRef(filter);
   const wasFetching = useRef(false);
-  const { data, isLoading, isFetching, error, refetch } = useGetOfferedJobsQuery({ status: filter }, {
+  const {
+    data,
+    isLoading,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    error,
+    refetch,
+  } = useGetOfferedJobsInfiniteQuery({ status: filter }, {
     skip: isGuest,
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
@@ -50,22 +61,22 @@ export default function MyJobsTab() {
     wasFetching.current = isFetching;
   }, [isFetching]);
 
-  const jobs = data ?? [];
-  const loading = isLoading || changing || (isFetching && !jobs.length);
+  const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
+  // `isLoading && !data` rather than bare `isLoading`: on an infinite query
+  // the latter would blank a list that already has pages behind it.
+  const loading =
+    (isLoading && !data) || changing || (isFetching && !jobs.length);
   const currentLabel = t(`my.labels.${filter}`);
 
-  // Same reasoning as `changing` above: `isFetching` also covers the silent
-  // refetchOnFocus refresh, not just a manual pull — tying the pull-to-refresh
-  // spinner to it made it pop up on its own. Track a manual refresh separately.
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
+  const { isRefreshing, handleRefresh } = useManualRefresh(refetch);
+
+  // Guarded on `isFetchingNextPage` rather than `isFetching`, which is also
+  // true for the silent refetchOnFocus refresh — a scroll that landed during
+  // one would otherwise be dropped and the list would stop growing.
+  const handleEndReached = useCallback(() => {
+    if (!hasNextPage || isFetchingNextPage) return;
+    fetchNextPage();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isGuest) {
     return (
@@ -125,6 +136,9 @@ export default function MyJobsTab() {
           keyExtractor={(item: any) => item.job.id}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 118, flexGrow: jobs.length ? undefined : 1 }}
           refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.accent} />}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.4}
+          ListFooterComponent={isFetchingNextPage ? <ListFooterSpinner /> : null}
           ListEmptyComponent={
             <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingBottom={80}>
               <YStack width={80} height={80} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">

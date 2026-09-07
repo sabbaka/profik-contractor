@@ -31,6 +31,9 @@ export const CONVERSATIONS_PAGE_SIZE = 20;
 /** Open jobs fetched per page by the Open tab. */
 export const OPEN_JOBS_PAGE_SIZE = 20;
 
+/** Offered jobs fetched per page by the My jobs tab. */
+export const OFFERED_JOBS_PAGE_SIZE = 20;
+
 // Shape returned by GET /auth/me and PATCH /users/me.
 export interface MeResponse {
   id: string;
@@ -151,11 +154,32 @@ export const profikApi = createApi({
       },
       providesTags: ["Jobs"],
     }),
-    getOfferedJobs: builder.query<OfferedJobItem[], GetOfferedJobsParams>({
-      query: ({ status }) => ({
-        url: `/jobs/offered?status=${status}`,
-        method: "GET",
-      }),
+    /**
+     * The My jobs tab, one cache entry per offer-status filter, paged as the
+     * list scrolls.
+     *
+     * The backend pages over the *jobs*, so the cursor is `item.job.id` — not
+     * an id on the wrapper. As with `/jobs/open` the response is a plain array
+     * rather than a `{ items, nextCursor }` envelope, so the end of the list
+     * is a page shorter than `OFFERED_JOBS_PAGE_SIZE`.
+     */
+    getOfferedJobs: builder.infiniteQuery<
+      OfferedJobItem[],
+      GetOfferedJobsParams,
+      string | null
+    >({
+      infiniteQueryOptions: forwardIdCursor<OfferedJobItem>(
+        OFFERED_JOBS_PAGE_SIZE,
+        (item) => item.job.id,
+      ),
+      query: ({ queryArg, pageParam }) => {
+        const params = new URLSearchParams({
+          status: queryArg.status,
+          limit: String(OFFERED_JOBS_PAGE_SIZE),
+        });
+        if (pageParam) params.set("cursor", pageParam);
+        return { url: `/jobs/offered?${params.toString()}`, method: "GET" };
+      },
       providesTags: ["Jobs", "Offers"],
     }),
     getJobById: builder.query<Job, string>({
@@ -345,7 +369,7 @@ export const {
   useVerifyOtpCodeMutation,
   useMeQuery,
   useGetOpenJobsInfiniteQuery,
-  useGetOfferedJobsQuery,
+  useGetOfferedJobsInfiniteQuery,
   useGetJobByIdQuery,
   useCreateOfferMutation,
   useHasOfferedQuery,
