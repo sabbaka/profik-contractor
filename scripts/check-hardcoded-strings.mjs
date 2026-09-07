@@ -22,6 +22,7 @@ const ALLOWED = [
   /^Promise$/, // TypeScript generics, not markup
   /^Profik( Pro)?$/, // brand
   /^[\d\s]*Kč$/, // currency suffix and mock amounts, not copy
+  /^[a-z]+:[a-z]+$/, // `logError` context tags in `domain:action` form
 ];
 
 // The locale files themselves, and the developer-facing crash screen.
@@ -77,6 +78,14 @@ for (const scope of SCOPE) {
       ...src.matchAll(/>\s*([^<>{}]{3,}?)\s*<\//g),
       ...src.matchAll(new RegExp(`\\b(?:${UI_PROPS})="([^"]{2,})"`, "g")),
       ...src.matchAll(/Alert\.alert\(\s*"([^"]{3,})"/g),
+      // Copy assembled in a ternary — `{done ? "Saved" : "Save"}`. The JSX
+      // rule above cannot see it, because the braces hide it. Both branches
+      // are matched; anchoring on `? … :` keeps plain `key: "value"` out.
+      ...src.matchAll(/\?\s*"([^"]{3,})"\s*:/g),
+      ...src.matchAll(/\?\s*"[^"]*"\s*:\s*"([^"]{3,})"/g),
+      // A screen-reader label is copy too, and it is the one kind nobody
+      // notices in review — it never shows on screen.
+      ...src.matchAll(/accessibilityLabel=\{?\s*[`"]([^`"]{3,})[`"]/g),
       ...src.matchAll(
         /^\s*(?:label|title|description|subtitle):\s*"([^"]{2,})"/gm,
       ),
