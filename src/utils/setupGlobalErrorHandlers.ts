@@ -34,6 +34,11 @@ export function setupGlobalErrorHandlers() {
   // RN uses a polyfilled Promise (promise/setimmediate/rejection-tracking).
   // We hook into it via the documented entry-point.
   try {
+    // Must be `require`, not a static import: the package may not be present
+    // on every platform (web/SSR), and this needs to load synchronously at
+    // startup — a dynamic `import()` would leave a window where unhandled
+    // rejections go untracked.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const tracking = require("promise/setimmediate/rejection-tracking");
     tracking.disable();
     tracking.enable({

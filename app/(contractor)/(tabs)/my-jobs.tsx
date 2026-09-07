@@ -24,8 +24,13 @@ export default function MyJobsTab() {
   const colors = useThemeColors();
   const { filter, setFilter } = useJobsFilter();
   const isGuest = useIsGuest();
+  // The filter tab switches immediately, but RTK Query's `isFetching` can lag
+  // a render behind the new args, so `changing` covers that gap: it's set the
+  // moment the tab changes and cleared once a fetch that was in flight
+  // finishes (not merely whenever `isFetching` happens to read false).
   const [changing, setChanging] = useState(false);
-  const previous = useRef(filter);
+  const previousFilter = useRef(filter);
+  const wasFetching = useRef(false);
   const { data, isLoading, isFetching, error, refetch } = useGetOfferedJobsQuery({ status: filter }, {
     skip: isGuest,
     refetchOnMountOrArgChange: true,
@@ -34,12 +39,16 @@ export default function MyJobsTab() {
   });
 
   useEffect(() => {
-    if (previous.current !== filter) {
+    if (previousFilter.current !== filter) {
       setChanging(true);
-      previous.current = filter;
+      previousFilter.current = filter;
     }
   }, [filter]);
-  useEffect(() => { if (!isFetching) setChanging(false); }, [isFetching]);
+
+  useEffect(() => {
+    if (wasFetching.current && !isFetching) setChanging(false);
+    wasFetching.current = isFetching;
+  }, [isFetching]);
 
   const jobs = data ?? [];
   const loading = isLoading || changing || (isFetching && !jobs.length);

@@ -21,17 +21,13 @@ export const OTPInput = ({
   const colors = useThemeColors();
   const inputRef = useRef<TextInput>(null);
   const [focused, setFocused] = useState(false);
-  const [focusedIndex, setFocusedIndex] = useState(0);
+  const focusedIndex = value.length < length ? value.length : length - 1;
 
   useEffect(() => {
     if (autoFocus) {
       setTimeout(() => { inputRef.current?.focus(); }, 100);
     }
   }, [autoFocus]);
-
-  useEffect(() => {
-    setFocusedIndex(value.length < length ? value.length : length - 1);
-  }, [value, length]);
 
   const handleChange = (text: string) => {
     const cleaned = text.replace(/[^0-9]/g, "").slice(0, length);
