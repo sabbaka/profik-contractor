@@ -1,14 +1,15 @@
 # Working with the API
 
-## The spec lives in the sibling client repo
+## openapi.json is the contract
 
-This repo does not carry its own `openapi.json`. The backend is shared with
-`profik_client` (the client-side sibling app) — when you need the authoritative
-shape of an endpoint or DTO, check `../profik_client/openapi.json` (adjust the
-path to wherever that repo is checked out locally) rather than guessing from
-this app's existing types, which are a hand-maintained subset and can lag the
-backend. Field names are not guessable — verify before adding or changing
-anything that talks to the API.
+`openapi.json` at the repo root describes every endpoint and DTO the shared
+backend serves — the same backend `profik_client` (the client-side sibling
+app) talks to. Read it before writing anything that talks to the API rather
+than guessing from this app's existing types, which are a hand-maintained
+subset and can lag the spec (or the reverse — see the `Job` nullability note
+below). Field names are not guessable — verify before adding or changing
+anything that talks to the API. If it goes stale, `profik_client`'s copy is
+the other place to check.
 
 If the spec and this app disagree, the spec wins and the app has a bug. If a
 field this app needs is present in the spec but missing from this app's types
@@ -48,15 +49,18 @@ Never pass a token by hand.
 
 Mirror the spec honestly:
 
-- A field only some responses populate is **optional**, ideally with a comment
-  saying which endpoint populates it.
-- Nullable fields are `T | null`, not `T | undefined` — the `Job` location
-  fields (`addressLine`, `city`, `lat`, `lng`, ...) are `| null` because the
-  backend strips them for anonymous/guest responses. The structured job-detail
-  fields added alongside them (`roomsCount`, `area`, ...) are instead plain
-  optional (`?:`) — they simply don't exist on jobs created before that part of
-  the wizard shipped, which is a different shape of "missing" than "stripped
-  for this caller".
+- **Nullable fields are `T | null`, not `T | undefined` or optional (`?:`).**
+  Every nullable database column comes back as `null`, never absent — this
+  applies to the `Job` location fields (`addressLine`, `city`, `lat`, `lng`,
+  ..., stripped for anonymous/guest responses) and just as much to the
+  structured job-detail fields (`roomsCount`, `area`, `vacuumCleaner`, ...,
+  `null` on jobs created before that part of the wizard shipped). Both are
+  "the backend has nothing here," just for different reasons — the JSON shape
+  is the same `null`. Getting this wrong compiles fine and breaks at
+  `job.roomsCount.length` on a job that doesn't have one.
+- A field only *some endpoints* return at all (present in one response DTO,
+  absent from another) is genuinely optional (`?:`) — see `MyOffer.message`'s
+  sibling in `openapi.json` if in doubt about which is which for a given field.
 - Do not widen a type to `any` to make an error go away.
 
 ## Cache and invalidation

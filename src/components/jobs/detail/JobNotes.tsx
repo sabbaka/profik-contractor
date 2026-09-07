@@ -4,7 +4,7 @@ import { StickyNote } from "@tamagui/lucide-icons";
 import { useTranslation } from "react-i18next";
 import { XStack } from "tamagui";
 
-export const JobNotes = ({ notes }: { notes?: string }) => {
+export const JobNotes = ({ notes }: { notes?: string | null }) => {
   const { t } = useTranslation();
   const colors = useThemeColors();
   if (!notes) return null;

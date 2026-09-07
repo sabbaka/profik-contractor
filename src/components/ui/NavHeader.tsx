@@ -49,15 +49,12 @@ export function NavHeader({
   };
 
   return (
-    <XStack
-      height={44}
-      ai="center"
-      jc="space-between"
-      paddingHorizontal={20}
-    >
+    <XStack height={44} ai="center" jc="space-between" paddingHorizontal={20}>
       {!hideBack ? (
         <Pressable
           onPress={handleBack}
+          accessibilityRole="button"
+          accessibilityLabel={t("common.back")}
           hitSlop={12}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
@@ -91,6 +88,8 @@ export function NavHeader({
       ) : onClose ? (
         <Pressable
           onPress={handleClose}
+          accessibilityRole="button"
+          accessibilityLabel={t("a11y.close")}
           hitSlop={12}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >

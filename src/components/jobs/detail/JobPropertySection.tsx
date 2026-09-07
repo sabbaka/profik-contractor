@@ -7,10 +7,10 @@ import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
 
 interface JobPropertySectionProps {
-  roomsCount?: string;
-  area?: number;
-  windowCleaning?: WindowCleaningOption;
-  windowCount?: number;
+  roomsCount?: string | null;
+  area?: number | null;
+  windowCleaning?: WindowCleaningOption | null;
+  windowCount?: number | null;
 }
 
 interface TileProps {

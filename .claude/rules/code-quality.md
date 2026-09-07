@@ -2,15 +2,16 @@
 
 ## The checks
 
-Work is not done until both pass. Run them yourself; do not ask the user to
-find out for you.
+Work is not done until all three pass. Run them yourself; do not ask the user
+to find out for you.
 
 ```bash
 npm run typecheck   # tsc --noEmit — must be silent
 npm run lint         # expo lint (eslint) — zero errors
+npm run i18n:check   # scripts/check-hardcoded-strings.mjs — see i18n.md for what it can't see
 ```
 
-CI runs both on every push and pull request (`.github/workflows/ci.yml`,
+CI runs all three on every push and pull request (`.github/workflows/ci.yml`,
 `Contractor CI`). There is no `format:check` script — Prettier is not
 configured in this repo; match the surrounding formatting by hand instead of
 assuming a formatter will fix it.

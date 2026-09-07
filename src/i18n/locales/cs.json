@@ -175,8 +175,6 @@
   "map": {
     "previewUnavailableWeb": "Náhled mapy není na webu dostupný",
     "previewUnavailableWebSentence": "Náhled mapy není na webu dostupný.",
-    "resolvingAddress": "Vyhledávám adresu...",
-    "locating": "Zjišťuji polohu...",
     "unavailable": "Mapa není dostupná",
     "coordinates": "Šířka: {{lat}} Délka: {{lng}}",
     "openJobsFailed": "Otevřené zakázky se nepodařilo načíst"
@@ -250,7 +248,9 @@
       "system": "Systém",
       "light": "Světlý",
       "dark": "Tmavý"
-    }
+    },
+    "permissionTitle": "Potřebné oprávnění",
+    "permissionBody": "Povolte prosím přístup k fotkám, abyste mohli změnit avatar."
   },
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
@@ -381,5 +381,9 @@
     "profileBody": "Přihlaste se pro správu profilu, kreditu a nabídek.",
     "signInToOffer": "Přihlaste se a pošlete nabídku",
     "signInToOfferBody": "Prohlížení je zdarma — přihlaste se telefonním číslem a pošlete zákazníkovi nabídku."
+  },
+  "a11y": {
+    "close": "Zavřít",
+    "send": "Odeslat zprávu"
   }
 }

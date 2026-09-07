@@ -78,9 +78,9 @@ function Row({ Icon, label, pill, isLast }: RowProps) {
 }
 
 interface JobProvidedSectionProps {
-  vacuumCleaner?: EquipmentProvision;
-  cleaningSupplies?: EquipmentProvision;
-  ladder?: LadderOption;
+  vacuumCleaner?: EquipmentProvision | null;
+  cleaningSupplies?: EquipmentProvision | null;
+  ladder?: LadderOption | null;
 }
 
 export function JobProvidedSection({
@@ -93,13 +93,13 @@ export function JobProvidedSection({
   const hasAny = !!vacuumCleaner || !!cleaningSupplies || !!ladder;
   if (!hasAny) return null;
 
-  const provisionToPill = (value?: EquipmentProvision): StatusPillProps => {
+  const provisionToPill = (value?: EquipmentProvision | null): StatusPillProps => {
     if (value === "have") return { label: t("job.provided.onSite"), tone: "positive" };
     if (value === "bring") return { label: t("job.provided.notIncluded"), tone: "negative" };
     return { label: "—", tone: "neutral" };
   };
 
-  const ladderToPill = (value?: LadderOption): StatusPillProps => {
+  const ladderToPill = (value?: LadderOption | null): StatusPillProps => {
     if (value === "available") return { label: t("job.provided.onSite"), tone: "positive" };
     if (value === "needed") return { label: t("job.provided.notIncluded"), tone: "negative" };
     if (value === "noneeded") return { label: t("job.provided.notNeeded"), tone: "neutral" };

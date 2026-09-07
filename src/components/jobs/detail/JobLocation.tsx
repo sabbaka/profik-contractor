@@ -7,12 +7,12 @@ import { XStack, YStack } from "tamagui";
 import MapPreview from "../../MapPreview";
 
 interface JobLocationProps {
-  addressLine?: string;
-  city?: string;
-  postalCode?: string;
-  country?: string;
-  lat?: number;
-  lng?: number;
+  addressLine?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
+  lat?: number | null;
+  lng?: number | null;
 }
 
 export const JobLocation = ({
@@ -34,10 +34,15 @@ export const JobLocation = ({
   if (!hasLocation) return null;
 
   return (
-    <YStack padding={18} gap={12} borderRadius={18} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle}>
-      <Text variant="h5">
-        {t("job.location")}
-      </Text>
+    <YStack
+      padding={18}
+      gap={12}
+      borderRadius={18}
+      backgroundColor={colors.bgCard}
+      borderWidth={1}
+      borderColor={colors.borderSubtle}
+    >
+      <Text variant="h5">{t("job.location")}</Text>
       {addressText && (
         <XStack gap="$2" alignItems="center">
           <MapPin size={20} color={colors.textMuted} />
@@ -52,11 +57,7 @@ export const JobLocation = ({
         </Text>
       )}
       <YStack height="auto" borderRadius="$6" overflow="hidden">
-        {lat != null && lng != null ? (
-          <MapPreview lat={lat} lng={lng} />
-        ) : addressText ? (
-          <MapPreview address={addressText} />
-        ) : null}
+        <MapPreview lat={lat} lng={lng} />
       </YStack>
     </YStack>
   );

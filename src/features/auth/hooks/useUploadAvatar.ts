@@ -1,5 +1,6 @@
 import { useUploadAvatarMutation } from "@/src/api/profikApi";
 import * as ImagePicker from "expo-image-picker";
+import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 import { AuthResult, extractErrorMessage } from "../types";
 
@@ -14,6 +15,7 @@ export interface UseUploadAvatarReturn {
 }
 
 export function useUploadAvatar(): UseUploadAvatarReturn {
+  const { t } = useTranslation();
   const [uploadAvatar, { isLoading: isUploading }] = useUploadAvatarMutation();
 
   const pickAndUpload = async (): Promise<
@@ -24,8 +26,8 @@ export function useUploadAvatar(): UseUploadAvatarReturn {
 
     if (!permission.granted) {
       Alert.alert(
-        "Permission required",
-        "Please allow photo library access to change your avatar.",
+        t("profile.permissionTitle"),
+        t("profile.permissionBody"),
       );
       return { success: false, error: "Permission denied" };
     }
