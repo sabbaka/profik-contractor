@@ -1,7 +1,10 @@
 import { useGetOfferMessagesQuery, useMeQuery, useSendOfferMessageMutation } from "@/src/api/profikApi";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { ChevronLeft, MessageCircle, Send } from "@tamagui/lucide-icons";
+import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
+import { formatCzk } from "@/src/utils/currency";
+import type { OfferStatus } from "@/src/api/types";
+import { BriefcaseBusiness, ChevronLeft, ChevronRight, MessageCircle, Send } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { logError } from "@/src/utils/logger";
@@ -14,7 +17,15 @@ import { Spinner, XStack, YStack } from "tamagui";
 export default function OfferChatRoute() {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const { offerId } = useLocalSearchParams<{ offerId: string }>();
+  // Job context travels in the route params — see `buildOfferChatRoute`. A
+  // deep link carries only `offerId`, so every field below is optional.
+  const { offerId, jobId, jobTitle, offerPrice, offerStatus } = useLocalSearchParams<{
+    offerId: string;
+    jobId?: string;
+    jobTitle?: string;
+    offerPrice?: string;
+    offerStatus?: OfferStatus;
+  }>();
   const { data: me } = useMeQuery();
   const { data: messages, isLoading, isFetching } = useGetOfferMessagesQuery(offerId, {
     skip: !offerId,
@@ -47,6 +58,44 @@ export default function OfferChatRoute() {
           <YStack alignItems="center"><Text variant="h5">{t("chat.title")}</Text><Text style={{ color: colors.success, fontFamily: "Inter_500Medium", fontSize: 10 }}>{t("chat.eyebrow")}</Text></YStack>
           <XStack width={58} />
         </XStack>
+
+        {jobTitle ? (
+          <Pressable
+            onPress={jobId ? () => router.push({ pathname: "/(contractor)/jobs/[id]", params: { id: jobId } }) : undefined}
+            disabled={!jobId}
+            accessibilityRole="button"
+            accessibilityLabel={t("chat.openJob")}
+            style={({ pressed }) => ({ opacity: pressed && jobId ? 0.85 : 1 })}
+          >
+            <XStack
+              paddingHorizontal={16}
+              paddingVertical={10}
+              gap={10}
+              alignItems="center"
+              backgroundColor={colors.bgCard}
+              borderBottomWidth={1}
+              borderBottomColor={colors.borderSubtle}
+            >
+              <YStack width={34} height={34} borderRadius={10} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
+                <BriefcaseBusiness size={16} color={colors.accent} />
+              </YStack>
+              <YStack flex={1} gap={3}>
+                <Text numberOfLines={1} style={{ color: colors.textPrimary, fontFamily: "Inter_600SemiBold", fontSize: 13, lineHeight: 17 }}>{jobTitle}</Text>
+                {offerPrice || offerStatus ? (
+                  <XStack alignItems="center" gap={6}>
+                    {offerPrice ? (
+                      <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 11, lineHeight: 15 }}>
+                        {t("chat.yourOffer", { price: formatCzk(Number(offerPrice)) })}
+                      </Text>
+                    ) : null}
+                    {offerStatus ? <OfferStatusPill status={offerStatus} size="sm" /> : null}
+                  </XStack>
+                ) : null}
+              </YStack>
+              {jobId ? <ChevronRight size={16} color={colors.textMuted} /> : null}
+            </XStack>
+          </Pressable>
+        ) : null}
 
         {isLoading && !messages ? (
           <YStack flex={1} alignItems="center" justifyContent="center"><Spinner color={colors.accent} /></YStack>

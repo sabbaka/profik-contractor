@@ -2,16 +2,22 @@ import type { MyOffer } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
-import { BriefcaseBusiness, Calendar, ChevronRight, MapPin, Send } from "@tamagui/lucide-icons";
+import { BriefcaseBusiness, Calendar, ChevronRight, MapPin, MessageCircle, Send } from "@tamagui/lucide-icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { XStack, YStack } from "tamagui";
+import { OfferStatusPill } from "./OfferStatusPill";
 
 interface ContractorJobCardProps {
   job: any;
   myOffer?: MyOffer | null;
   onPress?: () => void;
+  /**
+   * Opens the chat for `myOffer`. Without it the card keeps the plain
+   * "Details" affordance — Open Jobs has no offer to talk about yet.
+   */
+  onMessage?: () => void;
 }
 
 function dateLabel(value?: string, locale?: string) {
@@ -23,23 +29,7 @@ function dateLabel(value?: string, locale?: string) {
   }
 }
 
-function OfferPill({ status }: { status: string }) {
-  const { t } = useTranslation();
-  const colors = useThemeColors();
-  const config = status === "accepted"
-    ? { bg: colors.statusCompleted, text: colors.statusCompletedText, label: t("job.status.accepted") }
-    : status === "declined"
-      ? { bg: colors.statusCancelled, text: colors.statusCancelledText, label: t("job.status.declined") }
-      : { bg: colors.statusPending, text: colors.statusPendingText, label: t("job.status.pending") };
-  return (
-    <XStack backgroundColor={config.bg} paddingHorizontal={10} paddingVertical={5} borderRadius={9999} alignItems="center" gap={5}>
-      <YStack width={6} height={6} borderRadius={9999} backgroundColor={config.text} />
-      <Text style={{ color: config.text, fontFamily: "Inter_600SemiBold", fontSize: 11 }}>{config.label}</Text>
-    </XStack>
-  );
-}
-
-export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardProps) {
+export function ContractorJobCard({ job, myOffer, onPress, onMessage }: ContractorJobCardProps) {
   const { t, i18n } = useTranslation();
   const colors = useThemeColors();
   const location = [job?.city, job?.country].filter(Boolean).join(", ") || t("job.locationNotProvided");
@@ -76,10 +66,10 @@ export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardPr
         <XStack paddingHorizontal={16} paddingVertical={12} alignItems="center" justifyContent="space-between">
           {myOffer ? (
             <XStack alignItems="center" gap={8}>
-              <OfferPill status={myOffer.status} />
+              <OfferStatusPill status={myOffer.status} />
               <XStack alignItems="center" gap={4}>
                 <Send size={13} color={colors.accent} />
-                <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 13 }}>{formatCzk(myOffer.price)}</Text>
+                <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 13, lineHeight: 17 }}>{formatCzk(myOffer.price)}</Text>
               </XStack>
             </XStack>
           ) : (
@@ -88,10 +78,25 @@ export function ContractorJobCard({ job, myOffer, onPress }: ContractorJobCardPr
               <Text variant="caption" style={{ color: colors.statusOpenText, fontFamily: "Inter_600SemiBold" }}>{t("job.openForOffers")}</Text>
             </XStack>
           )}
-          <XStack alignItems="center" gap={3}>
-            <Text style={{ color: colors.accent, fontFamily: "Inter_500Medium", fontSize: 13 }}>{t("job.detailsCta")}</Text>
-            <ChevronRight size={16} color={colors.accent} />
-          </XStack>
+          {myOffer && onMessage ? (
+            <Pressable
+              onPress={onMessage}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel={t("job.messageClientA11y", { title: job?.title || t("job.untitled") })}
+              style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
+            >
+              <XStack alignItems="center" gap={5} paddingHorizontal={12} paddingVertical={7} borderRadius={9999} backgroundColor={colors.accentLight}>
+                <MessageCircle size={14} color={colors.accent} />
+                <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 13, lineHeight: 17 }}>{t("job.messageClient")}</Text>
+              </XStack>
+            </Pressable>
+          ) : (
+            <XStack alignItems="center" gap={3}>
+              <Text style={{ color: colors.accent, fontFamily: "Inter_500Medium", fontSize: 13 }}>{t("job.detailsCta")}</Text>
+              <ChevronRight size={16} color={colors.accent} />
+            </XStack>
+          )}
         </XStack>
       </YStack>
     </Pressable>

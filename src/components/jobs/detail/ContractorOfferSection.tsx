@@ -3,6 +3,7 @@ import { Button, Text, TextInput } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { MessageCircle, Send, Sparkles } from "@tamagui/lucide-icons";
+import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
@@ -10,6 +11,8 @@ import { XStack, YStack } from "tamagui";
 type OfferMode = "idle" | "counter";
 interface Props {
   hasOffered: boolean; myOfferPrice?: number; myOfferMessage?: string; myOfferStatus?: OfferStatus;
+  /** Job the offer belongs to — travels into the chat as its header context. */
+  jobId: string; jobTitle?: string;
   offerIdForChat: string | null; clientPrice: number; mode: OfferMode; setMode: (mode: OfferMode) => void;
   price: string; setPrice: (value: string) => void; message: string; setMessage: (value: string) => void;
   onAcceptClientPrice: () => void; onSubmitOffer: () => void; isSubmitting: boolean; onInputFocus: () => void;
@@ -18,7 +21,7 @@ interface Props {
 export const ContractorOfferSection = (props: Props) => {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, offerIdForChat, clientPrice, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
+  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, offerIdForChat, clientPrice, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
   const status = myOfferStatus === "accepted"
     ? { bg: colors.statusCompleted, color: colors.statusCompletedText, label: t("job.status.accepted") }
     : myOfferStatus === "declined"
@@ -44,7 +47,7 @@ export const ContractorOfferSection = (props: Props) => {
           {myOfferMessage ? <Text variant="bodySm" style={{ color: colors.textPrimary, marginTop: 5 }}>{myOfferMessage}</Text> : null}
         </YStack>
         {offerIdForChat ? (
-          <Button variant="secondary" size="md" iconLeft={<MessageCircle size={17} color={colors.textSecondary} />} onPress={() => router.push({ pathname: "/(contractor)/offer-chat/[offerId]" as any, params: { offerId: offerIdForChat } })}>{t("offer.messageCustomer")}</Button>
+          <Button variant="secondary" size="md" iconLeft={<MessageCircle size={17} color={colors.textSecondary} />} onPress={() => router.push(buildOfferChatRoute({ offerId: offerIdForChat, jobId, jobTitle, offerPrice: myOfferPrice, offerStatus: myOfferStatus }) as any)}>{t("offer.messageCustomer")}</Button>
         ) : null}
       </YStack>
     );

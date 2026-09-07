@@ -1,6 +1,7 @@
 import { useGetOfferedJobsQuery } from "@/src/api/profikApi";
 import type { OfferStatus } from "@/src/api/types";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
+import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useJobsFilter } from "@/src/context/JobsFilterContext";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
@@ -116,6 +117,20 @@ export default function MyJobsTab() {
               job={item.job}
               myOffer={item.myOffer}
               onPress={() => router.push({ pathname: "/(contractor)/jobs/[id]", params: { id: item.job.id } })}
+              onMessage={
+                item.myOffer?.id
+                  ? () =>
+                      router.push(
+                        buildOfferChatRoute({
+                          offerId: item.myOffer.id,
+                          jobId: item.job.id,
+                          jobTitle: item.job.title,
+                          offerPrice: item.myOffer.price,
+                          offerStatus: item.myOffer.status,
+                        }) as any,
+                      )
+                  : undefined
+              }
             />
           )}
         />
