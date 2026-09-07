@@ -20,7 +20,7 @@ export function setupGlobalErrorHandlers() {
   // 1. Global synchronous JS errors.
   // ErrorUtils is a private RN API that's been stable for years and is the
   // only way to install a top-level handler.
-  const ErrorUtils = (global as any).ErrorUtils;
+  const ErrorUtils = (globalThis as any).ErrorUtils;
   if (ErrorUtils?.setGlobalHandler) {
     const previous = ErrorUtils.getGlobalHandler?.();
     ErrorUtils.setGlobalHandler((error: unknown, isFatal?: boolean) => {

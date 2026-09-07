@@ -59,6 +59,9 @@ const config = {
     'expo-font',
     'expo-web-browser',
     'expo-secure-store',
+    'expo-image',
+    'expo-localization',
+    'expo-status-bar',
     [
       'expo-image-picker',
       {
@@ -95,7 +98,13 @@ const config = {
   ],
   experiments: {
     typedRoutes: true,
-    reactCompiler: true,
+    // Off deliberately: Tamagui distributes the active theme by subscription
+    // rather than context, and the compiler's automatic memoization froze
+    // leaf nodes with stale colours when the user switched appearance (same
+    // bug class as the missing <Theme name={mode}> wrapper in app/_layout.tsx
+    // — see .claude/rules/components.md). The sibling client app hit this
+    // first and turned it off; mirroring that here.
+    reactCompiler: false,
   },
   extra: {
     router: {},
