@@ -1438,7 +1438,45 @@
     "/jobs/my": {
       "get": {
         "operationId": "getMyJobs",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Defaults to 50.",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "The `id` of the last job of the previous page. The response is a plain array, so the cursor is read off the last item rather than from an envelope.",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "description": "Which tab to return. `active` covers both open and in-progress jobs. Omitted means all.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "active",
+                "completed",
+                "cancelled"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "List of client jobs",
@@ -1526,11 +1564,33 @@
             "in": "query",
             "description": "Filter by your offer status (pending, accepted, declined)",
             "schema": {
+              "type": "string",
               "enum": [
                 "pending",
                 "accepted",
                 "declined"
-              ],
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Defaults to 50.",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "The `id` of the last **job** of the previous page — the query pages over jobs, not over your offers. The response is a plain array, so the cursor is read off the last item rather than from an envelope.",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
               "type": "string"
             }
           }
