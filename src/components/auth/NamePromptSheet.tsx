@@ -2,9 +2,9 @@ import { FormInput } from "@/src/components/form";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useEditProfileForm } from "@/src/features/auth/hooks/useEditProfileForm";
 import { useThemeColors } from "@/src/theme";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Alert, Keyboard, TextInput, TouchableWithoutFeedback } from "react-native";
 import { Sheet, YStack } from "tamagui";
 
 interface NamePromptSheetProps {
@@ -34,9 +34,20 @@ export function NamePromptSheet({
     name: "",
     email: "",
   });
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    if (!open) form.reset({ name: "", email: "" });
+    if (!open) {
+      form.reset({ name: "", email: "" });
+      return;
+    }
+    // The input stays mounted while the sheet is closed (non-modal Sheets
+    // don't unmount their children), so focusing it must be driven by
+    // `open` rather than `autoFocus` — otherwise it grabs the keyboard as
+    // soon as the screen that renders this sheet opens. The delay lets the
+    // sheet's open animation start first.
+    const timer = setTimeout(() => inputRef.current?.focus(), 100);
+    return () => clearTimeout(timer);
   }, [open, form]);
 
   const handleSave = async () => {
@@ -89,11 +100,11 @@ export function NamePromptSheet({
             </YStack>
 
             <FormInput
+              ref={inputRef}
               name="name"
               control={form.control}
               placeholder={t("auth.placeholders.name")}
               autoCapitalize="words"
-              autoFocus
               returnKeyType="done"
               onSubmitEditing={handleSave}
               error={form.formState.errors.name?.message}

@@ -1,4 +1,5 @@
 import { useThemeColors } from "@/src/theme";
+import { forwardRef } from "react";
 import { Control, Controller } from "react-hook-form";
 import { Input, InputProps, Label, Text, YStack } from "tamagui";
 
@@ -11,14 +12,14 @@ interface FormInputProps extends InputProps {
   flex?: number;
 }
 
-export const FormInput = ({
+export const FormInput = forwardRef<any, FormInputProps>(({
   name,
   control,
   label,
   error,
   flex = 1,
   ...props
-}: FormInputProps) => {
+}, ref) => {
   const colors = useThemeColors();
 
   return (
@@ -36,6 +37,7 @@ export const FormInput = ({
             </Label>
           )}
           <Input
+            ref={ref}
             {...props}
             value={value == null ? "" : String(value)}
             onBlur={onBlur}
@@ -62,4 +64,5 @@ export const FormInput = ({
       }}
     />
   );
-};
+});
+FormInput.displayName = "FormInput";
