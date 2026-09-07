@@ -114,7 +114,25 @@
       "accepted": "Accepted",
       "declined": "Declined"
     },
-    "exactAddressAfterAccept": "Exact address and precise location are shared once your offer is accepted."
+    "exactAddressAfterAccept": "Exact address and precise location are shared once your offer is accepted.",
+    "property": {
+      "title": "Property",
+      "rooms": "Rooms",
+      "windows": "Windows",
+      "area": "Area"
+    },
+    "provided": {
+      "title": "What's provided",
+      "vacuum": "Vacuum",
+      "supplies": "Supplies",
+      "ladder": "Ladder",
+      "onSite": "On site",
+      "notIncluded": "Not included",
+      "notNeeded": "Not needed"
+    },
+    "notes": "Additional notes",
+    "messageClient": "Message",
+    "messageClientA11y": "Message the client about {{title}}"
   },
   "offer": {
     "yourOffer": "Your offer",
@@ -150,7 +168,9 @@
     "emptyBody": "Ask a question or confirm the details of your offer.",
     "placeholders": {
       "message": "Write a message..."
-    }
+    },
+    "yourOffer": "Your offer {{price}}",
+    "openJob": "Open job details"
   },
   "map": {
     "previewUnavailableWeb": "Map preview not available on web",
@@ -277,40 +297,71 @@
     "copyright": "© {{year}} Profik"
   },
   "onboarding": {
-    "welcome": {
-      "title": "Welcome to Profik Pro",
-      "body": "Find cleaning jobs near you, offer your price, and get hired - all in one app.",
-      "getStarted": "Get Started",
-      "login": "I already have an account"
+    "cta": {
+      "next": "Next",
+      "claim": "Claim 500 credits"
     },
-    "about": {
-      "title": "What is Profik Pro?",
-      "p1": "Profik Pro connects cleaning professionals with clients who need work done nearby. New jobs appear on the map and in a list - with the service type, property details, location, and the client's budget shown up front.",
-      "p2": "You decide which jobs to take and what price to offer. No cold calls, no ads, no chasing leads.",
-      "p3": "Chat with clients directly in the app, win the job, and build your reputation with real reviews.",
-      "next": "Next"
-    },
-    "how": {
-      "title": "How it works",
-      "steps": {
-        "browse": {
-          "title": "Browse open jobs",
-          "description": "See new cleaning jobs near you on the map and in the list, with full details and the client's budget."
-        },
-        "offer": {
-          "title": "Send your offer",
-          "description": "Set your own price and add a short message so the client knows why you're the right pick."
-        },
-        "chat": {
-          "title": "Chat and get hired",
-          "description": "Agree on the details in the built-in chat - no need to share your phone number."
-        },
-        "paid": {
-          "title": "Do the job, get paid",
-          "description": "Complete the work, collect reviews that win you more jobs, and top up your balance to cover platform fees."
+    "steps": {
+      "find": {
+        "titleAccent": "Need work?",
+        "titleRest": "Clients are already looking",
+        "body": "Clients post their tasks — you pick the ones that fit and send your offer.",
+        "card": {
+          "category": "Deep cleaning",
+          "price": "2 400 Kč",
+          "title": "Move-out apartment cleaning, 2+kk",
+          "meta": "Praha 7 · 2.4 km away",
+          "status": "Open for offers",
+          "badge": "12 new today"
         }
       },
-      "browseJobs": "Browse jobs"
+      "pick": {
+        "titleAccent": "Pick the jobs",
+        "titleRest": "that suit you",
+        "body": "See the task details, the conditions and the client's budget. Respond only to the jobs you're interested in.",
+        "card": {
+          "category": "DEEP CLEANING",
+          "title": "Move-out apartment cleaning, 2+kk",
+          "price": "2 400 Kč",
+          "budget": "Client's budget",
+          "location": "Praha 7, 170 00 · 2.4 km away",
+          "date": "Friday, Sep 5 · morning",
+          "details": "2+kk · 54 m² · oven and windows",
+          "accept": "Accept for 2 400 Kč",
+          "counter": "Make a counter offer"
+        }
+      },
+      "paid": {
+        "titleAccent": "Get paid directly",
+        "titleRest": "by the client",
+        "body": "Agree the details and the price with the client. Once the job is done, they pay you directly.",
+        "card": {
+          "name": "Jana K.",
+          "status": "Client · online",
+          "message1": "Can you do it on Friday morning?",
+          "message2": "Yes — Friday 8:00, 2 200 Kč all in.",
+          "message3": "Deal, see you Friday!",
+          "note": "The client pays you directly — 2 200 Kč"
+        }
+      },
+      "credits": {
+        "titleAccent": "100 offers",
+        "titleRest": "on the house",
+        "body": "500 credits are waiting for you after sign-up — enough to send 100 offers and land your first jobs.",
+        "card": {
+          "title": "Welcome bonus",
+          "subtitle": "Added right after sign-up",
+          "amount": "500",
+          "unit": "credits",
+          "rowBonus": "Credits on sign-up",
+          "rowBonusValue": "500",
+          "rowCost": "Cost per offer",
+          "rowCostValue": "5",
+          "rowOffers": "Offers you can send",
+          "rowOffersValue": "100",
+          "note": "No card needed — start responding right away"
+        }
+      }
     }
   },
   "errorBoundary": {

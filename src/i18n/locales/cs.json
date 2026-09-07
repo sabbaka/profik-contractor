@@ -114,7 +114,25 @@
       "accepted": "Přijatá",
       "declined": "Odmítnutá"
     },
-    "exactAddressAfterAccept": "Přesná adresa a poloha se zobrazí po přijetí vaší nabídky."
+    "exactAddressAfterAccept": "Přesná adresa a poloha se zobrazí po přijetí vaší nabídky.",
+    "property": {
+      "title": "Nemovitost",
+      "rooms": "Pokoje",
+      "windows": "Okna",
+      "area": "Plocha"
+    },
+    "provided": {
+      "title": "Co je zajištěno",
+      "vacuum": "Vysavač",
+      "supplies": "Čisticí prostředky",
+      "ladder": "Žebřík",
+      "onSite": "K dispozici",
+      "notIncluded": "Nezajištěno",
+      "notNeeded": "Není potřeba"
+    },
+    "notes": "Doplňující poznámky",
+    "messageClient": "Napsat",
+    "messageClientA11y": "Napsat klientovi o zakázce {{title}}"
   },
   "offer": {
     "yourOffer": "Vaše nabídka",
@@ -150,7 +168,9 @@
     "emptyBody": "Zeptejte se na detail nebo potvrďte podmínky své nabídky.",
     "placeholders": {
       "message": "Napište zprávu..."
-    }
+    },
+    "yourOffer": "Vaše nabídka {{price}}",
+    "openJob": "Otevřít detail zakázky"
   },
   "map": {
     "previewUnavailableWeb": "Náhled mapy není na webu dostupný",
@@ -277,40 +297,71 @@
     "copyright": "© {{year}} Profik"
   },
   "onboarding": {
-    "welcome": {
-      "title": "Vítejte v Profik Pro",
-      "body": "Najděte úklidové zakázky ve vašem okolí, nabídněte svou cenu a získejte práci - vše v jedné aplikaci.",
-      "getStarted": "Začít",
-      "login": "Už mám účet"
+    "cta": {
+      "next": "Další",
+      "claim": "Získat 500 kreditů"
     },
-    "about": {
-      "title": "Co je Profik Pro?",
-      "p1": "Profik Pro spojuje úklidové profesionály s klienty, kteří potřebují práci ve svém okolí. Nové zakázky se zobrazují na mapě i v seznamu - s typem služby, detaily nemovitosti, lokalitou a rozpočtem klienta předem.",
-      "p2": "Vy rozhodujete, které zakázky vezmete a jakou cenu nabídnete. Bez obvolávání, bez inzerce, bez shánění poptávek.",
-      "p3": "Chatujte s klienty přímo v aplikaci, získejte zakázku a budujte si reputaci skutečnými recenzemi.",
-      "next": "Další"
-    },
-    "how": {
-      "title": "Jak to funguje",
-      "steps": {
-        "browse": {
-          "title": "Prohlížejte otevřené zakázky",
-          "description": "Nové úklidové zakázky ve vašem okolí uvidíte na mapě i v seznamu, včetně detailů a rozpočtu klienta."
-        },
-        "offer": {
-          "title": "Pošlete nabídku",
-          "description": "Nastavte si vlastní cenu a přidejte krátkou zprávu, aby klient věděl, proč jste správná volba."
-        },
-        "chat": {
-          "title": "Domluvte se v chatu",
-          "description": "Detaily si dohodnete ve vestavěném chatu - telefonní číslo sdílet nemusíte."
-        },
-        "paid": {
-          "title": "Odveďte práci a získejte zaplaceno",
-          "description": "Dokončete práci, sbírejte recenze, které vám přinesou další zakázky, a doplňujte zůstatek na platformní poplatky."
+    "steps": {
+      "find": {
+        "titleAccent": "Hledáte práci?",
+        "titleRest": "Klienti už vás hledají",
+        "body": "Klienti zadávají zakázky — vy si vyberete ty, které vám sedí, a pošlete svou nabídku.",
+        "card": {
+          "category": "Hloubkový úklid",
+          "price": "2 400 Kč",
+          "title": "Úklid bytu po vystěhování, 2+kk",
+          "meta": "Praha 7 · 2,4 km od vás",
+          "status": "Otevřeno nabídkám",
+          "badge": "12 nových dnes"
         }
       },
-      "browseJobs": "Prohlížet zakázky"
+      "pick": {
+        "titleAccent": "Vybírejte zakázky,",
+        "titleRest": "které vám sedí",
+        "body": "Prohlédněte si detaily zakázky, podmínky i rozpočet klienta. Reagujte jen na to, co vás zajímá.",
+        "card": {
+          "category": "HLOUBKOVÝ ÚKLID",
+          "title": "Úklid bytu po vystěhování, 2+kk",
+          "price": "2 400 Kč",
+          "budget": "Rozpočet klienta",
+          "location": "Praha 7, 170 00 · 2,4 km od vás",
+          "date": "Pátek 5. 9. · dopoledne",
+          "details": "2+kk · 54 m² · trouba a okna",
+          "accept": "Přijmout za 2 400 Kč",
+          "counter": "Poslat protinabídku"
+        }
+      },
+      "paid": {
+        "titleAccent": "Platbu dostanete",
+        "titleRest": "přímo od klienta",
+        "body": "Domluvte si s klientem detaily i cenu. Po dokončení zakázky vám zaplatí přímo.",
+        "card": {
+          "name": "Jana K.",
+          "status": "Klientka · online",
+          "message1": "Zvládnete to v pátek dopoledne?",
+          "message2": "Ano — pátek 8:00, 2 200 Kč včetně všeho.",
+          "message3": "Platí, uvidíme se v pátek!",
+          "note": "Klient platí přímo vám — 2 200 Kč"
+        }
+      },
+      "credits": {
+        "titleAccent": "100 nabídek",
+        "titleRest": "jako dárek",
+        "body": "Po registraci na vás čeká 500 kreditů — to stačí na 100 nabídek a první zakázky.",
+        "card": {
+          "title": "Uvítací bonus",
+          "subtitle": "Připíšeme hned po registraci",
+          "amount": "500",
+          "unit": "kreditů",
+          "rowBonus": "Kredity za registraci",
+          "rowBonusValue": "500",
+          "rowCost": "Cena za nabídku",
+          "rowCostValue": "5",
+          "rowOffers": "Kolik nabídek pošlete",
+          "rowOffersValue": "100",
+          "note": "Bez karty — reagovat můžete hned"
+        }
+      }
     }
   },
   "errorBoundary": {
