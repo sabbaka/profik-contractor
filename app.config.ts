@@ -7,7 +7,7 @@ const LOCATION_WHEN_IN_USE_PERMISSION =
 const config = {
   name: 'profik-contractor',
   slug: 'profik-contractor',
-  version: '1.0.10',
+  version: '1.0.11',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'profikcontractor',
@@ -15,7 +15,7 @@ const config = {
   newArchEnabled: true,
   ios: {
     bundleIdentifier: 'com.profik.contractor',
-    buildNumber: '11',
+    buildNumber: '12',
     supportsTablet: false,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
@@ -25,7 +25,7 @@ const config = {
   },
   android: {
     package: 'com.profik.contractor',
-    versionCode: 11,
+    versionCode: 12,
     adaptiveIcon: {
       backgroundColor: '#E85D00',
       foregroundImage: './assets/images/android-icon-foreground.png',
