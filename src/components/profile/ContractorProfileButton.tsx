@@ -21,7 +21,7 @@ export default function ContractorProfileButton({ onPress }: ContractorProfileBu
         {isGuest ? (
           <User size={20} color="#FFFFFF" position="relative" zIndex={1} />
         ) : (
-          <Text position="relative" zIndex={1} style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 17 }}>{initial}</Text>
+          <Text position="relative" zIndex={1} style={{ color: '#FFFFFF', fontFamily: 'Inter_700Bold', fontSize: 17, lineHeight: 21, textAlign: 'center' }}>{initial}</Text>
         )}
       </YStack>
     </Pressable>

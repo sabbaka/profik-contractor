@@ -133,6 +133,8 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
                       color: "#FFFFFF",
                       fontFamily: "Geist_700Bold",
                       fontSize: 24,
+                      lineHeight: 30,
+                      textAlign: "center",
                     }}
                   >
                     P

@@ -34,7 +34,7 @@ export default function AboutScreen() {
         <YStack alignItems="center" gap={12} paddingVertical={12}>
           <YStack width={72} height={72} borderRadius={9999} overflow="hidden" alignItems="center" justifyContent="center">
             <LinearGradient colors={["#FF8A2B", "#E85D00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-            <Text position="relative" zIndex={1} style={{ color: "#FFFFFF", fontFamily: "Geist_700Bold", fontSize: 28 }}>P</Text>
+            <Text position="relative" zIndex={1} style={{ color: "#FFFFFF", fontFamily: "Geist_700Bold", fontSize: 28, lineHeight: 34, textAlign: "center" }}>P</Text>
           </YStack>
           <Text variant="h3">Profik Pro</Text>
           <Text variant="body" textAlign="center">
