@@ -135,6 +135,12 @@ export interface ThemeColors {
   purpleBg: string;
   greenStrong: string;
   greenSoftBg: string;
+  /** Soft orange shapes behind the onboarding illustrations. */
+  blobSoft: string;
+  blobMid: string;
+  blobStrong: string;
+  blobRing: string;
+  shadowFloat: string;
 }
 
 /**
@@ -186,5 +192,10 @@ export function useThemeColors(): ThemeColors {
     purpleBg: t.purpleBg?.val,
     greenStrong: t.greenStrong?.val,
     greenSoftBg: t.greenSoftBg?.val,
+    blobSoft: t.blobSoft?.val,
+    blobMid: t.blobMid?.val,
+    blobStrong: t.blobStrong?.val,
+    blobRing: t.blobRing?.val,
+    shadowFloat: t.shadowFloat?.val,
   };
 }

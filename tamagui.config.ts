@@ -65,6 +65,12 @@ const lightTokens = {
   statusInProgressDot: "#F59E0B",
 
   shadowCard: "rgba(0,0,0,0.04)",
+
+  blobSoft: "#FFEEE0",
+  blobMid: "#FFD8B5",
+  blobStrong: "#FFC894",
+  blobRing: "#FFC894",
+  shadowFloat: "rgba(0,0,0,0.12)",
 };
 
 const darkTokens: typeof lightTokens = {
@@ -123,6 +129,12 @@ const darkTokens: typeof lightTokens = {
   statusInProgressDot: "#F59E0B",
 
   shadowCard: "rgba(0,0,0,0.2)",
+
+  blobSoft: "#2B1D14",
+  blobMid: "#43281A",
+  blobStrong: "#7A4415",
+  blobRing: "#5A3A1E",
+  shadowFloat: "rgba(0,0,0,0.4)",
 };
 
 const lightTheme = {
