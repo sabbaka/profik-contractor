@@ -86,3 +86,82 @@ export interface OfferedJobItem {
 export interface GetOfferedJobsParams {
   status: OfferStatus;
 }
+
+/**
+ * Which tab of the Messages screen a conversation belongs to.
+ *
+ * The server decides this from `job.status` + `offer.status` and hands it over
+ * ready-made — the same rule has to hold in this app, the client app and the
+ * backend, so it is computed in exactly one of them.
+ */
+export type ConversationBucket =
+  | "open"
+  | "in_progress"
+  | "completed"
+  | "archived";
+
+export const CONVERSATION_BUCKETS: ConversationBucket[] = [
+  "open",
+  "in_progress",
+  "completed",
+  "archived",
+];
+
+/** `ConversationCounterpartyDto` — the other side of the chat, whoever you are. */
+export interface ConversationCounterparty {
+  id: string;
+  /** Null until they set one — an OTP account starts without a name. */
+  name: string | null;
+  avatarUrl: string | null;
+}
+
+/** `ConversationLastMessageDto` — enough of the last message for a preview. */
+export interface ConversationLastMessage {
+  id: string;
+  content: string;
+  senderId: string;
+  createdAt: string;
+}
+
+/** `ConversationDto` — one row of the Messages list. */
+export interface Conversation {
+  offerId: string;
+  bucket: ConversationBucket;
+  offer: {
+    id: string;
+    price: number;
+    status: OfferStatus;
+    createdAt: string;
+  };
+  job: {
+    id: string;
+    title: string;
+    category: string;
+    price: number;
+    status: JobStatus;
+  };
+  counterparty: ConversationCounterparty;
+  /** Null when nobody has written yet — the normal case in the Open tab. */
+  lastMessage: ConversationLastMessage | null;
+  /** Messages from the other side since this user last read. */
+  unreadCount: number;
+}
+
+/** `ConversationListDto` — a page of conversations. */
+export interface ConversationList {
+  items: Conversation[];
+  /** Pass back as `cursor`. Null on the last page. */
+  nextCursor: string | null;
+}
+
+export interface GetConversationsParams {
+  bucket?: ConversationBucket;
+  cursor?: string;
+  limit?: number;
+}
+
+/** `UnreadSummaryDto` — the tab badge, and which bucket to put a dot on. */
+export interface UnreadSummary {
+  total: number;
+  byBucket: Record<ConversationBucket, number>;
+}
