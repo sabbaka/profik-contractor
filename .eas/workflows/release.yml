@@ -1,0 +1,53 @@
+# Cuts a release: builds both platforms and sends them to the stores.
+#
+# Triggered by a version tag rather than by every push to main, because a push
+# to main here is an ordinary feature commit and there are several a day.
+# Building on each would mean four builds and four store submissions per
+# commit — Apple's review queue, TestFlight processing and build minutes spent
+# on a README fix. Pushing a tag says "this is a release" and is one command.
+#
+# Type checking, linting and the i18n check stay in .github/workflows/ci.yml,
+# where they run on every push and pull request.
+#
+# To release:
+#   npm version patch && git commit -am "chore(release): $(node -p "require('./package.json').version")"
+#   git tag "v$(node -p "require('./package.json').version")" && git push && git push --tags
+#
+# Build numbers are not in this repository — EAS owns them and increments them
+# per build (cli.appVersionSource: "remote" in eas.json).
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build_ios:
+    name: Build iOS
+    type: build
+    params:
+      platform: ios
+      profile: production
+
+  build_android:
+    name: Build Android
+    type: build
+    params:
+      platform: android
+      profile: production
+
+  submit_ios:
+    name: Submit to App Store Connect
+    needs: [build_ios]
+    type: submit
+    params:
+      build_id: ${{ needs.build_ios.outputs.build_id }}
+      profile: production
+
+  submit_android:
+    name: Submit to Play
+    needs: [build_android]
+    type: submit
+    params:
+      build_id: ${{ needs.build_android.outputs.build_id }}
+      profile: production
