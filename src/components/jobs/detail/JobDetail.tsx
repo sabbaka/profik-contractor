@@ -53,7 +53,6 @@ export const JobDetail = () => {
     isContractor,
     mode,
     setMode,
-    clientPrice,
     price,
     setPrice,
     message,
@@ -172,7 +171,6 @@ export const JobDetail = () => {
                   myOfferMessage={myOfferMessage}
                   myOfferStatus={myOfferStatus}
                   offerIdForChat={offerIdForChat}
-                  clientPrice={clientPrice}
                   mode={mode}
                   setMode={setMode}
                   price={price}

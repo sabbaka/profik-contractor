@@ -58,7 +58,8 @@
   "tabs": {
     "openJobs": "ZAKÁZKY",
     "myJobs": "MOJE ZAKÁZKY",
-    "profile": "PROFIL"
+    "profile": "PROFIL",
+    "messages": "ZPRÁVY"
   },
   "header": {
     "workspace": "Pracovní prostor"
@@ -139,15 +140,14 @@
     "sentToCustomer": "Odesláno zákazníkovi",
     "yourPrice": "VAŠE CENA",
     "messageCustomer": "Napsat zákazníkovi",
-    "makeCounterTitle": "Navrhnout vlastní cenu",
+    "makeCounterTitle": "Nabídněte svou cenu",
     "makeCounterBody": "Nastavte férovou cenu a popište zákazníkovi, co je v ní zahrnuto.",
     "pricePlaceholder": "Vaše cena v Kč",
     "messagePlaceholder": "Popište, co je zahrnuto...",
-    "sendCounter": "Odeslat nabídku",
+    "sendCounter": "Poslat nabídku",
     "interestedTitle": "Máte o zakázku zájem?",
     "interestedBody": "Odpovězte hned a oslovte zákazníka mezi prvními.",
-    "acceptFor": "Přijmout za {{price}}",
-    "makeCounter": "Navrhnout vlastní cenu",
+    "makeCounter": "Nabídnout jinou cenu",
     "unauthorizedTitle": "Neoprávněný přístup",
     "unauthorizedBody": "Nabídky mohou posílat pouze kontraktoři.",
     "submitted": "Nabídka byla úspěšně odeslána",
@@ -156,7 +156,9 @@
       "priceRequired": "Zadejte prosím cenu nabídky.",
       "pricePositive": "Cena musí být kladné číslo.",
       "messageRequired": "Vysvětlete prosím klientovi svou cenu."
-    }
+    },
+    "sendAtClientPrice": "Poslat nabídku za cenu klienta",
+    "costNote": "Při odeslání nabídky se z účtu strhne 5 Kč"
   },
   "chat": {
     "title": "Chat se zákazníkem",
@@ -299,13 +301,13 @@
   "onboarding": {
     "cta": {
       "next": "Další",
-      "claim": "Získat 500 kreditů"
+      "claim": "Získat 500 Kč"
     },
     "steps": {
       "find": {
         "titleAccent": "Hledáte práci?",
         "titleRest": "Klienti už vás hledají",
-        "body": "Klienti zadávají zakázky — vy si vyberete ty, které vám sedí, a pošlete svou nabídku.",
+        "body": "Klienti zadávají zakázky — vy si vyberete ty, které vám sedí, a pošlete svou nabídku",
         "card": {
           "category": "Hloubkový úklid",
           "price": "2 400 Kč",
@@ -318,7 +320,7 @@
       "pick": {
         "titleAccent": "Vybírejte zakázky,",
         "titleRest": "které vám sedí",
-        "body": "Prohlédněte si detaily zakázky, podmínky i rozpočet klienta. Reagujte jen na to, co vás zajímá.",
+        "body": "Prohlédněte si detaily zakázky, podmínky i rozpočet klienta. Reagujte jen na to, co vás zajímá",
         "card": {
           "category": "HLOUBKOVÝ ÚKLID",
           "title": "Úklid bytu po vystěhování, 2+kk",
@@ -327,14 +329,14 @@
           "location": "Praha 7, 170 00 · 2,4 km od vás",
           "date": "Pátek 5. 9. · dopoledne",
           "details": "2+kk · 54 m² · trouba a okna",
-          "accept": "Přijmout za 2 400 Kč",
-          "counter": "Poslat protinabídku"
+          "accept": "Poslat nabídku za 2 400 Kč",
+          "counter": "Nabídnout jinou cenu"
         }
       },
       "paid": {
         "titleAccent": "Platbu dostanete",
         "titleRest": "přímo od klienta",
-        "body": "Domluvte si s klientem detaily i cenu. Po dokončení zakázky vám zaplatí přímo.",
+        "body": "Domluvte si s klientem detaily i cenu. Po dokončení zakázky vám zaplatí přímo",
         "card": {
           "name": "Jana K.",
           "status": "Klientka · online",
@@ -347,16 +349,16 @@
       "credits": {
         "titleAccent": "100 nabídek",
         "titleRest": "jako dárek",
-        "body": "Po registraci na vás čeká 500 kreditů — to stačí na 100 nabídek a první zakázky.",
+        "body": "Po registraci vám na účet připíšeme 500 Kč — to stačí na 100 nabídek a první zakázky",
         "card": {
           "title": "Uvítací bonus",
           "subtitle": "Připíšeme hned po registraci",
           "amount": "500",
-          "unit": "kreditů",
-          "rowBonus": "Kredity za registraci",
-          "rowBonusValue": "500",
+          "unit": "Kč",
+          "rowBonus": "Bonus za registraci",
+          "rowBonusValue": "500 Kč",
           "rowCost": "Cena za nabídku",
-          "rowCostValue": "5",
+          "rowCostValue": "5 Kč",
           "rowOffers": "Kolik nabídek pošlete",
           "rowOffersValue": "100",
           "note": "Bez karty — reagovat můžete hned"
@@ -385,5 +387,48 @@
   "a11y": {
     "close": "Zavřít",
     "send": "Odeslat zprávu"
+  },
+  "messages": {
+    "title": "Zprávy",
+    "subtitle": "Tady najdete své chaty s klienty",
+    "unreadSubtitle_one": "{{count}} nepřečtená zpráva",
+    "unreadSubtitle_few": "{{count}} nepřečtené zprávy",
+    "unreadSubtitle_other": "{{count}} nepřečtených zpráv",
+    "loading": "Načítáme vaše chaty...",
+    "errorTitle": "Zprávy se nepodařilo načíst",
+    "errorBody": "Zkontrolujte připojení a zkuste to znovu.",
+    "markAllRead": "Označit vše jako přečtené",
+    "yesterday": "Včera",
+    "unnamedClient": "Klient",
+    "noMessagesYet": "Zatím žádné zprávy — pozdravte",
+    "youPrefix": "Vy: {{text}}",
+    "openChatA11y": "Otevřít chat s {{name}} o zakázce {{title}}",
+    "findJob": "Najít zakázku",
+    "guestTitle": "Přihlaste se a uvidíte zprávy",
+    "guestBody": "Přihlaste se telefonem, abyste mohli posílat nabídky a psát si s klienty.",
+    "buckets": {
+      "open": "Otevřené",
+      "in_progress": "V práci",
+      "completed": "Dokončené",
+      "archived": "Archiv"
+    },
+    "empty": {
+      "open": {
+        "title": "Zatím žádné otevřené zakázky",
+        "body": "Tady se objeví chaty k zakázkám, na které jste reagovali. Detaily a podmínky si domluvíte ještě před začátkem práce."
+      },
+      "in_progress": {
+        "title": "Nic není v práci",
+        "body": "Jakmile klient přijme vaši nabídku, chat k té zakázce se přesune sem."
+      },
+      "completed": {
+        "title": "Zatím žádné dokončené zakázky",
+        "body": "Chaty k dokončeným zakázkám zůstávají tady, ať si můžete dohledat, co jste si domluvili."
+      },
+      "archived": {
+        "title": "Archiv je prázdný",
+        "body": "Sem se ukládají chaty k odmítnutým nabídkám a zrušeným zakázkám."
+      }
+    }
   }
 }

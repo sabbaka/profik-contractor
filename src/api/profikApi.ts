@@ -4,6 +4,7 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { File as ExpoFile } from "expo-file-system";
 import type {
   AuthResponse,
   OtpRequestResponse,
@@ -13,12 +14,18 @@ import type {
 } from "../features/auth/types";
 import { logout } from "../store/authSlice";
 import type {
+  ConversationBucket,
+  ConversationList,
   GetOfferedJobsParams,
   Job,
   Offer,
   OfferedJobItem,
   OfferMessage,
+  UnreadSummary,
 } from "./types";
+
+/** Conversations fetched per page by the Messages tab. */
+export const CONVERSATIONS_PAGE_SIZE = 20;
 
 // Shape returned by GET /auth/me and PATCH /users/me.
 export interface MeResponse {
@@ -31,6 +38,12 @@ export interface MeResponse {
   phone: string;
   balance: number;
   avatarUrl?: string | null;
+  /**
+   * Unread offer messages across every conversation. Only `GET /auth/me`
+   * populates it — it rides along so a cold start can render the Messages
+   * badge without a second request. Absent from the login/signup responses.
+   */
+  unreadMessages?: number;
 }
 
 // Best-effort MIME inference for image URIs returned by expo-image-picker
@@ -90,7 +103,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
 export const profikApi = createApi({
   reducerPath: "profikApi",
-  tagTypes: ["Jobs", "OfferMessages", "Offers"],
+  tagTypes: ["Jobs", "OfferMessages", "Offers", "Conversations", "Unread"],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     // Passwordless sign-in. One pair of endpoints serves both login and
@@ -144,6 +157,7 @@ export const profikApi = createApi({
       query: (body) => ({ url: "/offers", method: "POST", body }),
       invalidatesTags: (_result, _error, { jobId }) => [
         { type: "Offers", id: jobId } as any,
+        "Conversations",
       ],
     }),
     getOfferMessages: builder.query<OfferMessage[], string>({
@@ -154,6 +168,58 @@ export const profikApi = createApi({
       providesTags: (_result, _error, offerId) => [
         { type: "OfferMessages", id: offerId } as any,
       ],
+    }),
+    /**
+     * The Messages list, one cache entry per bucket.
+     *
+     * An `infiniteQuery` rather than a plain query with a merged cursor: the
+     * list is invalidated whenever a chat is read, and the hand-rolled merge
+     * pattern refetches only the page matching the *current* cursor — the
+     * earlier pages keep their stale unread counts and the refetched page is
+     * appended a second time. `infiniteQuery` refetches every loaded page.
+     */
+    getConversations: builder.infiniteQuery<
+      ConversationList,
+      { bucket?: ConversationBucket },
+      string | null
+    >({
+      infiniteQueryOptions: {
+        initialPageParam: null,
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      },
+      query: ({ queryArg, pageParam }) => {
+        const params = new URLSearchParams({ limit: String(CONVERSATIONS_PAGE_SIZE) });
+        if (queryArg.bucket) params.set("bucket", queryArg.bucket);
+        if (pageParam) params.set("cursor", pageParam);
+        return {
+          url: `/offers/conversations?${params.toString()}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Conversations"],
+    }),
+    getUnreadCount: builder.query<UnreadSummary, void>({
+      query: () => ({ url: "/offers/unread-count", method: "GET" }),
+      providesTags: ["Unread"],
+    }),
+    markConversationRead: builder.mutation<
+      void,
+      { offerId: string; lastReadMessageId: string }
+    >({
+      query: ({ offerId, lastReadMessageId }) => ({
+        url: `/offers/${offerId}/messages/read`,
+        method: "POST",
+        body: { lastReadMessageId },
+      }),
+      invalidatesTags: ["Conversations", "Unread"],
+    }),
+    markAllRead: builder.mutation<void, { bucket?: string } | void>({
+      query: (args) => ({
+        url: "/offers/messages/read-all",
+        method: "POST",
+        body: args?.bucket ? { bucket: args.bucket } : {},
+      }),
+      invalidatesTags: ["Conversations", "Unread"],
     }),
     sendOfferMessage: builder.mutation<
       OfferMessage,
@@ -166,6 +232,7 @@ export const profikApi = createApi({
       }),
       invalidatesTags: (_result, _error, { offerId }) => [
         { type: "OfferMessages", id: offerId } as any,
+        "Conversations",
       ],
     }),
     topupBalance: builder.mutation<
@@ -210,11 +277,15 @@ export const profikApi = createApi({
         const inferredName =
           fileName ?? `avatar.${inferredMime.split("/")[1] ?? "jpg"}`;
         const formData = new FormData();
-        formData.append("file", {
-          uri,
-          name: inferredName,
-          type: inferredMime,
-        } as any);
+        // Expo's fetch polyfill (the global `fetch` since SDK 57) only
+        // accepts a string, a real Blob, or a Blob-like object with
+        // `.bytes()` as a FormData part — the classic React Native
+        // `{ uri, name, type }` pseudo-blob throws "Unsupported
+        // FormDataPart implementation". expo-file-system's `File`
+        // implements the Blob interface and is the supported way to
+        // attach a local file without reading it into memory first.
+        const file = new ExpoFile(uri);
+        formData.append("file", file as unknown as Blob, inferredName);
         return {
           url: "/users/me/avatar",
           method: "POST",
@@ -242,6 +313,10 @@ export const {
   useGetMyOfferForJobQuery,
   useGetOfferMessagesQuery,
   useSendOfferMessageMutation,
+  useGetConversationsInfiniteQuery,
+  useGetUnreadCountQuery,
+  useMarkConversationReadMutation,
+  useMarkAllReadMutation,
   useTopupBalanceMutation,
   useRegisterPushTokenMutation,
   useUnregisterPushTokenMutation,

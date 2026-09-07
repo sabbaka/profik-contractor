@@ -8,7 +8,7 @@ import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useThemeColors } from "@/src/theme";
 import { FolderOpen, Lock } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, RefreshControl } from "react-native";
 import { Spinner, XStack, YStack } from "tamagui";
@@ -53,6 +53,19 @@ export default function MyJobsTab() {
   const jobs = data ?? [];
   const loading = isLoading || changing || (isFetching && !jobs.length);
   const currentLabel = t(`my.labels.${filter}`);
+
+  // Same reasoning as `changing` above: `isFetching` also covers the silent
+  // refetchOnFocus refresh, not just a manual pull — tying the pull-to-refresh
+  // spinner to it made it pop up on its own. Track a manual refresh separately.
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
 
   if (isGuest) {
     return (
@@ -111,7 +124,7 @@ export default function MyJobsTab() {
           data={jobs}
           keyExtractor={(item: any) => item.job.id}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 118, flexGrow: jobs.length ? undefined : 1 }}
-          refreshControl={<RefreshControl refreshing={isFetching && !changing} onRefresh={refetch} tintColor={colors.accent} />}
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.accent} />}
           ListEmptyComponent={
             <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingBottom={80}>
               <YStack width={80} height={80} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">

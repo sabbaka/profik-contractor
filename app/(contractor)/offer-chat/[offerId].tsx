@@ -1,5 +1,6 @@
 import {
   useGetOfferMessagesQuery,
+  useMarkConversationReadMutation,
   useMeQuery,
   useSendOfferMessageMutation,
 } from "@/src/api/profikApi";
@@ -12,7 +13,7 @@ import { BriefcaseBusiness, ChevronLeft, ChevronRight, MessageCircle, Send } fro
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { logError } from "@/src/utils/logger";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -57,6 +58,24 @@ export default function OfferChatRoute() {
   );
   const [content, setContent] = useState("");
   const [sendMessage, { isLoading: isSending }] = useSendOfferMessageMutation();
+  const [markConversationRead] = useMarkConversationReadMutation();
+
+  // Reading the chat is what clears its unread count, so the cursor moves on
+  // open and again on every message that arrives while it is open. Keyed on
+  // the newest message id so a re-render does not re-post the same cursor —
+  // the endpoint is idempotent, but the request is not free.
+  const newestMessageId = messages?.length
+    ? messages[messages.length - 1].id
+    : undefined;
+  const lastMarkedId = useRef<string | null>(null);
+  useEffect(() => {
+    if (!offerId || !newestMessageId) return;
+    if (lastMarkedId.current === newestMessageId) return;
+    lastMarkedId.current = newestMessageId;
+    markConversationRead({ offerId, lastReadMessageId: newestMessageId })
+      .unwrap()
+      .catch(logError);
+  }, [offerId, newestMessageId, markConversationRead]);
 
   const handleSend = useCallback(async () => {
     if (!offerId || !content.trim()) return;

@@ -4,7 +4,7 @@ import { Button, Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { BriefcaseBusiness, SlidersHorizontal } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, RefreshControl } from "react-native";
 import { Spinner, XStack, YStack } from "tamagui";
@@ -12,12 +12,26 @@ import { Spinner, XStack, YStack } from "tamagui";
 export default function OpenJobsTab() {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const { data, isLoading, isFetching, error, refetch } = useGetOpenJobsQuery(undefined, {
+  const { data, isLoading, error, refetch } = useGetOpenJobsQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     refetchOnFocus: true,
   });
   const jobs = data ?? [];
+
+  // `isFetching` is also true for the silent refetchOnFocus refresh (e.g.
+  // coming back from a job's detail screen), not just a manual pull — tying
+  // the pull-to-refresh spinner to it made it pop up on its own. Track a
+  // manual refresh separately.
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
 
   return (
     <YStack flex={1} backgroundColor={colors.bgSecondary}>
@@ -47,7 +61,7 @@ export default function OpenJobsTab() {
           data={jobs}
           keyExtractor={(item: any) => item.id}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 118, flexGrow: jobs.length ? undefined : 1 }}
-          refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} tintColor={colors.accent} />}
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.accent} />}
           ListEmptyComponent={
             <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingBottom={80}>
               <YStack width={80} height={80} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">

@@ -16,6 +16,8 @@ export interface TabItem {
   label: string;
   icon: React.ComponentType<{ size?: number; color?: string }>;
   onPress: () => void;
+  /** Unread count drawn over the icon. Zero and undefined both draw nothing. */
+  badge?: number;
 }
 
 export function TabBar({
@@ -111,8 +113,38 @@ export function TabBar({
                 justifyContent="center"
                 gap={3}
               >
-                <Icon size={19} color={active ? "#FFFFFF" : "#9CA3AF"} />
+                <YStack>
+                  <Icon size={19} color={active ? "#FFFFFF" : "#9CA3AF"} />
+                  {item.badge ? (
+                    // Red rather than the brand orange: on the active tab the
+                    // pill behind it is already an orange gradient.
+                    <XStack
+                      position="absolute"
+                      top={-6}
+                      left={11}
+                      minWidth={17}
+                      height={17}
+                      borderRadius={9999}
+                      paddingHorizontal={4}
+                      alignItems="center"
+                      justifyContent="center"
+                      backgroundColor={colors.error}
+                    >
+                      <Text
+                        style={{
+                          color: "#FFFFFF",
+                          fontSize: 10,
+                          lineHeight: 13,
+                          fontFamily: "Inter_700Bold",
+                        }}
+                      >
+                        {item.badge > 99 ? "99+" : item.badge}
+                      </Text>
+                    </XStack>
+                  ) : null}
+                </YStack>
                 <Text
+                  numberOfLines={1}
                   style={{
                     color: active ? "#FFFFFF" : "#9CA3AF",
                     fontSize: 10,

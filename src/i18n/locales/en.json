@@ -58,7 +58,8 @@
   "tabs": {
     "openJobs": "OPEN JOBS",
     "myJobs": "MY JOBS",
-    "profile": "PROFILE"
+    "profile": "PROFILE",
+    "messages": "MESSAGES"
   },
   "header": {
     "workspace": "Contractor workspace"
@@ -139,15 +140,14 @@
     "sentToCustomer": "Sent to the customer",
     "yourPrice": "YOUR PRICE",
     "messageCustomer": "Message customer",
-    "makeCounterTitle": "Make a counter offer",
+    "makeCounterTitle": "Offer your price",
     "makeCounterBody": "Set a fair price and tell the customer what's included.",
     "pricePlaceholder": "Your price in CZK",
     "messagePlaceholder": "Explain what's included...",
-    "sendCounter": "Send counter offer",
+    "sendCounter": "Send offer",
     "interestedTitle": "Interested in this job?",
     "interestedBody": "Respond now to reach the customer early.",
-    "acceptFor": "Accept for {{price}}",
-    "makeCounter": "Make a counter offer",
+    "makeCounter": "Offer a different price",
     "unauthorizedTitle": "Unauthorized",
     "unauthorizedBody": "Only contractors can submit offers.",
     "submitted": "Offer submitted successfully",
@@ -156,7 +156,9 @@
       "priceRequired": "Please enter your offer price.",
       "pricePositive": "Price must be a positive number.",
       "messageRequired": "Please explain your price to the client."
-    }
+    },
+    "sendAtClientPrice": "Send offer at the client's price",
+    "costNote": "5 Kč is deducted when you send an offer"
   },
   "chat": {
     "title": "Customer chat",
@@ -299,13 +301,13 @@
   "onboarding": {
     "cta": {
       "next": "Next",
-      "claim": "Claim 500 credits"
+      "claim": "Claim 500 Kč"
     },
     "steps": {
       "find": {
         "titleAccent": "Need work?",
         "titleRest": "Clients are already looking",
-        "body": "Clients post their tasks — you pick the ones that fit and send your offer.",
+        "body": "Clients post their tasks — you pick the ones that fit and send your offer",
         "card": {
           "category": "Deep cleaning",
           "price": "2 400 Kč",
@@ -318,7 +320,7 @@
       "pick": {
         "titleAccent": "Pick the jobs",
         "titleRest": "that suit you",
-        "body": "See the task details, the conditions and the client's budget. Respond only to the jobs you're interested in.",
+        "body": "See the task details, the conditions and the client's budget. Respond only to the jobs you're interested in",
         "card": {
           "category": "DEEP CLEANING",
           "title": "Move-out apartment cleaning, 2+kk",
@@ -327,14 +329,14 @@
           "location": "Praha 7, 170 00 · 2.4 km away",
           "date": "Friday, Sep 5 · morning",
           "details": "2+kk · 54 m² · oven and windows",
-          "accept": "Accept for 2 400 Kč",
-          "counter": "Make a counter offer"
+          "accept": "Send offer for 2 400 Kč",
+          "counter": "Offer a different price"
         }
       },
       "paid": {
         "titleAccent": "Get paid directly",
         "titleRest": "by the client",
-        "body": "Agree the details and the price with the client. Once the job is done, they pay you directly.",
+        "body": "Agree the details and the price with the client. Once the job is done, they pay you directly",
         "card": {
           "name": "Jana K.",
           "status": "Client · online",
@@ -347,16 +349,16 @@
       "credits": {
         "titleAccent": "100 offers",
         "titleRest": "on the house",
-        "body": "500 credits are waiting for you after sign-up — enough to send 100 offers and land your first jobs.",
+        "body": "We add 500 Kč to your balance right after sign-up — enough to send 100 offers and land your first jobs",
         "card": {
           "title": "Welcome bonus",
           "subtitle": "Added right after sign-up",
           "amount": "500",
-          "unit": "credits",
-          "rowBonus": "Credits on sign-up",
-          "rowBonusValue": "500",
+          "unit": "Kč",
+          "rowBonus": "Bonus on sign-up",
+          "rowBonusValue": "500 Kč",
           "rowCost": "Cost per offer",
-          "rowCostValue": "5",
+          "rowCostValue": "5 Kč",
           "rowOffers": "Offers you can send",
           "rowOffersValue": "100",
           "note": "No card needed — start responding right away"
@@ -385,5 +387,47 @@
   "a11y": {
     "close": "Close",
     "send": "Send message"
+  },
+  "messages": {
+    "title": "Messages",
+    "subtitle": "Your chats with clients live here",
+    "unreadSubtitle_one": "{{count}} unread message",
+    "unreadSubtitle_other": "{{count}} unread messages",
+    "loading": "Loading your chats...",
+    "errorTitle": "Couldn't load your messages",
+    "errorBody": "Check your connection and try again.",
+    "markAllRead": "Mark all as read",
+    "yesterday": "Yesterday",
+    "unnamedClient": "Client",
+    "noMessagesYet": "No messages yet — say hello",
+    "youPrefix": "You: {{text}}",
+    "openChatA11y": "Open chat with {{name}} about {{title}}",
+    "findJob": "Find a job",
+    "guestTitle": "Sign in to see your messages",
+    "guestBody": "Sign in with your phone to send offers and chat with clients here.",
+    "buckets": {
+      "open": "Open",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "archived": "Archive"
+    },
+    "empty": {
+      "open": {
+        "title": "No open jobs yet",
+        "body": "Chats appear here for jobs you responded to. You can agree the details and terms before the work starts."
+      },
+      "in_progress": {
+        "title": "Nothing in progress",
+        "body": "Once a client accepts your offer, the chat for that job moves here."
+      },
+      "completed": {
+        "title": "No finished jobs yet",
+        "body": "Chats for jobs you've completed stay here, so you can look up what was agreed."
+      },
+      "archived": {
+        "title": "Archive is empty",
+        "body": "Chats for declined offers and cancelled jobs end up here."
+      }
+    }
   }
 }

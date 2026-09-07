@@ -2,10 +2,12 @@ import {
   useRegisterPushTokenMutation,
   useUnregisterPushTokenMutation,
 } from "@/src/api/profikApi";
+import { resolveNotificationRoute } from "@/src/features/notifications";
 import { logError } from "@/src/utils/logger";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { router, useRootNavigationState } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { Platform } from "react-native";
 
@@ -91,17 +93,51 @@ export function usePushNotifications(token: string | null) {
     };
   }, [token, registerPushToken]);
 
-  useEffect(() => {
-    if (!token) return;
+  useNotificationRouting(token);
+}
 
-    const subscription = Notifications.addNotificationResponseReceivedListener(
-      (_response) => {
-        // Future: navigate to the relevant screen based on response.notification.request.content.data
-      }
+/**
+ * Opens the screen a tapped notification is about.
+ *
+ * `useLastNotificationResponse` covers both cases in one value: a tap while
+ * the app is running, and the tap that launched it from cold. That matters
+ * because on a cold start the listener would fire before this hook is
+ * mounted, and the notification would be lost.
+ *
+ * Two things have to be true before navigating, and both can arrive after the
+ * response does — so this effect re-runs and retries rather than dropping it:
+ *
+ *   • the root navigator is mounted, otherwise `router.push` has nothing to
+ *     push onto;
+ *   • the user is signed in, since every destination is behind the auth gate
+ *     and would only bounce back to home.
+ */
+function useNotificationRouting(token: string | null) {
+  const response = Notifications.useLastNotificationResponse();
+  const navigationState = useRootNavigationState();
+  const isNavigationReady = Boolean(navigationState?.key);
+
+  // Responses stay readable after handling, so remember the last one we acted
+  // on. Without this, any re-render would navigate again.
+  const handledRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!response || !isNavigationReady || !token) return;
+
+    const identifier = response.notification.request.identifier;
+    if (handledRef.current === identifier) return;
+
+    const target = resolveNotificationRoute(
+      response.notification.request.content.data,
     );
 
-    return () => subscription.remove();
-  }, [token]);
+    // Mark it handled either way: a payload we cannot route is not going to
+    // become routable on the next render.
+    handledRef.current = identifier;
+    if (!target) return;
+
+    router.push({ pathname: target.pathname, params: target.params } as any);
+  }, [response, isNavigationReady, token]);
 }
 
 /**
