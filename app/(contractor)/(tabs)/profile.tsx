@@ -14,6 +14,7 @@ import {
   setStoredLanguage,
   type AppLanguage,
 } from "@/src/utils/languageStorage";
+import { clearHasSeenOnboarding } from "@/src/utils/onboardingStorage";
 import {
   Bell,
   ChevronRight,
@@ -23,6 +24,7 @@ import {
   Info,
   LogOut,
   Moon,
+  RotateCcw,
   Shield,
   Trash2,
   WalletCards,
@@ -161,6 +163,11 @@ export default function ProfileRoute() {
         extractErrorMessage(error) || t("profile.deleteFailed")
       );
     }
+  };
+
+  const handleResetOnboarding = async () => {
+    await clearHasSeenOnboarding();
+    router.push("/onboarding" as any);
   };
 
   const confirmDelete = () => {
@@ -346,6 +353,7 @@ export default function ProfileRoute() {
                 color: "#FFFFFF",
                 fontFamily: "GeistMono_700Bold",
                 fontSize: 25,
+                lineHeight: 31,
               }}
             >
               {formatCzk(user?.balance ?? 0)}
@@ -438,6 +446,26 @@ export default function ProfileRoute() {
             onPress={() => router.push("/(contractor)/profile/about" as any)}
           />
         </YStack>
+
+        {/* Developer */}
+        {__DEV__ && (
+          <YStack
+            backgroundColor={colors.bgCard}
+            borderRadius={16}
+            borderWidth={1}
+            borderColor={colors.borderSubtle}
+            overflow="hidden"
+          >
+            <ProfileRow
+              label="Reset onboarding"
+              iconBg={colors.surfaceInput}
+              icon={<RotateCcw size={18} color={colors.textSecondary} />}
+              onPress={() => {
+                void handleResetOnboarding();
+              }}
+            />
+          </YStack>
+        )}
 
         {/* Logout */}
         {!isGuest && (
