@@ -228,7 +228,9 @@
       "system": "System",
       "light": "Light",
       "dark": "Dark"
-    }
+    },
+    "permissionTitle": "Permission required",
+    "permissionBody": "Please allow photo library access to change your avatar."
   },
   "privacy": {
     "title": "Privacy Policy",

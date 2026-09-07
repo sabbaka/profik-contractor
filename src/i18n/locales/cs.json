@@ -228,7 +228,9 @@
       "system": "Systém",
       "light": "Světlý",
       "dark": "Tmavý"
-    }
+    },
+    "permissionTitle": "Potřebné oprávnění",
+    "permissionBody": "Povolte prosím přístup k fotkám, abyste mohli změnit avatar."
   },
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
