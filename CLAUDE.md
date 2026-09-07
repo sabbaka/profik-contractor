@@ -10,6 +10,7 @@ one to it rather than the other way round.
 ## Rules
 
 - @.claude/rules/i18n.md — translated copy, dates, what the checker misses
+- @.claude/rules/accessibility.md — roles, labels, state on anything tappable
 
 ## Always
 
