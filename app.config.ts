@@ -4,10 +4,15 @@ const PHOTO_LIBRARY_PERMISSION =
 const LOCATION_WHEN_IN_USE_PERMISSION =
   'Profik Contractor uses your location while you are using the app to show open cleaning jobs near you on the map and how far each job is from your current position. For example, on the Open Jobs map you can see your own location relative to the jobs you can send offers for.';
 
+// One number for the whole release. It lives in package.json rather than here
+// because npm ci fails when package.json and the lockfile disagree — so
+// package.json has to be right regardless. Let it be the source, then.
+const { version } = require('./package.json') as { version: string };
+
 const config = {
   name: 'profik-contractor',
   slug: 'profik-contractor',
-  version: '1.0.13',
+  version,
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: 'profikcontractor',
