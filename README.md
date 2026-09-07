@@ -39,13 +39,27 @@ Note: push notifications require a development build on a physical device (`eas 
 
 ## Build & release
 
-```bash
-# Internal test build
-eas build --platform ios --profile preview
+Releasing is a pushed tag. EAS builds both platforms and submits each one to
+its store; see `.eas/workflows/release.yml`.
 
-# Production build (auto-increments build number) and submission
+```bash
+npm version patch          # bumps package.json and the lockfile together
+git commit -am "chore(release): $(node -p "require('./package.json').version")"
+git tag "v$(node -p "require('./package.json').version")"
+git push && git push --tags
+```
+
+The version lives in `package.json` only — `app.config.ts` and
+`fastlane/Deliverfile` read it from there. Build numbers are not in this
+repository: EAS owns them and increments one per production build
+(`cli.appVersionSource: "remote"` in `eas.json`), so `eas build:version:get`
+is how you find out what went to a store.
+
+For a one-off build off a branch, without a tag:
+
+```bash
 eas build --platform ios --profile production
-eas submit --platform ios
+eas build --platform android --profile apk    # installable Android test build
 ```
 
 Store listing metadata (title, descriptions, keywords in en/cs/sk, review notes) is maintained in `store.config.json` and mirrored as Fastlane metadata. See [fastlane/README.md](fastlane/README.md) for pushing metadata to App Store Connect and the remaining pre-submission checklist (demo contractor account, screenshots, age rating, pricing).
