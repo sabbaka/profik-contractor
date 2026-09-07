@@ -330,5 +330,9 @@
     "profileBody": "Sign in to manage your profile, balance and offers.",
     "signInToOffer": "Sign in to make an offer",
     "signInToOfferBody": "Browsing is free — sign in with your phone number to send the client your offer."
+  },
+  "a11y": {
+    "close": "Close",
+    "send": "Send message"
   }
 }

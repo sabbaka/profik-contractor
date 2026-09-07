@@ -330,5 +330,9 @@
     "profileBody": "Přihlaste se pro správu profilu, kreditu a nabídek.",
     "signInToOffer": "Přihlaste se a pošlete nabídku",
     "signInToOfferBody": "Prohlížení je zdarma — přihlaste se telefonním číslem a pošlete zákazníkovi nabídku."
+  },
+  "a11y": {
+    "close": "Zavřít",
+    "send": "Odeslat zprávu"
   }
 }
