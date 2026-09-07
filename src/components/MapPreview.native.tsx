@@ -1,78 +1,36 @@
 import { useThemeColors } from '@/src/theme';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { geocodeAddress } from '@/src/utils/geocode';
 
-type Props =
-  | { lat: number; lng: number; height?: number }
-  | { address: string; height?: number };
-
-const hasCoords = (
-  props: Props,
-): props is { lat: number; lng: number; height?: number } =>
-  'lat' in props && props.lat != null && 'lng' in props && props.lng != null;
+interface MapPreviewProps {
+  /** Absent only for jobs written before the backend resolved coordinates. */
+  lat?: number;
+  lng?: number;
+  height?: number;
+}
 
 /**
  * Static, non-interactive map showing one pinned location.
  *
- * Takes either coordinates or a written address. **Pass coordinates whenever
- * the caller has them** — the address path costs a geocoding round trip and can
- * fail outright, which is how this component ended up showing a permanent
- * "Locating…" on Android before `geocodeAddress` gained its Google fallback.
- *
- * Three states: resolving, resolved (the map), and unresolvable. The last one
- * is terminal and says so, rather than pretending it is still working.
+ * Coordinates come straight from the job row — the backend resolves them once
+ * when the job is created, so there is nothing to look up here. An earlier
+ * version geocoded the address on the device, which is what left this map
+ * stuck on "Locating…" on Android, where the platform geocoder often returns
+ * nothing at all.
  */
-
-export default function MapPreview(props: Props) {
+export default function MapPreview({ lat, lng, height = 180 }: MapPreviewProps) {
   const { t } = useTranslation();
-  const height = props.height ?? 180;
   const colors = useThemeColors();
 
-  const lat = hasCoords(props) ? props.lat : undefined;
-  const lng = hasCoords(props) ? props.lng : undefined;
-  const address = hasCoords(props) ? undefined : props.address;
-
-  const [geo, setGeo] = useState<{ lat: number; lng: number } | null>(
-    lat != null && lng != null ? { lat, lng } : null,
+  const region = useMemo(
+    () =>
+      lat != null && lng != null
+        ? { latitude: lat, longitude: lng, latitudeDelta: 0.01, longitudeDelta: 0.01 }
+        : null,
+    [lat, lng],
   );
-  const [resolving, setResolving] = useState(address != null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (lat != null && lng != null) {
-      setGeo({ lat, lng });
-      setResolving(false);
-      return;
-    }
-
-    if (!address) {
-      setGeo(null);
-      setResolving(false);
-      return;
-    }
-
-    setResolving(true);
-    void (async () => {
-      const coords = await geocodeAddress(address);
-      if (cancelled) return;
-      setGeo(coords);
-      setResolving(false);
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [address, lat, lng]);
-
-  const region = useMemo(() =>
-    geo
-      ? { latitude: geo.lat, longitude: geo.lng, latitudeDelta: 0.01, longitudeDelta: 0.01 }
-      : null,
-  [geo]);
 
   if (!region) {
     return (
@@ -85,9 +43,7 @@ export default function MapPreview(props: Props) {
           },
         ]}
       >
-        <Text style={{ color: colors.textMuted }}>
-          {resolving ? t('map.locating') : t('map.unavailable')}
-        </Text>
+        <Text style={{ color: colors.textMuted }}>{t('map.unavailable')}</Text>
       </View>
     );
   }
