@@ -13,7 +13,7 @@ interface Props {
   hasOffered: boolean; myOfferPrice?: number; myOfferMessage?: string; myOfferStatus?: OfferStatus;
   /** Job the offer belongs to — travels into the chat as its header context. */
   jobId: string; jobTitle?: string;
-  offerIdForChat: string | null; clientPrice: number; mode: OfferMode; setMode: (mode: OfferMode) => void;
+  offerIdForChat: string | null; mode: OfferMode; setMode: (mode: OfferMode) => void;
   price: string; setPrice: (value: string) => void; message: string; setMessage: (value: string) => void;
   onAcceptClientPrice: () => void; onSubmitOffer: () => void; isSubmitting: boolean; onInputFocus: () => void;
 }
@@ -21,7 +21,7 @@ interface Props {
 export const ContractorOfferSection = (props: Props) => {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, offerIdForChat, clientPrice, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
+  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, offerIdForChat, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
   const status = myOfferStatus === "accepted"
     ? { bg: colors.statusCompleted, color: colors.statusCompletedText, label: t("job.status.accepted") }
     : myOfferStatus === "declined"
@@ -67,6 +67,7 @@ export const ContractorOfferSection = (props: Props) => {
           <TextInput placeholder={t("offer.messagePlaceholder")} value={message} onChangeText={setMessage} multiline numberOfLines={4} onFocus={onInputFocus} height={104} textAlignVertical="top" paddingTop={14} />
         </YStack>
         <Button loading={isSubmitting} disabled={!valid} iconLeft={<Send size={17} color="#FFFFFF" />} onPress={onSubmitOffer}>{t("offer.sendCounter")}</Button>
+      <Text variant="caption" textAlign="center" style={{ color: colors.textMuted }}>{t("offer.costNote")}</Text>
         <Button variant="ghost" size="sm" onPress={() => setMode("idle")}>{t("common.cancel")}</Button>
       </YStack>
     );
@@ -83,8 +84,13 @@ export const ContractorOfferSection = (props: Props) => {
           <Text variant="caption">{t("offer.interestedBody")}</Text>
         </YStack>
       </XStack>
-      <Button loading={isSubmitting} onPress={onAcceptClientPrice}>{t("offer.acceptFor", { price: formatCzk(clientPrice) })}</Button>
+      {/* The job's price stays out of this label on purpose: on an orange
+          primary button "Send offer for 2 400 Kč" reads as "pay 2 400 Kč".
+          The amount is already in the hero above, and what actually leaves the
+          balance is spelled out underneath. */}
+      <Button loading={isSubmitting} onPress={onAcceptClientPrice}>{t("offer.sendAtClientPrice")}</Button>
       <Button variant="secondary" onPress={() => setMode("counter")} disabled={isSubmitting}>{t("offer.makeCounter")}</Button>
+      <Text variant="caption" textAlign="center" style={{ color: colors.textMuted }}>{t("offer.costNote")}</Text>
     </YStack>
   );
 };

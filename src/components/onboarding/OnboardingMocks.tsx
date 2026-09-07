@@ -322,7 +322,7 @@ export function GetPaidMock() {
   );
 }
 
-/** Step 4 — the welcome credit balance the account starts with. */
+/** Step 4 — the welcome bonus the account's balance starts with. */
 export function CreditsMock() {
   const { t } = useTranslation();
   const colors = useThemeColors();
