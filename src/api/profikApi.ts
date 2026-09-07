@@ -13,6 +13,7 @@ import type {
   VerifyOtpParams,
 } from "../features/auth/types";
 import { logout } from "../store/authSlice";
+import { forwardIdCursor } from "./pagination";
 import type {
   ConversationBucket,
   ConversationList,
@@ -26,6 +27,9 @@ import type {
 
 /** Conversations fetched per page by the Messages tab. */
 export const CONVERSATIONS_PAGE_SIZE = 20;
+
+/** Open jobs fetched per page by the Open tab. */
+export const OPEN_JOBS_PAGE_SIZE = 20;
 
 // Shape returned by GET /auth/me and PATCH /users/me.
 export interface MeResponse {
@@ -123,8 +127,28 @@ export const profikApi = createApi({
     me: builder.query<MeResponse, void>({
       query: () => ({ url: "/auth/me", method: "GET" }),
     }),
-    getOpenJobs: builder.query<Job[], void>({
-      query: () => ({ url: "/jobs/open", method: "GET" }),
+    /**
+     * The Open tab's feed, paged as the contractor scrolls.
+     *
+     * The endpoint answers with a plain array rather than a `{ items,
+     * nextCursor }` envelope, so the cursor is the last job's own `id` and the
+     * end of the list is a page shorter than `OPEN_JOBS_PAGE_SIZE` — see
+     * `forwardIdCursor`. An `infiniteQuery` rather than a hand-rolled merge for
+     * the same reason as `getConversations` below: anything that invalidates
+     * "Jobs" must refetch every loaded page, not just the current cursor's.
+     */
+    getOpenJobs: builder.infiniteQuery<Job[], void, string | null>({
+      infiniteQueryOptions: forwardIdCursor<Job>(
+        OPEN_JOBS_PAGE_SIZE,
+        (job) => job.id,
+      ),
+      query: ({ pageParam }) => {
+        const params = new URLSearchParams({
+          limit: String(OPEN_JOBS_PAGE_SIZE),
+        });
+        if (pageParam) params.set("cursor", pageParam);
+        return { url: `/jobs/open?${params.toString()}`, method: "GET" };
+      },
       providesTags: ["Jobs"],
     }),
     getOfferedJobs: builder.query<OfferedJobItem[], GetOfferedJobsParams>({
@@ -320,7 +344,7 @@ export const {
   useRequestOtpCodeMutation,
   useVerifyOtpCodeMutation,
   useMeQuery,
-  useGetOpenJobsQuery,
+  useGetOpenJobsInfiniteQuery,
   useGetOfferedJobsQuery,
   useGetJobByIdQuery,
   useCreateOfferMutation,

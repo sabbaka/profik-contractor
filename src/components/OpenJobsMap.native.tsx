@@ -2,18 +2,23 @@ import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { useGetOpenJobsQuery } from "../api/profikApi";
+import { useGetOpenJobsInfiniteQuery } from "../api/profikApi";
 
 export default function OpenJobsMapNative() {
-  const { data: jobs } = useGetOpenJobsQuery(undefined, {
+  // Only the pages the Open tab happens to have loaded. Acceptable while this
+  // screen is unreachable; a real map wants every job in the viewport, which
+  // is a bbox query, not a scroll-driven page chain.
+  const { data } = useGetOpenJobsInfiniteQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     refetchOnFocus: true,
   });
 
+  const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
+
   const coords = useMemo(
     () =>
-      (jobs || []).filter(
+      jobs.filter(
         (j) => typeof j.lat === "number" && typeof j.lng === "number"
       ),
     [jobs]

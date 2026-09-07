@@ -1,22 +1,25 @@
 import { useThemeColors } from "@/src/theme";
 import { router } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View } from "react-native";
-import { useGetOpenJobsQuery } from "../api/profikApi";
+import { useGetOpenJobsInfiniteQuery } from "../api/profikApi";
 
 export default function OpenJobsMapWeb() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  // See the note in OpenJobsMap.native.tsx: these are the loaded pages, not
+  // every open job.
   const {
-    data: jobs,
+    data,
     error,
     refetch,
-  } = useGetOpenJobsQuery(undefined, {
+  } = useGetOpenJobsInfiniteQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     refetchOnFocus: true,
   });
+  const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
 
   if (error) {
     return (
@@ -32,7 +35,7 @@ export default function OpenJobsMapWeb() {
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: colors.bgPrimary }}>
       <Text style={{ marginBottom: 8, color: colors.textSecondary }}>{t("map.previewUnavailableWebSentence")}</Text>
-      {(jobs || []).map((j: any) => (
+      {jobs.map((j: any) => (
         <TouchableOpacity
           key={j.id}
           style={{ padding: 12, borderRadius: 8, marginBottom: 10, borderWidth: 1, backgroundColor: colors.bgCard, borderColor: colors.border }}
