@@ -35,7 +35,7 @@ import { MD3DarkTheme, MD3LightTheme, Provider as PaperProvider } from 'react-na
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as ReduxProvider, useDispatch } from 'react-redux';
 import * as Sentry from '@sentry/react-native';
-import { TamaguiProvider } from 'tamagui';
+import { TamaguiProvider, Theme } from 'tamagui';
 import { store } from '../src/store';
 import { loadTokenFromStorage } from '../src/store/authSlice';
 import { useAppSelector } from '../src/store/hooks';
@@ -137,7 +137,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   if (!token && !isAuthRoute && !isOnboardingRoute) {
     if (!hasSeenOnboarding) {
-      return <Redirect href={"/onboarding/welcome" as any} />;
+      return <Redirect href={"/onboarding" as any} />;
     }
 
     if (!isGuestAccessibleRoute(segments)) {
@@ -152,16 +152,21 @@ function ThemedApp() {
 
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme={mode}>
-      <PaperThemeProvider>
-        <PortalProvider>
-          <ErrorBoundary context="root">
-            <AuthGate>
-              <Slot />
-            </AuthGate>
-          </ErrorBoundary>
-          <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
-        </PortalProvider>
-      </PaperThemeProvider>
+      {/* `defaultTheme` only seeds the initial theme. The explicit <Theme>
+          wrapper is what re-themes the tree when the user switches
+          appearance at runtime. */}
+      <Theme name={mode}>
+        <PaperThemeProvider>
+          <PortalProvider>
+            <ErrorBoundary context="root">
+              <AuthGate>
+                <Slot />
+              </AuthGate>
+            </ErrorBoundary>
+            <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+          </PortalProvider>
+        </PaperThemeProvider>
+      </Theme>
     </TamaguiProvider>
   );
 }

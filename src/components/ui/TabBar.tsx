@@ -1,3 +1,4 @@
+import { useThemeColors } from "@/src/theme";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
@@ -15,6 +16,7 @@ export interface TabItem {
 
 export function TabBar({ items, activeKey }: { items: TabItem[]; activeKey: string }) {
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
   const [width, setWidth] = useState(0);
   const activeIndex = Math.max(0, items.findIndex((item) => item.key === activeKey));
   const tabWidth = width ? (width - 12 - (items.length - 1) * 4) / items.length : 0;
@@ -31,9 +33,9 @@ export function TabBar({ items, activeKey }: { items: TabItem[]; activeKey: stri
       <XStack
         height={62}
         borderRadius={36}
-        backgroundColor="$bgPrimary"
+        backgroundColor={colors.bgPrimary}
         borderWidth={1}
-        borderColor="$borderToken"
+        borderColor={colors.border}
         padding={4}
         gap={4}
         onLayout={(event) => setWidth(event.nativeEvent.layout.width)}

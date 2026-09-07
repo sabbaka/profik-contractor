@@ -1,10 +1,11 @@
 import i18n from "@/src/i18n";
+import { useThemeColors } from "@/src/theme";
 import { logError } from "@/src/utils/logger";
 import { AlertTriangle } from "@tamagui/lucide-icons";
 import React from "react";
 import { ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import { Button, Text } from "./ui";
 
 interface ErrorBoundaryProps {
@@ -67,9 +68,9 @@ function DefaultFallback({
   onReset: () => void;
 }) {
   const insets = useSafeAreaInsets();
-  const theme = useTheme();
+  const colors = useThemeColors();
   return (
-    <YStack flex={1} backgroundColor="$bgPrimary">
+    <YStack flex={1} backgroundColor={colors.bgPrimary}>
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
@@ -86,9 +87,9 @@ function DefaultFallback({
             borderRadius={20}
             ai="center"
             jc="center"
-            backgroundColor="$dangerBg"
+            backgroundColor={colors.dangerBg}
           >
-            <AlertTriangle size={32} color={theme.danger?.val} />
+            <AlertTriangle size={32} color={colors.error} />
           </YStack>
           <YStack ai="center" gap={8}>
             <Text variant="display" textAlign="center">
@@ -102,7 +103,7 @@ function DefaultFallback({
 
         {__DEV__ ? (
           <YStack
-            backgroundColor="$bgSecondary"
+            backgroundColor={colors.bgSecondary}
             padding={16}
             borderRadius={12}
             gap={6}
