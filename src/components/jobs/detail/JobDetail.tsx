@@ -18,6 +18,9 @@ import { JobBasicInfo } from "./JobBasicInfo";
 import { JobDescription } from "./JobDescription";
 import { JobDetailHeader } from "./JobDetailHeader";
 import { JobLocation } from "./JobLocation";
+import { JobNotes } from "./JobNotes";
+import { JobPropertySection } from "./JobPropertySection";
+import { JobProvidedSection } from "./JobProvidedSection";
 import { useJobOffer } from "./hooks/useJobOffer";
 
 export const JobDetail = () => {
@@ -130,7 +133,24 @@ export const JobDetail = () => {
                 city={job.city}
               />
 
-              <JobDescription description={job.description} />
+              {job.roomsCount || job.area != null || job.windowCleaning || job.windowCount != null || job.vacuumCleaner || job.cleaningSupplies || job.ladder ? (
+                <>
+                  <JobPropertySection
+                    roomsCount={job.roomsCount}
+                    area={job.area}
+                    windowCleaning={job.windowCleaning}
+                    windowCount={job.windowCount}
+                  />
+                  <JobProvidedSection
+                    vacuumCleaner={job.vacuumCleaner}
+                    cleaningSupplies={job.cleaningSupplies}
+                    ladder={job.ladder}
+                  />
+                  <JobNotes notes={job.notes} />
+                </>
+              ) : (
+                <JobDescription description={job.description} />
+              )}
 
               <JobLocation
                 addressLine={job.addressLine}
@@ -145,6 +165,8 @@ export const JobDetail = () => {
 
               {isContractor && (
                 <ContractorOfferSection
+                  jobId={id}
+                  jobTitle={job.title}
                   hasOffered={hasOffered}
                   myOfferPrice={myOfferPrice}
                   myOfferMessage={myOfferMessage}

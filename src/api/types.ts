@@ -1,5 +1,12 @@
 export type OfferStatus = 'pending' | 'accepted' | 'declined';
 
+export type PropertyType = 'apartment' | 'house' | 'commercial';
+export type ServiceType = 'standard' | 'deep' | 'renovation';
+export type EquipmentProvision = 'have' | 'bring';
+export type LadderOption = 'available' | 'needed' | 'noneeded';
+export type WindowCleaningOption = 'yes' | 'no';
+export type TimeSlot = 'morning' | 'afternoon' | 'evening' | 'all_day';
+
 export interface Job {
   id: string;
   title: string;
@@ -18,6 +25,21 @@ export interface Job {
   lat: number | null;
   lng: number | null;
   placeId: string | null;
+  // Structured job details captured by the client's creation wizard. Older
+  // jobs predate this and won't have them — every field is optional.
+  propertyType?: PropertyType;
+  serviceType?: ServiceType;
+  roomsCount?: string;
+  bathroomsCount?: string;
+  area?: number;
+  vacuumCleaner?: EquipmentProvision;
+  cleaningSupplies?: EquipmentProvision;
+  ladder?: LadderOption;
+  windowCleaning?: WindowCleaningOption;
+  windowCount?: number;
+  scheduledDates?: string[];
+  timeSlot?: TimeSlot;
+  notes?: string;
   createdAt: string;
   updatedAt: string;
 }
