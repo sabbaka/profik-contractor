@@ -8,7 +8,7 @@ import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
 import { formatCzk } from "@/src/utils/currency";
-import type { OfferStatus } from "@/src/api/types";
+import type { JobStatus, OfferStatus } from "@/src/api/types";
 import { BriefcaseBusiness, ChevronLeft, ChevronRight, MessageCircle, Send } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -32,12 +32,13 @@ export default function OfferChatRoute() {
   const colors = useThemeColors();
   // Job context travels in the route params — see `buildOfferChatRoute`. A
   // deep link carries only `offerId`, so every field below is optional.
-  const { offerId, jobId, jobTitle, offerPrice, offerStatus } = useLocalSearchParams<{
+  const { offerId, jobId, jobTitle, offerPrice, offerStatus, jobStatus } = useLocalSearchParams<{
     offerId: string;
     jobId?: string;
     jobTitle?: string;
     offerPrice?: string;
     offerStatus?: OfferStatus;
+    jobStatus?: JobStatus;
   }>();
   const { data: me } = useMeQuery();
   const {
@@ -161,7 +162,7 @@ export default function OfferChatRoute() {
                         {t("chat.yourOffer", { price: formatCzk(Number(offerPrice)) })}
                       </Text>
                     ) : null}
-                    {offerStatus ? <OfferStatusPill status={offerStatus} size="sm" /> : null}
+                    {offerStatus ? <OfferStatusPill status={offerStatus} jobStatus={jobStatus} size="sm" /> : null}
                   </XStack>
                 ) : null}
               </YStack>

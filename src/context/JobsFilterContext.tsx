@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
-import type { OfferStatus } from '../api/types';
+import type { OfferedJobsFilter } from '../api/types';
 
-export type JobsFilterType = OfferStatus;
+export type JobsFilterType = OfferedJobsFilter;
 
 interface JobsFilterContextType {
   filter: JobsFilterType;

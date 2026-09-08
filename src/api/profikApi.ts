@@ -160,8 +160,7 @@ export const profikApi = createApi({
       providesTags: ["Jobs"],
     }),
     /**
-     * The My jobs tab, one cache entry per offer-status filter, paged as the
-     * list scrolls.
+     * The My jobs tab, one cache entry per filter, paged as the list scrolls.
      *
      * The backend pages over the *jobs*, so the cursor is `item.job.id` — not
      * an id on the wrapper. As with `/jobs/open` the response is a plain array
@@ -179,7 +178,7 @@ export const profikApi = createApi({
       ),
       query: ({ queryArg, pageParam }) => {
         const params = new URLSearchParams({
-          status: queryArg.status,
+          filter: queryArg.filter,
           limit: String(OFFERED_JOBS_PAGE_SIZE),
         });
         if (pageParam) params.set("cursor", pageParam);

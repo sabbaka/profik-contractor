@@ -118,18 +118,20 @@
     "subtitle": "Track your offers and active work",
     "filters": {
       "pending": "Pending",
-      "accepted": "Accepted",
+      "active": "In progress",
+      "completed": "Completed",
       "declined": "Declined"
     },
     "labels": {
       "pending": "pending offers",
-      "accepted": "accepted jobs",
+      "active": "jobs in progress",
+      "completed": "completed jobs",
       "declined": "declined offers"
     },
     "loading": "Loading {{label}}...",
     "errorTitle": "Couldn't load your jobs",
     "emptyTitle": "No {{label}}",
-    "emptyBody": "When your offer status changes, the job will move here automatically."
+    "emptyBody": "Jobs move between these tabs on their own — when the client answers your offer, and when the work is done."
   },
   "job": {
     "back": "Back",
@@ -156,7 +158,10 @@
     "status": {
       "pending": "Pending",
       "accepted": "Accepted",
-      "declined": "Declined"
+      "declined": "Declined",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "canceled": "Cancelled"
     },
     "exactAddressAfterAccept": "Exact address and precise location are shared once your offer is accepted.",
     "property": {

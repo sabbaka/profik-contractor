@@ -1,8 +1,9 @@
-import type { OfferStatus } from "@/src/api/types";
+import type { JobStatus, OfferStatus } from "@/src/api/types";
 import { Button, Text, TextInput } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { MessageCircle, Send, Sparkles } from "@tamagui/lucide-icons";
+import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
 import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
 import { OfferBalanceWarning } from "./OfferBalanceWarning";
 import { OfferCostNote } from "./OfferCostNote";
@@ -16,6 +17,8 @@ interface Props {
   hasOffered: boolean; myOfferPrice?: number; myOfferMessage?: string; myOfferStatus?: OfferStatus;
   /** Job the offer belongs to — travels into the chat as its header context. */
   jobId: string; jobTitle?: string;
+  /** Read together with `myOfferStatus`: see `OfferStatusPill`. */
+  jobStatus?: JobStatus | null;
   offerIdForChat: string | null; mode: OfferMode; setMode: (mode: OfferMode) => void;
   /** Balance, and whether it covers one offer — see `useJobOffer`. */
   balance: number; canAffordOffer: boolean;
@@ -26,12 +29,7 @@ interface Props {
 export const ContractorOfferSection = (props: Props) => {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, offerIdForChat, balance, canAffordOffer, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
-  const status = myOfferStatus === "accepted"
-    ? { bg: colors.statusCompleted, color: colors.statusCompletedText, label: t("job.status.accepted") }
-    : myOfferStatus === "declined"
-      ? { bg: colors.statusCancelled, color: colors.statusCancelledText, label: t("job.status.declined") }
-      : { bg: colors.statusPending, color: colors.statusPendingText, label: t("job.status.pending") };
+  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, jobStatus, offerIdForChat, balance, canAffordOffer, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
 
   if (hasOffered) {
     return (
@@ -41,10 +39,7 @@ export const ContractorOfferSection = (props: Props) => {
             <Text variant="h5">{t("offer.yourOffer")}</Text>
             <Text variant="caption">{t("offer.sentToCustomer")}</Text>
           </YStack>
-          <XStack backgroundColor={status.bg} paddingVertical={5} paddingHorizontal={11} borderRadius={9999} alignItems="center" gap={5}>
-            <YStack width={6} height={6} borderRadius={9999} backgroundColor={status.color} />
-            <Text style={{ color: status.color, fontFamily: "Inter_600SemiBold", fontSize: 11 }}>{status.label}</Text>
-          </XStack>
+          <OfferStatusPill status={myOfferStatus ?? "pending"} jobStatus={jobStatus} />
         </XStack>
         <YStack padding={16} borderRadius={16} backgroundColor={colors.accentLight} gap={5}>
           <Text variant="caption">{t("offer.yourPrice")}</Text>
@@ -52,7 +47,7 @@ export const ContractorOfferSection = (props: Props) => {
           {myOfferMessage ? <Text variant="bodySm" style={{ color: colors.textPrimary, marginTop: 5 }}>{myOfferMessage}</Text> : null}
         </YStack>
         {offerIdForChat ? (
-          <Button variant="secondary" size="md" iconLeft={<MessageCircle size={17} color={colors.textSecondary} />} onPress={() => router.push(buildOfferChatRoute({ offerId: offerIdForChat, jobId, jobTitle, offerPrice: myOfferPrice, offerStatus: myOfferStatus }) as any)}>{t("offer.messageCustomer")}</Button>
+          <Button variant="secondary" size="md" iconLeft={<MessageCircle size={17} color={colors.textSecondary} />} onPress={() => router.push(buildOfferChatRoute({ offerId: offerIdForChat, jobId, jobTitle, offerPrice: myOfferPrice, offerStatus: myOfferStatus, jobStatus }) as any)}>{t("offer.messageCustomer")}</Button>
         ) : null}
       </YStack>
     );

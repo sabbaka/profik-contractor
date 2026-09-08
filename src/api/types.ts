@@ -83,8 +83,22 @@ export interface OfferedJobItem {
   myOffer: MyOffer;
 }
 
+/**
+ * The tabs on My Jobs — `OfferedJobsFilter` on the server.
+ *
+ * Not `OfferStatus`: an accepted offer stays accepted after the work is done,
+ * so the offer alone cannot tell a job in progress from a finished one. The
+ * server resolves each of these against the job *and* the offer, using the
+ * same rule that files a conversation into a `ConversationBucket`.
+ */
+export type OfferedJobsFilter =
+  | "pending"
+  | "active"
+  | "completed"
+  | "declined";
+
 export interface GetOfferedJobsParams {
-  status: OfferStatus;
+  filter: OfferedJobsFilter;
 }
 
 /**

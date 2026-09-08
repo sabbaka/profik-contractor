@@ -69,7 +69,7 @@ export function ContractorJobCard({ job, myOffer, onPress, onMessage }: Contract
         <XStack paddingHorizontal={16} paddingVertical={12} alignItems="center" justifyContent="space-between">
           {myOffer ? (
             <XStack alignItems="center" gap={8}>
-              <OfferStatusPill status={myOffer.status} />
+              <OfferStatusPill status={myOffer.status} jobStatus={job?.status} />
               <XStack alignItems="center" gap={4}>
                 <Send size={13} color={colors.accent} />
                 <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 13, lineHeight: 17 }}>{formatCzk(myOffer.price)}</Text>

@@ -176,6 +176,7 @@ export const JobDetail = () => {
                   balance={balance}
                   canAffordOffer={canAffordOffer}
                   jobTitle={job.title}
+                  jobStatus={job.status}
                   hasOffered={hasOffered}
                   myOfferPrice={myOfferPrice}
                   myOfferMessage={myOfferMessage}

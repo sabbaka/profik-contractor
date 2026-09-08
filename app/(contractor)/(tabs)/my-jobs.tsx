@@ -1,5 +1,5 @@
 import { useGetOfferedJobsInfiniteQuery } from "@/src/api/profikApi";
-import type { OfferStatus } from "@/src/api/types";
+import type { OfferedJobsFilter } from "@/src/api/types";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
 import { ListFooterSpinner } from "@/src/components/ui/ListFooterSpinner";
@@ -12,12 +12,17 @@ import { FolderOpen, Lock } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, Pressable, RefreshControl } from "react-native";
-import { Spinner, XStack, YStack } from "tamagui";
+import { FlatList, Pressable, RefreshControl, ScrollView } from "react-native";
+import { Spinner, YStack } from "tamagui";
 
-const FILTERS: { key: OfferStatus; labelKey: string }[] = [
+// The same four groupings as the Messages tab's buckets, named for what the
+// contractor is looking at rather than for a status: "Accepted" used to be one
+// tab and kept finished work in it forever, because an accepted offer stays
+// accepted after the job is done.
+const FILTERS: { key: OfferedJobsFilter; labelKey: string }[] = [
   { key: "pending", labelKey: "my.filters.pending" },
-  { key: "accepted", labelKey: "my.filters.accepted" },
+  { key: "active", labelKey: "my.filters.active" },
+  { key: "completed", labelKey: "my.filters.completed" },
   { key: "declined", labelKey: "my.filters.declined" },
 ];
 
@@ -42,7 +47,7 @@ export default function MyJobsTab() {
     fetchNextPage,
     error,
     refetch,
-  } = useGetOfferedJobsInfiniteQuery({ status: filter }, {
+  } = useGetOfferedJobsInfiniteQuery({ filter }, {
     skip: isGuest,
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
@@ -101,23 +106,31 @@ export default function MyJobsTab() {
 
   return (
     <YStack flex={1} backgroundColor={colors.bgSecondary}>
-      <YStack paddingHorizontal={20} paddingTop={12} paddingBottom={16} gap={15}>
-        <YStack gap={3}>
+      <YStack paddingTop={12} paddingBottom={16} gap={15}>
+        <YStack paddingHorizontal={20} gap={3}>
           <Text variant="h1">{t("my.title")}</Text>
           <Text variant="bodySm">{t("my.subtitle")}</Text>
         </YStack>
-        <XStack gap={8}>
+        {/* Four chips do not fit a phone width in Czech or Ukrainian, so the
+            row scrolls rather than the labels shrinking. The padding lives on
+            the content so the first and last chip still line up with the
+            title. */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20, gap: 8 }}
+        >
           {FILTERS.map((item) => {
             const active = item.key === filter;
             return (
-              <Pressable key={item.key} onPress={() => setFilter(item.key)} style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
+              <Pressable key={item.key} onPress={() => setFilter(item.key)} accessibilityRole="button" accessibilityState={{ selected: active }} style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
                 <YStack height={34} paddingHorizontal={16} borderRadius={9999} alignItems="center" justifyContent="center" backgroundColor={active ? colors.accent : colors.bgPrimary} borderWidth={active ? 0 : 1} borderColor={colors.borderSubtle}>
                   <Text style={{ color: active ? "#FFFFFF" : colors.textSecondary, fontFamily: active ? "Inter_600SemiBold" : "Inter_500Medium", fontSize: 13 }}>{t(item.labelKey)}</Text>
                 </YStack>
               </Pressable>
             );
           })}
-        </XStack>
+        </ScrollView>
       </YStack>
 
       {loading ? (
@@ -163,6 +176,7 @@ export default function MyJobsTab() {
                           jobTitle: item.job.title,
                           offerPrice: item.myOffer.price,
                           offerStatus: item.myOffer.status,
+                          jobStatus: item.job.status,
                         }) as any,
                       )
                   : undefined

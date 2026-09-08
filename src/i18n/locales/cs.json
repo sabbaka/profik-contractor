@@ -118,18 +118,20 @@
     "subtitle": "Sledujte nabídky a aktivní práci",
     "filters": {
       "pending": "Čekající",
-      "accepted": "Přijaté",
+      "active": "Probíhá",
+      "completed": "Dokončené",
       "declined": "Odmítnuté"
     },
     "labels": {
       "pending": "čekající nabídky",
-      "accepted": "přijaté zakázky",
+      "active": "probíhajících zakázek",
+      "completed": "dokončených zakázek",
       "declined": "odmítnuté nabídky"
     },
     "loading": "Načítám {{label}}...",
     "errorTitle": "Vaše zakázky se nepodařilo načíst",
     "emptyTitle": "Žádné {{label}}",
-    "emptyBody": "Když se stav nabídky změní, zakázka se sem automaticky přesune."
+    "emptyBody": "Zakázky se mezi záložkami přesouvají samy — když klient odpoví na vaši nabídku a když je práce hotová."
   },
   "job": {
     "back": "Zpět",
@@ -156,7 +158,10 @@
     "status": {
       "pending": "Čekající",
       "accepted": "Přijatá",
-      "declined": "Odmítnutá"
+      "declined": "Odmítnutá",
+      "in_progress": "Probíhá",
+      "completed": "Dokončená",
+      "canceled": "Zrušená"
     },
     "exactAddressAfterAccept": "Přesná adresa a poloha se zobrazí po přijetí vaší nabídky.",
     "property": {

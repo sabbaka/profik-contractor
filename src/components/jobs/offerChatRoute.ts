@@ -1,4 +1,4 @@
-import type { OfferStatus } from "@/src/api/types";
+import type { JobStatus, OfferStatus } from "@/src/api/types";
 
 export interface OfferChatRouteInput {
   offerId: string;
@@ -6,6 +6,9 @@ export interface OfferChatRouteInput {
   jobTitle?: string | null;
   offerPrice?: number | null;
   offerStatus?: OfferStatus | null;
+  /** Travels with `offerStatus`: an accepted offer alone cannot say whether
+   *  the work is still running or already done. */
+  jobStatus?: JobStatus | null;
 }
 
 /**
@@ -25,6 +28,7 @@ export function buildOfferChatRoute({
   jobTitle,
   offerPrice,
   offerStatus,
+  jobStatus,
 }: OfferChatRouteInput) {
   return {
     pathname: "/(contractor)/offer-chat/[offerId]",
@@ -34,6 +38,7 @@ export function buildOfferChatRoute({
       ...(jobTitle ? { jobTitle } : {}),
       ...(offerPrice != null ? { offerPrice: String(offerPrice) } : {}),
       ...(offerStatus ? { offerStatus } : {}),
+      ...(jobStatus ? { jobStatus } : {}),
     },
   };
 }
