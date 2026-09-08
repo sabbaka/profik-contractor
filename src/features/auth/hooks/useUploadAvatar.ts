@@ -53,7 +53,7 @@ export function useUploadAvatar(): UseUploadAvatarReturn {
       }).unwrap();
       return { success: true };
     } catch (err: unknown) {
-      return { success: false, error: extractErrorMessage(err) };
+      return { success: false, error: extractErrorMessage(err, t) };
     }
   };
 

@@ -175,7 +175,7 @@ export default function ProfileRoute() {
     } catch (error) {
       Alert.alert(
         t("common.error"),
-        extractErrorMessage(error) || t("profile.deleteFailed")
+        extractErrorMessage(error, t) || t("profile.deleteFailed")
       );
     }
   };

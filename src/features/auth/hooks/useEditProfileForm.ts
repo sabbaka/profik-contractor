@@ -45,7 +45,7 @@ export function useEditProfileForm(
             await updateProfile(payload).unwrap();
             resolve({ success: true });
           } catch (err: unknown) {
-            resolve({ success: false, error: extractErrorMessage(err) });
+            resolve({ success: false, error: extractErrorMessage(err, t) });
           }
         },
         () => resolve({ success: false, error: t("auth.errors.validationFailed") }),

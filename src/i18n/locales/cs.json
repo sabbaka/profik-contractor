@@ -9,6 +9,39 @@
     "loading": "Načítám...",
     "validation": "Validace"
   },
+  "errors": {
+    "job": {
+      "notFound": "Tato zakázka už neexistuje.",
+      "notYours": "Tato zakázka patří někomu jinému.",
+      "notOpen": "Tato zakázka už není otevřená.",
+      "notInProgress": "Tato zakázka neprobíhá.",
+      "notCompleted": "Tato zakázka ještě není dokončená.",
+      "notParticipant": "Nejste součástí této zakázky.",
+      "missingParticipants": "Zakázka zatím nemá obě strany.",
+      "closedToOffers": "Tato zakázka už nepřijímá nabídky."
+    },
+    "offer": {
+      "notFound": "Tato nabídka už neexistuje.",
+      "alreadyProcessed": "Na tuto nabídku už bylo odpovězeno.",
+      "notParticipant": "Nejste součástí této nabídky.",
+      "duplicate": "Na tuto zakázku jste už nabídku poslali.",
+      "contractorsOnly": "Nabídky může posílat jen účet profíka.",
+      "insufficientBalance": "Na odeslání nabídky nemáte dost prostředků."
+    },
+    "review": {
+      "ratingRequired": "Nejprve vyberte hodnocení.",
+      "ratingRange": "Vyberte 1 až 5 hvězdiček."
+    },
+    "user": {
+      "notFound": "Tento účet se nepodařilo najít.",
+      "contractorNotFound": "Tohoto specialistu se nepodařilo najít.",
+      "emailInUse": "Tento e-mail se už používá."
+    },
+    "avatar": {
+      "unsupportedFormat": "Použijte obrázek JPEG, PNG nebo WebP.",
+      "tooManyPixels": "Obrázek je příliš velký. Zkuste menší."
+    }
+  },
   "auth": {
     "continueWithPhone": "Pokračovat s telefonem",
     "labels": {

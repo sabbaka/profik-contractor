@@ -9,6 +9,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { router, useRootNavigationState } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 
 const PROJECT_ID =
@@ -33,15 +34,23 @@ Notifications.setNotificationHandler({
  * account. Keying the effect on it means signing in as a different user
  * re-registers the device; otherwise the previous account keeps receiving this
  * device's notifications.
+ *
+ * The UI language rides along, because the server has to word a push before the
+ * app is anywhere near the screen. It is part of the effect's key for the same
+ * reason the auth token is: switching language on the Profile tab has to reach
+ * the server, and this is the call that carries it.
  */
 export function usePushNotifications(token: string | null) {
   const [registerPushToken] = useRegisterPushTokenMutation();
-  // Tracks which auth token we last registered under, so we retry after a
-  // failure but don't re-register on every render.
+  const { i18n } = useTranslation();
+  const language = i18n.language;
+  // Tracks the auth token and language we last registered under, so we retry
+  // after a failure but don't re-register on every render.
   const registeredFor = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!token || registeredFor.current === token) return;
+    const registrationKey = `${token}:${language}`;
+    if (!token || registeredFor.current === registrationKey) return;
 
     let cancelled = false;
 
@@ -77,9 +86,12 @@ export function usePushNotifications(token: string | null) {
 
       // unwrap() so a rejected mutation actually throws here — without it the
       // failure is swallowed and we would mark the device as registered.
-      await registerPushToken(pushToken.data).unwrap();
+      await registerPushToken({
+        pushToken: pushToken.data,
+        language,
+      }).unwrap();
       if (!cancelled) {
-        registeredFor.current = token;
+        registeredFor.current = registrationKey;
       }
     }
 
@@ -91,7 +103,7 @@ export function usePushNotifications(token: string | null) {
     return () => {
       cancelled = true;
     };
-  }, [token, registerPushToken]);
+  }, [token, language, registerPushToken]);
 
   useNotificationRouting(token);
 }

@@ -9,6 +9,39 @@
     "loading": "Loading...",
     "validation": "Validation"
   },
+  "errors": {
+    "job": {
+      "notFound": "This job no longer exists.",
+      "notYours": "This job belongs to someone else.",
+      "notOpen": "This job is no longer open.",
+      "notInProgress": "This job isn't in progress.",
+      "notCompleted": "This job isn't finished yet.",
+      "notParticipant": "You're not part of this job.",
+      "missingParticipants": "This job doesn't have both people yet.",
+      "closedToOffers": "This job is closed to new offers."
+    },
+    "offer": {
+      "notFound": "This offer no longer exists.",
+      "alreadyProcessed": "This offer has already been answered.",
+      "notParticipant": "You're not part of this offer.",
+      "duplicate": "You've already sent an offer for this job.",
+      "contractorsOnly": "Only a contractor account can send offers.",
+      "insufficientBalance": "Your balance is too low to send an offer."
+    },
+    "review": {
+      "ratingRequired": "Pick a rating first.",
+      "ratingRange": "Choose between 1 and 5 stars."
+    },
+    "user": {
+      "notFound": "We couldn't find this account.",
+      "contractorNotFound": "We couldn't find this specialist.",
+      "emailInUse": "That email is already in use."
+    },
+    "avatar": {
+      "unsupportedFormat": "Use a JPEG, PNG or WebP image.",
+      "tooManyPixels": "That image is too large. Try a smaller one."
+    }
+  },
   "auth": {
     "continueWithPhone": "Continue with phone",
     "labels": {

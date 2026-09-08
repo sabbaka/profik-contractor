@@ -51,7 +51,16 @@
       "post": {
         "description": "Works for both new and existing phone numbers, and always answers the same way so it cannot be used to probe which numbers are registered.",
         "operationId": "requestOtp",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "accept-language",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -149,7 +158,16 @@
     "/auth/sms/request-code": {
       "post": {
         "operationId": "requestSmsCode",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "accept-language",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -246,7 +264,16 @@
     "/auth/forgot-password/request-code": {
       "post": {
         "operationId": "forgotPasswordRequestCode",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "accept-language",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -3165,6 +3192,16 @@
           "pushToken": {
             "type": "string",
             "description": "Expo push notification token"
+          },
+          "language": {
+            "type": "string",
+            "description": "UI language of the app",
+            "enum": [
+              "en",
+              "cs",
+              "uk"
+            ],
+            "example": "cs"
           }
         },
         "required": [

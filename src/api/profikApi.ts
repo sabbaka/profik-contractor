@@ -12,6 +12,7 @@ import type {
   UploadAvatarParams,
   VerifyOtpParams,
 } from "../features/auth/types";
+import i18n from "../i18n";
 import { logout } from "../store/authSlice";
 import { forwardIdCursor } from "./pagination";
 import type {
@@ -81,6 +82,10 @@ const rawBaseQuery = fetchBaseQuery({
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
+    // Read off the i18next singleton rather than a hook: prepareHeaders runs
+    // outside the React tree. The server needs this for the one thing it sends
+    // before an account exists — the SMS carrying the sign-in code.
+    headers.set("Accept-Language", i18n.language);
     return headers;
   },
 });
@@ -293,11 +298,14 @@ export const profikApi = createApi({
         body: { amount, returnUrl },
       }),
     }),
-    registerPushToken: builder.mutation<void, string>({
-      query: (pushToken) => ({
+    registerPushToken: builder.mutation<
+      void,
+      { pushToken: string; language: string }
+    >({
+      query: ({ pushToken, language }) => ({
         url: "/users/me/push-token",
         method: "PATCH",
-        body: { pushToken },
+        body: { pushToken, language },
       }),
     }),
     unregisterPushToken: builder.mutation<void, void>({
