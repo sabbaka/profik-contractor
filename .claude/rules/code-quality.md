@@ -39,6 +39,28 @@ CI (`ci.yml`) requests Node `20` (major only, via `actions/setup-node`) — this
 resolves to whatever the latest `20.x` patch is at build time, which needs to
 stay within the range above; it is not pinned to `.nvmrc`.
 
+## The lockfile has to survive `npm ci`
+
+EAS installs dependencies with **`npm ci`**, not `npm install`. The difference
+matters: `npm ci` refuses a `package-lock.json` that disagrees with
+`package.json` instead of quietly repairing it, and it does so as the very first
+step of the build — the failure reads `Install dependencies` and says nothing
+about lockfiles.
+
+So after anything that regenerates or edits the lockfile — adding a dependency,
+an SDK upgrade, resolving a merge conflict in `package-lock.json`, deleting
+`node_modules` — verify it the way EAS will:
+
+```bash
+rm -rf node_modules && npm ci
+```
+
+A local `npm install` proves nothing here; it is the command that hides the
+problem. This has already cost one build (`fix(deps): make the lockfile
+installable with npm ci`).
+
+Commit `package-lock.json` with the change that altered it, never separately.
+
 ## Verify honestly
 
 You cannot run the app. Type-checking and linting prove the code compiles, not
@@ -80,6 +102,17 @@ Split unrelated work into separate commits, ordered so each one builds. If a
 UI fix depends on a type change, the type change lands first.
 
 Commit or push **only when asked.**
+
+### Stage your own work, not the tree
+
+More than one Claude session may be running against this working tree at the
+same time, and a sibling session's edits appear in `git status` exactly like
+your own. Before committing, look at `git status` and `git diff --stat` and
+stage the paths you actually changed.
+
+`git commit -a` and `git add .` are how another session's half-finished work
+gets committed under your message. If the tree holds changes you cannot account
+for, say so and ask rather than guessing which are yours.
 
 ## Do not commit
 

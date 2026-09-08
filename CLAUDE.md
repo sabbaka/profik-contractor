@@ -25,6 +25,7 @@ Read the file that covers what you are about to touch.
 - @.claude/rules/code-quality.md — checks that must pass before you are done, and the commit format
 - @.claude/rules/i18n.md — translated copy, dates, what the checker misses
 - @.claude/rules/accessibility.md — roles, labels, state on anything tappable
+- @.claude/rules/release.md — versions, build numbers, what a tag does
 
 ## Always
 
