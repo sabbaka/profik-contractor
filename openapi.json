@@ -1408,10 +1408,10 @@
                   "price": 5000,
                   "clientId": "123e4567-e89b-12d3-a456-426614174001",
                   "status": "open",
-                  "addressLine": "123 Main St",
-                  "city": "New York",
-                  "postalCode": "10001",
-                  "country": "USA",
+                  "addressLine": "Poupětova 3",
+                  "city": "Praha 7",
+                  "postalCode": "170 00",
+                  "country": "CZ",
                   "lat": 40.7128,
                   "lng": -74.006,
                   "createdAt": "2024-01-01T00:00:00.000Z",
@@ -3236,7 +3236,7 @@
           },
           "addressLine": {
             "type": "string",
-            "example": "123 Main St"
+            "example": "Poupětova 3"
           },
           "city": {
             "type": "string",
@@ -3286,23 +3286,23 @@
           },
           "addressLine": {
             "type": "string",
-            "example": "123 Main St",
+            "example": "Poupětova 3",
             "description": "Address line"
           },
           "city": {
             "type": "string",
-            "example": "New York",
+            "example": "Praha 7",
             "description": "City"
           },
           "postalCode": {
             "type": "string",
-            "example": "10001",
+            "example": "170 00",
             "description": "Postal code"
           },
           "country": {
             "type": "string",
-            "example": "USA",
-            "description": "Country"
+            "example": "CZ",
+            "description": "ISO 3166-1 alpha-2 country code, e.g. `CZ`. Names are normalised to a code on write; anything unrecognised is stored as null."
           },
           "lat": {
             "type": "number",
@@ -3483,23 +3483,23 @@
           },
           "addressLine": {
             "type": "string",
-            "example": "123 Main St",
+            "example": "Poupětova 3",
             "description": "Address line"
           },
           "city": {
             "type": "string",
-            "example": "New York",
+            "example": "Praha 7",
             "description": "City"
           },
           "postalCode": {
             "type": "string",
-            "example": "10001",
+            "example": "170 00",
             "description": "Postal code"
           },
           "country": {
             "type": "string",
-            "example": "USA",
-            "description": "Country"
+            "example": "CZ",
+            "description": "ISO 3166-1 alpha-2 country code, e.g. `CZ`. Names are normalised to a code on write; anything unrecognised is stored as null."
           },
           "lat": {
             "type": "number",
@@ -3683,23 +3683,23 @@
           },
           "addressLine": {
             "type": "string",
-            "example": "123 Main St",
+            "example": "Poupětova 3",
             "description": "Address line"
           },
           "city": {
             "type": "string",
-            "example": "New York",
+            "example": "Praha 7",
             "description": "City"
           },
           "postalCode": {
             "type": "string",
-            "example": "10001",
+            "example": "170 00",
             "description": "Postal code"
           },
           "country": {
             "type": "string",
-            "example": "USA",
-            "description": "Country"
+            "example": "CZ",
+            "description": "ISO 3166-1 alpha-2 country code, e.g. `CZ`. Names are normalised to a code on write; anything unrecognised is stored as null."
           },
           "lat": {
             "type": "number",
@@ -3914,23 +3914,23 @@
           },
           "addressLine": {
             "type": "string",
-            "example": "123 Main St",
+            "example": "Poupětova 3",
             "description": "Address line"
           },
           "city": {
             "type": "string",
-            "example": "New York",
+            "example": "Praha 7",
             "description": "City"
           },
           "postalCode": {
             "type": "string",
-            "example": "10001",
+            "example": "170 00",
             "description": "Postal code"
           },
           "country": {
             "type": "string",
-            "example": "USA",
-            "description": "Country"
+            "example": "CZ",
+            "description": "ISO 3166-1 alpha-2 country code, e.g. `CZ`. Names are normalised to a code on write; anything unrecognised is stored as null."
           },
           "lat": {
             "type": "number",
@@ -4099,7 +4099,8 @@
           },
           "country": {
             "type": "string",
-            "example": "Česko"
+            "example": "CZ",
+            "description": "ISO 3166-1 alpha-2 country code."
           }
         }
       },

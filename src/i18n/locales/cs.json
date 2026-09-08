@@ -136,7 +136,11 @@
     },
     "notes": "Doplňující poznámky",
     "messageClient": "Napsat",
-    "messageClientA11y": "Napsat klientovi o zakázce {{title}}"
+    "messageClientA11y": "Napsat klientovi o zakázce {{title}}",
+    "country": {
+      "CZ": "Česko",
+      "US": "USA"
+    }
   },
   "offer": {
     "yourOffer": "Vaše nabídka",
