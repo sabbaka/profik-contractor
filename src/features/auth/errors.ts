@@ -4,6 +4,7 @@ export type PhoneAuthErrorKind =
   | "expired"
   | "wrongApp"
   | "tooManyAttempts"
+  | "undeliverable"
   | "network"
   | "unknown";
 
@@ -15,6 +16,9 @@ export type PhoneAuthErrorKind =
  * 404 is Twilio's "no pending verification" — the code expired or was already
  * used, which needs different advice from a code that was simply mistyped.
  * 403 is the backend refusing an account that belongs to the other app.
+ * 422 is the backend saying the carrier side refused the number — Twilio would
+ * not send to it (a blocked prefix, a region it does not cover), so retrying
+ * the same number is pointless and the message has to say to use another one.
  */
 export function classifyPhoneAuthError(error: unknown): PhoneAuthErrorKind {
   if (!error || typeof error !== "object" || !("status" in error)) {
@@ -26,6 +30,7 @@ export function classifyPhoneAuthError(error: unknown): PhoneAuthErrorKind {
   if (typeof status === "number") {
     if (status === 429) return "tooManyAttempts";
     if (status === 403) return "wrongApp";
+    if (status === 422) return "undeliverable";
     if (status === 404) return "expired";
     if (status === 401) return "invalidCode";
     return "unknown";

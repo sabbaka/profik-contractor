@@ -45,6 +45,7 @@
         "expired": "Platnost kódu vypršela. Vyžádejte si nový.",
         "wrongApp": "Tento účet je registrovaný jako zákazník. Použijte prosím klientskou aplikaci Profik.",
         "tooManyAttempts": "Příliš mnoho pokusů. Počkejte pár minut a zkuste to znovu.",
+        "undeliverable": "Na toto číslo nelze poslat SMS. Zkuste prosím jiné.",
         "network": "Bez připojení. Zkontrolujte internet a zkuste to znovu.",
         "unknown": "Něco se pokazilo. Zkuste to prosím znovu."
       }

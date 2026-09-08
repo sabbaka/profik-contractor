@@ -45,6 +45,7 @@
         "expired": "That code has expired. Request a new one.",
         "wrongApp": "This account is registered as a client. Please use the Profik client app.",
         "tooManyAttempts": "Too many attempts. Wait a few minutes and try again.",
+        "undeliverable": "We can't text this number. Please try a different one.",
         "network": "No connection. Check your internet and try again.",
         "unknown": "Something went wrong. Please try again."
       }
