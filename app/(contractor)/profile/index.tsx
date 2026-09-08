@@ -11,15 +11,9 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  ActivityIndicator,
-  Alert,
-  Keyboard,
-  Pressable,
-  ScrollView,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { ActivityIndicator, Alert, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
 import { XStack, YStack } from "tamagui";
 
 export default function EditProfileScreen() {
@@ -83,173 +77,172 @@ export default function EditProfileScreen() {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <YStack flex={1} backgroundColor={colors.bgPrimary}>
-        <YStack paddingTop={insets.top + 4}>
-          <NavHeader title={t("profile.editProfile")} showBackLabel={false} />
-        </YStack>
+    <YStack flex={1} backgroundColor={colors.bgPrimary}>
+      <YStack paddingTop={insets.top + 4}>
+        <NavHeader title={t("profile.editProfile")} showBackLabel={false} />
+      </YStack>
 
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingHorizontal: 20,
-            paddingTop: 16,
-            paddingBottom: insets.bottom + 24,
-          }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <YStack gap={28} flex={1}>
-            {/* Avatar */}
-            <YStack alignItems="center" gap={12}>
-              <Pressable
-                onPress={handleChangeAvatar}
-                disabled={isUploading}
-                hitSlop={6}
-                style={({ pressed }) => [
-                  { position: "relative" },
-                  pressed && { opacity: 0.85 },
-                ]}
+      {/* "layout" mode: the Save button is pushed down by a flex spacer, which
+          only reflows around the keyboard when the spacer is real. */}
+      <KeyboardAwareScreen
+        mode="layout"
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 20,
+          paddingTop: 16,
+          paddingBottom: 24,
+        }}
+      >
+        <YStack gap={28} flex={1}>
+          {/* Avatar */}
+          <YStack alignItems="center" gap={12}>
+            <Pressable
+              onPress={handleChangeAvatar}
+              disabled={isUploading}
+              hitSlop={6}
+              style={({ pressed }) => [
+                { position: "relative" },
+                pressed && { opacity: 0.85 },
+              ]}
+            >
+              {hasAvatar ? (
+                <Image
+                  source={{ uri: avatarUrl }}
+                  style={{
+                    width: 96,
+                    height: 96,
+                    borderRadius: 9999,
+                    backgroundColor: colors.surfaceInput,
+                  }}
+                  contentFit="cover"
+                  transition={200}
+                />
+              ) : (
+                <AvatarCircle size={96}>
+                  <Text
+                    fontSize={36}
+                    lineHeight={44}
+                    fontFamily="Geist_700Bold"
+                    color="#FFFFFF"
+                    textAlign="center"
+                  >
+                    {initial}
+                  </Text>
+                </AvatarCircle>
+              )}
+
+              {/* Camera badge */}
+              <YStack
+                position="absolute"
+                bottom={0}
+                right={0}
+                width={32}
+                height={32}
+                borderRadius={9999}
+                alignItems="center"
+                justifyContent="center"
+                backgroundColor={colors.bgPrimary}
+                borderWidth={2}
+                borderColor={colors.bgPrimary}
               >
-                {hasAvatar ? (
-                  <Image
-                    source={{ uri: avatarUrl }}
-                    style={{
-                      width: 96,
-                      height: 96,
-                      borderRadius: 9999,
-                      backgroundColor: colors.surfaceInput,
-                    }}
-                    contentFit="cover"
-                    transition={200}
-                  />
-                ) : (
-                  <AvatarCircle size={96}>
-                    <Text
-                      fontSize={36}
-                      lineHeight={44}
-                      fontFamily="Geist_700Bold"
-                      color="#FFFFFF"
-                      textAlign="center"
-                    >
-                      {initial}
-                    </Text>
-                  </AvatarCircle>
-                )}
-
-                {/* Camera badge */}
                 <YStack
-                  position="absolute"
-                  bottom={0}
-                  right={0}
-                  width={32}
-                  height={32}
+                  width={28}
+                  height={28}
                   borderRadius={9999}
                   alignItems="center"
                   justifyContent="center"
-                  backgroundColor={colors.bgPrimary}
-                  borderWidth={2}
-                  borderColor={colors.bgPrimary}
+                  backgroundColor={colors.accent}
                 >
-                  <YStack
-                    width={28}
-                    height={28}
-                    borderRadius={9999}
-                    alignItems="center"
-                    justifyContent="center"
-                    backgroundColor={colors.accent}
-                  >
-                    {isUploading ? (
-                      <ActivityIndicator size="small" color="#FFFFFF" />
-                    ) : (
-                      <Camera size={15} color="#FFFFFF" />
-                    )}
-                  </YStack>
+                  {isUploading ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Camera size={15} color="#FFFFFF" />
+                  )}
                 </YStack>
-              </Pressable>
+              </YStack>
+            </Pressable>
 
-              <Pressable
-                onPress={handleChangeAvatar}
-                disabled={isUploading}
-                hitSlop={8}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            <Pressable
+              onPress={handleChangeAvatar}
+              disabled={isUploading}
+              hitSlop={8}
+              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            >
+              <Text
+                fontSize={14}
+                lineHeight={20}
+                fontFamily="Inter_600SemiBold"
+                color={colors.accent}
+              >
+                {isUploading
+                  ? t("profile.uploadingAvatar")
+                  : t("profile.changeAvatar")}
+              </Text>
+            </Pressable>
+          </YStack>
+
+          {/* Fields */}
+          <YStack gap={16}>
+            <FormInput
+              name="name"
+              control={control}
+              label={t("profile.name")}
+              placeholder={t("profile.placeholders.name")}
+              error={errors.name?.message}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="next"
+            />
+
+            <FormInput
+              name="email"
+              control={control}
+              label={t("profile.email")}
+              placeholder={t("profile.placeholders.email")}
+              error={errors.email?.message}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="done"
+            />
+
+            {/* Phone — read only */}
+            <YStack gap={6}>
+              <Text variant="sectionLabel">{t("profile.phone")}</Text>
+              <XStack
+                height={52}
+                paddingHorizontal={16}
+                borderRadius={12}
+                alignItems="center"
+                backgroundColor={colors.surfaceInput}
+                opacity={0.6}
               >
                 <Text
-                  fontSize={14}
+                  fontSize={15}
                   lineHeight={20}
-                  fontFamily="Inter_600SemiBold"
-                  color={colors.accent}
+                  fontFamily="Inter_400Regular"
+                  color={colors.textSecondary}
                 >
-                  {isUploading
-                    ? t("profile.uploadingAvatar")
-                    : t("profile.changeAvatar")}
+                  {user?.phone ?? "—"}
                 </Text>
-              </Pressable>
+              </XStack>
+              <Text variant="caption" style={{ color: colors.textMuted }}>
+                {t("profile.phoneReadOnly")}
+              </Text>
             </YStack>
-
-            {/* Fields */}
-            <YStack gap={16}>
-              <FormInput
-                name="name"
-                control={control}
-                label={t("profile.name")}
-                placeholder={t("profile.placeholders.name")}
-                error={errors.name?.message}
-                autoCapitalize="words"
-                autoCorrect={false}
-                returnKeyType="next"
-              />
-
-              <FormInput
-                name="email"
-                control={control}
-                label={t("profile.email")}
-                placeholder={t("profile.placeholders.email")}
-                error={errors.email?.message}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                returnKeyType="done"
-              />
-
-              {/* Phone — read only */}
-              <YStack gap={6}>
-                <Text variant="sectionLabel">{t("profile.phone")}</Text>
-                <XStack
-                  height={52}
-                  paddingHorizontal={16}
-                  borderRadius={12}
-                  alignItems="center"
-                  backgroundColor={colors.surfaceInput}
-                  opacity={0.6}
-                >
-                  <Text
-                    fontSize={15}
-                    lineHeight={20}
-                    fontFamily="Inter_400Regular"
-                    color={colors.textSecondary}
-                  >
-                    {user?.phone ?? "—"}
-                  </Text>
-                </XStack>
-                <Text variant="caption" style={{ color: colors.textMuted }}>
-                  {t("profile.phoneReadOnly")}
-                </Text>
-              </YStack>
-            </YStack>
-
-            <YStack flex={1} />
-
-            <Button
-              variant={isLoading || !isDirty ? "primaryDisabled" : "primary"}
-              onPress={handleSubmit}
-              loading={isLoading}
-            >
-              {t("profile.saveChanges")}
-            </Button>
           </YStack>
-        </ScrollView>
-      </YStack>
-    </TouchableWithoutFeedback>
+
+          <YStack flex={1} />
+
+          <Button
+            variant={isLoading || !isDirty ? "primaryDisabled" : "primary"}
+            onPress={handleSubmit}
+            loading={isLoading}
+          >
+            {t("profile.saveChanges")}
+          </Button>
+        </YStack>
+      </KeyboardAwareScreen>
+    </YStack>
   );
 }

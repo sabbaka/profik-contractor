@@ -8,14 +8,9 @@ import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import {
-  Keyboard,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Keyboard, Pressable, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
 import { XStack, YStack } from "tamagui";
 import { z } from "zod";
 
@@ -97,98 +92,143 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <YStack flex={1} backgroundColor={colors.bgSecondary}>
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "center",
-            paddingHorizontal: 24,
-            paddingTop: insets.top + 24,
-            paddingBottom: insets.bottom + 24,
-          }}
-          keyboardShouldPersistTaps="handled"
-        >
-          {step === "phone" ? (
-            <YStack gap={28}>
-              <YStack gap={16}>
-                <YStack
-                  width={56}
-                  height={56}
-                  borderRadius={18}
-                  overflow="hidden"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <LinearGradient
-                    colors={["#FF8A2B", "#E85D00"]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <Text
-                    position="relative"
-                    zIndex={1}
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Geist_700Bold",
-                      fontSize: 24,
-                      lineHeight: 30,
-                      textAlign: "center",
-                    }}
-                  >
-                    P
-                  </Text>
-                </YStack>
-                <YStack gap={6}>
-                  <Text variant="display">{t("auth.phone.title")}</Text>
-                  <Text variant="body">{t("auth.phone.subtitle")}</Text>
-                </YStack>
-              </YStack>
-
+    <YStack flex={1} backgroundColor={colors.bgSecondary}>
+      {/* "layout" mode: the content is vertically centred, and centring only
+          re-settles around the keyboard when the spacer is real. */}
+      <KeyboardAwareScreen
+        mode="layout"
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: "center",
+          paddingHorizontal: 24,
+          paddingTop: insets.top + 24,
+          paddingBottom: 24,
+        }}
+      >
+        {step === "phone" ? (
+          <YStack gap={28}>
+            <YStack gap={16}>
               <YStack
-                backgroundColor={colors.bgCard}
-                borderRadius={24}
-                borderWidth={1}
-                borderColor={colors.borderSubtle}
-                padding={20}
-                gap={16}
+                width={56}
+                height={56}
+                borderRadius={18}
+                overflow="hidden"
+                alignItems="center"
+                justifyContent="center"
               >
-                <FormInput
-                  name="phone"
-                  control={control}
-                  placeholder={t("auth.placeholders.phone")}
-                  keyboardType="phone-pad"
-                  autoComplete="tel"
-                  textContentType="telephoneNumber"
-                  returnKeyType="done"
-                  error={phoneError ?? errors.phone?.message}
-                  flex={0}
+                <LinearGradient
+                  colors={["#FF8A2B", "#E85D00"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={StyleSheet.absoluteFill}
                 />
-                <Button
-                  loading={isLoading}
-                  onPress={handleSubmit((data) => {
-                    Keyboard.dismiss();
-                    requestCode(data.phone);
-                  })}
+                <Text
+                  position="relative"
+                  zIndex={1}
+                  style={{
+                    color: "#FFFFFF",
+                    fontFamily: "Geist_700Bold",
+                    fontSize: 24,
+                    lineHeight: 30,
+                    textAlign: "center",
+                  }}
                 >
-                  {t("auth.phone.continue")}
-                </Button>
+                  P
+                </Text>
               </YStack>
+              <YStack gap={6}>
+                <Text variant="display">{t("auth.phone.title")}</Text>
+                <Text variant="body">{t("auth.phone.subtitle")}</Text>
+              </YStack>
+            </YStack>
 
-              <Text variant="bodySm" textAlign="center">
-                {t("auth.phone.legal")}
+            <YStack
+              backgroundColor={colors.bgCard}
+              borderRadius={24}
+              borderWidth={1}
+              borderColor={colors.borderSubtle}
+              padding={20}
+              gap={16}
+            >
+              <FormInput
+                name="phone"
+                control={control}
+                placeholder={t("auth.placeholders.phone")}
+                keyboardType="phone-pad"
+                autoComplete="tel"
+                textContentType="telephoneNumber"
+                returnKeyType="done"
+                error={phoneError ?? errors.phone?.message}
+                flex={0}
+              />
+              <Button
+                loading={isLoading}
+                onPress={handleSubmit((data) => {
+                  Keyboard.dismiss();
+                  requestCode(data.phone);
+                })}
+              >
+                {t("auth.phone.continue")}
+              </Button>
+            </YStack>
+
+            <Text variant="bodySm" textAlign="center">
+              {t("auth.phone.legal")}
+            </Text>
+
+            <XStack justifyContent="center">
+              <Pressable
+                onPress={() =>
+                  router.replace("/(contractor)/(tabs)/open" as any)
+                }
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel={t("guest.browseJobs")}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <Text
+                  style={{
+                    color: colors.accent,
+                    fontFamily: "Inter_600SemiBold",
+                    fontSize: 14,
+                  }}
+                >
+                  {t("guest.browseJobs")}
+                </Text>
+              </Pressable>
+            </XStack>
+          </YStack>
+        ) : (
+          <YStack gap={28} alignItems="center">
+            <YStack alignItems="center" gap={8}>
+              <Text variant="display" textAlign="center">
+                {t("auth.otp.title")}
               </Text>
+              <Text variant="body" textAlign="center">
+                {t("auth.otp.subtitle", { phone })}
+              </Text>
+            </YStack>
 
-              <XStack justifyContent="center">
+            <OTPInput
+              length={OTP_LENGTH}
+              value={code}
+              onChange={setCode}
+              error={codeError}
+              autoFocus
+            />
+
+            <YStack width="100%" gap={16} alignItems="center">
+              {secondsUntilResend > 0 ? (
+                <Text variant="bodySm">
+                  {t("auth.otp.resendIn", { seconds: secondsUntilResend })}
+                </Text>
+              ) : (
                 <Pressable
-                  onPress={() =>
-                    router.replace("/(contractor)/(tabs)/open" as any)
-                  }
+                  onPress={handleResend}
+                  disabled={isLoading}
                   hitSlop={8}
                   accessibilityRole="button"
-                  accessibilityLabel={t("guest.browseJobs")}
-                  style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+                  accessibilityLabel={t("auth.otp.resend")}
                 >
                   <Text
                     style={{
@@ -197,68 +237,23 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
                       fontSize: 14,
                     }}
                   >
-                    {t("guest.browseJobs")}
+                    {t("auth.otp.resend")}
                   </Text>
                 </Pressable>
-              </XStack>
+              )}
+
+              <Pressable
+                onPress={handleChangeNumber}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel={t("auth.otp.changeNumber")}
+              >
+                <Text variant="bodySm">{t("auth.otp.changeNumber")}</Text>
+              </Pressable>
             </YStack>
-          ) : (
-            <YStack gap={28} alignItems="center">
-              <YStack alignItems="center" gap={8}>
-                <Text variant="display" textAlign="center">
-                  {t("auth.otp.title")}
-                </Text>
-                <Text variant="body" textAlign="center">
-                  {t("auth.otp.subtitle", { phone })}
-                </Text>
-              </YStack>
-
-              <OTPInput
-                length={OTP_LENGTH}
-                value={code}
-                onChange={setCode}
-                error={codeError}
-                autoFocus
-              />
-
-              <YStack width="100%" gap={16} alignItems="center">
-                {secondsUntilResend > 0 ? (
-                  <Text variant="bodySm">
-                    {t("auth.otp.resendIn", { seconds: secondsUntilResend })}
-                  </Text>
-                ) : (
-                  <Pressable
-                    onPress={handleResend}
-                    disabled={isLoading}
-                    hitSlop={8}
-                    accessibilityRole="button"
-                    accessibilityLabel={t("auth.otp.resend")}
-                  >
-                    <Text
-                      style={{
-                        color: colors.accent,
-                        fontFamily: "Inter_600SemiBold",
-                        fontSize: 14,
-                      }}
-                    >
-                      {t("auth.otp.resend")}
-                    </Text>
-                  </Pressable>
-                )}
-
-                <Pressable
-                  onPress={handleChangeNumber}
-                  hitSlop={8}
-                  accessibilityRole="button"
-                  accessibilityLabel={t("auth.otp.changeNumber")}
-                >
-                  <Text variant="bodySm">{t("auth.otp.changeNumber")}</Text>
-                </Pressable>
-              </YStack>
-            </YStack>
-          )}
-        </ScrollView>
-      </YStack>
-    </TouchableWithoutFeedback>
+          </YStack>
+        )}
+      </KeyboardAwareScreen>
+    </YStack>
   );
 }
