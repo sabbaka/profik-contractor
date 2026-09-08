@@ -15,6 +15,10 @@ export default function ContractorHeader() {
   const isJobDetail = segments.includes("jobs") && segments.includes("[id]");
   const isOfferChat = segments.includes("offer-chat");
   const isBalancePage = segments.includes("balance");
+  // Only ever mounted inside the tabs stack, so this segment alone means the
+  // Profile tab — the header's own profile button would just point back at
+  // the screen already on.
+  const isProfileTab = segments.includes("profile");
 
   if (isJobDetail || isOfferChat || isBalancePage) {
     return null;
@@ -35,7 +39,7 @@ export default function ContractorHeader() {
         </UIText>
         <UIText variant="caption">{t("header.workspace")}</UIText>
       </YStack>
-      <ContractorProfileHeaderButton />
+      {isProfileTab ? null : <ContractorProfileHeaderButton />}
     </XStack>
   );
 }
