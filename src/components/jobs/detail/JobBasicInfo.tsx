@@ -1,6 +1,7 @@
+import type { TimeSlot } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { formatCzk } from "@/src/utils/currency";
-import { Calendar, MapPin } from "@tamagui/lucide-icons";
+import { Calendar, Clock, MapPin } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,6 +14,7 @@ interface JobBasicInfoProps {
   price: number;
   createdAt?: string;
   city?: string | null;
+  timeSlot?: TimeSlot | null;
 }
 
 export const JobBasicInfo = ({
@@ -21,6 +23,7 @@ export const JobBasicInfo = ({
   price,
   createdAt,
   city,
+  timeSlot,
 }: JobBasicInfoProps) => {
   const { t, i18n } = useTranslation();
   const date = useMemo(() => {
@@ -80,6 +83,12 @@ export const JobBasicInfo = ({
       <XStack position="relative" zIndex={1} gap={18} flexWrap="wrap">
         {date ? (
           <Meta icon={<Calendar size={15} color="#FFFFFF" />} label={date} />
+        ) : null}
+        {timeSlot ? (
+          <Meta
+            icon={<Clock size={15} color="#FFFFFF" />}
+            label={t(`job.timeSlot.${timeSlot}`)}
+          />
         ) : null}
         <Meta
           icon={<MapPin size={15} color="#FFFFFF" />}

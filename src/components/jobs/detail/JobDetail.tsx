@@ -62,6 +62,8 @@ export const JobDetail = () => {
     myOfferMessage,
     myOfferStatus,
     offerIdForChat,
+    balance,
+    canAffordOffer,
     isSubmitting,
     submitOffer,
     acceptClientPrice,
@@ -114,6 +116,20 @@ export const JobDetail = () => {
       <YStack flex={1}>
         <JobDetailHeader />
 
+        {/* Fixed in place above the scroll area, rather than scrolling away
+            with the rest of the detail — the price/title/date a contractor
+            is deciding against should stay visible while they read on. */}
+        <YStack paddingHorizontal={20} paddingTop={8} paddingBottom={12}>
+          <JobBasicInfo
+            category={job.category}
+            title={job.title}
+            price={job.price ?? 0}
+            createdAt={job.createdAt}
+            city={job.city}
+            timeSlot={job.timeSlot}
+          />
+        </YStack>
+
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
@@ -123,15 +139,7 @@ export const JobDetail = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <YStack gap={12} paddingHorizontal={20} paddingTop={8} paddingBottom={40}>
-              <JobBasicInfo
-                category={job.category}
-                title={job.title}
-                price={job.price ?? 0}
-                createdAt={job.createdAt}
-                city={job.city}
-              />
-
+            <YStack gap={12} paddingHorizontal={20} paddingBottom={40}>
               {job.roomsCount || job.area != null || job.windowCleaning || job.windowCount != null || job.vacuumCleaner || job.cleaningSupplies || job.ladder ? (
                 <>
                   <JobPropertySection
@@ -165,6 +173,8 @@ export const JobDetail = () => {
               {isContractor && (
                 <ContractorOfferSection
                   jobId={id}
+                  balance={balance}
+                  canAffordOffer={canAffordOffer}
                   jobTitle={job.title}
                   hasOffered={hasOffered}
                   myOfferPrice={myOfferPrice}
