@@ -18,18 +18,25 @@ import { useTranslation } from "react-i18next";
 import {
   Alert,
   FlatList,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   StyleSheet,
   TextInput,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  KeyboardAvoidingView,
+  useKeyboardState,
+} from "react-native-keyboard-controller";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Spinner, XStack, YStack } from "tamagui";
 
 export default function OfferChatRoute() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const insets = useSafeAreaInsets();
+  const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
   // Job context travels in the route params — see `buildOfferChatRoute`. A
   // deep link carries only `offerId`, so every field below is optional.
   const { offerId, jobId, jobTitle, offerPrice, offerStatus, jobStatus } = useLocalSearchParams<{
@@ -99,78 +106,87 @@ export default function OfferChatRoute() {
     );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgSecondary }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+    // Top edge only: the bottom inset now belongs to the composer, which drops
+    // it while the keyboard is up. Leaving it here too would count it twice.
+    <SafeAreaView
+      edges={["top"]}
+      style={{ flex: 1, backgroundColor: colors.bgSecondary }}
+    >
+      <XStack
+        height={50}
+        paddingHorizontal={16}
+        alignItems="center"
+        justifyContent="space-between"
       >
-        <XStack
-          height={50}
-          paddingHorizontal={16}
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Pressable onPress={() => router.back()} hitSlop={10}>
-            <XStack alignItems="center">
-              <ChevronLeft size={25} color={colors.textPrimary} />
-              <Text style={{ color: colors.textPrimary, fontSize: 16 }}>
-                {t("common.back")}
-              </Text>
-            </XStack>
-          </Pressable>
-          <YStack alignItems="center">
-            <Text variant="h5">{t("chat.title")}</Text>
-            <Text
-              style={{
-                color: colors.success,
-                fontFamily: "Inter_500Medium",
-                fontSize: 10,
-              }}
-            >
-              {t("chat.eyebrow")}
+        <Pressable onPress={() => router.back()} hitSlop={10}>
+          <XStack alignItems="center">
+            <ChevronLeft size={25} color={colors.textPrimary} />
+            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>
+              {t("common.back")}
             </Text>
-          </YStack>
-          <XStack width={58} />
-        </XStack>
-
-        {jobTitle ? (
-          <Pressable
-            onPress={jobId ? () => router.push({ pathname: "/(contractor)/jobs/[id]", params: { id: jobId } }) : undefined}
-            disabled={!jobId}
-            accessibilityRole="button"
-            accessibilityLabel={t("chat.openJob")}
-            style={({ pressed }) => ({ opacity: pressed && jobId ? 0.85 : 1 })}
+          </XStack>
+        </Pressable>
+        <YStack alignItems="center">
+          <Text variant="h5">{t("chat.title")}</Text>
+          <Text
+            style={{
+              color: colors.success,
+              fontFamily: "Inter_500Medium",
+              fontSize: 10,
+            }}
           >
-            <XStack
-              paddingHorizontal={16}
-              paddingVertical={10}
-              gap={10}
-              alignItems="center"
-              backgroundColor={colors.bgCard}
-              borderBottomWidth={1}
-              borderBottomColor={colors.borderSubtle}
-            >
-              <YStack width={34} height={34} borderRadius={10} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
-                <BriefcaseBusiness size={16} color={colors.accent} />
-              </YStack>
-              <YStack flex={1} gap={3}>
-                <Text numberOfLines={1} style={{ color: colors.textPrimary, fontFamily: "Inter_600SemiBold", fontSize: 13, lineHeight: 17 }}>{jobTitle}</Text>
-                {offerPrice || offerStatus ? (
-                  <XStack alignItems="center" gap={6}>
-                    {offerPrice ? (
-                      <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 11, lineHeight: 15 }}>
-                        {t("chat.yourOffer", { price: formatCzk(Number(offerPrice)) })}
-                      </Text>
-                    ) : null}
-                    {offerStatus ? <OfferStatusPill status={offerStatus} jobStatus={jobStatus} size="sm" /> : null}
-                  </XStack>
-                ) : null}
-              </YStack>
-              {jobId ? <ChevronRight size={16} color={colors.textMuted} /> : null}
-            </XStack>
-          </Pressable>
-        ) : null}
+            {t("chat.eyebrow")}
+          </Text>
+        </YStack>
+        <XStack width={58} />
+      </XStack>
 
+      {jobTitle ? (
+        <Pressable
+          onPress={jobId ? () => router.push({ pathname: "/(contractor)/jobs/[id]", params: { id: jobId } }) : undefined}
+          disabled={!jobId}
+          accessibilityRole="button"
+          accessibilityLabel={t("chat.openJob")}
+          style={({ pressed }) => ({ opacity: pressed && jobId ? 0.85 : 1 })}
+        >
+          <XStack
+            paddingHorizontal={16}
+            paddingVertical={10}
+            gap={10}
+            alignItems="center"
+            backgroundColor={colors.bgCard}
+            borderBottomWidth={1}
+            borderBottomColor={colors.borderSubtle}
+          >
+            <YStack width={34} height={34} borderRadius={10} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
+              <BriefcaseBusiness size={16} color={colors.accent} />
+            </YStack>
+            <YStack flex={1} gap={3}>
+              <Text numberOfLines={1} style={{ color: colors.textPrimary, fontFamily: "Inter_600SemiBold", fontSize: 13, lineHeight: 17 }}>{jobTitle}</Text>
+              {offerPrice || offerStatus ? (
+                <XStack alignItems="center" gap={6}>
+                  {offerPrice ? (
+                    <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 11, lineHeight: 15 }}>
+                      {t("chat.yourOffer", { price: formatCzk(Number(offerPrice)) })}
+                    </Text>
+                  ) : null}
+                  {offerStatus ? <OfferStatusPill status={offerStatus} jobStatus={jobStatus} size="sm" /> : null}
+                </XStack>
+              ) : null}
+            </YStack>
+            {jobId ? <ChevronRight size={16} color={colors.textMuted} /> : null}
+          </XStack>
+        </Pressable>
+      ) : null}
+
+      {/* Wraps the list and the composer, never the header or the job banner —
+          `padding` shrinks what it wraps, so anything else inside would be
+          squeezed off the top. "padding" on both platforms: this one rides the
+          IME insets, so unlike RN's it works on Android under edge-to-edge,
+          where the window is no longer resized. Shrinking the container is
+          also what keeps the last message visible, which translating the
+          composer alone would not. */}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         {isLoading && !messages ? (
           <YStack flex={1} alignItems="center" justifyContent="center">
             <Spinner color={colors.accent} />
@@ -252,7 +268,12 @@ export default function OfferChatRoute() {
 
         <XStack
           paddingHorizontal={16}
-          paddingVertical={10}
+          paddingTop={10}
+          // The home indicator sits behind the keyboard, so its inset is only
+          // worth reserving while the keyboard is down.
+          paddingBottom={
+            isKeyboardVisible ? 10 : Math.max(insets.bottom, 10) + 6
+          }
           alignItems="flex-end"
           gap={9}
           backgroundColor={colors.bgPrimary}
