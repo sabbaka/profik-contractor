@@ -7,6 +7,7 @@ interface MapPreviewProps {
   lat?: number | null;
   lng?: number | null;
   height?: number;
+  label?: string;
 }
 
 /**

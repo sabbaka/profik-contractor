@@ -57,7 +57,7 @@ export const JobLocation = ({
         </Text>
       )}
       <YStack height="auto" borderRadius="$6" overflow="hidden">
-        <MapPreview lat={lat} lng={lng} />
+        <MapPreview lat={lat} lng={lng} label={addressText || undefined} />
       </YStack>
     </YStack>
   );
