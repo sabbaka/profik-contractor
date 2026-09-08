@@ -1,15 +1,10 @@
 import { useGetJobByIdQuery } from "@/src/api/profikApi";
 import { useThemeColors } from "@/src/theme";
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView as RNScrollView,
-} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, ScrollView, Spinner, Text, YStack } from "tamagui";
+import { Button, Spinner, Text, YStack } from "tamagui";
+import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
 import { NamePromptSheet } from "@/src/components/auth";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { ContractorOfferSection } from "./ContractorOfferSection";
@@ -39,14 +34,6 @@ export const JobDetail = () => {
   } = useGetJobByIdQuery(id, {
     refetchOnMountOrArgChange: true,
   });
-
-  const scrollViewRef = useRef<RNScrollView>(null);
-
-  const handleInputFocus = useCallback(() => {
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
-  }, []);
 
   const {
     nameSheetProps,
@@ -130,73 +117,63 @@ export const JobDetail = () => {
           />
         </YStack>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
-          <ScrollView
-            ref={scrollViewRef}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            <YStack gap={12} paddingHorizontal={20} paddingBottom={40}>
-              {job.roomsCount || job.area != null || job.windowCleaning || job.windowCount != null || job.vacuumCleaner || job.cleaningSupplies || job.ladder ? (
-                <>
-                  <JobPropertySection
-                    roomsCount={job.roomsCount}
-                    area={job.area}
-                    windowCleaning={job.windowCleaning}
-                    windowCount={job.windowCount}
-                  />
-                  <JobProvidedSection
-                    vacuumCleaner={job.vacuumCleaner}
-                    cleaningSupplies={job.cleaningSupplies}
-                    ladder={job.ladder}
-                  />
-                  <JobNotes notes={job.notes} />
-                </>
-              ) : (
-                <JobDescription description={job.description} />
-              )}
-
-              <JobLocation
-                addressLine={job.addressLine}
-                city={job.city}
-                postalCode={job.postalCode}
-                country={job.country}
-                lat={job.lat}
-                lng={job.lng}
-              />
-
-              {isGuest && <GuestOfferCta jobId={id} />}
-
-              {isContractor && (
-                <ContractorOfferSection
-                  jobId={id}
-                  balance={balance}
-                  canAffordOffer={canAffordOffer}
-                  jobTitle={job.title}
-                  jobStatus={job.status}
-                  hasOffered={hasOffered}
-                  myOfferPrice={myOfferPrice}
-                  myOfferMessage={myOfferMessage}
-                  myOfferStatus={myOfferStatus}
-                  offerIdForChat={offerIdForChat}
-                  mode={mode}
-                  setMode={setMode}
-                  price={price}
-                  setPrice={setPrice}
-                  message={message}
-                  setMessage={setMessage}
-                  onAcceptClientPrice={acceptClientPrice}
-                  onSubmitOffer={submitOffer}
-                  isSubmitting={isSubmitting}
-                  onInputFocus={handleInputFocus}
+        <KeyboardAwareScreen>
+          <YStack gap={12} paddingHorizontal={20} paddingBottom={40}>
+            {job.roomsCount || job.area != null || job.windowCleaning || job.windowCount != null || job.vacuumCleaner || job.cleaningSupplies || job.ladder ? (
+              <>
+                <JobPropertySection
+                  roomsCount={job.roomsCount}
+                  area={job.area}
+                  windowCleaning={job.windowCleaning}
+                  windowCount={job.windowCount}
                 />
-              )}
-            </YStack>
-          </ScrollView>
-        </KeyboardAvoidingView>
+                <JobProvidedSection
+                  vacuumCleaner={job.vacuumCleaner}
+                  cleaningSupplies={job.cleaningSupplies}
+                  ladder={job.ladder}
+                />
+                <JobNotes notes={job.notes} />
+              </>
+            ) : (
+              <JobDescription description={job.description} />
+            )}
+
+            <JobLocation
+              addressLine={job.addressLine}
+              city={job.city}
+              postalCode={job.postalCode}
+              country={job.country}
+              lat={job.lat}
+              lng={job.lng}
+            />
+
+            {isGuest && <GuestOfferCta jobId={id} />}
+
+            {isContractor && (
+              <ContractorOfferSection
+                jobId={id}
+                balance={balance}
+                canAffordOffer={canAffordOffer}
+                jobTitle={job.title}
+                jobStatus={job.status}
+                hasOffered={hasOffered}
+                myOfferPrice={myOfferPrice}
+                myOfferMessage={myOfferMessage}
+                myOfferStatus={myOfferStatus}
+                offerIdForChat={offerIdForChat}
+                mode={mode}
+                setMode={setMode}
+                price={price}
+                setPrice={setPrice}
+                message={message}
+                setMessage={setMessage}
+                onAcceptClientPrice={acceptClientPrice}
+                onSubmitOffer={submitOffer}
+                isSubmitting={isSubmitting}
+              />
+            )}
+          </YStack>
+        </KeyboardAwareScreen>
       </YStack>
 
       <NamePromptSheet {...nameSheetProps} />

@@ -23,13 +23,13 @@ interface Props {
   /** Balance, and whether it covers one offer — see `useJobOffer`. */
   balance: number; canAffordOffer: boolean;
   price: string; setPrice: (value: string) => void; message: string; setMessage: (value: string) => void;
-  onAcceptClientPrice: () => void; onSubmitOffer: () => void; isSubmitting: boolean; onInputFocus: () => void;
+  onAcceptClientPrice: () => void; onSubmitOffer: () => void; isSubmitting: boolean;
 }
 
 export const ContractorOfferSection = (props: Props) => {
   const { t } = useTranslation();
   const colors = useThemeColors();
-  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, jobStatus, offerIdForChat, balance, canAffordOffer, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting, onInputFocus } = props;
+  const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, jobStatus, offerIdForChat, balance, canAffordOffer, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting } = props;
 
   if (hasOffered) {
     return (
@@ -63,8 +63,8 @@ export const ContractorOfferSection = (props: Props) => {
           <Text variant="bodySm">{t("offer.makeCounterBody")}</Text>
         </YStack>
         <YStack gap={10}>
-          <TextInput placeholder={t("offer.pricePlaceholder")} value={price} onChangeText={setPrice} keyboardType="decimal-pad" onFocus={onInputFocus} />
-          <TextInput placeholder={t("offer.messagePlaceholder")} value={message} onChangeText={setMessage} multiline numberOfLines={4} onFocus={onInputFocus} height={104} textAlignVertical="top" paddingTop={14} />
+          <TextInput placeholder={t("offer.pricePlaceholder")} value={price} onChangeText={setPrice} keyboardType="decimal-pad" />
+          <TextInput placeholder={t("offer.messagePlaceholder")} value={message} onChangeText={setMessage} multiline numberOfLines={4} height={104} textAlignVertical="top" paddingTop={14} />
         </YStack>
         {canAffordOffer ? (
           <>
