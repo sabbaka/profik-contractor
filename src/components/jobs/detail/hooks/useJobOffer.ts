@@ -4,6 +4,7 @@ import {
   useHasOfferedQuery,
   useMeQuery,
 } from "@/src/api/profikApi";
+import { OFFER_COST_CZK } from "@/src/components/jobs/detail/offerPricing";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useNameGate } from "@/src/features/auth/hooks/useNameGate";
 import { useCallback, useState } from "react";
@@ -35,6 +36,11 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
   const [lastOfferId, setLastOfferId] = useState<string | null>(null);
 
   const isContractor = me?.role === "contractor";
+  // Sending an offer is paid for out of the balance, so the screen has to know
+  // before the button is pressed — the backend answers a short balance with a
+  // 403 that reads like any other failure.
+  const balance = me?.balance ?? 0;
+  const canAffordOffer = balance >= OFFER_COST_CZK;
 
   const { data: offerStatus } = useHasOfferedQuery(jobId, {
     skip: !me || !isContractor,
@@ -204,6 +210,8 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
     myOfferMessage,
     myOfferStatus,
     offerIdForChat,
+    balance,
+    canAffordOffer,
     isSubmitting,
     submitOffer,
     acceptClientPrice,
