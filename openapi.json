@@ -1586,10 +1586,26 @@
         "operationId": "getOfferedJobs",
         "parameters": [
           {
+            "name": "filter",
+            "required": false,
+            "in": "query",
+            "description": "Which tab to return. Spans both the job and your offer: `active` and `completed` are both accepted offers, told apart by whether the client has marked the job done. Takes precedence over `status`.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "active",
+                "completed",
+                "declined"
+              ]
+            }
+          },
+          {
             "name": "status",
             "required": false,
             "in": "query",
-            "description": "Filter by your offer status (pending, accepted, declined)",
+            "deprecated": true,
+            "description": "Deprecated — use `filter`. Filters by your offer status only (pending, accepted, declined), so `accepted` mixes in-progress, completed and cancelled jobs together. Ignored when `filter` is present.",
             "schema": {
               "type": "string",
               "enum": [
