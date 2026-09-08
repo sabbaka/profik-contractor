@@ -31,6 +31,7 @@ import { PortalProvider } from '@tamagui/portal';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { MD3DarkTheme, MD3LightTheme, Provider as PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as ReduxProvider, useDispatch } from 'react-redux';
@@ -198,11 +199,18 @@ function RootLayout() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <ReduxProvider store={store}>
-          <ThemeProvider>
-            <ThemedApp />
-          </ThemeProvider>
-        </ReduxProvider>
+        {/* Above AuthGate on purpose: AuthGate returns an early <View> while it
+            hydrates, and a provider below it would tear its native view down
+            and rebuild it on every launch. Above PortalProvider too, so modal
+            Sheets stay inside the keyboard context. Takes no props — it reads
+            edge-to-edge from the platform and warns if you pass it in. */}
+        <KeyboardProvider>
+          <ReduxProvider store={store}>
+            <ThemeProvider>
+              <ThemedApp />
+            </ThemeProvider>
+          </ReduxProvider>
+        </KeyboardProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );
