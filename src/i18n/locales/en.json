@@ -142,7 +142,11 @@
     },
     "notes": "Additional notes",
     "messageClient": "Message",
-    "messageClientA11y": "Message the client about {{title}}"
+    "messageClientA11y": "Message the client about {{title}}",
+    "country": {
+      "CZ": "Czechia",
+      "US": "USA"
+    }
   },
   "offer": {
     "yourOffer": "Your offer",

@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { XStack, YStack } from "tamagui";
 import { OfferStatusPill } from "./OfferStatusPill";
+import { formatCountry } from "@/src/utils/country";
 
 interface ContractorJobCardProps {
   job: any;
@@ -32,7 +33,9 @@ function dateLabel(value?: string, locale?: string) {
 export function ContractorJobCard({ job, myOffer, onPress, onMessage }: ContractorJobCardProps) {
   const { t, i18n } = useTranslation();
   const colors = useThemeColors();
-  const location = [job?.city, job?.country].filter(Boolean).join(", ") || t("job.locationNotProvided");
+  const location =
+    [job?.city, formatCountry(job?.country, t)].filter(Boolean).join(", ") ||
+    t("job.locationNotProvided");
   const date = dateLabel(job?.createdAt, i18n.language);
 
   return (

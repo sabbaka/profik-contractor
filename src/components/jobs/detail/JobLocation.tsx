@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
 import MapPreview from "../../MapPreview";
+import { formatCountry } from "@/src/utils/country";
 
 interface JobLocationProps {
   addressLine?: string | null;
@@ -26,8 +27,10 @@ export const JobLocation = ({
   const { t } = useTranslation();
   const colors = useThemeColors();
   const addressText = useMemo(() => {
-    return [addressLine, city, postalCode, country].filter(Boolean).join(", ");
-  }, [addressLine, city, postalCode, country]);
+    return [addressLine, city, postalCode, formatCountry(country, t)]
+      .filter(Boolean)
+      .join(", ");
+  }, [addressLine, city, postalCode, country, t]);
 
   const hasLocation = addressText || (lat != null && lng != null);
 
