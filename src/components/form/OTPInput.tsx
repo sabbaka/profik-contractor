@@ -25,7 +25,8 @@ export const OTPInput = ({
 
   useEffect(() => {
     if (autoFocus) {
-      setTimeout(() => { inputRef.current?.focus(); }, 100);
+      const t = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(t);
     }
   }, [autoFocus]);
 
