@@ -105,6 +105,12 @@
     "notFound": "Zakázka nebyla nalezena.",
     "serviceRequest": "Poptávka služby",
     "remote": "Vzdáleně",
+    "timeSlot": {
+      "morning": "Ráno",
+      "afternoon": "Odpoledne",
+      "evening": "Večer",
+      "all_day": "Celý den"
+    },
     "locationNotProvided": "Lokalita není uvedena",
     "service": "Služba",
     "untitled": "Zakázka bez názvu",
@@ -160,8 +166,19 @@
       "pricePositive": "Cena musí být kladné číslo.",
       "messageRequired": "Vysvětlete prosím klientovi svou cenu."
     },
-    "sendAtClientPrice": "Poslat nabídku za cenu klienta",
-    "costNote": "Při odeslání nabídky se z účtu strhne 5 Kč"
+    "sendAtClientPrice": "Poslat nabídku",
+    "costNote": "Při odeslání nabídky se z účtu strhne {{price}}",
+    "cost": {
+      "label": "Cena za nabídku",
+      "discount": "−{{percent}} %",
+      "balance": "Váš zůstatek"
+    },
+    "balance": {
+      "title": "Nedostatečný zůstatek",
+      "body": "Nabídka stojí {{price}} · máte {{balance}}",
+      "topUp": "Dobít zůstatek",
+      "interestedBody": "Dobijte zůstatek, abyste mohli na tuto zakázku poslat nabídku."
+    }
   },
   "chat": {
     "title": "Chat se zákazníkem",
@@ -182,7 +199,8 @@
     "previewUnavailableWebSentence": "Náhled mapy není na webu dostupný.",
     "unavailable": "Mapa není dostupná",
     "coordinates": "Šířka: {{lat}} Délka: {{lng}}",
-    "openJobsFailed": "Otevřené zakázky se nepodařilo načíst"
+    "openJobsFailed": "Otevřené zakázky se nepodařilo načíst",
+    "openInMaps": "Otevřít v Mapách"
   },
   "balance": {
     "title": "Zůstatek",

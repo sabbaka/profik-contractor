@@ -105,6 +105,12 @@
     "notFound": "No job found.",
     "serviceRequest": "Service request",
     "remote": "Remote",
+    "timeSlot": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "all_day": "All day"
+    },
     "locationNotProvided": "Location not provided",
     "service": "Service",
     "untitled": "Untitled job",
@@ -160,8 +166,19 @@
       "pricePositive": "Price must be a positive number.",
       "messageRequired": "Please explain your price to the client."
     },
-    "sendAtClientPrice": "Send offer at the client's price",
-    "costNote": "5 Kč is deducted when you send an offer"
+    "sendAtClientPrice": "Send offer",
+    "costNote": "{{price}} is deducted when you send an offer",
+    "cost": {
+      "label": "Cost per offer",
+      "discount": "−{{percent}}%",
+      "balance": "Your balance"
+    },
+    "balance": {
+      "title": "Not enough balance",
+      "body": "An offer costs {{price}} · you have {{balance}}",
+      "topUp": "Top up balance",
+      "interestedBody": "Top up your balance to send an offer on this job."
+    }
   },
   "chat": {
     "title": "Customer chat",
@@ -182,7 +199,8 @@
     "previewUnavailableWebSentence": "Map preview not available on web.",
     "unavailable": "Map unavailable",
     "coordinates": "Lat: {{lat}} Lng: {{lng}}",
-    "openJobsFailed": "Failed to load open jobs"
+    "openJobsFailed": "Failed to load open jobs",
+    "openInMaps": "Open in Maps"
   },
   "balance": {
     "title": "Balance",
