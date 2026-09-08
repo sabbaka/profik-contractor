@@ -5,10 +5,12 @@ import { initReactI18next } from "react-i18next";
 import { getStoredLanguage } from "../utils/languageStorage";
 import cs from "./locales/cs.json";
 import en from "./locales/en.json";
+import uk from "./locales/uk.json";
 
 const resources = {
   en: { translation: en },
   cs: { translation: cs },
+  uk: { translation: uk },
 } as const;
 
 const i18n = baseI18n;

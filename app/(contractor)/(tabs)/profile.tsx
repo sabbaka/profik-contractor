@@ -10,8 +10,10 @@ import { resolveAvatarUrl } from "@/src/features/auth/utils";
 import { useThemeColors, useThemeMode } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import {
+  APP_LANGUAGES,
   getStoredLanguage,
   setStoredLanguage,
+  toAppLanguage,
   type AppLanguage,
 } from "@/src/utils/languageStorage";
 import { clearHasSeenOnboarding } from "@/src/utils/onboardingStorage";
@@ -95,6 +97,17 @@ function Divider() {
   );
 }
 
+/**
+ * Language row copy lives here as translation *keys*, not strings — the map is
+ * module-level, where `t` does not exist, and a resolved label would freeze in
+ * the language that was active at import time.
+ */
+const LANGUAGE_LABEL_KEY: Record<AppLanguage, string> = {
+  en: "profile.language.english",
+  cs: "profile.language.czech",
+  uk: "profile.language.ukrainian",
+};
+
 export default function ProfileRoute() {
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
@@ -105,7 +118,7 @@ export default function ProfileRoute() {
   const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccountMutation();
   const { preference, setPreference } = useThemeMode();
   const [language, setLanguage] = useState<AppLanguage>(
-    (i18n.language as AppLanguage) === "cs" ? "cs" : "en"
+    toAppLanguage(i18n.language) ?? "en"
   );
 
   useEffect(() => {
@@ -143,9 +156,11 @@ export default function ProfileRoute() {
 
   const handleLanguagePress = () => {
     Alert.alert(t("profile.language.title"), undefined, [
-      { text: t("profile.language.english"), onPress: () => handleChangeLanguage("en") },
-      { text: t("profile.language.czech"), onPress: () => handleChangeLanguage("cs") },
-      { text: t("common.cancel"), style: "cancel" },
+      ...APP_LANGUAGES.map((lng) => ({
+        text: t(LANGUAGE_LABEL_KEY[lng]),
+        onPress: () => handleChangeLanguage(lng),
+      })),
+      { text: t("common.cancel"), style: "cancel" as const },
     ]);
   };
 
@@ -396,11 +411,7 @@ export default function ProfileRoute() {
             label={t("profile.menu.language")}
             iconBg={colors.infoBg}
             icon={<Globe size={18} color={colors.infoStrong} />}
-            value={
-              language === "cs"
-                ? t("profile.language.czech")
-                : t("profile.language.english")
-            }
+            value={t(LANGUAGE_LABEL_KEY[language])}
             onPress={handleLanguagePress}
           />
           <Divider />
