@@ -9,7 +9,9 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "i18n:check": "node scripts/check-hardcoded-strings.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@expo-google-fonts/geist": "^0.4.2",
@@ -72,6 +74,7 @@
     "@types/react": "~19.2.4",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~57.0.2",
+    "prettier": "^3.9.6",
     "typescript": "~6.0.3"
   },
   "private": true
