@@ -86,7 +86,9 @@ export function OfferCostNote() {
                       lineHeight: 14,
                     }}
                   >
-                    {t("offer.cost.discount", { percent: OFFER_DISCOUNT_PERCENT })}
+                    {t("offer.cost.discount", {
+                      percent: OFFER_DISCOUNT_PERCENT,
+                    })}
                   </Text>
                 </XStack>
               </>

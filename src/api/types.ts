@@ -91,11 +91,7 @@ export interface OfferedJobItem {
  * server resolves each of these against the job *and* the offer, using the
  * same rule that files a conversation into a `ConversationBucket`.
  */
-export type OfferedJobsFilter =
-  | "pending"
-  | "active"
-  | "completed"
-  | "declined";
+export type OfferedJobsFilter = "pending" | "active" | "completed" | "declined";
 
 export interface GetOfferedJobsParams {
   filter: OfferedJobsFilter;
@@ -109,10 +105,7 @@ export interface GetOfferedJobsParams {
  * backend, so it is computed in exactly one of them.
  */
 export type ConversationBucket =
-  | "open"
-  | "in_progress"
-  | "completed"
-  | "archived";
+  "open" | "in_progress" | "completed" | "archived";
 
 export const CONVERSATION_BUCKETS: ConversationBucket[] = [
   "open",

@@ -6,7 +6,10 @@ import type { NotificationRoute } from "./types";
  * to use. The payload crosses a service boundary that no shared schema covers,
  * so accepting both spellings is cheaper than a production-only bug.
  */
-function readId(data: Record<string, unknown>, ...keys: string[]): string | undefined {
+function readId(
+  data: Record<string, unknown>,
+  ...keys: string[]
+): string | undefined {
   for (const key of keys) {
     const value = data[key];
     if (typeof value === "string" && value.trim()) return value.trim();
@@ -29,7 +32,9 @@ function readId(data: Record<string, unknown>, ...keys: string[]): string | unde
  * shape as navigating there in-app (minus the job-context strip, which a
  * bare offerId can't supply).
  */
-export function resolveNotificationRoute(data: unknown): NotificationRoute | null {
+export function resolveNotificationRoute(
+  data: unknown,
+): NotificationRoute | null {
   if (!data || typeof data !== "object") return null;
   const payload = data as Record<string, unknown>;
 

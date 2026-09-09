@@ -34,8 +34,18 @@ export default function ContractorHeader() {
       paddingBottom={8}
     >
       <YStack gap={1}>
-        <UIText style={{ fontFamily: "Geist_700Bold", fontSize: 19, lineHeight: 23, color: colors.textPrimary }}>
-          Profik <UIText style={{ color: colors.accent, fontFamily: "Geist_700Bold" }}>Pro</UIText>
+        <UIText
+          style={{
+            fontFamily: "Geist_700Bold",
+            fontSize: 19,
+            lineHeight: 23,
+            color: colors.textPrimary,
+          }}
+        >
+          Profik{" "}
+          <UIText style={{ color: colors.accent, fontFamily: "Geist_700Bold" }}>
+            Pro
+          </UIText>
         </UIText>
         <UIText variant="caption">{t("header.workspace")}</UIText>
       </YStack>

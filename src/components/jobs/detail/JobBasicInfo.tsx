@@ -28,7 +28,10 @@ export const JobBasicInfo = ({
 }: JobBasicInfoProps) => {
   const { t, i18n } = useTranslation();
   const date = useMemo(
-    () => formatSchedule(scheduledDates, dateLocale(i18n.language), t, { year: true }),
+    () =>
+      formatSchedule(scheduledDates, dateLocale(i18n.language), t, {
+        year: true,
+      }),
     [scheduledDates, i18n.language, t],
   );
 

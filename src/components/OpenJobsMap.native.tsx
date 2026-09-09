@@ -19,9 +19,9 @@ export default function OpenJobsMapNative() {
   const coords = useMemo(
     () =>
       jobs.filter(
-        (j) => typeof j.lat === "number" && typeof j.lng === "number"
+        (j) => typeof j.lat === "number" && typeof j.lng === "number",
       ),
-    [jobs]
+    [jobs],
   );
 
   const region = useMemo(() => {

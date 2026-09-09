@@ -73,7 +73,9 @@ export default function OnboardingScreen() {
   const handleIllustrationLayout = useCallback((event: LayoutChangeEvent) => {
     const { width: w, height: h } = event.nativeEvent.layout;
     setIllustration((current) =>
-      current.width === w && current.height === h ? current : { width: w, height: h },
+      current.width === w && current.height === h
+        ? current
+        : { width: w, height: h },
     );
   }, []);
 
@@ -115,7 +117,8 @@ export default function OnboardingScreen() {
       >
         {ONBOARDING_STEPS.map((step, stepIndex) => {
           const Mock = step.Mock;
-          const copy = (key: string) => t(`onboarding.steps.${step.i18nKey}.${key}`);
+          const copy = (key: string) =>
+            t(`onboarding.steps.${step.i18nKey}.${key}`);
           return (
             <YStack key={step.key} width={width}>
               <YStack paddingHorizontal={H_PADDING} paddingTop={26} gap={12}>
@@ -160,7 +163,9 @@ export default function OnboardingScreen() {
                 alignItems="center"
                 justifyContent="center"
                 paddingHorizontal={H_PADDING}
-                onLayout={stepIndex === 0 ? handleIllustrationLayout : undefined}
+                onLayout={
+                  stepIndex === 0 ? handleIllustrationLayout : undefined
+                }
               >
                 <OnboardingBackdrop
                   blobs={step.blobs}
@@ -183,7 +188,11 @@ export default function OnboardingScreen() {
         paddingTop={8}
         paddingBottom={Math.max(insets.bottom, 16) + 8}
       >
-        <Button variant="primary" onPress={handlePress} accessibilityLabel={ctaLabel}>
+        <Button
+          variant="primary"
+          onPress={handlePress}
+          accessibilityLabel={ctaLabel}
+        >
           {ctaLabel}
         </Button>
       </YStack>

@@ -16,7 +16,11 @@ discover by reading the whole file.
  * Reuses `useEditProfileForm`, so this writes to the same `PATCH /users/me`
  * as the Edit Profile screen and the name shows up there afterwards.
  */
-export function NamePromptSheet({ open, onOpenChange, onSaved }: NamePromptSheetProps);
+export function NamePromptSheet({
+  open,
+  onOpenChange,
+  onSaved,
+}: NamePromptSheetProps);
 ```
 
 Good doc blocks record:
@@ -189,7 +193,7 @@ English and get no keys, since nobody outside the team sees them (see the
 - **A `<Sheet modal={false}>`'s content stays mounted while closed.**
   Tamagui's `unmountChildrenWhenHidden` only takes effect for `modal` Sheets —
   it is a silent no-op on `modal={false}` ones, which this app uses
-  deliberately (a modal Sheet portals to the app root, which sits *underneath*
+  deliberately (a modal Sheet portals to the app root, which sits _underneath_
   a native fullScreenModal on iOS). An `autoFocus` input inside a non-modal
   Sheet therefore grabs the keyboard as soon as the screen that renders the
   sheet mounts, not when the sheet opens. Drive focus from the `open` prop with

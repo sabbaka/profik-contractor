@@ -81,7 +81,13 @@ export const JobDetail = () => {
 
   if (isLoading) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
+      <YStack
+        flex={1}
+        alignItems="center"
+        justifyContent="center"
+        padding="$4"
+        backgroundColor={colors.bgSecondary}
+      >
         <Spinner size="large" color={colors.accent} />
         <Text marginTop="$3" fontSize={16} color={colors.textSecondary}>
           {t("job.loading")}
@@ -92,8 +98,19 @@ export const JobDetail = () => {
 
   if (error) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
-        <Text fontSize={18} fontWeight="700" color={colors.textPrimary} marginBottom="$3">
+      <YStack
+        flex={1}
+        alignItems="center"
+        justifyContent="center"
+        padding="$4"
+        backgroundColor={colors.bgSecondary}
+      >
+        <Text
+          fontSize={18}
+          fontWeight="700"
+          color={colors.textPrimary}
+          marginBottom="$3"
+        >
           {t("job.failedLoad")}
         </Text>
         <Button
@@ -111,8 +128,16 @@ export const JobDetail = () => {
 
   if (!job) {
     return (
-      <YStack flex={1} alignItems="center" justifyContent="center" padding="$4" backgroundColor={colors.bgSecondary}>
-        <Text fontSize={16} color={colors.textSecondary}>{t("job.notFound")}</Text>
+      <YStack
+        flex={1}
+        alignItems="center"
+        justifyContent="center"
+        padding="$4"
+        backgroundColor={colors.bgSecondary}
+      >
+        <Text fontSize={16} color={colors.textSecondary}>
+          {t("job.notFound")}
+        </Text>
       </YStack>
     );
   }
@@ -138,7 +163,13 @@ export const JobDetail = () => {
 
         <KeyboardAwareScreen>
           <YStack gap={12} paddingHorizontal={20} paddingBottom={40}>
-            {job.roomsCount || job.area != null || job.windowCleaning || job.windowCount != null || job.vacuumCleaner || job.cleaningSupplies || job.ladder ? (
+            {job.roomsCount ||
+            job.area != null ||
+            job.windowCleaning ||
+            job.windowCount != null ||
+            job.vacuumCleaner ||
+            job.cleaningSupplies ||
+            job.ladder ? (
               <>
                 <JobPropertySection
                   roomsCount={job.roomsCount}
@@ -166,9 +197,9 @@ export const JobDetail = () => {
               lng={job.lng}
             />
 
-            {isGuest && job.status !== "completed" && job.status !== "canceled" && (
-              <GuestOfferCta jobId={id} />
-            )}
+            {isGuest &&
+              job.status !== "completed" &&
+              job.status !== "canceled" && <GuestOfferCta jobId={id} />}
 
             {isOwnJob && (
               // Reachable by a direct link: the open-jobs feed already hides

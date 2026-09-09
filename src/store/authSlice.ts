@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { getToken, saveToken, deleteToken } from '../utils/tokenStorage';
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { getToken, saveToken, deleteToken } from "../utils/tokenStorage";
 
 interface AuthState {
   token: string | null;
@@ -11,13 +11,16 @@ const initialState: AuthState = {
   loading: true,
 };
 
-export const loadTokenFromStorage = createAsyncThunk('auth/loadToken', async () => {
-  const token = await getToken();
-  return token;
-});
+export const loadTokenFromStorage = createAsyncThunk(
+  "auth/loadToken",
+  async () => {
+    const token = await getToken();
+    return token;
+  },
+);
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setToken: (state, action: PayloadAction<string>) => {
@@ -37,7 +40,7 @@ const authSlice = createSlice({
     builder.addCase(loadTokenFromStorage.rejected, (state) => {
       state.loading = false;
     });
-  }
+  },
 });
 
 export const { setToken, logout } = authSlice.actions;

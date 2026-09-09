@@ -32,7 +32,11 @@ interface StepProgressProps {
  * unit of "activeness" between them, the widths add up to `trackWidth` at every
  * point of the animation and the bar never jitters.
  */
-export function StepProgress({ position, count, trackWidth }: StepProgressProps) {
+export function StepProgress({
+  position,
+  count,
+  trackWidth,
+}: StepProgressProps) {
   const inactiveWidth =
     (trackWidth - GAP * (count - 1) - ACTIVE_WIDTH) / (count - 1);
 

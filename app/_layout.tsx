@@ -1,46 +1,53 @@
-import { Redirect, Slot, useSegments } from 'expo-router';
+import { Redirect, Slot, useSegments } from "expo-router";
 import {
   Geist_400Regular,
   Geist_500Medium,
   Geist_600SemiBold,
   Geist_700Bold,
-} from '@expo-google-fonts/geist';
-import { GeistMono_500Medium, GeistMono_700Bold } from '@expo-google-fonts/geist-mono';
+} from "@expo-google-fonts/geist";
+import {
+  GeistMono_500Medium,
+  GeistMono_700Bold,
+} from "@expo-google-fonts/geist-mono";
 import {
   Inter_400Regular,
   Inter_500Medium,
   Inter_600SemiBold,
   Inter_700Bold,
-} from '@expo-google-fonts/inter';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import '../src/i18n';
-import 'react-native-reanimated';
+} from "@expo-google-fonts/inter";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import "../src/i18n";
+import "react-native-reanimated";
 
-import { ErrorBoundary } from '@/src/components/ui/ErrorBoundary';
-import { isGuestAccessibleRoute } from '@/src/features/auth/guestRoutes';
-import { usePushNotifications } from '@/src/hooks/usePushNotifications';
-import { ThemeProvider, useThemeColors, useThemeMode } from '@/src/theme';
+import { ErrorBoundary } from "@/src/components/ui/ErrorBoundary";
+import { isGuestAccessibleRoute } from "@/src/features/auth/guestRoutes";
+import { usePushNotifications } from "@/src/hooks/usePushNotifications";
+import { ThemeProvider, useThemeColors, useThemeMode } from "@/src/theme";
 import {
   getHasSeenOnboarding,
   subscribeToOnboardingState,
-} from '@/src/utils/onboardingStorage';
-import { setupGlobalErrorHandlers } from '@/src/utils/setupGlobalErrorHandlers';
-import { PortalProvider } from '@tamagui/portal';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { MD3DarkTheme, MD3LightTheme, Provider as PaperProvider } from 'react-native-paper';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider as ReduxProvider, useDispatch } from 'react-redux';
-import * as Sentry from '@sentry/react-native';
-import { TamaguiProvider, Theme } from 'tamagui';
-import { store } from '../src/store';
-import { loadTokenFromStorage } from '../src/store/authSlice';
-import { useAppSelector } from '../src/store/hooks';
-import tamaguiConfig from '../tamagui.config';
+} from "@/src/utils/onboardingStorage";
+import { setupGlobalErrorHandlers } from "@/src/utils/setupGlobalErrorHandlers";
+import { PortalProvider } from "@tamagui/portal";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import {
+  MD3DarkTheme,
+  MD3LightTheme,
+  Provider as PaperProvider,
+} from "react-native-paper";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider as ReduxProvider, useDispatch } from "react-redux";
+import * as Sentry from "@sentry/react-native";
+import { TamaguiProvider, Theme } from "tamagui";
+import { store } from "../src/store";
+import { loadTokenFromStorage } from "../src/store/authSlice";
+import { useAppSelector } from "../src/store/hooks";
+import tamaguiConfig from "../tamagui.config";
 
 // Crash reporting. Without EXPO_PUBLIC_SENTRY_DSN (e.g. local dev) this is a
 // no-op, so the app runs fine before the Sentry project exists.
@@ -61,7 +68,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 function PaperThemeProvider({ children }: { children: React.ReactNode }) {
   const colors = useThemeColors();
   const { mode } = useThemeMode();
-  const baseTheme = mode === 'dark' ? MD3DarkTheme : MD3LightTheme;
+  const baseTheme = mode === "dark" ? MD3DarkTheme : MD3LightTheme;
   const paperTheme = {
     ...baseTheme,
     colors: {
@@ -123,8 +130,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       <View
         style={{
           flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
+          alignItems: "center",
+          justifyContent: "center",
           backgroundColor: colors.bgPrimary,
         }}
       >
@@ -133,8 +140,8 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const isAuthRoute = segments[0] === 'auth';
-  const isOnboardingRoute = segments[0] === 'onboarding';
+  const isAuthRoute = segments[0] === "auth";
+  const isOnboardingRoute = segments[0] === "onboarding";
 
   if (!token && !isAuthRoute && !isOnboardingRoute) {
     if (!hasSeenOnboarding) {
@@ -164,7 +171,7 @@ function ThemedApp() {
                 <Slot />
               </AuthGate>
             </ErrorBoundary>
-            <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+            <StatusBar style={mode === "dark" ? "light" : "dark"} />
           </PortalProvider>
         </PaperThemeProvider>
       </Theme>

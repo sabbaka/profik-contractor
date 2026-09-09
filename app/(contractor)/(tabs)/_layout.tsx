@@ -29,10 +29,35 @@ export default function TabsLayout() {
           <TabBar
             activeKey={state.routes[state.index]?.name ?? "open"}
             items={[
-              { key: "open", label: t("tabs.openJobs"), icon: Search, onPress: () => router.replace("/(contractor)/(tabs)/open" as any) },
-              { key: "my-jobs", label: t("tabs.myJobs"), icon: Briefcase, onPress: () => router.replace("/(contractor)/(tabs)/my-jobs" as any) },
-              { key: "messages", label: t("tabs.messages"), icon: MessageCircle, badge: unread?.total, onPress: () => router.replace("/(contractor)/(tabs)/messages" as any) },
-              { key: "profile", label: t("tabs.profile"), icon: User, onPress: () => router.replace("/(contractor)/(tabs)/profile" as any) },
+              {
+                key: "open",
+                label: t("tabs.openJobs"),
+                icon: Search,
+                onPress: () =>
+                  router.replace("/(contractor)/(tabs)/open" as any),
+              },
+              {
+                key: "my-jobs",
+                label: t("tabs.myJobs"),
+                icon: Briefcase,
+                onPress: () =>
+                  router.replace("/(contractor)/(tabs)/my-jobs" as any),
+              },
+              {
+                key: "messages",
+                label: t("tabs.messages"),
+                icon: MessageCircle,
+                badge: unread?.total,
+                onPress: () =>
+                  router.replace("/(contractor)/(tabs)/messages" as any),
+              },
+              {
+                key: "profile",
+                label: t("tabs.profile"),
+                icon: User,
+                onPress: () =>
+                  router.replace("/(contractor)/(tabs)/profile" as any),
+              },
             ]}
           />
         )}

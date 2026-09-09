@@ -51,13 +51,7 @@ function MockCard({
   );
 }
 
-function NoteBox({
-  icon,
-  text,
-}: {
-  icon: React.ReactNode;
-  text: string;
-}) {
+function NoteBox({ icon, text }: { icon: React.ReactNode; text: string }) {
   const colors = useThemeColors();
   return (
     <XStack
@@ -108,11 +102,22 @@ export function FindWorkMock() {
             <Text
               flex={1}
               numberOfLines={1}
-              style={{ color: colors.textSecondary, fontFamily: "Inter_500Medium", fontSize: 11 }}
+              style={{
+                color: colors.textSecondary,
+                fontFamily: "Inter_500Medium",
+                fontSize: 11,
+              }}
             >
               {c("category")}
             </Text>
-            <Text style={{ color: colors.textPrimary, fontFamily: "GeistMono_700Bold", fontSize: 15, lineHeight: 19 }}>
+            <Text
+              style={{
+                color: colors.textPrimary,
+                fontFamily: "GeistMono_700Bold",
+                fontSize: 15,
+                lineHeight: 19,
+              }}
+            >
               {c("price")}
             </Text>
           </XStack>
@@ -128,7 +133,13 @@ export function FindWorkMock() {
           </Text>
           <XStack alignItems="center" gap={5}>
             <MapPin size={12} color={colors.textMuted} />
-            <Text style={{ color: colors.textMuted, fontFamily: "Inter_400Regular", fontSize: 11 }}>
+            <Text
+              style={{
+                color: colors.textMuted,
+                fontFamily: "Inter_400Regular",
+                fontSize: 11,
+              }}
+            >
               {c("meta")}
             </Text>
           </XStack>
@@ -139,12 +150,29 @@ export function FindWorkMock() {
 
       <XStack alignItems="center" justifyContent="space-between">
         <XStack alignItems="center" gap={6}>
-          <YStack width={6} height={6} borderRadius={9999} backgroundColor={colors.statusOpenText} />
-          <Text style={{ color: colors.statusOpenText, fontFamily: "Inter_600SemiBold", fontSize: 11 }}>
+          <YStack
+            width={6}
+            height={6}
+            borderRadius={9999}
+            backgroundColor={colors.statusOpenText}
+          />
+          <Text
+            style={{
+              color: colors.statusOpenText,
+              fontFamily: "Inter_600SemiBold",
+              fontSize: 11,
+            }}
+          >
             {c("status")}
           </Text>
         </XStack>
-        <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 11 }}>
+        <Text
+          style={{
+            color: colors.accent,
+            fontFamily: "Inter_600SemiBold",
+            fontSize: 11,
+          }}
+        >
           {c("badge")}
         </Text>
       </XStack>
@@ -159,7 +187,10 @@ export function PickJobsMock() {
   const c = (key: string) => t(`onboarding.steps.pick.card.${key}`);
 
   const metaRows: { icon: React.ReactNode; label: string }[] = [
-    { icon: <MapPin size={13} color={colors.textMuted} />, label: c("location") },
+    {
+      icon: <MapPin size={13} color={colors.textMuted} />,
+      label: c("location"),
+    },
     { icon: <Calendar size={13} color={colors.textMuted} />, label: c("date") },
     { icon: <Ruler size={13} color={colors.textMuted} />, label: c("details") },
   ];
@@ -188,7 +219,14 @@ export function PickJobsMock() {
           {c("title")}
         </Text>
         <XStack alignItems="center" gap={8}>
-          <Text style={{ color: colors.textPrimary, fontFamily: "GeistMono_700Bold", fontSize: 22, lineHeight: 28 }}>
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontFamily: "GeistMono_700Bold",
+              fontSize: 22,
+              lineHeight: 28,
+            }}
+          >
             {c("price")}
           </Text>
           <XStack
@@ -197,7 +235,13 @@ export function PickJobsMock() {
             borderRadius={9999}
             backgroundColor={colors.statusOpen}
           >
-            <Text style={{ color: colors.statusOpenText, fontFamily: "Inter_600SemiBold", fontSize: 10 }}>
+            <Text
+              style={{
+                color: colors.statusOpenText,
+                fontFamily: "Inter_600SemiBold",
+                fontSize: 10,
+              }}
+            >
               {c("budget")}
             </Text>
           </XStack>
@@ -211,7 +255,11 @@ export function PickJobsMock() {
             <Text
               flex={1}
               numberOfLines={1}
-              style={{ color: colors.textSecondary, fontFamily: "Inter_400Regular", fontSize: 11 }}
+              style={{
+                color: colors.textSecondary,
+                fontFamily: "Inter_400Regular",
+                fontSize: 11,
+              }}
             >
               {row.label}
             </Text>
@@ -220,14 +268,26 @@ export function PickJobsMock() {
       </YStack>
 
       <YStack gap={8}>
-        <YStack height={38} borderRadius={9999} overflow="hidden" alignItems="center" justifyContent="center">
+        <YStack
+          height={38}
+          borderRadius={9999}
+          overflow="hidden"
+          alignItems="center"
+          justifyContent="center"
+        >
           <LinearGradient
             colors={["#FF8A2B", "#E85D00"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}
           />
-          <Text style={{ color: "#FFFFFF", fontFamily: "Inter_600SemiBold", fontSize: 13 }}>
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontFamily: "Inter_600SemiBold",
+              fontSize: 13,
+            }}
+          >
             {c("accept")}
           </Text>
         </YStack>
@@ -239,7 +299,13 @@ export function PickJobsMock() {
           alignItems="center"
           justifyContent="center"
         >
-          <Text style={{ color: colors.textSecondary, fontFamily: "Inter_600SemiBold", fontSize: 13 }}>
+          <Text
+            style={{
+              color: colors.textSecondary,
+              fontFamily: "Inter_600SemiBold",
+              fontSize: 13,
+            }}
+          >
             {c("counter")}
           </Text>
         </YStack>
@@ -271,22 +337,45 @@ export function GetPaidMock() {
           justifyContent="center"
           backgroundColor={colors.accentLight}
         >
-          <Text style={{ color: colors.accent, fontFamily: "Inter_700Bold", fontSize: 12, lineHeight: 15, textAlign: "center" }}>
+          <Text
+            style={{
+              color: colors.accent,
+              fontFamily: "Inter_700Bold",
+              fontSize: 12,
+              lineHeight: 15,
+              textAlign: "center",
+            }}
+          >
             {c("name").charAt(0)}
           </Text>
         </YStack>
         <YStack flex={1}>
-          <Text style={{ color: colors.textPrimary, fontFamily: "Inter_600SemiBold", fontSize: 12 }}>
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontFamily: "Inter_600SemiBold",
+              fontSize: 12,
+            }}
+          >
             {c("name")}
           </Text>
-          <Text style={{ color: colors.success, fontFamily: "Inter_400Regular", fontSize: 10 }}>
+          <Text
+            style={{
+              color: colors.success,
+              fontFamily: "Inter_400Regular",
+              fontSize: 10,
+            }}
+          >
             {c("status")}
           </Text>
         </YStack>
       </XStack>
 
       {bubbles.map((bubble, index) => (
-        <XStack key={index} justifyContent={bubble.mine ? "flex-end" : "flex-start"}>
+        <XStack
+          key={index}
+          justifyContent={bubble.mine ? "flex-end" : "flex-start"}
+        >
           <YStack
             maxWidth={bubble.width}
             borderRadius={14}
@@ -317,7 +406,10 @@ export function GetPaidMock() {
         </XStack>
       ))}
 
-      <NoteBox icon={<Wallet size={14} color={colors.accent} />} text={c("note")} />
+      <NoteBox
+        icon={<Wallet size={14} color={colors.accent} />}
+        text={c("note")}
+      />
     </MockCard>
   );
 }
@@ -338,10 +430,22 @@ export function CreditsMock() {
     <MockCard>
       <XStack alignItems="center" justifyContent="space-between">
         <YStack gap={2}>
-          <Text style={{ color: colors.textPrimary, fontFamily: "Inter_700Bold", fontSize: 13 }}>
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontFamily: "Inter_700Bold",
+              fontSize: 13,
+            }}
+          >
             {c("title")}
           </Text>
-          <Text style={{ color: colors.textMuted, fontFamily: "Inter_400Regular", fontSize: 10 }}>
+          <Text
+            style={{
+              color: colors.textMuted,
+              fontFamily: "Inter_400Regular",
+              fontSize: 10,
+            }}
+          >
             {c("subtitle")}
           </Text>
         </YStack>
@@ -356,7 +460,14 @@ export function CreditsMock() {
           >
             {c("amount")}
           </Text>
-          <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 11, lineHeight: 18 }}>
+          <Text
+            style={{
+              color: colors.accent,
+              fontFamily: "Inter_600SemiBold",
+              fontSize: 11,
+              lineHeight: 18,
+            }}
+          >
             {c("unit")}
           </Text>
         </XStack>
@@ -378,17 +489,30 @@ export function CreditsMock() {
           </YStack>
           <Text
             flex={1}
-            style={{ color: colors.textSecondary, fontFamily: "Inter_400Regular", fontSize: 11 }}
+            style={{
+              color: colors.textSecondary,
+              fontFamily: "Inter_400Regular",
+              fontSize: 11,
+            }}
           >
             {row.label}
           </Text>
-          <Text style={{ color: colors.textPrimary, fontFamily: "Inter_700Bold", fontSize: 11 }}>
+          <Text
+            style={{
+              color: colors.textPrimary,
+              fontFamily: "Inter_700Bold",
+              fontSize: 11,
+            }}
+          >
             {row.value}
           </Text>
         </XStack>
       ))}
 
-      <NoteBox icon={<Gift size={14} color={colors.accent} />} text={c("note")} />
+      <NoteBox
+        icon={<Gift size={14} color={colors.accent} />}
+        text={c("note")}
+      />
     </MockCard>
   );
 }

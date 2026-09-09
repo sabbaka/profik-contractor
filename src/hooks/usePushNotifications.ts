@@ -13,8 +13,7 @@ import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 
 const PROJECT_ID =
-  Constants.expoConfig?.extra?.eas?.projectId ??
-  Constants.easConfig?.projectId;
+  Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
 
 // Show notifications in foreground
 Notifications.setNotificationHandler({

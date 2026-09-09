@@ -199,7 +199,12 @@ export function MessagesScreen() {
           <Text variant="bodySm" textAlign="center">
             {t("messages.errorBody")}
           </Text>
-          <Button variant="secondary" size="md" fullWidth={false} onPress={refetch}>
+          <Button
+            variant="secondary"
+            size="md"
+            fullWidth={false}
+            onPress={refetch}
+          >
             {t("common.retry")}
           </Button>
         </YStack>
@@ -231,7 +236,9 @@ export function MessagesScreen() {
               onPress={() => router.replace("/(contractor)/(tabs)/open" as any)}
             />
           }
-          ListFooterComponent={isFetchingNextPage ? <ListFooterSpinner /> : null}
+          ListFooterComponent={
+            isFetchingNextPage ? <ListFooterSpinner /> : null
+          }
           renderItem={({ item, index }) => (
             <YStack
               backgroundColor={colors.bgCard}

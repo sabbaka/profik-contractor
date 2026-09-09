@@ -21,14 +21,10 @@ export function useUploadAvatar(): UseUploadAvatarReturn {
   const pickAndUpload = async (): Promise<
     AuthResult & { cancelled?: boolean }
   > => {
-    const permission =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permission.granted) {
-      Alert.alert(
-        t("profile.permissionTitle"),
-        t("profile.permissionBody"),
-      );
+      Alert.alert(t("profile.permissionTitle"), t("profile.permissionBody"));
       return { success: false, error: "Permission denied" };
     }
 

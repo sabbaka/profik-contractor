@@ -11,13 +11,17 @@ export async function getStoredAppearance(): Promise<AppearancePreference | null
       Platform.OS === "web"
         ? localStorage.getItem(APPEARANCE_KEY)
         : await AsyncStorage.getItem(APPEARANCE_KEY);
-    return value === "system" || value === "light" || value === "dark" ? value : null;
+    return value === "system" || value === "light" || value === "dark"
+      ? value
+      : null;
   } catch {
     return null;
   }
 }
 
-export async function setStoredAppearance(preference: AppearancePreference): Promise<void> {
+export async function setStoredAppearance(
+  preference: AppearancePreference,
+): Promise<void> {
   if (Platform.OS === "web") {
     localStorage.setItem(APPEARANCE_KEY, preference);
     return;

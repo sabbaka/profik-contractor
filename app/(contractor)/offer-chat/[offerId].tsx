@@ -9,11 +9,23 @@ import { useThemeColors } from "@/src/theme";
 import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
 import { formatCzk } from "@/src/utils/currency";
 import type { JobStatus, OfferStatus } from "@/src/api/types";
-import { BriefcaseBusiness, ChevronLeft, ChevronRight, MessageCircle, Send } from "@tamagui/lucide-icons";
+import {
+  BriefcaseBusiness,
+  ChevronLeft,
+  ChevronRight,
+  MessageCircle,
+  Send,
+} from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { logError } from "@/src/utils/logger";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -39,14 +51,15 @@ export default function OfferChatRoute() {
   const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
   // Job context travels in the route params — see `buildOfferChatRoute`. A
   // deep link carries only `offerId`, so every field below is optional.
-  const { offerId, jobId, jobTitle, offerPrice, offerStatus, jobStatus } = useLocalSearchParams<{
-    offerId: string;
-    jobId?: string;
-    jobTitle?: string;
-    offerPrice?: string;
-    offerStatus?: OfferStatus;
-    jobStatus?: JobStatus;
-  }>();
+  const { offerId, jobId, jobTitle, offerPrice, offerStatus, jobStatus } =
+    useLocalSearchParams<{
+      offerId: string;
+      jobId?: string;
+      jobTitle?: string;
+      offerPrice?: string;
+      offerStatus?: OfferStatus;
+      jobStatus?: JobStatus;
+    }>();
   const { data: me } = useMeQuery();
   const {
     data: messages,
@@ -143,7 +156,15 @@ export default function OfferChatRoute() {
 
       {jobTitle ? (
         <Pressable
-          onPress={jobId ? () => router.push({ pathname: "/(contractor)/jobs/[id]", params: { id: jobId } }) : undefined}
+          onPress={
+            jobId
+              ? () =>
+                  router.push({
+                    pathname: "/(contractor)/jobs/[id]",
+                    params: { id: jobId },
+                  })
+              : undefined
+          }
           disabled={!jobId}
           accessibilityRole="button"
           accessibilityLabel={t("chat.openJob")}
@@ -158,19 +179,51 @@ export default function OfferChatRoute() {
             borderBottomWidth={1}
             borderBottomColor={colors.borderSubtle}
           >
-            <YStack width={34} height={34} borderRadius={10} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
+            <YStack
+              width={34}
+              height={34}
+              borderRadius={10}
+              backgroundColor={colors.accentLight}
+              alignItems="center"
+              justifyContent="center"
+            >
               <BriefcaseBusiness size={16} color={colors.accent} />
             </YStack>
             <YStack flex={1} gap={3}>
-              <Text numberOfLines={1} style={{ color: colors.textPrimary, fontFamily: "Inter_600SemiBold", fontSize: 13, lineHeight: 17 }}>{jobTitle}</Text>
+              <Text
+                numberOfLines={1}
+                style={{
+                  color: colors.textPrimary,
+                  fontFamily: "Inter_600SemiBold",
+                  fontSize: 13,
+                  lineHeight: 17,
+                }}
+              >
+                {jobTitle}
+              </Text>
               {offerPrice || offerStatus ? (
                 <XStack alignItems="center" gap={6}>
                   {offerPrice ? (
-                    <Text style={{ color: colors.accent, fontFamily: "GeistMono_700Bold", fontSize: 11, lineHeight: 15 }}>
-                      {t("chat.yourOffer", { price: formatCzk(Number(offerPrice)) })}
+                    <Text
+                      style={{
+                        color: colors.accent,
+                        fontFamily: "GeistMono_700Bold",
+                        fontSize: 11,
+                        lineHeight: 15,
+                      }}
+                    >
+                      {t("chat.yourOffer", {
+                        price: formatCzk(Number(offerPrice)),
+                      })}
                     </Text>
                   ) : null}
-                  {offerStatus ? <OfferStatusPill status={offerStatus} jobStatus={jobStatus} size="sm" /> : null}
+                  {offerStatus ? (
+                    <OfferStatusPill
+                      status={offerStatus}
+                      jobStatus={jobStatus}
+                      size="sm"
+                    />
+                  ) : null}
                 </XStack>
               ) : null}
             </YStack>

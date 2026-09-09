@@ -45,10 +45,18 @@ export function ConversationRow({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={t("messages.openChatA11y", { name, title: job.title })}
+      accessibilityLabel={t("messages.openChatA11y", {
+        name,
+        title: job.title,
+      })}
       style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
     >
-      <XStack paddingVertical={14} paddingHorizontal={16} gap={12} alignItems="center">
+      <XStack
+        paddingVertical={14}
+        paddingHorizontal={16}
+        gap={12}
+        alignItems="center"
+      >
         {avatarUrl ? (
           <Image
             source={{ uri: avatarUrl }}

@@ -20,7 +20,10 @@ interface RatingStarsProps {
  * switches to "your rating" and tapping edits it, because the endpoint
  * upserts. Shown next to `JobReviewCard`, which is the opposite direction.
  */
-export function RatingStars({ currentRating = 0, onStarPress }: RatingStarsProps) {
+export function RatingStars({
+  currentRating = 0,
+  onStarPress,
+}: RatingStarsProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const hasRated = currentRating > 0;
@@ -65,7 +68,10 @@ export function RatingStars({ currentRating = 0, onStarPress }: RatingStarsProps
         })}
       </XStack>
 
-      <Text variant="caption" style={{ color: colors.textMuted, textAlign: "center" }}>
+      <Text
+        variant="caption"
+        style={{ color: colors.textMuted, textAlign: "center" }}
+      >
         {hasRated ? t("review.tapToEdit") : t("review.tapToRate")}
       </Text>
     </Card>

@@ -1,7 +1,4 @@
-import {
-  useDeleteAccountMutation,
-  useMeQuery,
-} from "@/src/api/profikApi";
+import { useDeleteAccountMutation, useMeQuery } from "@/src/api/profikApi";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
@@ -37,7 +34,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Linking, Pressable, ScrollView, StyleSheet } from "react-native";
+import {
+  Alert,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
@@ -118,7 +121,7 @@ export default function ProfileRoute() {
   const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccountMutation();
   const { preference, setPreference } = useThemeMode();
   const [language, setLanguage] = useState<AppLanguage>(
-    toAppLanguage(i18n.language) ?? "en"
+    toAppLanguage(i18n.language) ?? "en",
   );
 
   useEffect(() => {
@@ -141,9 +144,18 @@ export default function ProfileRoute() {
 
   const handleAppearancePress = () => {
     Alert.alert(t("profile.appearance.title"), undefined, [
-      { text: t("profile.appearance.system"), onPress: () => setPreference("system") },
-      { text: t("profile.appearance.light"), onPress: () => setPreference("light") },
-      { text: t("profile.appearance.dark"), onPress: () => setPreference("dark") },
+      {
+        text: t("profile.appearance.system"),
+        onPress: () => setPreference("system"),
+      },
+      {
+        text: t("profile.appearance.light"),
+        onPress: () => setPreference("light"),
+      },
+      {
+        text: t("profile.appearance.dark"),
+        onPress: () => setPreference("dark"),
+      },
       { text: t("common.cancel"), style: "cancel" },
     ]);
   };
@@ -170,12 +182,12 @@ export default function ProfileRoute() {
       Alert.alert(
         t("profile.deleteSuccessTitle"),
         t("profile.deleteSuccessMessage"),
-        [{ text: t("common.ok"), onPress: logout }]
+        [{ text: t("common.ok"), onPress: logout }],
       );
     } catch (error) {
       Alert.alert(
         t("common.error"),
-        extractErrorMessage(error, t) || t("profile.deleteFailed")
+        extractErrorMessage(error, t) || t("profile.deleteFailed"),
       );
     }
   };
@@ -186,20 +198,16 @@ export default function ProfileRoute() {
   };
 
   const confirmDelete = () => {
-    Alert.alert(
-      t("profile.deleteTitle"),
-      t("profile.deleteDescription"),
-      [
-        { text: t("profile.deleteCancel"), style: "cancel" },
-        {
-          text: t("profile.deleteConfirm"),
-          style: "destructive",
-          onPress: () => {
-            void handleDeleteConfirmed();
-          },
+    Alert.alert(t("profile.deleteTitle"), t("profile.deleteDescription"), [
+      { text: t("profile.deleteCancel"), style: "cancel" },
+      {
+        text: t("profile.deleteConfirm"),
+        style: "destructive",
+        onPress: () => {
+          void handleDeleteConfirmed();
         },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
@@ -247,7 +255,10 @@ export default function ProfileRoute() {
               </Text>
             </YStack>
             <YStack gap={8} width="100%" maxWidth={280}>
-              <Button variant="primary" onPress={() => router.push("/auth/login" as any)}>
+              <Button
+                variant="primary"
+                onPress={() => router.push("/auth/login" as any)}
+              >
                 {t("auth.continueWithPhone")}
               </Button>
             </YStack>
@@ -314,7 +325,10 @@ export default function ProfileRoute() {
                 gap={6}
               >
                 <Edit3 size={14} color={colors.textSecondary} />
-                <Text variant="caption" style={{ fontFamily: "Inter_500Medium" }}>
+                <Text
+                  variant="caption"
+                  style={{ fontFamily: "Inter_500Medium" }}
+                >
                   {t("profile.editProfile")}
                 </Text>
               </XStack>
@@ -333,59 +347,59 @@ export default function ProfileRoute() {
       >
         {/* Balance */}
         {!isGuest && (
-        <Pressable
-          onPress={() => router.push("/(contractor)/balance" as any)}
-          style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
-        >
-          <YStack borderRadius={20} overflow="hidden" padding={18} gap={5}>
-            <LinearGradient
-              colors={["#FF8A2B", "#E85D00"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <XStack
-              position="relative"
-              zIndex={1}
-              alignItems="center"
-              justifyContent="space-between"
-            >
+          <Pressable
+            onPress={() => router.push("/(contractor)/balance" as any)}
+            style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
+          >
+            <YStack borderRadius={20} overflow="hidden" padding={18} gap={5}>
+              <LinearGradient
+                colors={["#FF8A2B", "#E85D00"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <XStack
+                position="relative"
+                zIndex={1}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Text
+                  style={{
+                    color: "rgba(255,255,255,0.82)",
+                    fontFamily: "Inter_500Medium",
+                    fontSize: 13,
+                  }}
+                >
+                  {t("profile.balance.available")}
+                </Text>
+                <WalletCards size={20} color="#FFFFFF" />
+              </XStack>
               <Text
+                position="relative"
+                zIndex={1}
                 style={{
-                  color: "rgba(255,255,255,0.82)",
-                  fontFamily: "Inter_500Medium",
-                  fontSize: 13,
+                  color: "#FFFFFF",
+                  fontFamily: "GeistMono_700Bold",
+                  fontSize: 25,
+                  lineHeight: 31,
                 }}
               >
-                {t("profile.balance.available")}
+                {formatCzk(user?.balance ?? 0)}
               </Text>
-              <WalletCards size={20} color="#FFFFFF" />
-            </XStack>
-            <Text
-              position="relative"
-              zIndex={1}
-              style={{
-                color: "#FFFFFF",
-                fontFamily: "GeistMono_700Bold",
-                fontSize: 25,
-                lineHeight: 31,
-              }}
-            >
-              {formatCzk(user?.balance ?? 0)}
-            </Text>
-            <Text
-              position="relative"
-              zIndex={1}
-              style={{
-                color: "rgba(255,255,255,0.84)",
-                fontFamily: "Inter_400Regular",
-                fontSize: 12,
-              }}
-            >
-              {t("profile.balance.tapToAddFunds")}
-            </Text>
-          </YStack>
-        </Pressable>
+              <Text
+                position="relative"
+                zIndex={1}
+                style={{
+                  color: "rgba(255,255,255,0.84)",
+                  fontFamily: "Inter_400Regular",
+                  fontSize: 12,
+                }}
+              >
+                {t("profile.balance.tapToAddFunds")}
+              </Text>
+            </YStack>
+          </Pressable>
         )}
 
         {/* Settings */}
@@ -480,70 +494,70 @@ export default function ProfileRoute() {
 
         {/* Logout */}
         {!isGuest && (
-        <Pressable
-          onPress={logout}
-          style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-        >
-          <XStack
-            height={52}
-            borderRadius={16}
-            alignItems="center"
-            justifyContent="center"
-            gap={8}
-            backgroundColor={colors.bgCard}
-            borderWidth={1}
-            borderColor={colors.dangerBg}
+          <Pressable
+            onPress={logout}
+            style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
           >
-            <LogOut size={18} color={colors.error} />
-            <Text
-              style={{
-                color: colors.error,
-                fontSize: 15,
-                fontFamily: "Inter_600SemiBold",
-              }}
+            <XStack
+              height={52}
+              borderRadius={16}
+              alignItems="center"
+              justifyContent="center"
+              gap={8}
+              backgroundColor={colors.bgCard}
+              borderWidth={1}
+              borderColor={colors.dangerBg}
             >
-              {t("profile.logout")}
-            </Text>
-          </XStack>
-        </Pressable>
-        )}
-
-        {!isGuest && (
-        <Pressable
-          onPress={confirmDelete}
-          disabled={isDeleting}
-          style={({ pressed }) => ({
-            opacity: pressed || isDeleting ? 0.85 : 1,
-          })}
-        >
-          <YStack
-            paddingVertical={16}
-            paddingHorizontal={18}
-            borderRadius={16}
-            gap={6}
-            backgroundColor={colors.bgCard}
-            borderWidth={1}
-            borderColor={colors.dangerBg}
-          >
-            <XStack alignItems="center" gap={10}>
-              <Trash2 size={18} color={colors.dangerStrong} />
+              <LogOut size={18} color={colors.error} />
               <Text
                 style={{
-                  color: colors.dangerStrong,
+                  color: colors.error,
                   fontSize: 15,
                   fontFamily: "Inter_600SemiBold",
                 }}
               >
-                {isDeleting
-                  ? t("profile.deletingAccount")
-                  : t("profile.deleteAccount")}
+                {t("profile.logout")}
               </Text>
             </XStack>
-            <Text variant="caption" style={{ color: colors.textMuted }}>
-              {t("profile.deleteHelp")}
-            </Text>
-          </YStack>
-        </Pressable>
+          </Pressable>
+        )}
+
+        {!isGuest && (
+          <Pressable
+            onPress={confirmDelete}
+            disabled={isDeleting}
+            style={({ pressed }) => ({
+              opacity: pressed || isDeleting ? 0.85 : 1,
+            })}
+          >
+            <YStack
+              paddingVertical={16}
+              paddingHorizontal={18}
+              borderRadius={16}
+              gap={6}
+              backgroundColor={colors.bgCard}
+              borderWidth={1}
+              borderColor={colors.dangerBg}
+            >
+              <XStack alignItems="center" gap={10}>
+                <Trash2 size={18} color={colors.dangerStrong} />
+                <Text
+                  style={{
+                    color: colors.dangerStrong,
+                    fontSize: 15,
+                    fontFamily: "Inter_600SemiBold",
+                  }}
+                >
+                  {isDeleting
+                    ? t("profile.deletingAccount")
+                    : t("profile.deleteAccount")}
+                </Text>
+              </XStack>
+              <Text variant="caption" style={{ color: colors.textMuted }}>
+                {t("profile.deleteHelp")}
+              </Text>
+            </YStack>
+          </Pressable>
         )}
 
         <Text
@@ -551,7 +565,9 @@ export default function ProfileRoute() {
           textAlign="center"
           style={{ color: colors.textMuted }}
         >
-          {t("profile.version", { version: Constants.expoConfig?.version ?? "—" })}
+          {t("profile.version", {
+            version: Constants.expoConfig?.version ?? "—",
+          })}
         </Text>
       </ScrollView>
     </YStack>

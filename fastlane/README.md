@@ -16,10 +16,10 @@ After you create the demo contractor account below and run `fastlane push_metada
 
 Fill the remaining demo account TODOs (`grep -R TODO fastlane/`):
 
-| File | What goes there |
-|---|---|
-| `fastlane/metadata/review_information/demo_user.txt` | Demo **contractor** account phone number (the app uses phone + password login) |
-| `fastlane/metadata/review_information/demo_password.txt` | Demo account password |
+| File                                                     | What goes there                                                                |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `fastlane/metadata/review_information/demo_user.txt`     | Demo **contractor** account phone number (the app uses phone + password login) |
+| `fastlane/metadata/review_information/demo_password.txt` | Demo account password                                                          |
 
 Apple **will reject the app** if you don't provide a working demo account — the review team has to be able to sign in. The demo account must be a real **contractor** account in the production database, with at least one open job visible nearby and one active offer chat, so reviewers can walk the browse → offer → chat flow described in `review_information/notes.txt`.
 
@@ -55,6 +55,7 @@ Fastlane reads the key from three environment variables: `ASC_KEY_ID`, `ASC_ISSU
 5. Click **Download API Key**. Apple lets you download the `.p8` file only once — save it somewhere safe (and out of this repo).
 
 Suggested location:
+
 ```bash
 mkdir -p ~/.appstoreconnect/private_keys
 mv ~/Downloads/AuthKey_*.p8 ~/.appstoreconnect/private_keys/

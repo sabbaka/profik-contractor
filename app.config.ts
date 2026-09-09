@@ -1,25 +1,27 @@
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
+const GOOGLE_MAPS_API_KEY =
+  process.env.GOOGLE_MAPS_API_KEY ||
+  process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 const PHOTO_LIBRARY_PERMISSION =
-  'Profik Contractor uses your photo library so you can choose an existing photo to upload as your profile avatar. For example, when you tap Change avatar on your Profile screen, you can pick a picture from your library.';
+  "Profik Contractor uses your photo library so you can choose an existing photo to upload as your profile avatar. For example, when you tap Change avatar on your Profile screen, you can pick a picture from your library.";
 const LOCATION_WHEN_IN_USE_PERMISSION =
-  'Profik Contractor uses your location while you are using the app to show open cleaning jobs near you on the map and how far each job is from your current position. For example, on the Open Jobs map you can see your own location relative to the jobs you can send offers for.';
+  "Profik Contractor uses your location while you are using the app to show open cleaning jobs near you on the map and how far each job is from your current position. For example, on the Open Jobs map you can see your own location relative to the jobs you can send offers for.";
 
 // One number for the whole release. It lives in package.json rather than here
 // because npm ci fails when package.json and the lockfile disagree — so
 // package.json has to be right regardless. Let it be the source, then.
-const { version } = require('./package.json') as { version: string };
+const { version } = require("./package.json") as { version: string };
 
 const config = {
-  name: 'profik-contractor',
-  slug: 'profik-contractor',
+  name: "profik-contractor",
+  slug: "profik-contractor",
   version,
-  orientation: 'portrait',
-  icon: './assets/images/icon.png',
-  scheme: 'profikcontractor',
-  userInterfaceStyle: 'automatic',
+  orientation: "portrait",
+  icon: "./assets/images/icon.png",
+  scheme: "profikcontractor",
+  userInterfaceStyle: "automatic",
   newArchEnabled: true,
   ios: {
-    bundleIdentifier: 'com.profik.contractor',
+    bundleIdentifier: "com.profik.contractor",
     supportsTablet: false,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
@@ -28,12 +30,12 @@ const config = {
     },
   },
   android: {
-    package: 'com.profik.contractor',
+    package: "com.profik.contractor",
     adaptiveIcon: {
-      backgroundColor: '#E85D00',
-      foregroundImage: './assets/images/android-icon-foreground.png',
-      backgroundImage: './assets/images/android-icon-background.png',
-      monochromeImage: './assets/images/android-icon-monochrome.png',
+      backgroundColor: "#E85D00",
+      foregroundImage: "./assets/images/android-icon-foreground.png",
+      backgroundImage: "./assets/images/android-icon-background.png",
+      monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
     config: {
       googleMaps: {
@@ -44,29 +46,29 @@ const config = {
     predictiveBackGestureEnabled: false,
   },
   web: {
-    output: 'static',
-    favicon: './assets/images/favicon.png',
+    output: "static",
+    favicon: "./assets/images/favicon.png",
   },
   plugins: [
-    'expo-router',
+    "expo-router",
     [
-      'expo-splash-screen',
+      "expo-splash-screen",
       {
-        image: './assets/images/splash-icon.png',
+        image: "./assets/images/splash-icon.png",
         imageWidth: 200,
-        resizeMode: 'contain',
-        backgroundColor: '#EE6C00',
-        dark: { backgroundColor: '#EE6C00' },
+        resizeMode: "contain",
+        backgroundColor: "#EE6C00",
+        dark: { backgroundColor: "#EE6C00" },
       },
     ],
-    'expo-font',
-    'expo-web-browser',
-    'expo-secure-store',
-    'expo-image',
-    'expo-localization',
-    'expo-status-bar',
+    "expo-font",
+    "expo-web-browser",
+    "expo-secure-store",
+    "expo-image",
+    "expo-localization",
+    "expo-status-bar",
     [
-      'expo-image-picker',
+      "expo-image-picker",
       {
         photosPermission: PHOTO_LIBRARY_PERMISSION,
         cameraPermission: false,
@@ -74,7 +76,7 @@ const config = {
       },
     ],
     [
-      'expo-location',
+      "expo-location",
       {
         locationAlwaysAndWhenInUsePermission: false,
         locationAlwaysPermission: false,
@@ -82,20 +84,20 @@ const config = {
       },
     ],
     [
-      'expo-notifications',
+      "expo-notifications",
       {
-        icon: './assets/images/icon.png',
-        color: '#ffffff',
+        icon: "./assets/images/icon.png",
+        color: "#ffffff",
         iosDisplayInForeground: true,
       },
     ],
     [
-      '@sentry/react-native/expo',
+      "@sentry/react-native/expo",
       {
         // Must match the org/project slugs created at sentry.io. Sourcemap
         // upload only runs on builds where SENTRY_AUTH_TOKEN is set.
-        organization: 'profik',
-        project: 'profik-contractor',
+        organization: "profik",
+        project: "profik-contractor",
       },
     ],
   ],
@@ -112,10 +114,10 @@ const config = {
   extra: {
     router: {},
     eas: {
-      projectId: '40e934e5-f375-4c9d-a65d-de5f48d4ae49',
+      projectId: "40e934e5-f375-4c9d-a65d-de5f48d4ae49",
     },
   },
-  owner: 'sabbaka',
+  owner: "sabbaka",
 };
 
 export default config;

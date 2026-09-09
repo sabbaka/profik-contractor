@@ -88,17 +88,17 @@ see `src/components/MapPreview.tsx` and its `.native` / `.web` siblings.
 
 ## Where does this go?
 
-| You are adding                              | It goes in                                              |
-| ------------------------------------------- | ----------------------------------------------------- |
-| A screen                                    | `src/components/<domain>/`, with a thin route in `app/` |
-| A reusable visual primitive                 | `src/components/ui/`                                    |
-| A zod/RHF schema + submit handler           | `src/features/<domain>/hooks/`, or the screen's own `hooks/` for jobs |
-| A pure formatter (dates, prices, addresses) | `src/utils/` (e.g. `currency.ts`) or the feature's `utils.ts` |
-| An endpoint                                 | `src/api/profikApi.ts` — see `api.md`                   |
-| A type mirroring a backend DTO              | `src/api/types.ts` for jobs/offers; `src/features/<domain>/types.ts` for auth/balance |
+| You are adding                              | It goes in                                                                                                             |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| A screen                                    | `src/components/<domain>/`, with a thin route in `app/`                                                                |
+| A reusable visual primitive                 | `src/components/ui/`                                                                                                   |
+| A zod/RHF schema + submit handler           | `src/features/<domain>/hooks/`, or the screen's own `hooks/` for jobs                                                  |
+| A pure formatter (dates, prices, addresses) | `src/utils/` (e.g. `currency.ts`) or the feature's `utils.ts`                                                          |
+| An endpoint                                 | `src/api/profikApi.ts` — see `api.md`                                                                                  |
+| A type mirroring a backend DTO              | `src/api/types.ts` for jobs/offers; `src/features/<domain>/types.ts` for auth/balance                                  |
 | A persisted flag                            | `src/utils/*Storage.ts`, one module per concern (`onboardingStorage.ts`, `appearanceStorage.ts`, `languageStorage.ts`) |
-| A user-facing string                        | `src/i18n/locales/{en,cs}.json`                         |
-| A colour                                    | `tamagui.config.ts` tokens, both themes                 |
+| A user-facing string                        | `src/i18n/locales/{en,cs}.json`                                                                                        |
+| A colour                                    | `tamagui.config.ts` tokens, both themes                                                                                |
 
 ## Imports
 

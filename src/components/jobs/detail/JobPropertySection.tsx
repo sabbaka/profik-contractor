@@ -81,7 +81,11 @@ export function JobPropertySection({
         <Text variant="h5">{t("job.property.title")}</Text>
       </XStack>
       <XStack gap={10}>
-        <Tile Icon={Bed} value={roomsCount ?? "—"} label={t("job.property.rooms")} />
+        <Tile
+          Icon={Bed}
+          value={roomsCount ?? "—"}
+          label={t("job.property.rooms")}
+        />
         {windowCleaning === "yes" ? (
           <Tile
             Icon={AppWindow}

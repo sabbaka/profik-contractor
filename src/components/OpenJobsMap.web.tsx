@@ -10,11 +10,7 @@ export default function OpenJobsMapWeb() {
   const colors = useThemeColors();
   // See the note in OpenJobsMap.native.tsx: these are the loaded pages, not
   // every open job.
-  const {
-    data,
-    error,
-    refetch,
-  } = useGetOpenJobsInfiniteQuery(undefined, {
+  const { data, error, refetch } = useGetOpenJobsInfiniteQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     refetchOnFocus: true,
@@ -23,9 +19,27 @@ export default function OpenJobsMapWeb() {
 
   if (error) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 16, backgroundColor: colors.bgPrimary }}>
-        <Text style={{ marginBottom: 8, color: colors.textPrimary }}>{t("map.openJobsFailed")}</Text>
-        <TouchableOpacity onPress={refetch as any} style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 6, backgroundColor: colors.bgCard }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 16,
+          backgroundColor: colors.bgPrimary,
+        }}
+      >
+        <Text style={{ marginBottom: 8, color: colors.textPrimary }}>
+          {t("map.openJobsFailed")}
+        </Text>
+        <TouchableOpacity
+          onPress={refetch as any}
+          style={{
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            borderRadius: 6,
+            backgroundColor: colors.bgCard,
+          }}
+        >
           <Text style={{ color: colors.textPrimary }}>{t("common.retry")}</Text>
         </TouchableOpacity>
       </View>
@@ -34,11 +48,20 @@ export default function OpenJobsMapWeb() {
 
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: colors.bgPrimary }}>
-      <Text style={{ marginBottom: 8, color: colors.textSecondary }}>{t("map.previewUnavailableWebSentence")}</Text>
+      <Text style={{ marginBottom: 8, color: colors.textSecondary }}>
+        {t("map.previewUnavailableWebSentence")}
+      </Text>
       {jobs.map((j: any) => (
         <TouchableOpacity
           key={j.id}
-          style={{ padding: 12, borderRadius: 8, marginBottom: 10, borderWidth: 1, backgroundColor: colors.bgCard, borderColor: colors.border }}
+          style={{
+            padding: 12,
+            borderRadius: 8,
+            marginBottom: 10,
+            borderWidth: 1,
+            backgroundColor: colors.bgCard,
+            borderColor: colors.border,
+          }}
           onPress={() =>
             router.push({
               pathname: "/(contractor)/jobs/[id]",
@@ -46,11 +69,15 @@ export default function OpenJobsMapWeb() {
             })
           }
         >
-          <Text style={{ fontWeight: "600", color: colors.textPrimary }}>{j.title}</Text>
+          <Text style={{ fontWeight: "600", color: colors.textPrimary }}>
+            {j.title}
+          </Text>
           <Text style={{ marginBottom: 4, color: colors.textSecondary }}>
             {j.category}
           </Text>
-          <Text style={{ color: colors.textSecondary }} numberOfLines={2}>{j.description}</Text>
+          <Text style={{ color: colors.textSecondary }} numberOfLines={2}>
+            {j.description}
+          </Text>
         </TouchableOpacity>
       ))}
     </View>

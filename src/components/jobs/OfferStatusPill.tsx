@@ -43,16 +43,40 @@ export function OfferStatusPill({
 
   const config =
     jobStatus === "canceled"
-      ? { bg: colors.statusCancelled, text: colors.statusCancelledText, label: t("job.status.canceled") }
+      ? {
+          bg: colors.statusCancelled,
+          text: colors.statusCancelledText,
+          label: t("job.status.canceled"),
+        }
       : status === "declined"
-        ? { bg: colors.statusCancelled, text: colors.statusCancelledText, label: t("job.status.declined") }
+        ? {
+            bg: colors.statusCancelled,
+            text: colors.statusCancelledText,
+            label: t("job.status.declined"),
+          }
         : status === "accepted" && jobStatus === "in_progress"
-          ? { bg: colors.statusOpen, text: colors.statusOpenText, label: t("job.status.in_progress") }
+          ? {
+              bg: colors.statusOpen,
+              text: colors.statusOpenText,
+              label: t("job.status.in_progress"),
+            }
           : status === "accepted" && jobStatus === "completed"
-            ? { bg: colors.statusCompleted, text: colors.statusCompletedText, label: t("job.status.completed") }
+            ? {
+                bg: colors.statusCompleted,
+                text: colors.statusCompletedText,
+                label: t("job.status.completed"),
+              }
             : status === "accepted"
-              ? { bg: colors.statusCompleted, text: colors.statusCompletedText, label: t("job.status.accepted") }
-              : { bg: colors.statusPending, text: colors.statusPendingText, label: t("job.status.pending") };
+              ? {
+                  bg: colors.statusCompleted,
+                  text: colors.statusCompletedText,
+                  label: t("job.status.accepted"),
+                }
+              : {
+                  bg: colors.statusPending,
+                  text: colors.statusPendingText,
+                  label: t("job.status.pending"),
+                };
 
   const small = size === "sm";
 

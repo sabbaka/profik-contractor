@@ -10,4 +10,3 @@ export interface TopupResponse {
 export type TopupResult =
   | { success: true; balanceUpdated: boolean; newBalance?: number }
   | { success: false; error: string };
-

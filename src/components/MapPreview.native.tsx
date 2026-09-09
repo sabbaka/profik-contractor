@@ -1,7 +1,14 @@
 import { useThemeColors } from "@/src/theme";
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Linking, Platform, Pressable, StyleSheet, View, Text } from "react-native";
+import {
+  Linking,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+  Text,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 interface MapPreviewProps {
@@ -96,7 +103,10 @@ export default function MapPreview({
         pointerEvents="none"
       >
         <Marker
-          coordinate={{ latitude: region.latitude, longitude: region.longitude }}
+          coordinate={{
+            latitude: region.latitude,
+            longitude: region.longitude,
+          }}
         />
       </MapView>
     </Pressable>

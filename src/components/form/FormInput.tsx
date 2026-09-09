@@ -12,57 +12,60 @@ interface FormInputProps extends InputProps {
   flex?: number;
 }
 
-export const FormInput = forwardRef<any, FormInputProps>(({
-  name,
-  control,
-  label,
-  error,
-  flex = 1,
-  ...props
-}, ref) => {
-  const colors = useThemeColors();
+export const FormInput = forwardRef<any, FormInputProps>(
+  ({ name, control, label, error, flex = 1, ...props }, ref) => {
+    const colors = useThemeColors();
 
-  return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field: { onChange, onBlur, value }, fieldState }) => {
-        const displayError = error ?? fieldState.error?.message;
+    return (
+      <Controller
+        control={control}
+        name={name}
+        render={({ field: { onChange, onBlur, value }, fieldState }) => {
+          const displayError = error ?? fieldState.error?.message;
 
-        return (
-          <YStack gap="$2" flex={flex}>
-          {label && (
-            <Label fontSize="$3" color={colors.textSecondary}>
-              {label}
-            </Label>
-          )}
-          <Input
-            ref={ref}
-            {...props}
-            value={value == null ? "" : String(value)}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            borderWidth={displayError ? 1 : 0}
-            borderColor={displayError ? colors.error : colors.border}
-            backgroundColor={colors.surfaceInput}
-            color={colors.textPrimary}
-            placeholderTextColor={colors.textMuted}
-            focusStyle={{ borderColor: displayError ? colors.error : colors.border, borderWidth: 1 }}
-            paddingHorizontal={16}
-            height={52}
-            borderRadius={12}
-            fontSize={15}
-            fontFamily="Inter_400Regular"
-          />
-          {displayError ? (
-            <Text color={colors.error} fontSize={12} fontFamily="Inter_500Medium" marginLeft="$1">
-              {displayError}
-            </Text>
-          ) : null}
-          </YStack>
-        );
-      }}
-    />
-  );
-});
+          return (
+            <YStack gap="$2" flex={flex}>
+              {label && (
+                <Label fontSize="$3" color={colors.textSecondary}>
+                  {label}
+                </Label>
+              )}
+              <Input
+                ref={ref}
+                {...props}
+                value={value == null ? "" : String(value)}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                borderWidth={displayError ? 1 : 0}
+                borderColor={displayError ? colors.error : colors.border}
+                backgroundColor={colors.surfaceInput}
+                color={colors.textPrimary}
+                placeholderTextColor={colors.textMuted}
+                focusStyle={{
+                  borderColor: displayError ? colors.error : colors.border,
+                  borderWidth: 1,
+                }}
+                paddingHorizontal={16}
+                height={52}
+                borderRadius={12}
+                fontSize={15}
+                fontFamily="Inter_400Regular"
+              />
+              {displayError ? (
+                <Text
+                  color={colors.error}
+                  fontSize={12}
+                  fontFamily="Inter_500Medium"
+                  marginLeft="$1"
+                >
+                  {displayError}
+                </Text>
+              ) : null}
+            </YStack>
+          );
+        }}
+      />
+    );
+  },
+);
 FormInput.displayName = "FormInput";

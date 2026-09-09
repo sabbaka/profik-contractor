@@ -284,7 +284,9 @@ export const profikApi = createApi({
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       },
       query: ({ queryArg, pageParam }) => {
-        const params = new URLSearchParams({ limit: String(CONVERSATIONS_PAGE_SIZE) });
+        const params = new URLSearchParams({
+          limit: String(CONVERSATIONS_PAGE_SIZE),
+        });
         if (queryArg.bucket) params.set("bucket", queryArg.bucket);
         if (pageParam) params.set("cursor", pageParam);
         return {

@@ -26,21 +26,33 @@ export default function PrivacyPolicyScreen() {
 
   return (
     <YStack flex={1} backgroundColor={colors.bgPrimary} paddingTop={insets.top}>
-      <XStack height={48} paddingHorizontal={16} alignItems="center" justifyContent="space-between">
+      <XStack
+        height={48}
+        paddingHorizontal={16}
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <XStack alignItems="center" gap={2}>
             <ChevronLeft size={25} color={colors.textPrimary} />
-            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t("common.back")}</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>
+              {t("common.back")}
+            </Text>
           </XStack>
         </Pressable>
         <Text variant="h5">{t("privacy.title")}</Text>
         <XStack width={58} />
       </XStack>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: insets.bottom + 24, gap: 20 }}>
-        <Text variant="body">
-          {t("privacy.intro")}
-        </Text>
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 16,
+          paddingBottom: insets.bottom + 24,
+          gap: 20,
+        }}
+      >
+        <Text variant="body">{t("privacy.intro")}</Text>
 
         <Section
           title={t("privacy.dataCollectedTitle")}
@@ -66,7 +78,10 @@ export default function PrivacyPolicyScreen() {
           title={t("privacy.retentionTitle")}
           body={t("privacy.retention")}
         />
-        <Section title={t("privacy.contactTitle")} body={t("privacy.contact", { email: SUPPORT_EMAIL })} />
+        <Section
+          title={t("privacy.contactTitle")}
+          body={t("privacy.contact", { email: SUPPORT_EMAIL })}
+        />
       </ScrollView>
     </YStack>
   );

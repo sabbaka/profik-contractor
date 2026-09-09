@@ -69,16 +69,13 @@ export const useJobOffer = ({
   const hasOffered = !!(offerStatus?.hasOffered || lastOffer || myOffer);
 
   const myOfferPrice = (lastOffer?.price ?? (myOffer as any)?.price) as
-    | number
-    | undefined;
+    number | undefined;
 
   const myOfferMessage = (lastOffer?.message ?? (myOffer as any)?.message) as
-    | string
-    | undefined;
+    string | undefined;
 
-  const myOfferStatus = (lastOffer ? 'pending' : (myOffer as any)?.status) as
-    | 'pending' | 'accepted' | 'declined'
-    | undefined;
+  const myOfferStatus = (lastOffer ? "pending" : (myOffer as any)?.status) as
+    "pending" | "accepted" | "declined" | undefined;
 
   const setMode = useCallback(
     (next: OfferMode) => {

@@ -4,7 +4,12 @@ import { useEditProfileForm } from "@/src/features/auth/hooks/useEditProfileForm
 import { useThemeColors } from "@/src/theme";
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Keyboard, TextInput, TouchableWithoutFeedback } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Sheet, YStack } from "tamagui";
 
 interface NamePromptSheetProps {

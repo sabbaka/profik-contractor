@@ -25,7 +25,11 @@ function StatusPill({ label, tone }: StatusPillProps) {
 
   const palette: Record<
     PillTone,
-    { bg: string; fg: string; Icon: React.ComponentType<{ size?: number; color?: string }> }
+    {
+      bg: string;
+      fg: string;
+      Icon: React.ComponentType<{ size?: number; color?: string }>;
+    }
   > = {
     positive: { bg: colors.greenSoftBg, fg: colors.greenStrong, Icon: Check },
     negative: { bg: colors.bgSecondary, fg: colors.textMuted, Icon: X },
@@ -44,7 +48,9 @@ function StatusPill({ label, tone }: StatusPillProps) {
       gap={4}
     >
       <Icon size={12} color={fg} />
-      <Text style={{ color: fg, fontSize: 12, fontFamily: "Inter_600SemiBold" }}>
+      <Text
+        style={{ color: fg, fontSize: 12, fontFamily: "Inter_600SemiBold" }}
+      >
         {label}
       </Text>
     </XStack>
@@ -93,16 +99,23 @@ export function JobProvidedSection({
   const hasAny = !!vacuumCleaner || !!cleaningSupplies || !!ladder;
   if (!hasAny) return null;
 
-  const provisionToPill = (value?: EquipmentProvision | null): StatusPillProps => {
-    if (value === "have") return { label: t("job.provided.onSite"), tone: "positive" };
-    if (value === "bring") return { label: t("job.provided.notIncluded"), tone: "negative" };
+  const provisionToPill = (
+    value?: EquipmentProvision | null,
+  ): StatusPillProps => {
+    if (value === "have")
+      return { label: t("job.provided.onSite"), tone: "positive" };
+    if (value === "bring")
+      return { label: t("job.provided.notIncluded"), tone: "negative" };
     return { label: "—", tone: "neutral" };
   };
 
   const ladderToPill = (value?: LadderOption | null): StatusPillProps => {
-    if (value === "available") return { label: t("job.provided.onSite"), tone: "positive" };
-    if (value === "needed") return { label: t("job.provided.notIncluded"), tone: "negative" };
-    if (value === "noneeded") return { label: t("job.provided.notNeeded"), tone: "neutral" };
+    if (value === "available")
+      return { label: t("job.provided.onSite"), tone: "positive" };
+    if (value === "needed")
+      return { label: t("job.provided.notIncluded"), tone: "negative" };
+    if (value === "noneeded")
+      return { label: t("job.provided.notNeeded"), tone: "neutral" };
     return { label: "—", tone: "neutral" };
   };
 
@@ -113,7 +126,11 @@ export function JobProvidedSection({
         <Text variant="h5">{t("job.provided.title")}</Text>
       </XStack>
       <YStack>
-        <Row Icon={Wind} label={t("job.provided.vacuum")} pill={provisionToPill(vacuumCleaner)} />
+        <Row
+          Icon={Wind}
+          label={t("job.provided.vacuum")}
+          pill={provisionToPill(vacuumCleaner)}
+        />
         <Row
           Icon={SprayCan}
           label={t("job.provided.supplies")}

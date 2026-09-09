@@ -1,9 +1,5 @@
 import type { ComponentType } from "react";
-import type {
-  BlobSpec,
-  RingSpec,
-  SparkleSpec,
-} from "./OnboardingBackdrop";
+import type { BlobSpec, RingSpec, SparkleSpec } from "./OnboardingBackdrop";
 import {
   CreditsMock,
   FindWorkMock,
@@ -34,7 +30,14 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     blobs: [
       { x: -56, y: 30, width: 236, height: 220, tone: "mid", opacity: 0.75 },
       { x: 126, y: 10, width: 214, height: 196, tone: "soft" },
-      { x: 204, y: 210, width: 168, height: 168, tone: "strong", opacity: 0.35 },
+      {
+        x: 204,
+        y: 210,
+        width: 168,
+        height: 168,
+        tone: "strong",
+        opacity: 0.35,
+      },
     ],
     ring: { x: -34, y: 250, size: 130 },
     sparkles: [

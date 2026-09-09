@@ -19,22 +19,59 @@ export default function AboutScreen() {
 
   return (
     <YStack flex={1} backgroundColor={colors.bgPrimary} paddingTop={insets.top}>
-      <XStack height={48} paddingHorizontal={16} alignItems="center" justifyContent="space-between">
+      <XStack
+        height={48}
+        paddingHorizontal={16}
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <XStack alignItems="center" gap={2}>
             <ChevronLeft size={25} color={colors.textPrimary} />
-            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>{t("common.back")}</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 16 }}>
+              {t("common.back")}
+            </Text>
           </XStack>
         </Pressable>
         <Text variant="h5">{t("about.title")}</Text>
         <XStack width={58} />
       </XStack>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: insets.bottom + 24 }}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 16,
+          paddingBottom: insets.bottom + 24,
+        }}
+      >
         <YStack alignItems="center" gap={12} paddingVertical={12}>
-          <YStack width={72} height={72} borderRadius={9999} overflow="hidden" alignItems="center" justifyContent="center">
-            <LinearGradient colors={["#FF8A2B", "#E85D00"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-            <Text position="relative" zIndex={1} style={{ color: "#FFFFFF", fontFamily: "Geist_700Bold", fontSize: 28, lineHeight: 34, textAlign: "center" }}>P</Text>
+          <YStack
+            width={72}
+            height={72}
+            borderRadius={9999}
+            overflow="hidden"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <LinearGradient
+              colors={["#FF8A2B", "#E85D00"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Text
+              position="relative"
+              zIndex={1}
+              style={{
+                color: "#FFFFFF",
+                fontFamily: "Geist_700Bold",
+                fontSize: 28,
+                lineHeight: 34,
+                textAlign: "center",
+              }}
+            >
+              P
+            </Text>
           </YStack>
           <Text variant="h3">Profik Pro</Text>
           <Text variant="body" textAlign="center">
@@ -43,9 +80,7 @@ export default function AboutScreen() {
         </YStack>
 
         <YStack paddingTop={12}>
-          <Text variant="body">
-            {t("about.description")}
-          </Text>
+          <Text variant="body">{t("about.description")}</Text>
         </YStack>
 
         <YStack alignItems="center" gap={4} paddingTop={32}>

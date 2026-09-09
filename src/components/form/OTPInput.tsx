@@ -36,7 +36,9 @@ export const OTPInput = ({
     if (cleaned.length === length) Keyboard.dismiss();
   };
 
-  const handlePress = () => { inputRef.current?.focus(); };
+  const handlePress = () => {
+    inputRef.current?.focus();
+  };
   const digits = value.split("");
 
   return (
@@ -57,12 +59,19 @@ export const OTPInput = ({
               alignItems="center"
               justifyContent="center"
               borderWidth={2}
-              borderColor={error ? colors.error : isFocused ? colors.accent : "transparent"}
+              borderColor={
+                error ? colors.error : isFocused ? colors.accent : "transparent"
+              }
               animation="quick"
               pressStyle={{ scale: 0.98 }}
               onPress={handlePress}
             >
-              <Text fontSize={28} fontWeight="700" color={colors.textPrimary} textAlign="center">
+              <Text
+                fontSize={28}
+                fontWeight="700"
+                color={colors.textPrimary}
+                textAlign="center"
+              >
                 {digit}
               </Text>
               {isFocused && !digit && (

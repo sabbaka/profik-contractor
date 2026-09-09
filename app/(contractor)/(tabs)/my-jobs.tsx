@@ -10,7 +10,13 @@ import { useManualRefresh } from "@/src/hooks/useManualRefresh";
 import { useThemeColors } from "@/src/theme";
 import { FolderOpen, Lock } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, RefreshControl, ScrollView } from "react-native";
 import { Spinner, YStack } from "tamagui";
@@ -47,12 +53,15 @@ export default function MyJobsTab() {
     fetchNextPage,
     error,
     refetch,
-  } = useGetOfferedJobsInfiniteQuery({ filter }, {
-    skip: isGuest,
-    refetchOnMountOrArgChange: true,
-    refetchOnReconnect: true,
-    refetchOnFocus: true,
-  });
+  } = useGetOfferedJobsInfiniteQuery(
+    { filter },
+    {
+      skip: isGuest,
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    },
+  );
 
   useEffect(() => {
     if (previousFilter.current !== filter) {
@@ -86,18 +95,44 @@ export default function MyJobsTab() {
   if (isGuest) {
     return (
       <YStack flex={1} backgroundColor={colors.bgSecondary}>
-        <YStack paddingHorizontal={20} paddingTop={12} paddingBottom={16} gap={3}>
+        <YStack
+          paddingHorizontal={20}
+          paddingTop={12}
+          paddingBottom={16}
+          gap={3}
+        >
           <Text variant="h1">{t("my.title")}</Text>
           <Text variant="bodySm">{t("my.subtitle")}</Text>
         </YStack>
-        <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingHorizontal={28} paddingBottom={80}>
-          <YStack width={80} height={80} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
+        <YStack
+          flex={1}
+          alignItems="center"
+          justifyContent="center"
+          gap={12}
+          paddingHorizontal={28}
+          paddingBottom={80}
+        >
+          <YStack
+            width={80}
+            height={80}
+            borderRadius={9999}
+            backgroundColor={colors.accentLight}
+            alignItems="center"
+            justifyContent="center"
+          >
             <Lock size={32} color={colors.accent} />
           </YStack>
           <Text variant="h4">{t("guest.myJobsTitle")}</Text>
-          <Text variant="bodySm" textAlign="center" maxWidth={270}>{t("guest.myJobsBody")}</Text>
+          <Text variant="bodySm" textAlign="center" maxWidth={270}>
+            {t("guest.myJobsBody")}
+          </Text>
           <YStack gap={8} width="100%" maxWidth={280} marginTop={8}>
-            <Button variant="primary" onPress={() => router.push("/auth/login" as any)}>{t("auth.continueWithPhone")}</Button>
+            <Button
+              variant="primary"
+              onPress={() => router.push("/auth/login" as any)}
+            >
+              {t("auth.continueWithPhone")}
+            </Button>
           </YStack>
         </YStack>
       </YStack>
@@ -123,9 +158,34 @@ export default function MyJobsTab() {
           {FILTERS.map((item) => {
             const active = item.key === filter;
             return (
-              <Pressable key={item.key} onPress={() => setFilter(item.key)} accessibilityRole="button" accessibilityState={{ selected: active }} style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
-                <YStack height={34} paddingHorizontal={16} borderRadius={9999} alignItems="center" justifyContent="center" backgroundColor={active ? colors.accent : colors.bgPrimary} borderWidth={active ? 0 : 1} borderColor={colors.borderSubtle}>
-                  <Text style={{ color: active ? "#FFFFFF" : colors.textSecondary, fontFamily: active ? "Inter_600SemiBold" : "Inter_500Medium", fontSize: 13 }}>{t(item.labelKey)}</Text>
+              <Pressable
+                key={item.key}
+                onPress={() => setFilter(item.key)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}
+              >
+                <YStack
+                  height={34}
+                  paddingHorizontal={16}
+                  borderRadius={9999}
+                  alignItems="center"
+                  justifyContent="center"
+                  backgroundColor={active ? colors.accent : colors.bgPrimary}
+                  borderWidth={active ? 0 : 1}
+                  borderColor={colors.borderSubtle}
+                >
+                  <Text
+                    style={{
+                      color: active ? "#FFFFFF" : colors.textSecondary,
+                      fontFamily: active
+                        ? "Inter_600SemiBold"
+                        : "Inter_500Medium",
+                      fontSize: 13,
+                    }}
+                  >
+                    {t(item.labelKey)}
+                  </Text>
                 </YStack>
               </Pressable>
             );
@@ -136,36 +196,86 @@ export default function MyJobsTab() {
       {loading ? (
         <YStack flex={1} alignItems="center" justifyContent="center" gap={12}>
           <Spinner color={colors.accent} />
-          <Text variant="bodySm">{t("my.loading", { label: currentLabel })}</Text>
+          <Text variant="bodySm">
+            {t("my.loading", { label: currentLabel })}
+          </Text>
         </YStack>
       ) : error ? (
-        <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingHorizontal={28}>
+        <YStack
+          flex={1}
+          alignItems="center"
+          justifyContent="center"
+          gap={12}
+          paddingHorizontal={28}
+        >
           <Text variant="h4">{t("my.errorTitle")}</Text>
-          <Button variant="secondary" size="md" fullWidth={false} onPress={refetch}>{t("common.retry")}</Button>
+          <Button
+            variant="secondary"
+            size="md"
+            fullWidth={false}
+            onPress={refetch}
+          >
+            {t("common.retry")}
+          </Button>
         </YStack>
       ) : (
         <FlatList
           data={jobs}
           keyExtractor={(item: any) => item.job.id}
-          contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 118, flexGrow: jobs.length ? undefined : 1 }}
-          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} tintColor={colors.accent} />}
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 4,
+            paddingBottom: 118,
+            flexGrow: jobs.length ? undefined : 1,
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+              tintColor={colors.accent}
+            />
+          }
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.4}
-          ListFooterComponent={isFetchingNextPage ? <ListFooterSpinner /> : null}
+          ListFooterComponent={
+            isFetchingNextPage ? <ListFooterSpinner /> : null
+          }
           ListEmptyComponent={
-            <YStack flex={1} alignItems="center" justifyContent="center" gap={12} paddingBottom={80}>
-              <YStack width={80} height={80} borderRadius={9999} backgroundColor={colors.accentLight} alignItems="center" justifyContent="center">
+            <YStack
+              flex={1}
+              alignItems="center"
+              justifyContent="center"
+              gap={12}
+              paddingBottom={80}
+            >
+              <YStack
+                width={80}
+                height={80}
+                borderRadius={9999}
+                backgroundColor={colors.accentLight}
+                alignItems="center"
+                justifyContent="center"
+              >
                 <FolderOpen size={32} color={colors.accent} />
               </YStack>
-              <Text variant="h4">{t("my.emptyTitle", { label: currentLabel })}</Text>
-              <Text variant="bodySm" textAlign="center" maxWidth={270}>{t("my.emptyBody")}</Text>
+              <Text variant="h4">
+                {t("my.emptyTitle", { label: currentLabel })}
+              </Text>
+              <Text variant="bodySm" textAlign="center" maxWidth={270}>
+                {t("my.emptyBody")}
+              </Text>
             </YStack>
           }
           renderItem={({ item }: { item: any }) => (
             <ContractorJobCard
               job={item.job}
               myOffer={item.myOffer}
-              onPress={() => router.push({ pathname: "/(contractor)/jobs/[id]", params: { id: item.job.id } })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(contractor)/jobs/[id]",
+                  params: { id: item.job.id },
+                })
+              }
               onMessage={
                 item.myOffer?.id
                   ? () =>

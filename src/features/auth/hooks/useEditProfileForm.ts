@@ -40,7 +40,9 @@ export function useEditProfileForm(
       form.handleSubmit(
         async (data) => {
           try {
-            const payload: { name?: string; email?: string } = { name: data.name };
+            const payload: { name?: string; email?: string } = {
+              name: data.name,
+            };
             if (data.email) payload.email = data.email;
             await updateProfile(payload).unwrap();
             resolve({ success: true });
@@ -48,7 +50,8 @@ export function useEditProfileForm(
             resolve({ success: false, error: extractErrorMessage(err, t) });
           }
         },
-        () => resolve({ success: false, error: t("auth.errors.validationFailed") }),
+        () =>
+          resolve({ success: false, error: t("auth.errors.validationFailed") }),
       )();
     });
 

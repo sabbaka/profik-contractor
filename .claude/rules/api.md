@@ -58,7 +58,7 @@ Mirror the spec honestly:
   "the backend has nothing here," just for different reasons — the JSON shape
   is the same `null`. Getting this wrong compiles fine and breaks at
   `job.roomsCount.length` on a job that doesn't have one.
-- A field only *some endpoints* return at all (present in one response DTO,
+- A field only _some endpoints_ return at all (present in one response DTO,
   absent from another) is genuinely optional (`?:`) — see `MyOffer.message`'s
   sibling in `openapi.json` if in doubt about which is which for a given field.
 - Do not widen a type to `any` to make an error go away.

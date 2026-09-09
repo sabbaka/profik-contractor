@@ -1,10 +1,10 @@
-import { setupListeners } from '@reduxjs/toolkit/query';
-import { AppState, type AppStateStatus } from 'react-native';
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { AppState, type AppStateStatus } from "react-native";
 
 type CustomHandler = NonNullable<Parameters<typeof setupListeners>[1]>;
 
 const isBackgrounded = (state: AppStateStatus) =>
-  state === 'inactive' || state === 'background';
+  state === "inactive" || state === "background";
 
 /**
  * RTK Query's built-in listener binds `window.addEventListener`, which does not
@@ -22,10 +22,10 @@ export const nativeRtkListeners: CustomHandler = (
 ) => {
   let previous = AppState.currentState;
 
-  const subscription = AppState.addEventListener('change', (next) => {
-    if (isBackgrounded(previous) && next === 'active') {
+  const subscription = AppState.addEventListener("change", (next) => {
+    if (isBackgrounded(previous) && next === "active") {
       dispatch(onFocus());
-    } else if (previous === 'active' && isBackgrounded(next)) {
+    } else if (previous === "active" && isBackgrounded(next)) {
       dispatch(onFocusLost());
     }
     previous = next;

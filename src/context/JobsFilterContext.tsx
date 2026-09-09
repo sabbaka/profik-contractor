@@ -1,5 +1,5 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
-import type { OfferedJobsFilter } from '../api/types';
+import React, { createContext, ReactNode, useContext, useState } from "react";
+import type { OfferedJobsFilter } from "../api/types";
 
 export type JobsFilterType = OfferedJobsFilter;
 
@@ -8,10 +8,12 @@ interface JobsFilterContextType {
   setFilter: (filter: JobsFilterType) => void;
 }
 
-const JobsFilterContext = createContext<JobsFilterContextType | undefined>(undefined);
+const JobsFilterContext = createContext<JobsFilterContextType | undefined>(
+  undefined,
+);
 
 export function JobsFilterProvider({ children }: { children: ReactNode }) {
-  const [filter, setFilter] = useState<JobsFilterType>('pending');
+  const [filter, setFilter] = useState<JobsFilterType>("pending");
 
   return (
     <JobsFilterContext.Provider value={{ filter, setFilter }}>
@@ -23,8 +25,7 @@ export function JobsFilterProvider({ children }: { children: ReactNode }) {
 export function useJobsFilter() {
   const context = useContext(JobsFilterContext);
   if (!context) {
-    throw new Error('useJobsFilter must be used within a JobsFilterProvider');
+    throw new Error("useJobsFilter must be used within a JobsFilterProvider");
   }
   return context;
 }
-

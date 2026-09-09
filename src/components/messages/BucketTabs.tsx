@@ -29,7 +29,11 @@ interface BucketTabsProps {
  * Underlined text tabs rather than the app's usual filter pills: four pills
  * with their padding need about 430pt and the screen has 350.
  */
-export function BucketTabs({ value, onChange, unreadByBucket }: BucketTabsProps) {
+export function BucketTabs({
+  value,
+  onChange,
+  unreadByBucket,
+}: BucketTabsProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
 
@@ -52,7 +56,9 @@ export function BucketTabs({ value, onChange, unreadByBucket }: BucketTabsProps)
                 <Text
                   style={{
                     color: active ? colors.textPrimary : colors.textMuted,
-                    fontFamily: active ? "Inter_600SemiBold" : "Inter_500Medium",
+                    fontFamily: active
+                      ? "Inter_600SemiBold"
+                      : "Inter_500Medium",
                     fontSize: 15,
                     lineHeight: 20,
                   }}
@@ -68,7 +74,12 @@ export function BucketTabs({ value, onChange, unreadByBucket }: BucketTabsProps)
                   />
                 ) : null}
               </XStack>
-              <YStack height={3} width="100%" borderRadius={9999} overflow="hidden">
+              <YStack
+                height={3}
+                width="100%"
+                borderRadius={9999}
+                overflow="hidden"
+              >
                 {active ? (
                   <LinearGradient
                     colors={["#FF8A2B", "#E85D00"]}
