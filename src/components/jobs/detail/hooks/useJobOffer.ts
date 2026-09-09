@@ -16,10 +16,17 @@ type OfferMode = "idle" | "counter";
 interface UseJobOfferOptions {
   jobId: string;
   jobPrice: number;
+  /** Owner of the job, so the screen can tell it apart from work to bid on. */
+  clientId?: string | null;
   onSuccess?: () => void;
 }
 
-export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) => {
+export const useJobOffer = ({
+  jobId,
+  jobPrice,
+  clientId,
+  onSuccess,
+}: UseJobOfferOptions) => {
   const { t } = useTranslation();
   const isGuest = useIsGuest();
   const { data: me } = useMeQuery(undefined, { skip: isGuest });
@@ -36,6 +43,12 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
   const [lastOfferId, setLastOfferId] = useState<string | null>(null);
 
   const isContractor = me?.role === "contractor";
+  // One phone is one account, so the person browsing here may also be the
+  // client who posted this job. The backend refuses an offer on your own job
+  // and the open-jobs feed hides it, but a direct link still lands here —
+  // without this the screen would offer a button that can only fail.
+  const isOwnJob = !!me && !!clientId && clientId === me.id;
+  const canOffer = isContractor && !isOwnJob;
   // Sending an offer is paid for out of the balance, so the screen has to know
   // before the button is pressed — the backend answers a short balance with a
   // 403 that reads like any other failure.
@@ -43,11 +56,11 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
   const canAffordOffer = balance >= OFFER_COST_CZK;
 
   const { data: offerStatus } = useHasOfferedQuery(jobId, {
-    skip: !me || !isContractor,
+    skip: !me || !canOffer,
   });
 
   const { data: myOffer } = useGetMyOfferForJobQuery(jobId, {
-    skip: !me || !isContractor || !offerStatus?.hasOffered,
+    skip: !me || !canOffer || !offerStatus?.hasOffered,
     refetchOnMountOrArgChange: true,
   });
 
@@ -82,7 +95,7 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
   );
 
   const sendOfferAtClientPrice = useCallback(async () => {
-    if (!isContractor) {
+    if (!canOffer) {
       Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return;
     }
@@ -104,10 +117,10 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
       const msg = err?.data?.message || t("offer.failedSubmit");
       Alert.alert(t("common.error"), msg);
     }
-  }, [isContractor, jobId, jobPrice, createOffer, onSuccess, t]);
+  }, [canOffer, jobId, jobPrice, createOffer, onSuccess, t]);
 
   const sendOffer = useCallback(async () => {
-    if (!isContractor) {
+    if (!canOffer) {
       Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return;
     }
@@ -149,13 +162,13 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
       const msg = err?.data?.message || t("offer.failedSubmit");
       Alert.alert(t("common.error"), msg);
     }
-  }, [isContractor, price, message, mode, jobId, createOffer, onSuccess, t]);
+  }, [canOffer, price, message, mode, jobId, createOffer, onSuccess, t]);
 
   // Everything the contractor can get wrong is checked here, before the name
   // sheet can appear — being asked for your name and only then told the price
   // is missing is the wrong order to learn it in.
   const isOfferValid = useCallback(() => {
-    if (!isContractor) {
+    if (!canOffer) {
       Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return false;
     }
@@ -176,19 +189,19 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
       return false;
     }
     return true;
-  }, [isContractor, price, mode, message, t]);
+  }, [canOffer, price, mode, message, t]);
 
   // An account can exist with no name at all — signing up only takes a phone
   // number. The client picks between offers by who they are from, so this is
   // where we ask, rather than putting the field in front of everyone at
   // registration.
   const acceptClientPrice = useCallback(() => {
-    if (!isContractor) {
+    if (!canOffer) {
       Alert.alert(t("offer.unauthorizedTitle"), t("offer.unauthorizedBody"));
       return;
     }
     withName(() => void sendOfferAtClientPrice());
-  }, [isContractor, sendOfferAtClientPrice, t, withName]);
+  }, [canOffer, sendOfferAtClientPrice, t, withName]);
 
   const submitOffer = useCallback(() => {
     if (!isOfferValid()) return;
@@ -198,6 +211,8 @@ export const useJobOffer = ({ jobId, jobPrice, onSuccess }: UseJobOfferOptions) 
   return {
     nameSheetProps,
     isContractor,
+    isOwnJob,
+    canOffer,
     mode,
     setMode,
     clientPrice: jobPrice,

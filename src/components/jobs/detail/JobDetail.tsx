@@ -41,7 +41,8 @@ export const JobDetail = () => {
 
   const {
     nameSheetProps,
-    isContractor,
+    isOwnJob,
+    canOffer,
     mode,
     setMode,
     price,
@@ -61,6 +62,7 @@ export const JobDetail = () => {
   } = useJobOffer({
     jobId: id,
     jobPrice: job?.price ?? 0,
+    clientId: job?.clientId ?? null,
     onSuccess: refetch,
   });
 
@@ -168,7 +170,25 @@ export const JobDetail = () => {
               <GuestOfferCta jobId={id} />
             )}
 
-            {isContractor && (
+            {isOwnJob && (
+              // Reachable by a direct link: the open-jobs feed already hides
+              // your own jobs. Manage it in the client app, not here.
+              <YStack
+                backgroundColor={colors.bgCard}
+                borderRadius="$4"
+                padding="$4"
+                gap="$2"
+              >
+                <Text fontSize={16} fontWeight="600" color={colors.textPrimary}>
+                  {t("offer.ownJobTitle")}
+                </Text>
+                <Text fontSize={14} color={colors.textSecondary}>
+                  {t("offer.ownJobBody")}
+                </Text>
+              </YStack>
+            )}
+
+            {canOffer && (
               <ContractorOfferSection
                 jobId={id}
                 balance={balance}
@@ -192,7 +212,7 @@ export const JobDetail = () => {
               />
             )}
 
-            {isContractor && isReviewable && !isReviewLoading && (
+            {canOffer && isReviewable && !isReviewLoading && (
               <>
                 <RatingStars
                   currentRating={myReview?.rating}

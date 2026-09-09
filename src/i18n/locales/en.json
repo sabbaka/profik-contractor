@@ -227,7 +227,9 @@
       "completedBody": "The client has closed it — offers are no longer accepted.",
       "canceledTitle": "This job was canceled",
       "canceledBody": "The client canceled it — offers are no longer accepted."
-    }
+    },
+    "ownJobTitle": "This is your job",
+    "ownJobBody": "You posted this job. Manage it and review the offers in the Profik app."
   },
   "review": {
     "receivedTitle": "Client's review",

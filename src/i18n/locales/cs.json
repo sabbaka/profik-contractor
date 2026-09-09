@@ -227,7 +227,9 @@
       "completedBody": "Zadavatel ji uzavřel, nabídky už nepřijímá.",
       "canceledTitle": "Zakázka byla zrušena",
       "canceledBody": "Zadavatel ji zrušil, nabídky už nepřijímá."
-    }
+    },
+    "ownJobTitle": "Toto je vaše zakázka",
+    "ownJobBody": "Tuto zakázku jste zadali vy. Spravujte ji a prohlížejte nabídky v aplikaci Profik."
   },
   "review": {
     "receivedTitle": "Hodnocení od zákazníka",
