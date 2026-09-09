@@ -1,0 +1,6 @@
+# Revisions to skip in `git blame` — formatting only, no behaviour change.
+# GitHub applies this file automatically. Locally, once per clone:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: format the repo with prettier
+45c521fd58b63a05fedab1f445ddac856daca003
