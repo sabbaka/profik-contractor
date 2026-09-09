@@ -2,19 +2,25 @@
 
 ## The checks
 
-Work is not done until all three pass. Run them yourself; do not ask the user
+Work is not done until all four pass. Run them yourself; do not ask the user
 to find out for you.
 
 ```bash
-npm run typecheck   # tsc --noEmit — must be silent
-npm run lint         # expo lint (eslint) — zero errors
-npm run i18n:check   # scripts/check-hardcoded-strings.mjs — see i18n.md for what it can't see
+npm run typecheck     # tsc --noEmit — must be silent
+npm run lint          # expo lint (eslint) — zero errors
+npm run format:check  # prettier — the whole repo is clean, keep it that way
+npm run i18n:check    # scripts/check-hardcoded-strings.mjs — see i18n.md for what it can't see
 ```
 
-CI runs all three on every push and pull request (`.github/workflows/ci.yml`,
-`Contractor CI`). There is no `format:check` script — Prettier is not
-configured in this repo; match the surrounding formatting by hand instead of
-assuming a formatter will fix it.
+CI runs all four on every push and pull request (`.github/workflows/ci.yml`,
+`Contractor CI`).
+
+Prettier owns formatting here, using the same `.prettierrc` as the client so the
+two apps format identically. Unlike the client, this repo was reformatted in one
+go, so `format:check` is green and a red one is your change, not legacy drift —
+run `npm run format` instead of hand-formatting around it. The reformat commit
+is listed in `.git-blame-ignore-revs`, which GitHub applies on its own; locally
+it is `git config blame.ignoreRevsFile .git-blame-ignore-revs`, once per clone.
 
 Rules of thumb:
 
