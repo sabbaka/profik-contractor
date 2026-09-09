@@ -232,7 +232,18 @@
   "review": {
     "receivedTitle": "Hodnocení od zákazníka",
     "receivedBody": "Jak zákazník ohodnotil tuto zakázku",
-    "emptyBody": "Zákazník zatím hodnocení nenechal."
+    "emptyBody": "Zákazník zatím hodnocení nenechal.",
+    "rateExperience": "Ohodnoťte zákazníka",
+    "howWasIt": "Jak se s ním spolupracovalo?",
+    "yourRating": "Vaše hodnocení",
+    "tapToRate": "Klepnutím ohodnotíte zákazníka",
+    "tapToEdit": "Klepnutím na hvězdičku změníte hodnocení",
+    "submit": "Odeslat hodnocení",
+    "thankYou": "Děkujeme",
+    "submitted": "Hodnocení bylo odesláno.",
+    "placeholders": {
+      "comment": "Napište komentář (volitelné)"
+    }
   },
   "chat": {
     "title": "Chat se zákazníkem",
@@ -463,7 +474,8 @@
   "a11y": {
     "close": "Zavřít",
     "send": "Odeslat zprávu",
-    "reviewRating": "Hodnoceno {{rating}} z 5"
+    "reviewRating": "Hodnoceno {{rating}} z 5",
+    "rateStars": "Ohodnotit {{rating}} z 5"
   },
   "messages": {
     "title": "Zprávy",

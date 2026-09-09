@@ -17,6 +17,8 @@ import { JobNotes } from "./JobNotes";
 import { JobPropertySection } from "./JobPropertySection";
 import { JobProvidedSection } from "./JobProvidedSection";
 import { JobReviewCard } from "./JobReviewCard";
+import { RatingStars } from "./RatingStars";
+import { ReviewSheet } from "./ReviewSheet";
 import { useJobOffer } from "./hooks/useJobOffer";
 import { useJobReview } from "./hooks/useJobReview";
 
@@ -65,7 +67,10 @@ export const JobDetail = () => {
   const {
     isReviewable,
     review,
+    myReview,
     isLoading: isReviewLoading,
+    reviewSheetProps,
+    openSheetAt,
   } = useJobReview({
     jobId: id,
     jobStatus: job?.status ?? "open",
@@ -188,13 +193,20 @@ export const JobDetail = () => {
             )}
 
             {isContractor && isReviewable && !isReviewLoading && (
-              <JobReviewCard review={review} />
+              <>
+                <RatingStars
+                  currentRating={myReview?.rating}
+                  onStarPress={openSheetAt}
+                />
+                <JobReviewCard review={review} />
+              </>
             )}
           </YStack>
         </KeyboardAwareScreen>
       </YStack>
 
       <NamePromptSheet {...nameSheetProps} />
+      <ReviewSheet {...reviewSheetProps} />
     </SafeAreaView>
   );
 };

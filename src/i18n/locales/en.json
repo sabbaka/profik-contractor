@@ -232,7 +232,18 @@
   "review": {
     "receivedTitle": "Client's review",
     "receivedBody": "How the client rated this job",
-    "emptyBody": "The client hasn't left a review yet."
+    "emptyBody": "The client hasn't left a review yet.",
+    "rateExperience": "Rate the client",
+    "howWasIt": "How was working with them?",
+    "yourRating": "Your rating",
+    "tapToRate": "Tap to rate the client",
+    "tapToEdit": "Tap a star to change it",
+    "submit": "Send review",
+    "thankYou": "Thank you",
+    "submitted": "Your review has been sent.",
+    "placeholders": {
+      "comment": "Leave a comment (optional)"
+    }
   },
   "chat": {
     "title": "Customer chat",
@@ -463,7 +474,8 @@
   "a11y": {
     "close": "Close",
     "send": "Send message",
-    "reviewRating": "Rated {{rating}} out of 5"
+    "reviewRating": "Rated {{rating}} out of 5",
+    "rateStars": "Rate {{rating}} out of 5"
   },
   "messages": {
     "title": "Messages",

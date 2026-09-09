@@ -207,6 +207,33 @@ export const profikApi = createApi({
         { type: "Reviews", id: jobId } as any,
       ],
     }),
+    /**
+     * Leave — or edit — the review this contractor writes about the client.
+     *
+     * The backend upserts: submitting again for the same job rewrites the
+     * previous rating instead of failing, so the sheet doubles as the edit
+     * screen. `targetId` is derived from the job server-side, which is why
+     * only the rating and comment go up.
+     *
+     * The response is typed without `author` on purpose: the spec promises a
+     * full `JobReviewResponseDto`, but the service returns the bare row
+     * without the author include that `GET /jobs/:id/reviews` has. Nothing
+     * reads it anyway — the list is refetched through the invalidated tag.
+     */
+    createReview: builder.mutation<
+      Omit<Review, "author">,
+      { jobId: string; rating: number; comment?: string }
+    >({
+      query: ({ jobId, rating, comment }) => ({
+        url: `/jobs/${jobId}/reviews`,
+        method: "POST",
+        body: { rating, comment },
+      }),
+      invalidatesTags: (_result, _error, { jobId }) => [
+        { type: "Reviews", id: jobId } as any,
+        { type: "Jobs", id: jobId } as any,
+      ],
+    }),
     hasOffered: builder.query<{ hasOffered: boolean }, string>({
       query: (jobId) => ({
         url: `/offers/job/${jobId}/has-offered`,
@@ -396,6 +423,7 @@ export const {
   useGetOfferedJobsInfiniteQuery,
   useGetJobByIdQuery,
   useGetJobReviewsQuery,
+  useCreateReviewMutation,
   useCreateOfferMutation,
   useHasOfferedQuery,
   useGetMyOfferForJobQuery,
