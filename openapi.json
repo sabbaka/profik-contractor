@@ -2248,7 +2248,7 @@
               "client",
               "contractor"
             ],
-            "description": "App type making the request. If provided, the user role must match.",
+            "description": "Which app is asking. Sets the session context only; it does not restrict access. Defaults to the client side when omitted.",
             "example": "client"
           }
         },
@@ -2295,12 +2295,12 @@
               "client",
               "contractor"
             ],
-            "description": "User role"
+            "description": "Which app this session is talking from, echoed back from the token. Not a property of the account: the same phone can hold a client and a contractor session at once, and both report the same id."
           },
           "balance": {
             "type": "number",
             "example": 0,
-            "description": "User balance (for contractors)"
+            "description": "Wallet balance in CZK, one per account"
           },
           "createdAt": {
             "format": "date-time",
@@ -2391,7 +2391,7 @@
               "client",
               "contractor"
             ],
-            "description": "Role of the calling app. Used to create the account on first login, and to reject an account belonging to the other app."
+            "description": "Which app is asking. It sets the session context echoed back as `role`, and a first sign-in from the contractor app grants the starting balance. It never restricts which account the phone reaches: one phone is one account, usable from both apps."
           },
           "name": {
             "type": "string",
@@ -3137,15 +3137,6 @@
             "nullable": true,
             "description": "Public URL of the user avatar image"
           },
-          "role": {
-            "type": "string",
-            "example": "contractor",
-            "enum": [
-              "client",
-              "contractor"
-            ],
-            "description": "User role"
-          },
           "memberSince": {
             "format": "date-time",
             "type": "string",
@@ -3167,7 +3158,6 @@
         "required": [
           "id",
           "name",
-          "role",
           "memberSince",
           "averageRating",
           "reviewsCount"
