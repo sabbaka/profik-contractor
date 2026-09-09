@@ -7,7 +7,6 @@ import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
 import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
 import { OfferBalanceWarning } from "./OfferBalanceWarning";
 import { OfferCostNote } from "./OfferCostNote";
-import { OFFER_COST_CZK } from "./offerPricing";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
