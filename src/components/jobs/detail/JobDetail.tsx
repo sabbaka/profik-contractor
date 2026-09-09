@@ -128,7 +128,7 @@ export const JobDetail = () => {
             category={job.category}
             title={job.title}
             price={job.price ?? 0}
-            createdAt={job.createdAt}
+            scheduledDates={job.scheduledDates}
             city={job.city}
             timeSlot={job.timeSlot}
           />

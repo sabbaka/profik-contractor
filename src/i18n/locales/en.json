@@ -142,11 +142,12 @@
     "serviceRequest": "Service request",
     "remote": "Remote",
     "timeSlot": {
-      "morning": "Morning",
-      "afternoon": "Afternoon",
-      "evening": "Evening",
-      "all_day": "All day"
+      "morning": "Morning (8–12)",
+      "afternoon": "Afternoon (12–17)",
+      "evening": "Evening (17–21)",
+      "all_day": "All Day (8–21)"
     },
+    "dateFlexible": "Flexible",
     "locationNotProvided": "Location not provided",
     "service": "Service",
     "untitled": "Untitled job",

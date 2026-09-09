@@ -1,6 +1,7 @@
 import type { TimeSlot } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { formatCzk } from "@/src/utils/currency";
+import { dateLocale, formatSchedule } from "@/src/utils/jobSchedule";
 import { Calendar, Clock, MapPin } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
@@ -12,7 +13,7 @@ interface JobBasicInfoProps {
   category?: string | null;
   title: string;
   price: number;
-  createdAt?: string;
+  scheduledDates?: string[] | null;
   city?: string | null;
   timeSlot?: TimeSlot | null;
 }
@@ -21,23 +22,15 @@ export const JobBasicInfo = ({
   category,
   title,
   price,
-  createdAt,
+  scheduledDates,
   city,
   timeSlot,
 }: JobBasicInfoProps) => {
   const { t, i18n } = useTranslation();
-  const date = useMemo(() => {
-    if (!createdAt) return "";
-    try {
-      return new Date(createdAt).toLocaleDateString(i18n.language, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    } catch {
-      return "";
-    }
-  }, [createdAt, i18n.language]);
+  const date = useMemo(
+    () => formatSchedule(scheduledDates, dateLocale(i18n.language), t, { year: true }),
+    [scheduledDates, i18n.language, t],
+  );
 
   return (
     <YStack borderRadius={24} overflow="hidden" padding={22} gap={16}>
