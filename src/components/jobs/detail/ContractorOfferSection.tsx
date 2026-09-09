@@ -31,6 +31,19 @@ export const ContractorOfferSection = (props: Props) => {
   const colors = useThemeColors();
   const { hasOffered, myOfferPrice, myOfferMessage, myOfferStatus, jobId, jobTitle, jobStatus, offerIdForChat, balance, canAffordOffer, mode, setMode, price, setPrice, message, setMessage, onAcceptClientPrice, onSubmitOffer, isSubmitting } = props;
 
+  // A finished or cancelled job cannot take another offer, so the CTA is gone
+  // rather than disabled — pressing it would spend 5 Kč on a rejection. A
+  // contractor who did offer keeps their card below, status pill and all.
+  if (!hasOffered && (jobStatus === "completed" || jobStatus === "canceled")) {
+    const canceled = jobStatus === "canceled";
+    return (
+      <YStack padding={18} borderRadius={20} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle} gap={3}>
+        <Text variant="h5">{canceled ? t("offer.closed.canceledTitle") : t("offer.closed.completedTitle")}</Text>
+        <Text variant="caption">{canceled ? t("offer.closed.canceledBody") : t("offer.closed.completedBody")}</Text>
+      </YStack>
+    );
+  }
+
   if (hasOffered) {
     return (
       <YStack padding={18} borderRadius={20} backgroundColor={colors.bgCard} borderWidth={1} borderColor={colors.borderSubtle} gap={15}>

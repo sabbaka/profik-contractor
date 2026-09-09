@@ -221,7 +221,18 @@
       "body": "Nabídka stojí {{price}} · máte {{balance}}",
       "topUp": "Dobít zůstatek",
       "interestedBody": "Dobijte zůstatek, abyste mohli na tuto zakázku poslat nabídku."
+    },
+    "closed": {
+      "completedTitle": "Zakázka je dokončená",
+      "completedBody": "Zadavatel ji uzavřel, nabídky už nepřijímá.",
+      "canceledTitle": "Zakázka byla zrušena",
+      "canceledBody": "Zadavatel ji zrušil, nabídky už nepřijímá."
     }
+  },
+  "review": {
+    "receivedTitle": "Hodnocení od zákazníka",
+    "receivedBody": "Jak zákazník ohodnotil tuto zakázku",
+    "emptyBody": "Zákazník zatím hodnocení nenechal."
   },
   "chat": {
     "title": "Chat se zákazníkem",
@@ -451,7 +462,8 @@
   },
   "a11y": {
     "close": "Zavřít",
-    "send": "Odeslat zprávu"
+    "send": "Odeslat zprávu",
+    "reviewRating": "Hodnoceno {{rating}} z 5"
   },
   "messages": {
     "title": "Zprávy",

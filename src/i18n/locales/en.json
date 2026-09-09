@@ -221,7 +221,18 @@
       "body": "An offer costs {{price}} · you have {{balance}}",
       "topUp": "Top up balance",
       "interestedBody": "Top up your balance to send an offer on this job."
+    },
+    "closed": {
+      "completedTitle": "This job is finished",
+      "completedBody": "The client has closed it — offers are no longer accepted.",
+      "canceledTitle": "This job was canceled",
+      "canceledBody": "The client canceled it — offers are no longer accepted."
     }
+  },
+  "review": {
+    "receivedTitle": "Client's review",
+    "receivedBody": "How the client rated this job",
+    "emptyBody": "The client hasn't left a review yet."
   },
   "chat": {
     "title": "Customer chat",
@@ -451,7 +462,8 @@
   },
   "a11y": {
     "close": "Close",
-    "send": "Send message"
+    "send": "Send message",
+    "reviewRating": "Rated {{rating}} out of 5"
   },
   "messages": {
     "title": "Messages",

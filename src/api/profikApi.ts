@@ -23,6 +23,7 @@ import type {
   Offer,
   OfferedJobItem,
   OfferMessage,
+  Review,
   UnreadSummary,
 } from "./types";
 
@@ -115,7 +116,14 @@ const baseQueryWithReauth: BaseQueryFn<
 
 export const profikApi = createApi({
   reducerPath: "profikApi",
-  tagTypes: ["Jobs", "OfferMessages", "Offers", "Conversations", "Unread"],
+  tagTypes: [
+    "Jobs",
+    "OfferMessages",
+    "Offers",
+    "Conversations",
+    "Unread",
+    "Reviews",
+  ],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     // Passwordless sign-in. One pair of endpoints serves both login and
@@ -189,6 +197,15 @@ export const profikApi = createApi({
     getJobById: builder.query<Job, string>({
       query: (id) => ({ url: `/jobs/${id}`, method: "GET" }),
       providesTags: (_result, _error, id) => [{ type: "Jobs", id } as any],
+    }),
+    // Both directions of a completed job's reviews, newest last. The endpoint
+    // does not filter by participant, so the caller picks the one addressed to
+    // them off `targetId`.
+    getJobReviews: builder.query<Review[], string>({
+      query: (jobId) => ({ url: `/jobs/${jobId}/reviews`, method: "GET" }),
+      providesTags: (_result, _error, jobId) => [
+        { type: "Reviews", id: jobId } as any,
+      ],
     }),
     hasOffered: builder.query<{ hasOffered: boolean }, string>({
       query: (jobId) => ({
@@ -378,6 +395,7 @@ export const {
   useGetOpenJobsInfiniteQuery,
   useGetOfferedJobsInfiniteQuery,
   useGetJobByIdQuery,
+  useGetJobReviewsQuery,
   useCreateOfferMutation,
   useHasOfferedQuery,
   useGetMyOfferForJobQuery,

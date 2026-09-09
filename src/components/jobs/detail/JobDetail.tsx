@@ -16,7 +16,9 @@ import { JobLocation } from "./JobLocation";
 import { JobNotes } from "./JobNotes";
 import { JobPropertySection } from "./JobPropertySection";
 import { JobProvidedSection } from "./JobProvidedSection";
+import { JobReviewCard } from "./JobReviewCard";
 import { useJobOffer } from "./hooks/useJobOffer";
+import { useJobReview } from "./hooks/useJobReview";
 
 export const JobDetail = () => {
   const { t } = useTranslation();
@@ -58,6 +60,16 @@ export const JobDetail = () => {
     jobId: id,
     jobPrice: job?.price ?? 0,
     onSuccess: refetch,
+  });
+
+  const {
+    isReviewable,
+    review,
+    isLoading: isReviewLoading,
+  } = useJobReview({
+    jobId: id,
+    jobStatus: job?.status ?? "open",
+    contractorId: job?.contractorId ?? null,
   });
 
   if (isLoading) {
@@ -147,7 +159,9 @@ export const JobDetail = () => {
               lng={job.lng}
             />
 
-            {isGuest && <GuestOfferCta jobId={id} />}
+            {isGuest && job.status !== "completed" && job.status !== "canceled" && (
+              <GuestOfferCta jobId={id} />
+            )}
 
             {isContractor && (
               <ContractorOfferSection
@@ -171,6 +185,10 @@ export const JobDetail = () => {
                 onSubmitOffer={submitOffer}
                 isSubmitting={isSubmitting}
               />
+            )}
+
+            {isContractor && isReviewable && !isReviewLoading && (
+              <JobReviewCard review={review} />
             )}
           </YStack>
         </KeyboardAwareScreen>

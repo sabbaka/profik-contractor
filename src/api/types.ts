@@ -179,3 +179,29 @@ export interface UnreadSummary {
   total: number;
   byBucket: Record<ConversationBucket, number>;
 }
+
+/** `ReviewAuthorDto` — who left the review. Name is null until they set one. */
+export interface ReviewAuthor {
+  id: string;
+  name: string | null;
+  avatarUrl: string | null;
+}
+
+/**
+ * `JobReviewResponseDto` — one review left on a job. A completed job can carry
+ * two, one per direction: read `targetId` to tell whose review this is.
+ *
+ * The spec marks `comment` optional, but the endpoint serialises the database
+ * row as-is, so a review left without one comes back as `null` — same as the
+ * client app types it.
+ */
+export interface Review {
+  id: string;
+  jobId: string;
+  authorId: string;
+  targetId: string;
+  rating: number;
+  comment: string | null;
+  author: ReviewAuthor;
+  createdAt: string;
+}
