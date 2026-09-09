@@ -144,11 +144,12 @@
     "serviceRequest": "Запит на послугу",
     "remote": "Віддалено",
     "timeSlot": {
-      "morning": "Ранок",
-      "afternoon": "День",
-      "evening": "Вечір",
-      "all_day": "Цілий день"
+      "morning": "Ранок (8–12)",
+      "afternoon": "День (12–17)",
+      "evening": "Вечір (17–21)",
+      "all_day": "Цілий день (8–21)"
     },
+    "dateFlexible": "Гнучко",
     "locationNotProvided": "Адресу не вказано",
     "service": "Послуга",
     "untitled": "Замовлення без назви",

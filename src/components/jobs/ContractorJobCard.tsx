@@ -2,7 +2,8 @@ import type { MyOffer } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
-import { BriefcaseBusiness, Calendar, ChevronRight, MapPin, MessageCircle, Send } from "@tamagui/lucide-icons";
+import { dateLocale, formatSchedule } from "@/src/utils/jobSchedule";
+import { BriefcaseBusiness, Calendar, MapPin, MessageCircle, Send } from "@tamagui/lucide-icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
@@ -14,20 +15,8 @@ interface ContractorJobCardProps {
   job: any;
   myOffer?: MyOffer | null;
   onPress?: () => void;
-  /**
-   * Opens the chat for `myOffer`. Without it the card keeps the plain
-   * "Details" affordance — Open Jobs has no offer to talk about yet.
-   */
+  /** Opens the chat for `myOffer`. Open Jobs has no offer to talk about yet. */
   onMessage?: () => void;
-}
-
-function dateLabel(value?: string, locale?: string) {
-  if (!value) return null;
-  try {
-    return new Date(value).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" });
-  } catch {
-    return null;
-  }
 }
 
 export function ContractorJobCard({ job, myOffer, onPress, onMessage }: ContractorJobCardProps) {
@@ -36,7 +25,16 @@ export function ContractorJobCard({ job, myOffer, onPress, onMessage }: Contract
   const location =
     [job?.city, formatCountry(job?.country, t)].filter(Boolean).join(", ") ||
     t("job.locationNotProvided");
-  const date = dateLabel(job?.createdAt, i18n.language);
+  const dateText = formatSchedule(job?.scheduledDates, dateLocale(i18n.language), t, { year: true });
+  // The date and the slot are both optional and independently so — an older
+  // job may carry one without the other — hence the separator hangs off the
+  // slot rather than a fixed template.
+  const scheduleText = [
+    dateText,
+    job?.timeSlot ? t(`job.timeSlot.${job.timeSlot}`) : undefined,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <Pressable onPress={onPress} style={({ pressed }) => ({ opacity: pressed ? 0.96 : 1, transform: [{ scale: pressed ? 0.99 : 1 }] })}>
@@ -56,10 +54,10 @@ export function ContractorJobCard({ job, myOffer, onPress, onMessage }: Contract
                 <MapPin size={14} color={colors.textMuted} />
                 <Text variant="caption" numberOfLines={1} flex={1}>{location}</Text>
               </XStack>
-              {date ? (
+              {scheduleText ? (
                 <XStack alignItems="center" gap={6}>
                   <Calendar size={14} color={colors.textMuted} />
-                  <Text variant="caption">{t("job.posted", { date })}</Text>
+                  <Text variant="caption" numberOfLines={1}>{scheduleText}</Text>
                 </XStack>
               ) : null}
             </YStack>
@@ -94,12 +92,7 @@ export function ContractorJobCard({ job, myOffer, onPress, onMessage }: Contract
                 <Text style={{ color: colors.accent, fontFamily: "Inter_600SemiBold", fontSize: 13, lineHeight: 17 }}>{t("job.messageClient")}</Text>
               </XStack>
             </Pressable>
-          ) : (
-            <XStack alignItems="center" gap={3}>
-              <Text style={{ color: colors.accent, fontFamily: "Inter_500Medium", fontSize: 13 }}>{t("job.detailsCta")}</Text>
-              <ChevronRight size={16} color={colors.accent} />
-            </XStack>
-          )}
+          ) : null}
         </XStack>
       </YStack>
     </Pressable>
