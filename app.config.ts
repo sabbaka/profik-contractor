@@ -23,6 +23,15 @@ const config = {
   ios: {
     bundleIdentifier: "com.profik.contractor",
     supportsTablet: false,
+    // iOS 18 renders three variants of every icon. Left to itself it derives
+    // the dark and tinted ones from `icon`, which is a white tile — a white
+    // slab in a dark dock, and a solid block of the user's tint. These give it
+    // the mark on a dark ground and a greyscale version to tint instead.
+    icon: {
+      light: "./assets/images/icon.png",
+      dark: "./assets/images/ios-icon-dark.png",
+      tinted: "./assets/images/ios-icon-tinted.png",
+    },
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription: PHOTO_LIBRARY_PERMISSION,
@@ -32,7 +41,7 @@ const config = {
   android: {
     package: "com.profik.contractor",
     adaptiveIcon: {
-      backgroundColor: "#E85D00",
+      backgroundColor: "#FFFFFF",
       foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
@@ -57,8 +66,10 @@ const config = {
         image: "./assets/images/splash-icon.png",
         imageWidth: 200,
         resizeMode: "contain",
-        backgroundColor: "#EE6C00",
-        dark: { backgroundColor: "#EE6C00" },
+        // The mark is orange, so the splash cannot be — it used to be, back
+        // when the artwork was white on orange. Same pair as the client app.
+        backgroundColor: "#FFFFFF",
+        dark: { backgroundColor: "#0F1117" },
       },
     ],
     "expo-font",
@@ -86,7 +97,10 @@ const config = {
     [
       "expo-notifications",
       {
-        icon: "./assets/images/icon.png",
+        // Android masks this to its alpha channel and tints it, so it has to be
+        // a white-on-transparent silhouette; the full-colour icon.png rendered
+        // as a solid white square in the status bar.
+        icon: "./assets/images/notification-icon.png",
         color: "#ffffff",
         iosDisplayInForeground: true,
       },

@@ -39,6 +39,8 @@ module.exports = {
       : pattern,
   ),
   // Screens are deliberately out of scope — these tests cover logic, so nothing
-  // here renders Tamagui or reanimated.
-  testMatch: ["**/*.test.ts", "**/*.test.tsx"],
+  // here renders Tamagui or reanimated. `.spec` is matched alongside `.test`
+  // because nothing is named that way today, and a file that was would be
+  // skipped in silence rather than failing.
+  testMatch: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
 };
