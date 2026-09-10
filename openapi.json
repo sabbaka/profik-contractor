@@ -155,112 +155,6 @@
         ]
       }
     },
-    "/auth/sms/request-code": {
-      "post": {
-        "operationId": "requestSmsCode",
-        "parameters": [
-          {
-            "name": "accept-language",
-            "required": true,
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RequestSmsCodeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "SMS code successfully requested",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SmsRequestResponseDto"
-                },
-                "example": {
-                  "success": true
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid phone"
-          },
-          "401": {
-            "description": "Phone already registered"
-          },
-          "429": {
-            "description": "Too many codes requested. Please try again later."
-          }
-        },
-        "summary": "Request an SMS verification code",
-        "tags": [
-          "Authentication"
-        ]
-      }
-    },
-    "/auth/sms/verify": {
-      "post": {
-        "operationId": "verifySmsCode",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifySmsCodeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Code verified successfully, user logged in",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthResponseDto"
-                },
-                "example": {
-                  "user": {
-                    "id": "123e4567-e89b-12d3-a456-426614174000",
-                    "email": "user@example.com",
-                    "phone": "+420123456789",
-                    "name": "John Doe",
-                    "role": "client",
-                    "balance": 0,
-                    "createdAt": "2024-01-01T00:00:00.000Z"
-                  },
-                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Missing or invalid data"
-          },
-          "401": {
-            "description": "Invalid or expired code, user not found, or email already exists for registration"
-          },
-          "429": {
-            "description": "Too many invalid attempts. Please request a new code."
-          }
-        },
-        "summary": "Verify SMS code and optionally register/login user",
-        "tags": [
-          "Authentication"
-        ]
-      }
-    },
     "/auth/forgot-password/request-code": {
       "post": {
         "operationId": "forgotPasswordRequestCode",
@@ -1408,6 +1302,9 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many analysis requests. Please try again later."
           }
         },
         "security": [
@@ -1810,58 +1707,6 @@
           }
         },
         "summary": "Get job details by ID (public; address details only when authenticated)",
-        "tags": [
-          "Jobs"
-        ]
-      }
-    },
-    "/jobs/{jobId}/accept-offer/{offerId}": {
-      "patch": {
-        "operationId": "acceptOffer",
-        "parameters": [
-          {
-            "name": "jobId",
-            "required": true,
-            "in": "path",
-            "description": "Job ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "offerId",
-            "required": true,
-            "in": "path",
-            "description": "Offer ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Offer accepted, job updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Access denied"
-          },
-          "404": {
-            "description": "Job or offer not found"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Accept an offer for a job (clients only)",
         "tags": [
           "Jobs"
         ]
@@ -2424,62 +2269,6 @@
           "phone",
           "code",
           "role"
-        ]
-      },
-      "RequestSmsCodeDto": {
-        "type": "object",
-        "properties": {
-          "phone": {
-            "type": "string",
-            "example": "+420123456789",
-            "description": "Phone number in international format"
-          }
-        },
-        "required": [
-          "phone"
-        ]
-      },
-      "VerifySmsCodeDto": {
-        "type": "object",
-        "properties": {
-          "phone": {
-            "type": "string",
-            "example": "+420123456789",
-            "description": "Phone number in international format"
-          },
-          "code": {
-            "type": "string",
-            "example": "123456",
-            "description": "6-digit SMS verification code"
-          },
-          "email": {
-            "type": "string",
-            "example": "user@example.com",
-            "description": "Email for registration when verifying a registration code"
-          },
-          "password": {
-            "type": "string",
-            "example": "StrongPassword123",
-            "description": "Password for registration when verifying a registration code (min 8 characters)"
-          },
-          "name": {
-            "type": "string",
-            "example": "John Doe",
-            "description": "Name for registration when verifying a registration code"
-          },
-          "role": {
-            "type": "string",
-            "example": "client",
-            "enum": [
-              "client",
-              "contractor"
-            ],
-            "description": "Role for registration when verifying a registration code"
-          }
-        },
-        "required": [
-          "phone",
-          "code"
         ]
       },
       "ForgotPasswordRequestDto": {
