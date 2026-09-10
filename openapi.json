@@ -1471,6 +1471,102 @@
               "example": "123e4567-e89b-12d3-a456-426614174000",
               "type": "string"
             }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Only jobs in this category. The app sends `Cleaning` from its first build — the other categories exist in the schema but are not open yet, and this is here so that opening one is a change to the app alone.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Renovation",
+                "Plumbing",
+                "Electrical",
+                "Cleaning",
+                "Painting",
+                "Moving",
+                "Other"
+              ]
+            }
+          },
+          {
+            "name": "priceMin",
+            "required": false,
+            "in": "query",
+            "description": "Lowest price to include, in CZK.",
+            "schema": {
+              "minimum": 0,
+              "example": 500,
+              "type": "number"
+            }
+          },
+          {
+            "name": "priceMax",
+            "required": false,
+            "in": "query",
+            "description": "Highest price to include, in CZK.",
+            "schema": {
+              "minimum": 0,
+              "example": 5000,
+              "type": "number"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Earliest scheduled day to include, as YYYY-MM-DD. A job the client marked flexible, or left without a date, matches any range — the point of that flag is that the client will fit around you.",
+            "schema": {
+              "example": "2026-03-03",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Latest scheduled day to include, as YYYY-MM-DD. Inclusive.",
+            "schema": {
+              "example": "2026-03-10",
+              "type": "string"
+            }
+          },
+          {
+            "name": "lat",
+            "required": false,
+            "in": "query",
+            "description": "Latitude to search around, from the device's GPS. Must be sent with `lng`. Jobs whose address never geocoded have no coordinates and cannot match a location search, so they are absent while it is on.",
+            "schema": {
+              "minimum": -90,
+              "maximum": 90,
+              "example": 50.0755,
+              "type": "number"
+            }
+          },
+          {
+            "name": "lng",
+            "required": false,
+            "in": "query",
+            "description": "Longitude to search around. Must be sent with `lat`.",
+            "schema": {
+              "minimum": -180,
+              "maximum": 180,
+              "example": 14.4378,
+              "type": "number"
+            }
+          },
+          {
+            "name": "radiusKm",
+            "required": false,
+            "in": "query",
+            "description": "How far from lat/lng to look, in whole kilometres. Defaults to 15 when coordinates are sent without it. Whole kilometres on purpose: coordinates are coarsened to about a kilometre for anyone not involved in a job, and a radius that could be tuned by the metre would undo that.",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "example": 15,
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -1481,7 +1577,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobResponseDto"
+                    "$ref": "#/components/schemas/OpenJobResponseDto"
                   }
                 }
               }
@@ -3795,6 +3891,211 @@
           "createdAt",
           "updatedAt",
           "offersCount"
+        ]
+      },
+      "OpenJobResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "description": "Job ID"
+          },
+          "title": {
+            "type": "string",
+            "example": "Bathroom Renovation",
+            "description": "Job title"
+          },
+          "description": {
+            "type": "string",
+            "example": "Need to renovate the bathroom",
+            "description": "Job description"
+          },
+          "category": {
+            "type": "string",
+            "example": "Renovation",
+            "description": "Job category",
+            "enum": [
+              "Renovation",
+              "Plumbing",
+              "Electrical",
+              "Cleaning",
+              "Painting",
+              "Moving",
+              "Other"
+            ]
+          },
+          "price": {
+            "type": "number",
+            "example": 5000,
+            "description": "Job price"
+          },
+          "clientId": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174001",
+            "description": "Client ID"
+          },
+          "contractorId": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174002",
+            "description": "Contractor ID"
+          },
+          "status": {
+            "type": "string",
+            "example": "open",
+            "enum": [
+              "open",
+              "in_progress",
+              "completed",
+              "canceled"
+            ],
+            "description": "Job status"
+          },
+          "addressLine": {
+            "type": "string",
+            "example": "Poupětova 3",
+            "description": "Address line"
+          },
+          "city": {
+            "type": "string",
+            "example": "Praha 7",
+            "description": "City"
+          },
+          "postalCode": {
+            "type": "string",
+            "example": "170 00",
+            "description": "Postal code"
+          },
+          "country": {
+            "type": "string",
+            "example": "CZ",
+            "description": "ISO 3166-1 alpha-2 country code, e.g. `CZ`. Names are normalised to a code on write; anything unrecognised is stored as null."
+          },
+          "lat": {
+            "type": "number",
+            "example": 40.7128,
+            "description": "Latitude"
+          },
+          "lng": {
+            "type": "number",
+            "example": -74.006,
+            "description": "Longitude"
+          },
+          "placeId": {
+            "type": "string",
+            "example": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+            "description": "Google Place ID"
+          },
+          "propertyType": {
+            "type": "string",
+            "enum": [
+              "apartment",
+              "house",
+              "commercial"
+            ]
+          },
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "deep",
+              "renovation"
+            ]
+          },
+          "roomsCount": {
+            "type": "string",
+            "example": "3"
+          },
+          "bathroomsCount": {
+            "type": "string",
+            "example": "1"
+          },
+          "area": {
+            "type": "number",
+            "example": 75
+          },
+          "vacuumCleaner": {
+            "type": "string",
+            "enum": [
+              "have",
+              "bring"
+            ]
+          },
+          "cleaningSupplies": {
+            "type": "string",
+            "enum": [
+              "have",
+              "bring"
+            ]
+          },
+          "ladder": {
+            "type": "string",
+            "enum": [
+              "available",
+              "needed",
+              "noneeded"
+            ]
+          },
+          "windowCleaning": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ]
+          },
+          "windowCount": {
+            "type": "number",
+            "example": 8
+          },
+          "scheduledDates": {
+            "example": [
+              "2026-04-20"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timeSlot": {
+            "type": "string",
+            "enum": [
+              "morning",
+              "afternoon",
+              "evening",
+              "all_day"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "example": "Pet on site"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000Z",
+            "description": "Creation date"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000Z",
+            "description": "Update date"
+          },
+          "distanceKm": {
+            "type": "number",
+            "example": 2.4,
+            "description": "How far this job is from the `lat`/`lng` in the request, in kilometres, rounded to one decimal. Present only when the request carried coordinates. Computed the same way the radius filter was, and from the exact position rather than the coarsened one in this payload, so the number on the card cannot disagree with the list it is on."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "category",
+          "price",
+          "status",
+          "createdAt",
+          "updatedAt"
         ]
       },
       "OfferSummaryDto": {
