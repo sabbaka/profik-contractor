@@ -33,4 +33,14 @@ jobs:
 
       - run: npm run shared:check
 
-      - run: npm test
+      # Coverage is reported, not enforced: there is no threshold on purpose —
+      # a percentage on a suite this size is a number, not a signal. The
+      # report is kept so the number is there when someone wants to look.
+      - run: npm run test:coverage
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: contractor-coverage-report
+          path: coverage
+          retention-days: 14

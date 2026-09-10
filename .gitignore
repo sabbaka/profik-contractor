@@ -53,3 +53,6 @@ fastlane/Preview.html
 fastlane/screenshots/
 fastlane/test_output/
 fastlane/metadata/review_information/demo_password.txt
+
+# test coverage report (npm run test:coverage)
+/coverage
