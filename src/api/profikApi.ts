@@ -268,6 +268,10 @@ export const profikApi = createApi({
         // The My Jobs tab gains a row, and the offer fee has just come out of
         // the balance the job screen reads before enabling its button.
         { type: "Offers", id: "LIST" } as any,
+        // The Open Jobs feed loses one: the backend stops listing a job once
+        // the viewer has offered on it, so the feed has to be re-read or the
+        // card sits there advertising work this contractor can no longer take.
+        "Jobs",
         "Conversations",
         "Me",
       ],
