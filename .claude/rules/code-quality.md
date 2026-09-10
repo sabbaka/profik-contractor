@@ -81,9 +81,12 @@ app is actually launched with, `package-lock.json` can drift to versions that
 don't match — `nvm use` (or read `.nvmrc`) before installing, not after
 something looks wrong.
 
-CI (`ci.yml`) requests Node `20` (major only, via `actions/setup-node`) — this
-resolves to whatever the latest `20.x` patch is at build time, which needs to
-stay within the range above; it is not pinned to `.nvmrc`.
+CI (`ci.yml`) reads `.nvmrc` through `node-version-file`, so it runs the same
+version as a local checkout. It used to ask for a bare major (`20`), which
+resolved to whatever `20.x` was current — inside Expo's range, but below the
+`^22.13.0 || >=24` that `@testing-library/react-native` declares. The suite ran
+anyway; a toolchain on a version its own engines field calls unsupported is
+simply not somewhere to stand.
 
 ## The lockfile has to survive `npm ci`
 

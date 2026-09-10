@@ -14,7 +14,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # .nvmrc, not a major on its own: @testing-library/react-native
+          # declares node ^22.13.0 || >=24, so a bare "20" installs a toolchain
+          # its own engines field calls unsupported. Reading the pin also stops
+          # CI and local drifting apart, which is how a lockfile goes bad.
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci
