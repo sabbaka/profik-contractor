@@ -177,6 +177,39 @@ export interface UnreadSummary {
   byBucket: Record<ConversationBucket, number>;
 }
 
+/**
+ * `PaymentHistoryItemDto.type`.
+ *
+ * `job` and `offer_fee` are both "sent an offer, got charged" — `job` is an
+ * older name for the same movement, carried by entries written before the
+ * type was renamed. Neither populates `job` (the reference field) any
+ * differently: only `offer_fee` entries do. Treat the two as one type in the
+ * UI rather than inventing a second label for a distinction the data itself
+ * doesn't carry.
+ */
+export type PaymentType =
+  "topup" | "offer_fee" | "signup_bonus" | "opening_balance" | "job";
+
+export type PaymentStatus = "pending" | "completed" | "failed";
+
+/** `PaymentHistoryJobDto` — names the job an `offer_fee` was spent on. */
+export interface PaymentHistoryJob {
+  id: string;
+  title: string;
+}
+
+/** `PaymentHistoryItemDto` — one row of the balance history. */
+export interface PaymentHistoryItem {
+  id: string;
+  type: PaymentType;
+  /** Signed, CZK. Positive credits the balance, negative charges it. */
+  amount: number;
+  status: PaymentStatus;
+  /** The job an `offer_fee` was spent on. Null on every other type. */
+  job: PaymentHistoryJob | null;
+  createdAt: string;
+}
+
 /** `ReviewAuthorDto` — who left the review. Name is null until they set one. */
 export interface ReviewAuthor {
   id: string;

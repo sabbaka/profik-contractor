@@ -23,6 +23,7 @@ import type {
   Offer,
   OfferedJobItem,
   OfferMessage,
+  PaymentHistoryItem,
   Review,
   UnreadSummary,
 } from "./types";
@@ -35,6 +36,9 @@ export const OPEN_JOBS_PAGE_SIZE = 20;
 
 /** Offered jobs fetched per page by the My jobs tab. */
 export const OFFERED_JOBS_PAGE_SIZE = 20;
+
+/** Balance movements fetched per page by the payment history screen. */
+export const PAYMENT_HISTORY_PAGE_SIZE = 20;
 
 // Shape returned by GET /auth/me and PATCH /users/me.
 export interface MeResponse {
@@ -124,6 +128,7 @@ export const profikApi = createApi({
     "Unread",
     "Reviews",
     "Me",
+    "Payments",
   ],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
@@ -274,6 +279,8 @@ export const profikApi = createApi({
         "Jobs",
         "Conversations",
         "Me",
+        // The offer fee it was just charged shows up as a new row here.
+        "Payments",
       ],
       // POST /offers returns the whole offer, so the job screen can show the
       // real one the moment it lands instead of a locally guessed stand-in
@@ -373,6 +380,32 @@ export const profikApi = createApi({
         body: { amount, returnUrl },
       }),
     }),
+    /**
+     * The balance history screen, paged as it scrolls.
+     *
+     * Same shape as `/jobs/open`: a plain array rather than a `{ items,
+     * nextCursor }` envelope, so the cursor is the last entry's own `id` and
+     * the end of the list is a page shorter than `PAYMENT_HISTORY_PAGE_SIZE`
+     * — see `forwardIdCursor`.
+     */
+    getPaymentHistory: builder.infiniteQuery<
+      PaymentHistoryItem[],
+      void,
+      string | null
+    >({
+      infiniteQueryOptions: forwardIdCursor<PaymentHistoryItem>(
+        PAYMENT_HISTORY_PAGE_SIZE,
+        (entry) => entry.id,
+      ),
+      query: ({ pageParam }) => {
+        const params = new URLSearchParams({
+          limit: String(PAYMENT_HISTORY_PAGE_SIZE),
+        });
+        if (pageParam) params.set("cursor", pageParam);
+        return { url: `/payments/history?${params.toString()}`, method: "GET" };
+      },
+      providesTags: ["Payments"],
+    }),
     registerPushToken: builder.mutation<
       void,
       { pushToken: string; language: string }
@@ -465,6 +498,7 @@ export const {
   useMarkConversationReadMutation,
   useMarkAllReadMutation,
   useTopupBalanceMutation,
+  useGetPaymentHistoryInfiniteQuery,
   useRegisterPushTokenMutation,
   useUnregisterPushTokenMutation,
   useDeleteAccountMutation,

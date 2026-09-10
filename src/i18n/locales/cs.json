@@ -288,6 +288,23 @@
       "amountRequired": "Částka je povinná",
       "amountNumber": "Musí být platné číslo",
       "amountPositive": "Částka musí být větší než 0"
+    },
+    "history": {
+      "title": "Historie transakcí",
+      "loading": "Načítám historii...",
+      "errorTitle": "Historii se nepodařilo načíst",
+      "emptyTitle": "Zatím žádné transakce",
+      "emptyBody": "Dobití a poplatky za nabídky se zobrazí tady.",
+      "type": {
+        "topup": "Dobití",
+        "offerFee": "Poplatek za nabídku",
+        "signupBonus": "Uvítací bonus",
+        "openingBalance": "Počáteční zůstatek"
+      },
+      "status": {
+        "pending": "Čeká",
+        "failed": "Selhalo"
+      }
     }
   },
   "profile": {

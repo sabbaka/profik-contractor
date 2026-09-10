@@ -288,6 +288,23 @@
       "amountRequired": "Amount is required",
       "amountNumber": "Must be a valid number",
       "amountPositive": "Amount must be greater than 0"
+    },
+    "history": {
+      "title": "Transaction history",
+      "loading": "Loading history...",
+      "errorTitle": "Couldn't load history",
+      "emptyTitle": "No transactions yet",
+      "emptyBody": "Top-ups and offer fees will show up here.",
+      "type": {
+        "topup": "Top-up",
+        "offerFee": "Offer fee",
+        "signupBonus": "Welcome bonus",
+        "openingBalance": "Starting balance"
+      },
+      "status": {
+        "pending": "Pending",
+        "failed": "Failed"
+      }
     }
   },
   "profile": {

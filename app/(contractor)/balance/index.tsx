@@ -8,7 +8,13 @@ import {
 import { useTopupForm } from "@/src/features/balance/forms";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
-import { ChevronLeft, ShieldCheck, WalletCards } from "@tamagui/lucide-icons";
+import {
+  ChevronLeft,
+  ChevronRight,
+  History,
+  ShieldCheck,
+  WalletCards,
+} from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -147,6 +153,35 @@ export default function BalanceRoute() {
             {t("balance.usedFor")}
           </Text>
         </YStack>
+        <Pressable
+          onPress={() => router.push("/(contractor)/balance/history" as any)}
+          hitSlop={4}
+        >
+          <XStack
+            padding={16}
+            borderRadius={16}
+            backgroundColor={colors.bgCard}
+            borderWidth={1}
+            borderColor={colors.borderSubtle}
+            alignItems="center"
+            gap={12}
+          >
+            <YStack
+              width={36}
+              height={36}
+              borderRadius={12}
+              alignItems="center"
+              justifyContent="center"
+              backgroundColor={colors.accentLight}
+            >
+              <History size={18} color={colors.accent} />
+            </YStack>
+            <Text variant="bodyStrong" flex={1}>
+              {t("balance.history.title")}
+            </Text>
+            <ChevronRight size={18} color={colors.textMuted} />
+          </XStack>
+        </Pressable>
         <YStack
           padding={20}
           borderRadius={20}
