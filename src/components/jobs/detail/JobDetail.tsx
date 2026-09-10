@@ -1,7 +1,12 @@
 import { useGetJobByIdQuery } from "@/src/api/profikApi";
 import { useThemeColors } from "@/src/theme";
+import { formatCzk } from "@/src/utils/currency";
+import { formatCountry } from "@/src/utils/country";
+import * as Linking from "expo-linking";
 import { useLocalSearchParams } from "expo-router";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { Share } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Spinner, Text, YStack } from "tamagui";
 import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
@@ -79,6 +84,27 @@ export const JobDetail = () => {
     contractorId: job?.contractorId ?? null,
   });
 
+  // The link is the profikcontractor:// custom scheme, not a real https URL —
+  // the app has no web domain or Universal Links / App Links setup yet, so
+  // there is nothing to fall back to for someone without the app installed.
+  // It works for anyone who has the app (job details are guest-accessible,
+  // no sign-in required); most messaging apps won't linkify it, but it opens
+  // straight to this job for whoever taps or pastes it with the app present.
+  const handleShare = useCallback(() => {
+    if (!job) return;
+    const location = [job.city, formatCountry(job.country, t)]
+      .filter(Boolean)
+      .join(", ");
+    const lines = [
+      job.title,
+      "",
+      [formatCzk(job.price ?? 0), job.category].filter(Boolean).join(" · "),
+    ];
+    if (location) lines.push(location);
+    lines.push("", Linking.createURL(`jobs/${job.id}`));
+    Share.share({ message: lines.join("\n") }).catch(() => {});
+  }, [job, t]);
+
   if (isLoading) {
     return (
       <YStack
@@ -145,7 +171,7 @@ export const JobDetail = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bgSecondary }}>
       <YStack flex={1}>
-        <JobDetailHeader />
+        <JobDetailHeader onShare={handleShare} />
 
         {/* Fixed in place above the scroll area, rather than scrolling away
             with the rest of the detail — the price/title/date a contractor

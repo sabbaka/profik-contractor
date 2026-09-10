@@ -1,13 +1,18 @@
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { ChevronLeft } from "@tamagui/lucide-icons";
+import { ChevronLeft, Share2 } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { XStack } from "tamagui";
 
-export function JobDetailHeader() {
+interface JobDetailHeaderProps {
+  /** Opens the OS share sheet with a text summary of the job. */
+  onShare: () => void;
+}
+
+export function JobDetailHeader({ onShare }: JobDetailHeaderProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   return (
@@ -30,7 +35,19 @@ export function JobDetailHeader() {
         </XStack>
       </Pressable>
       <Text variant="h5">{t("job.details")}</Text>
-      <XStack width={58} />
+      <Pressable
+        onPress={onShare}
+        hitSlop={10}
+        accessibilityRole="button"
+        accessibilityLabel={t("job.shareA11y")}
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.6 : 1,
+          width: 58,
+          alignItems: "flex-end",
+        })}
+      >
+        <Share2 size={21} color={colors.textPrimary} />
+      </Pressable>
     </XStack>
   );
 }

@@ -183,6 +183,7 @@
     "notes": "Doplňující poznámky",
     "messageClient": "Napsat",
     "messageClientA11y": "Napsat klientovi o zakázce {{title}}",
+    "shareA11y": "Sdílet tuto zakázku",
     "country": {
       "CZ": "Česko",
       "US": "USA"

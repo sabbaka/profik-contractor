@@ -183,6 +183,7 @@
     "notes": "Additional notes",
     "messageClient": "Message",
     "messageClientA11y": "Message the client about {{title}}",
+    "shareA11y": "Share this job",
     "country": {
       "CZ": "Czechia",
       "US": "USA"
