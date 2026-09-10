@@ -63,6 +63,10 @@ export interface MyOffer {
 /**
  * `OfferResponseDto` — a whole offer, as `/offers/job/{jobId}/my` returns it.
  * The same fields as `MyOffer` plus the two ids the embedded form can omit.
+ *
+ * That endpoint answers with `null` when this contractor has not offered on the
+ * job — an ordinary answer, not a 404, which is why nothing has to ask
+ * `/has-offered` first any more.
  */
 export interface Offer extends MyOffer {
   jobId: string;

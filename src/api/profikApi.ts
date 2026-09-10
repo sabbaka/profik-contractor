@@ -234,20 +234,17 @@ export const profikApi = createApi({
         { type: "Jobs", id: jobId } as any,
       ],
     }),
-    hasOffered: builder.query<{ hasOffered: boolean }, string>({
-      query: (jobId) => ({
-        url: `/offers/job/${jobId}/has-offered`,
-        method: "GET",
-      }),
-    }),
-    getMyOfferForJob: builder.query<Offer, string>({
+    // Null when this contractor has not offered, so this one call answers both
+    // "have I offered?" and "with what?". It used to 404 on the first, which is
+    // why /has-offered existed to be asked first — see useJobOffer.
+    getMyOfferForJob: builder.query<Offer | null, string>({
       query: (jobId) => ({ url: `/offers/job/${jobId}/my`, method: "GET" }),
       providesTags: (_result, _error, jobId) => [
         { type: "Offers", id: jobId } as any,
       ],
     }),
     createOffer: builder.mutation<
-      { id: string },
+      Offer,
       { jobId: string; price: number; message?: string }
     >({
       query: (body) => ({ url: "/offers", method: "POST", body }),
@@ -255,6 +252,16 @@ export const profikApi = createApi({
         { type: "Offers", id: jobId } as any,
         "Conversations",
       ],
+      // POST /offers returns the whole offer, so the job screen can show the
+      // real one the moment it lands instead of a locally guessed stand-in
+      // waiting for a refetch. The invalidation above still runs and converges
+      // on the same row.
+      async onQueryStarted({ jobId }, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        dispatch(
+          profikApi.util.upsertQueryData("getMyOfferForJob", jobId, data),
+        );
+      },
     }),
     getOfferMessages: builder.query<OfferMessage[], string>({
       query: (offerId) => ({
@@ -427,7 +434,6 @@ export const {
   useGetJobReviewsQuery,
   useCreateReviewMutation,
   useCreateOfferMutation,
-  useHasOfferedQuery,
   useGetMyOfferForJobQuery,
   useGetOfferMessagesQuery,
   useSendOfferMessageMutation,

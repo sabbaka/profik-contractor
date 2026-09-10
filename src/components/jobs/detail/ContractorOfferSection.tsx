@@ -15,7 +15,8 @@ type OfferMode = "idle" | "counter";
 interface Props {
   hasOffered: boolean;
   myOfferPrice?: number;
-  myOfferMessage?: string;
+  /** Null, not absent, when the contractor left the pitch out — see `MyOffer`. */
+  myOfferMessage?: string | null;
   myOfferStatus?: OfferStatus;
   /** Job the offer belongs to — travels into the chat as its header context. */
   jobId: string;

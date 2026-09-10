@@ -1,7 +1,6 @@
 import {
   useCreateOfferMutation,
   useGetMyOfferForJobQuery,
-  useHasOfferedQuery,
   useMeQuery,
 } from "@/src/api/profikApi";
 import { OFFER_COST_CZK } from "@/src/components/jobs/detail/offerPricing";
@@ -36,12 +35,6 @@ export const useJobOffer = ({
   const [mode, setModeState] = useState<OfferMode>("idle");
   const [price, setPrice] = useState("");
   const [message, setMessage] = useState("");
-  const [lastOffer, setLastOffer] = useState<{
-    price: number;
-    message?: string;
-  } | null>(null);
-  const [lastOfferId, setLastOfferId] = useState<string | null>(null);
-
   const isContractor = me?.role === "contractor";
   // One phone is one account, so the person browsing here may also be the
   // client who posted this job. The backend refuses an offer on your own job
@@ -55,27 +48,20 @@ export const useJobOffer = ({
   const balance = me?.balance ?? 0;
   const canAffordOffer = balance >= OFFER_COST_CZK;
 
-  const { data: offerStatus } = useHasOfferedQuery(jobId, {
-    skip: !me || !canOffer,
-  });
-
+  // One request answers both questions: null means no offer yet. createOffer
+  // writes its response straight into this cache entry, so everything below
+  // reflects the server the moment an offer is sent — no local stand-in, and
+  // no guessed status.
   const { data: myOffer } = useGetMyOfferForJobQuery(jobId, {
-    skip: !me || !canOffer || !offerStatus?.hasOffered,
+    skip: !me || !canOffer,
     refetchOnMountOrArgChange: true,
   });
 
-  const offerIdForChat = lastOfferId ?? (myOffer as any)?.id ?? null;
-
-  const hasOffered = !!(offerStatus?.hasOffered || lastOffer || myOffer);
-
-  const myOfferPrice = (lastOffer?.price ?? (myOffer as any)?.price) as
-    number | undefined;
-
-  const myOfferMessage = (lastOffer?.message ?? (myOffer as any)?.message) as
-    string | undefined;
-
-  const myOfferStatus = (lastOffer ? "pending" : (myOffer as any)?.status) as
-    "pending" | "accepted" | "declined" | undefined;
+  const offerIdForChat = myOffer?.id ?? null;
+  const hasOffered = !!myOffer;
+  const myOfferPrice = myOffer?.price;
+  const myOfferMessage = myOffer?.message;
+  const myOfferStatus = myOffer?.status;
 
   const setMode = useCallback(
     (next: OfferMode) => {
@@ -98,14 +84,12 @@ export const useJobOffer = ({
     }
 
     try {
-      const created = await createOffer({
+      await createOffer({
         jobId,
         price: jobPrice,
       }).unwrap();
 
       Alert.alert(t("common.success"), t("offer.submitted"));
-      setLastOffer({ price: jobPrice });
-      setLastOfferId((created as any)?.id ?? null);
       setModeState("idle");
       setPrice("");
       setMessage("");
@@ -142,15 +126,13 @@ export const useJobOffer = ({
     }
 
     try {
-      const created = await createOffer({
+      await createOffer({
         jobId,
         price: priceNum,
         message: message.trim() || undefined,
       }).unwrap();
 
       Alert.alert(t("common.success"), t("offer.submitted"));
-      setLastOffer({ price: priceNum, message: message.trim() || undefined });
-      setLastOfferId((created as any)?.id ?? null);
       setModeState("idle");
       setMessage("");
       setPrice("");

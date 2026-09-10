@@ -335,6 +335,8 @@
     },
     "/offers/job/{jobId}/has-offered": {
       "get": {
+        "deprecated": true,
+        "description": "Deprecated — use `GET /offers/job/{jobId}/my`, which answers the same question in one request and returns the offer itself. This runs the identical query and returns only a boolean, so a screen needing the offer had to call both. Kept until the builds that call it are gone; delete it then, together with hasOffered() and HasOfferedResponseDto.",
         "operationId": "hasOffered",
         "parameters": [
           {
@@ -378,6 +380,7 @@
     },
     "/offers/job/{jobId}/my": {
       "get": {
+        "description": "Answers with the offer, or with a null body when this contractor has not offered on the job. Not a 404: having no offer is an ordinary answer, and this replaces the has-offered call that used to be made first to find out whether asking was safe.",
         "operationId": "getMyOfferForJob",
         "parameters": [
           {
@@ -392,7 +395,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Offer for the job by current contractor",
+            "description": "The offer, or **null** when this contractor has not offered on the job.",
             "content": {
               "application/json": {
                 "schema": {
@@ -400,9 +403,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Offer not found"
           }
         },
         "security": [
