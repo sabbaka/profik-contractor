@@ -101,7 +101,7 @@ The brand gradient is **not** a hex literal. It comes from `PROFIK_GRADIENT`:
 
 ```tsx
 import { PROFIK_GRADIENT } from "@/tamagui.config";
-<LinearGradient colors={PROFIK_GRADIENT.accent} />
+<LinearGradient colors={PROFIK_GRADIENT.accent} />;
 ```
 
 It is a module constant rather than a token because it is deliberately
