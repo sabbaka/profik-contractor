@@ -47,7 +47,11 @@ export function useTopup(): UseTopupReturn {
         const startBalance = user?.balance ?? 0;
         let balanceUpdated = false;
 
-        // Poll for balance update
+        // Polling, not an invalidation gap: Stripe credits the balance from
+        // its webhook, so at the moment the browser hands control back the
+        // money may genuinely not be there yet. Nothing the cache knows can
+        // shorten that — this waits for the server to catch up. Do not replace
+        // it with a tag invalidation.
         let finalBalance = startBalance;
         for (let i = 0; i < 5; i++) {
           const r = await refetchBalance();

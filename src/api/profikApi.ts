@@ -123,6 +123,7 @@ export const profikApi = createApi({
     "Conversations",
     "Unread",
     "Reviews",
+    "Me",
   ],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
@@ -140,8 +141,13 @@ export const profikApi = createApi({
     verifyOtpCode: builder.mutation<AuthResponse, VerifyOtpParams>({
       query: (body) => ({ url: "/auth/otp/verify", method: "POST", body }),
     }),
+    // Tagged so a mutation can say "the account changed, read it again".
+    // updateProfile and uploadAvatar patch this entry directly from their own
+    // responses; the tag is for changes this endpoint learns about only by
+    // asking — the balance after an offer is charged.
     me: builder.query<MeResponse, void>({
       query: () => ({ url: "/auth/me", method: "GET" }),
+      providesTags: ["Me"],
     }),
     /**
      * The Open tab's feed, paged as the contractor scrolls.
@@ -192,7 +198,13 @@ export const profikApi = createApi({
         if (pageParam) params.set("cursor", pageParam);
         return { url: `/jobs/offered?${params.toString()}`, method: "GET" };
       },
-      providesTags: ["Jobs", "Offers"],
+      // LIST rather than a bare tag: a bare provider is registered under no id
+      // at all, and an invalidation carrying one never reaches it — which is
+      // why sending an offer used to leave this tab showing the old set.
+      providesTags: [
+        { type: "Jobs", id: "LIST" } as any,
+        { type: "Offers", id: "LIST" } as any,
+      ],
     }),
     getJobById: builder.query<Job, string>({
       query: (id) => ({ url: `/jobs/${id}`, method: "GET" }),
@@ -232,6 +244,9 @@ export const profikApi = createApi({
       invalidatesTags: (_result, _error, { jobId }) => [
         { type: "Reviews", id: jobId } as any,
         { type: "Jobs", id: jobId } as any,
+        // Same reason as createOffer: the row in My Jobs shows whether the job
+        // has been reviewed, and it is provided under LIST.
+        { type: "Jobs", id: "LIST" } as any,
       ],
     }),
     // Null when this contractor has not offered, so this one call answers both
@@ -250,7 +265,11 @@ export const profikApi = createApi({
       query: (body) => ({ url: "/offers", method: "POST", body }),
       invalidatesTags: (_result, _error, { jobId }) => [
         { type: "Offers", id: jobId } as any,
+        // The My Jobs tab gains a row, and the offer fee has just come out of
+        // the balance the job screen reads before enabling its button.
+        { type: "Offers", id: "LIST" } as any,
         "Conversations",
+        "Me",
       ],
       // POST /offers returns the whole offer, so the job screen can show the
       // real one the moment it lands instead of a locally guessed stand-in
