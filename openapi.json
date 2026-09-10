@@ -964,6 +964,7 @@
     },
     "/users/{id}/reviews/summary": {
       "get": {
+        "description": "Broken out by side: `asContractor` is what clients said about their work, `asClient` what contractors said about them as a customer. The flat `averageRating` / `reviewsCount` mirror `asContractor`.",
         "operationId": "getUserReviewSummary",
         "parameters": [
           {
@@ -1004,6 +1005,7 @@
     },
     "/users/{id}/reviews": {
       "get": {
+        "description": "Returns the reviews for a single reputation. `side` selects it and defaults to `contractor`, matching the flat average on the profile.",
         "operationId": "getUserReviews",
         "parameters": [
           {
@@ -1036,6 +1038,20 @@
               "example": "123e4567-e89b-12d3-a456-426614174000",
               "type": "string"
             }
+          },
+          {
+            "name": "side",
+            "required": false,
+            "in": "query",
+            "description": "Which reputation to list: reviews received as a contractor, or as a client. Defaults to `contractor`, matching the flat `averageRating` on the profile — released apps send no side at all.",
+            "schema": {
+              "example": "contractor",
+              "type": "string",
+              "enum": [
+                "client",
+                "contractor"
+              ]
+            }
           }
         ],
         "responses": {
@@ -1061,7 +1077,7 @@
             "bearer": []
           }
         ],
-        "summary": "Get all reviews received by a user",
+        "summary": "Get reviews received by a user on one side",
         "tags": [
           "Users"
         ]
@@ -3007,6 +3023,26 @@
           "createdAt"
         ]
       },
+      "UserSideRatingDto": {
+        "type": "object",
+        "properties": {
+          "averageRating": {
+            "type": "object",
+            "example": 4.5,
+            "nullable": true,
+            "description": "Average rating from 1 to 5 on this side, or null if there are no reviews"
+          },
+          "reviewsCount": {
+            "type": "number",
+            "example": 12,
+            "description": "Number of reviews received on this side"
+          }
+        },
+        "required": [
+          "averageRating",
+          "reviewsCount"
+        ]
+      },
       "UserRatingSummaryDto": {
         "type": "object",
         "properties": {
@@ -3019,18 +3055,36 @@
             "type": "object",
             "example": 4.5,
             "nullable": true,
-            "description": "Average rating from 1 to 5 for this user, or null if there are no reviews"
+            "description": "Average rating this user earned as a contractor, or null if there are none. Same value as asContractor.averageRating: this field predates the split between the two reputations and is kept for released apps."
           },
           "reviewsCount": {
             "type": "number",
             "example": 12,
-            "description": "Total number of reviews this user has received"
+            "description": "Number of reviews this user received as a contractor. Same value as asContractor.reviewsCount; kept for released apps."
+          },
+          "asContractor": {
+            "description": "Rating earned doing the work, from the clients who hired them",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserSideRatingDto"
+              }
+            ]
+          },
+          "asClient": {
+            "description": "Rating earned commissioning work, from the contractors who did it",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserSideRatingDto"
+              }
+            ]
           }
         },
         "required": [
           "userId",
           "averageRating",
-          "reviewsCount"
+          "reviewsCount",
+          "asContractor",
+          "asClient"
         ]
       },
       "ReviewAuthorDto": {
@@ -3082,6 +3136,15 @@
             "example": "123e4567-e89b-12d3-a456-426614174002",
             "description": "Target user ID (the one being reviewed)"
           },
+          "targetRole": {
+            "type": "string",
+            "enum": [
+              "client",
+              "contractor"
+            ],
+            "example": "contractor",
+            "description": "Which of the target's two reputations this review counts towards: `contractor` when it is about the work, `client` when it is about the person who commissioned it."
+          },
           "rating": {
             "type": "number",
             "example": 5,
@@ -3112,6 +3175,7 @@
           "jobId",
           "authorId",
           "targetId",
+          "targetRole",
           "rating",
           "author",
           "createdAt"
@@ -3147,12 +3211,28 @@
             "type": "object",
             "example": 4.5,
             "nullable": true,
-            "description": "Average rating from 1 to 5 for this user, or null if there are no reviews"
+            "description": "Average rating this user earned as a contractor, or null if there are none. Same value as asContractor.averageRating: this field predates the split between the two reputations and is kept for released apps."
           },
           "reviewsCount": {
             "type": "number",
             "example": 12,
-            "description": "Total number of reviews this user has received"
+            "description": "Number of reviews this user received as a contractor. Same value as asContractor.reviewsCount; kept for released apps."
+          },
+          "asContractor": {
+            "description": "Rating earned doing the work, from the clients who hired them",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserSideRatingDto"
+              }
+            ]
+          },
+          "asClient": {
+            "description": "Rating earned commissioning work, from the contractors who did it",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserSideRatingDto"
+              }
+            ]
           }
         },
         "required": [
@@ -3160,7 +3240,9 @@
           "name",
           "memberSince",
           "averageRating",
-          "reviewsCount"
+          "reviewsCount",
+          "asContractor",
+          "asClient"
         ]
       },
       "UpdateProfileDto": {

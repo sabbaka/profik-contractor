@@ -184,6 +184,10 @@ export interface ReviewAuthor {
  * `JobReviewResponseDto` — one review left on a job. A completed job can carry
  * two, one per direction: read `targetId` to tell whose review this is.
  *
+ * `targetRole` is the same direction stated on the row. It exists because one
+ * account is both sides of the marketplace, and the two reputations are
+ * averaged apart on the profile endpoints.
+ *
  * The spec marks `comment` optional, but the endpoint serialises the database
  * row as-is, so a review left without one comes back as `null` — same as the
  * client app types it.
@@ -193,6 +197,7 @@ export interface Review {
   jobId: string;
   authorId: string;
   targetId: string;
+  targetRole: "client" | "contractor";
   rating: number;
   comment: string | null;
   author: ReviewAuthor;
