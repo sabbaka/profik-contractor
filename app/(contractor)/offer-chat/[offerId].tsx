@@ -19,6 +19,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import { logError } from "@/src/utils/logger";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import React, {
   useCallback,
   useEffect,
@@ -297,7 +298,7 @@ export default function OfferChatRoute() {
                 >
                   {mine ? (
                     <LinearGradient
-                      colors={["#FF8A2B", "#E85D00"]}
+                      colors={PROFIK_GRADIENT.accent}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={StyleSheet.absoluteFill}
@@ -371,7 +372,7 @@ export default function OfferChatRoute() {
               justifyContent="center"
             >
               <LinearGradient
-                colors={["#FF8A2B", "#E85D00"]}
+                colors={PROFIK_GRADIENT.accent}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={StyleSheet.absoluteFill}

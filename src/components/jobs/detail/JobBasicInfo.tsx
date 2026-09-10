@@ -2,6 +2,7 @@ import type { TimeSlot } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { formatCzk } from "@/src/utils/currency";
 import { dateLocale, formatSchedule } from "@/src/utils/jobSchedule";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { Calendar, Clock, MapPin } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
@@ -38,7 +39,7 @@ export const JobBasicInfo = ({
   return (
     <YStack borderRadius={24} overflow="hidden" padding={22} gap={16}>
       <LinearGradient
-        colors={["#FF8A2B", "#E85D00"]}
+        colors={PROFIK_GRADIENT.accent}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}

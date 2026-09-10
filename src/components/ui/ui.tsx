@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Input, styled, Text as TextElement, XStack, YStack } from "tamagui";
 import { useThemeColors } from "@/src/theme";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 
 export const Text = styled(TextElement, {
   color: "$textPrimary",
@@ -259,7 +260,7 @@ export const Button = forwardRef<any, ButtonProps>(function Button(
     >
       {isPrimary && !isDisabled ? (
         <LinearGradient
-          colors={["#FF8A2B", "#E85D00"]}
+          colors={PROFIK_GRADIENT.accent}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={StyleSheet.absoluteFill}

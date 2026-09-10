@@ -14,6 +14,7 @@ import {
   type AppLanguage,
 } from "@/src/utils/languageStorage";
 import { clearHasSeenOnboarding } from "@/src/utils/onboardingStorage";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import {
   Bell,
   ChevronRight,
@@ -231,7 +232,7 @@ export default function ProfileRoute() {
               justifyContent="center"
             >
               <LinearGradient
-                colors={["#FF8A2B", "#E85D00"]}
+                colors={PROFIK_GRADIENT.accent}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={StyleSheet.absoluteFill}
@@ -285,7 +286,7 @@ export default function ProfileRoute() {
             justifyContent="center"
           >
             <LinearGradient
-              colors={["#FF8A2B", "#E85D00"]}
+              colors={PROFIK_GRADIENT.accent}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={StyleSheet.absoluteFill}
@@ -353,7 +354,7 @@ export default function ProfileRoute() {
           >
             <YStack borderRadius={20} overflow="hidden" padding={18} gap={5}>
               <LinearGradient
-                colors={["#FF8A2B", "#E85D00"]}
+                colors={PROFIK_GRADIENT.accent}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={StyleSheet.absoluteFill}

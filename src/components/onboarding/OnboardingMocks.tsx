@@ -1,5 +1,6 @@
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import {
   BriefcaseBusiness,
   Calendar,
@@ -276,7 +277,7 @@ export function PickJobsMock() {
           justifyContent="center"
         >
           <LinearGradient
-            colors={["#FF8A2B", "#E85D00"]}
+            colors={PROFIK_GRADIENT.accent}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}
@@ -386,7 +387,7 @@ export function GetPaidMock() {
           >
             {bubble.mine ? (
               <LinearGradient
-                colors={["#FF8A2B", "#E85D00"]}
+                colors={PROFIK_GRADIENT.accent}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={StyleSheet.absoluteFill}

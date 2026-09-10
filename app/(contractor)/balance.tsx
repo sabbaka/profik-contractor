@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { XStack, YStack } from "tamagui";
 
 export default function BalanceRoute() {
@@ -99,7 +100,7 @@ export default function BalanceRoute() {
       >
         <YStack borderRadius={24} overflow="hidden" padding={22} gap={14}>
           <LinearGradient
-            colors={["#FF8A2B", "#E85D00"]}
+            colors={PROFIK_GRADIENT.accent}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}

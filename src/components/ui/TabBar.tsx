@@ -1,4 +1,5 @@
 import { useThemeColors } from "@/src/theme";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
@@ -86,7 +87,7 @@ export function TabBar({
             style={[styles.indicator, indicatorStyle]}
           >
             <LinearGradient
-              colors={["#FF8A2B", "#E85D00"]}
+              colors={PROFIK_GRADIENT.accent}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={StyleSheet.absoluteFill}

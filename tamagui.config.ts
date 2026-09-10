@@ -2,6 +2,21 @@ import { config } from "@tamagui/config/v3";
 import { createTamagui } from "tamagui";
 
 /**
+ * The Profik brand gradient — the single source of this colour pair.
+ *
+ * Deliberately theme-independent: it is the brand mark, not a themed surface,
+ * so it is a module constant rather than a theme token, and it reads the same
+ * in light and dark. The `accentGradStart` / `accentGradEnd` tokens below are
+ * derived from it so the two can never drift.
+ *
+ * Change the brand gradient here (and in the sibling app's identical copy of
+ * this file) — nowhere else should carry these hex values.
+ */
+export const PROFIK_GRADIENT = {
+  accent: ["#FF8A2B", "#E85D00"] as const,
+};
+
+/**
  * Profik design tokens — extracted directly from `profi-design.pen`.
  * Light theme + dark theme (mode: "light" | "dark" in the design file).
  *
@@ -13,8 +28,8 @@ const lightTokens = {
   accent: "#FF6C00",
   accentHover: "#E85D00",
   accentPress: "#C24E00",
-  accentGradStart: "#FF8A2B",
-  accentGradEnd: "#E85D00",
+  accentGradStart: PROFIK_GRADIENT.accent[0],
+  accentGradEnd: PROFIK_GRADIENT.accent[1],
   accentLight: "#FFF4EB",
 
   bgPrimary: "#FFFFFF",
@@ -77,8 +92,8 @@ const darkTokens: typeof lightTokens = {
   accent: "#FF6C00",
   accentHover: "#FF8A2B",
   accentPress: "#E85D00",
-  accentGradStart: "#FF8A2B",
-  accentGradEnd: "#E85D00",
+  accentGradStart: PROFIK_GRADIENT.accent[0],
+  accentGradEnd: PROFIK_GRADIENT.accent[1],
   accentLight: "#3D2414",
 
   bgPrimary: "#0F1117",
@@ -189,9 +204,5 @@ export type ProfikConfig = typeof profikConfig;
 declare module "tamagui" {
   interface TamaguiCustomConfig extends ProfikConfig {}
 }
-
-export const PROFIK_GRADIENT = {
-  accent: ["#FF8A2B", "#E85D00"] as const,
-};
 
 export default profikConfig;

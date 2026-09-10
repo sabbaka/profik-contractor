@@ -1,4 +1,5 @@
 import { useThemeColors } from "@/src/theme";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleSheet } from "react-native";
@@ -92,7 +93,7 @@ function Segment({
     >
       <Animated.View style={[StyleSheet.absoluteFill, fillStyle]}>
         <LinearGradient
-          colors={["#FF8A2B", "#E85D00"]}
+          colors={PROFIK_GRADIENT.accent}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFill}

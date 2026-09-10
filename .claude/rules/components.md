@@ -97,9 +97,22 @@ New colours are added to `tamagui.config.ts` (both `light` and `dark` themes)
 **and** to the `ThemeColors` interface + mapping in `src/theme.ts` if read
 through `useThemeColors()`.
 
-Literal hex is acceptable only for colours that are deliberately
-theme-independent — the orange brand gradient (`#FF8A2B` → `#E85D00`), white on
-that gradient, status-dot colours in a fixed-dark hero.
+The brand gradient is **not** a hex literal. It comes from `PROFIK_GRADIENT`:
+
+```tsx
+import { PROFIK_GRADIENT } from "@/tamagui.config";
+<LinearGradient colors={PROFIK_GRADIENT.accent} />
+```
+
+It is a module constant rather than a token because it is deliberately
+theme-independent and because some call sites are module scope (a default prop),
+where a hook cannot run. The `accentGradStart` / `accentGradEnd` tokens are
+derived from it, so `colors.accentGradientStart/End` stay correct too — changing
+the brand gradient is one line in `tamagui.config.ts` per app.
+
+Literal hex is acceptable only for the remaining colours that are deliberately
+theme-independent — white on that gradient, status-dot colours in a fixed-dark
+hero.
 
 Pick the token by meaning, not by how it looks. `textSecondary` is for labels;
 a client's own message is content and takes `textPrimary`. Choosing the wrong

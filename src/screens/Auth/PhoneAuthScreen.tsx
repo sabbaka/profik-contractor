@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { Keyboard, Pressable, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { XStack, YStack } from "tamagui";
 import { z } from "zod";
 
@@ -117,7 +118,7 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
                 justifyContent="center"
               >
                 <LinearGradient
-                  colors={["#FF8A2B", "#E85D00"]}
+                  colors={PROFIK_GRADIENT.accent}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={StyleSheet.absoluteFill}

@@ -1,3 +1,4 @@
+import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { StyleSheet } from "react-native";
@@ -19,7 +20,7 @@ export function GradientCircle({
   size = 56,
   radius,
   children,
-  colors = ["#FF8A2B", "#E85D00"] as const,
+  colors = PROFIK_GRADIENT.accent,
 }: GradientCircleProps) {
   const r = radius ?? Math.min(16, size / 2);
   return (
@@ -57,7 +58,7 @@ export function AvatarCircle({
     <GradientCircle
       size={size}
       radius={9999}
-      colors={colors ?? (["#FF8A2B", "#E85D00"] as const)}
+      colors={colors ?? PROFIK_GRADIENT.accent}
     >
       {children}
     </GradientCircle>
