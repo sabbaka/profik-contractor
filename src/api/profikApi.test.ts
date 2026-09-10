@@ -236,3 +236,202 @@ describe("the me cache is merged, never replaced", () => {
     });
   });
 });
+
+/**
+ * Cache invalidation, exercised as a refetch rather than by reading the tag
+ * arrays back: a tag is only correct relative to what provides it, and the
+ * three bugs this covers were all a mutation whose tags looked right and
+ * reached nothing.
+ *
+ * The trap is `{ type, id: "LIST" }` against a bare `"Offers"`. A bare
+ * provider is registered under no id, and an invalidation carrying one never
+ * finds it — which is how sending an offer left My Jobs showing the old set.
+ */
+describe("cache invalidation", () => {
+  /** Answers each endpoint with a body of the shape its transform expects. */
+  const respondByShape = () =>
+    jest.fn(async (request: Request) => {
+      const body = request.url.includes("/unread-count")
+        ? { total: 0 }
+        : request.method === "GET"
+          ? []
+          : {};
+      return new Response(JSON.stringify(body), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+
+  /**
+   * Dispatch a query and hold the subscription open. An invalidation only
+   * refetches a query something is still watching, so `run`'s unsubscribe
+   * would make every test here pass for the wrong reason.
+   */
+  const watch = async (store: Store, thunk: unknown) => {
+    const promise = store.dispatch(
+      thunk as never,
+    ) as unknown as Promise<unknown> & { unsubscribe?: () => void };
+    await promise;
+    return () => promise.unsubscribe?.();
+  };
+
+  /** Let the invalidation dispatch its refetch and that refetch settle. */
+  const settle = async () => {
+    for (let i = 0; i < 5; i++) await new Promise(process.nextTick);
+  };
+
+  /**
+   * GET requests to a path, which is what a refetch is. The method matters:
+   * `createReview` POSTs to the same path `getJobReviews` reads, so counting
+   * every call to the URL counts the mutation as one of its own refetches.
+   */
+  const timesRead = (path: string) =>
+    fetchMock.mock.calls.filter((call) => {
+      const request = call[0] as Request;
+      return (
+        request.method === "GET" && new URL(request.url).pathname.endsWith(path)
+      );
+    }).length;
+
+  const signedIn = () => {
+    const store = makeStore();
+    store.dispatch(setToken("tok"));
+    return store;
+  };
+
+  beforeEach(() => {
+    fetchMock = respondByShape();
+    global.fetch = fetchMock as unknown as typeof fetch;
+  });
+
+  /**
+   * The backend stops listing a job once the viewer has offered on it, so a
+   * feed left unrefreshed advertises work this contractor can no longer take.
+   */
+  it("refreshes the open feed once an offer is sent", async () => {
+    const store = signedIn();
+    const stop = await watch(
+      store,
+      profikApi.endpoints.getOpenJobs.initiate(undefined),
+    );
+    expect(timesRead("/jobs/open")).toBe(1);
+
+    await run(
+      store,
+      profikApi.endpoints.createOffer.initiate({ jobId: "j1", price: 900 }),
+    );
+    await settle();
+
+    expect(timesRead("/jobs/open")).toBe(2);
+    stop();
+  });
+
+  // The `LIST` id is the whole point: this tab provides one and createOffer
+  // invalidates one, and a bare tag on either side breaks the pair.
+  it("refreshes My Jobs once an offer is sent", async () => {
+    const store = signedIn();
+    const stop = await watch(
+      store,
+      profikApi.endpoints.getOfferedJobs.initiate({ filter: "active" }),
+    );
+    expect(timesRead("/jobs/offered")).toBe(1);
+
+    await run(
+      store,
+      profikApi.endpoints.createOffer.initiate({ jobId: "j1", price: 900 }),
+    );
+    await settle();
+
+    expect(timesRead("/jobs/offered")).toBe(2);
+    stop();
+  });
+
+  // The fee comes out of the balance the job screen reads before enabling its
+  // button, so a stale `me` re-enables an offer the contractor cannot pay for.
+  it("re-reads the balance once an offer is sent", async () => {
+    const store = signedIn();
+    const stop = await watch(store, profikApi.endpoints.me.initiate());
+    expect(timesRead("/auth/me")).toBe(1);
+
+    await run(
+      store,
+      profikApi.endpoints.createOffer.initiate({ jobId: "j1", price: 900 }),
+    );
+    await settle();
+
+    expect(timesRead("/auth/me")).toBe(2);
+    stop();
+  });
+
+  it("refreshes the job an offer was sent on, and no other", async () => {
+    const store = signedIn();
+    const watched = await watch(
+      store,
+      profikApi.endpoints.getMyOfferForJob.initiate("j1"),
+    );
+    const other = await watch(
+      store,
+      profikApi.endpoints.getMyOfferForJob.initiate("j2"),
+    );
+
+    await run(
+      store,
+      profikApi.endpoints.createOffer.initiate({ jobId: "j1", price: 900 }),
+    );
+    await settle();
+
+    expect(timesRead("/offers/job/j1/my")).toBe(2);
+    expect(timesRead("/offers/job/j2/my")).toBe(1);
+    watched();
+    other();
+  });
+
+  it("refreshes a job's reviews and the job itself once one is left", async () => {
+    const store = signedIn();
+    const reviews = await watch(
+      store,
+      profikApi.endpoints.getJobReviews.initiate("j1"),
+    );
+    const job = await watch(
+      store,
+      profikApi.endpoints.getJobById.initiate("j1"),
+    );
+
+    await run(
+      store,
+      profikApi.endpoints.createReview.initiate({ jobId: "j1", rating: 5 }),
+    );
+    await settle();
+
+    expect(timesRead("/jobs/j1/reviews")).toBe(2);
+    expect(timesRead("/jobs/j1")).toBe(2);
+    reviews();
+    job();
+  });
+
+  it.each([
+    ["markConversationRead", () => ({ offerId: "o1" })],
+    ["markAllRead", () => undefined],
+  ])("re-reads the unread count after %s", async (endpoint, args) => {
+    const store = signedIn();
+    const stop = await watch(
+      store,
+      profikApi.endpoints.getUnreadCount.initiate(),
+    );
+    expect(timesRead("/offers/unread-count")).toBe(1);
+
+    await run(
+      store,
+      (
+        profikApi.endpoints as unknown as Record<
+          string,
+          { initiate: (a: unknown) => unknown }
+        >
+      )[endpoint].initiate(args()),
+    );
+    await settle();
+
+    expect(timesRead("/offers/unread-count")).toBe(2);
+    stop();
+  });
+});
