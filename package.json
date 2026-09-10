@@ -9,7 +9,11 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "i18n:check": "node scripts/check-hardcoded-strings.mjs",
+    "shared:check": "node scripts/check-shared-modules.mjs",
+    "shared:sync": "node scripts/check-shared-modules.mjs --sync",
     "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -71,10 +75,15 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.0.1",
+    "@types/jest": "^29.5.14",
     "@types/react": "~19.2.4",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~57.0.2",
+    "jest": "^29.7.0",
+    "jest-expo": "~57.0.5",
     "prettier": "^3.9.6",
+    "test-renderer": "^1.2.0",
     "typescript": "~6.0.3"
   },
   "private": true

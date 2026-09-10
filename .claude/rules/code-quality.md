@@ -2,7 +2,7 @@
 
 ## The checks
 
-Work is not done until all four pass. Run them yourself; do not ask the user
+Work is not done until all six pass. Run them yourself; do not ask the user
 to find out for you.
 
 ```bash
@@ -10,9 +10,11 @@ npm run typecheck     # tsc --noEmit — must be silent
 npm run lint          # expo lint (eslint) — zero errors
 npm run format:check  # prettier — the whole repo is clean, keep it that way
 npm run i18n:check    # scripts/check-hardcoded-strings.mjs — see i18n.md for what it can't see
+npm run shared:check  # modules mirrored in the client app — see below
+npm test              # jest — see below
 ```
 
-CI runs all four on every push and pull request (`.github/workflows/ci.yml`,
+CI runs all six on every push and pull request (`.github/workflows/ci.yml`,
 `Contractor CI`).
 
 Prettier owns formatting here, using the same `.prettierrc` as the client so the
@@ -30,6 +32,44 @@ Rules of thumb:
 - **Zero new lint errors.** The repo can carry pre-existing warnings in files
   nobody has touched; do not add to them, and do not mass-fix them inside an
   unrelated change.
+
+## Tests
+
+`jest` with the `jest-expo` preset. Tests sit next to the code they cover as
+`*.test.ts`, and they cover **logic, not screens** — pure functions and hooks
+through `renderHook`. Nothing renders a component, which is what keeps Tamagui
+and reanimated out of the test environment entirely; that boundary is the
+reason the setup is small enough to stay working.
+
+There is no coverage threshold. Coverage on a suite this young is a number, not
+a signal — the tests that exist were written for places that have already
+broken, and that is the standard for adding one.
+
+Two things to know before writing one:
+
+- **`renderHook` is async** (RNTL 14, React 19). `await` it, and `await act()`.
+- **A `jest.mock` factory may only reference names prefixed with `mock`.** Jest
+  hoists the factory above the imports, so anything else is not yet defined.
+
+Global mocks live in `jest.setup.ts` — Sentry, `expo-router`, AsyncStorage,
+SecureStore, and `EXPO_PUBLIC_API_URL`, which `profikApi` reads at module load.
+The setup, `jest.config.js` and `babel.config.js` are byte-identical to the
+client app's; keep them that way.
+
+## Modules mirrored in the client app
+
+Eleven modules carry the same logic in both apps and say so in their own doc
+comments. Nothing enforced that, so the two could drift silently until a bug
+appeared in one app and not the other.
+
+`npm run shared:check` compares each file against the hash recorded in
+`shared-modules.json`. Changing one fails the check; that failure is the prompt
+to carry the change into the client app and then run `npm run shared:sync` to
+record the new state.
+
+It cannot verify the sibling was actually updated — the two are separate
+checkouts and CI has only one of them. It tells you _when_ to look, which is
+the part that was missing.
 
 ## Node version
 
