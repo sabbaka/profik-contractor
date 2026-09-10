@@ -26,8 +26,6 @@ export const PROFIK_GRADIENT = {
  */
 const lightTokens = {
   accent: "#FF6C00",
-  accentHover: "#E85D00",
-  accentPress: "#C24E00",
   accentGradStart: PROFIK_GRADIENT.accent[0],
   accentGradEnd: PROFIK_GRADIENT.accent[1],
   accentLight: "#FFF4EB",
@@ -59,9 +57,7 @@ const lightTokens = {
   infoStrong: "#2563EB",
   infoBg: "#DBEAFE",
   purple: "#8B5CF6",
-  purpleStrong: "#7C3AED",
   purpleBg: "#EDE9FE",
-  teal: "#0D9488",
   greenBg: "#D1FAE5",
   greenStrong: "#16A34A",
   greenSoftBg: "#F0FDF4",
@@ -90,8 +86,6 @@ const lightTokens = {
 
 const darkTokens: typeof lightTokens = {
   accent: "#FF6C00",
-  accentHover: "#FF8A2B",
-  accentPress: "#E85D00",
   accentGradStart: PROFIK_GRADIENT.accent[0],
   accentGradEnd: PROFIK_GRADIENT.accent[1],
   accentLight: "#3D2414",
@@ -123,9 +117,7 @@ const darkTokens: typeof lightTokens = {
   infoStrong: "#60A5FA",
   infoBg: "#1E3A5F",
   purple: "#A78BFA",
-  purpleStrong: "#C4B5FD",
   purpleBg: "#2A1B5C",
-  teal: "#2DD4BF",
   greenBg: "#064E3B",
   greenStrong: "#34D399",
   greenSoftBg: "#0E2A1A",
