@@ -856,6 +856,81 @@
         ]
       }
     },
+    "/verification/session": {
+      "post": {
+        "description": "Returns a URL to open in the system browser. The document and selfie are captured by the provider and never reach this service.",
+        "operationId": "startSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartVerificationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartVerificationResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Already verified"
+          },
+          "429": {
+            "description": "Too many attempts today"
+          },
+          "503": {
+            "description": "Verification is not configured"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Start (or resume) an identity verification session",
+        "tags": [
+          "Verification"
+        ]
+      }
+    },
+    "/verification/refresh": {
+      "post": {
+        "description": "Asks the provider what it decided, rather than waiting for a webhook. The app calls this on returning from the browser: the provider retries a webhook only twice, and this is the recovery path when none arrives.",
+        "operationId": "refresh",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reconcile this account against the provider",
+        "tags": [
+          "Verification"
+        ]
+      }
+    },
     "/users/{id}/reviews/summary": {
       "get": {
         "description": "Broken out by side: `asContractor` is what clients said about their work, `asClient` what contractors said about them as a customer. The flat `averageRating` / `reviewsCount` mirror `asContractor`.",
@@ -2268,6 +2343,48 @@
           "password"
         ]
       },
+      "VerificationSummaryDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_started",
+              "in_progress",
+              "in_review",
+              "approved",
+              "declined",
+              "abandoned",
+              "expired"
+            ],
+            "description": "State of the most recent verification. Only `approved` earns a badge, and a badge that has lapsed reads as `expired` here however the session itself ended."
+          },
+          "verifiedAt": {
+            "type": "object",
+            "example": "2026-09-11T10:00:00.000Z",
+            "nullable": true,
+            "description": "When the identity was confirmed, or null"
+          },
+          "verifiedUntil": {
+            "type": "object",
+            "example": "2028-09-11T10:00:00.000Z",
+            "nullable": true,
+            "description": "When the badge lapses: the document expiry or two years, whichever is sooner"
+          },
+          "displayName": {
+            "type": "object",
+            "example": "Ivan P.",
+            "nullable": true,
+            "description": "How this person is named publicly once verified: given name from the document, surname reduced to an initial. Null when not verified."
+          }
+        },
+        "required": [
+          "status",
+          "verifiedAt",
+          "verifiedUntil",
+          "displayName"
+        ]
+      },
       "UserResponseDto": {
         "type": "object",
         "properties": {
@@ -2323,6 +2440,14 @@
             "type": "number",
             "example": 4,
             "description": "Unread offer messages across every conversation. Only GET /auth/me populates this — it rides along so a cold start can render the Messages badge without a second request. The login and signup responses leave it undefined."
+          },
+          "identityVerification": {
+            "description": "State of this account's identity verification. Like unreadMessages, only GET /auth/me populates it; the login and signup responses leave it undefined, and a released build that has never seen it is unaffected.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VerificationSummaryDto"
+              }
+            ]
           }
         },
         "required": [
@@ -2580,13 +2705,26 @@
             "type": "number",
             "example": 12,
             "description": "Total number of reviews from clients"
+          },
+          "identityVerified": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether this contractor confirmed their identity with a government ID. Display only — it gates nothing."
+          },
+          "verifiedName": {
+            "type": "object",
+            "example": "Ivan P.",
+            "nullable": true,
+            "description": "The name on the document, surname shortened to an initial. Null when unverified; `name` above is unchanged either way."
           }
         },
         "required": [
           "id",
           "name",
           "avgRating",
-          "reviewsCount"
+          "reviewsCount",
+          "identityVerified",
+          "verifiedName"
         ]
       },
       "OfferWithContractorDto": {
@@ -2745,12 +2883,24 @@
             "type": "object",
             "example": "https://api.example.com/avatars/123e4567.webp",
             "nullable": true
+          },
+          "identityVerified": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether this person confirmed their identity"
+          },
+          "verifiedName": {
+            "type": "object",
+            "example": "Ivan P.",
+            "nullable": true
           }
         },
         "required": [
           "id",
           "name",
-          "avatarUrl"
+          "avatarUrl",
+          "identityVerified",
+          "verifiedName"
         ]
       },
       "ConversationLastMessageDto": {
@@ -2960,6 +3110,58 @@
           "senderId",
           "content",
           "createdAt"
+        ]
+      },
+      "StartVerificationDto": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "cs",
+              "uk"
+            ],
+            "description": "Language for the hosted flow. Defaults to the language the account last reported from a device."
+          }
+        }
+      },
+      "StartVerificationResponseDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://verify.didit.me/session/5f0a9c38",
+            "description": "Open this in the system browser, not an in-app web view: the flow needs camera access, which an embedded authentication session does not reliably grant."
+          },
+          "sessionId": {
+            "type": "string",
+            "example": "5f0a9c38-6a4d-4f2a-9d52-9c1c2f7b1e44",
+            "description": "Provider session id, for support and log correlation"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_started",
+              "in_progress",
+              "in_review",
+              "approved",
+              "declined",
+              "abandoned",
+              "expired"
+            ]
+          },
+          "resumed": {
+            "type": "boolean",
+            "example": false,
+            "description": "True when this is a session already in flight rather than a new one. Opening a second session for someone who simply tapped twice would be charged twice."
+          }
+        },
+        "required": [
+          "url",
+          "sessionId",
+          "status",
+          "resumed"
         ]
       },
       "UserSideRatingDto": {
@@ -3172,6 +3374,17 @@
                 "$ref": "#/components/schemas/UserSideRatingDto"
               }
             ]
+          },
+          "identityVerified": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether this person confirmed their identity with a government ID, and the confirmation has not lapsed. Voluntary: it earns a badge and gates nothing."
+          },
+          "verifiedName": {
+            "type": "object",
+            "example": "Ivan P.",
+            "nullable": true,
+            "description": "The name on the document, shortened to a surname initial. Null when unverified. `name` above is untouched and still means the name the person typed — a released build that does not know this field keeps showing that one, with no badge and nothing out of place."
           }
         },
         "required": [
@@ -3181,7 +3394,9 @@
           "averageRating",
           "reviewsCount",
           "asContractor",
-          "asClient"
+          "asClient",
+          "identityVerified",
+          "verifiedName"
         ]
       },
       "UpdateProfileDto": {
