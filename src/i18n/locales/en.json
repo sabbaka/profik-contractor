@@ -40,6 +40,11 @@
     "avatar": {
       "unsupportedFormat": "Use a JPEG, PNG or WebP image.",
       "tooManyPixels": "That image is too large. Try a smaller one."
+    },
+    "verification": {
+      "unavailable": "Verification isn't available right now. Please try again later.",
+      "alreadyVerified": "Your identity is already verified.",
+      "tooManyAttempts": "Too many attempts today. Please try again tomorrow."
     }
   },
   "auth": {
@@ -496,7 +501,8 @@
     "close": "Close",
     "send": "Send message",
     "reviewRating": "Rated {{rating}} out of 5",
-    "rateStars": "Rate {{rating}} out of 5"
+    "rateStars": "Rate {{rating}} out of 5",
+    "verifiedIdentity": "Identity verified"
   },
   "messages": {
     "title": "Messages",
@@ -538,6 +544,35 @@
         "title": "Archive is empty",
         "body": "Chats for declined offers and cancelled jobs end up here."
       }
+    }
+  },
+  "verification": {
+    "title": "Identity verification",
+    "badge": "Verified",
+    "intro": "Confirm who you are with a government ID. Clients see a verified badge on your profile and on every offer you send.",
+    "whatHappens": "How it works",
+    "stepDocument": "Photograph your ID card, passport or residence permit.",
+    "stepSelfie": "Take a selfie, so your face can be matched to the document.",
+    "stepBadge": "Once it's confirmed, a verified badge appears on your profile.",
+    "whatWeKeep": "What Profik keeps",
+    "whatWeKeepBody": "Your photos go straight to our verification partner and never reach Profik. We keep only the result, your first name, the first letter of your surname, and the type and expiry of the document.",
+    "consentNote": "Verification is optional and Profik works without it. By continuing you agree to our verification partner checking your document and your photo.",
+    "start": "Verify my identity",
+    "resume": "Continue verification",
+    "retry": "Try again",
+    "publicNameNote": "Clients see you as {{name}}.",
+    "checking": "Checking your verification…",
+    "reviewNote": "Someone is looking at your documents. This usually takes a few minutes, sometimes longer.",
+    "declinedNote": "We couldn't confirm your ID. Check that the photos are sharp and the whole document is in frame, then try again.",
+    "browserFailed": "Couldn't open the browser on this device.",
+    "startFailed": "Couldn't start verification. Please try again.",
+    "status": {
+      "notStarted": "Not verified",
+      "inProgress": "Not finished",
+      "inReview": "In review",
+      "approved": "Verified",
+      "declined": "Not confirmed",
+      "expired": "Expired"
     }
   }
 }

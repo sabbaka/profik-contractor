@@ -16,6 +16,7 @@ import {
 import { clearHasSeenOnboarding } from "@/src/utils/onboardingStorage";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
 import {
+  BadgeCheck,
   Bell,
   ChevronRight,
   Edit3,
@@ -43,7 +44,23 @@ import {
   StyleSheet,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { VerifiedBadge } from "@/src/components/profile/VerifiedBadge";
 import { XStack, YStack } from "tamagui";
+
+/**
+ * Status as the API spells it, to the leaf of the `verification.status.*`
+ * namespace. A key, not copy — a map at module scope has no `t`, and copy left
+ * here would stay English after a language switch.
+ */
+const VERIFICATION_VALUE_KEY: Record<string, string> = {
+  not_started: "notStarted",
+  in_progress: "inProgress",
+  in_review: "inReview",
+  approved: "approved",
+  declined: "declined",
+  abandoned: "notStarted",
+  expired: "expired",
+};
 
 interface RowProps {
   label: string;
@@ -118,6 +135,15 @@ export default function ProfileRoute() {
   const colors = useThemeColors();
   const isGuest = useIsGuest();
   const { data: user } = useMeQuery(undefined, { skip: isGuest });
+
+  // Only `approved` earns the badge. Every other state — in review, declined,
+  // lapsed — is a step on the way, and the row's value says which.
+  const verificationStatus =
+    user?.identityVerification?.status ?? "not_started";
+  const isIdentityVerified = verificationStatus === "approved";
+  const verificationValueKey = `verification.status.${
+    VERIFICATION_VALUE_KEY[verificationStatus] ?? "notStarted"
+  }`;
   const { logout } = useAuth();
   const [deleteAccount, { isLoading: isDeleting }] = useDeleteAccountMutation();
   const { preference, setPreference } = useThemeMode();
@@ -307,7 +333,10 @@ export default function ProfileRoute() {
         {!isGuest && (
           <>
             <YStack alignItems="center" gap={2}>
-              <Text variant="h3">{name}</Text>
+              <XStack alignItems="center" gap={6}>
+                <Text variant="h3">{name}</Text>
+                {isIdentityVerified ? <VerifiedBadge variant="icon" /> : null}
+              </XStack>
               <Text variant="bodySm">{email}</Text>
             </YStack>
             <Pressable
@@ -401,6 +430,27 @@ export default function ProfileRoute() {
               </Text>
             </YStack>
           </Pressable>
+        )}
+
+        {/* Identity verification. Its own card rather than a settings row: for
+            an unverified contractor it is an invitation, and buried between
+            Language and Appearance it reads as a setting nobody opens. */}
+        {!isGuest && (
+          <YStack
+            backgroundColor={colors.bgCard}
+            borderRadius={16}
+            borderWidth={1}
+            borderColor={colors.borderSubtle}
+            overflow="hidden"
+          >
+            <ProfileRow
+              label={t("verification.title")}
+              iconBg={colors.greenSoftBg}
+              icon={<BadgeCheck size={18} color={colors.greenStrong} />}
+              value={t(verificationValueKey)}
+              onPress={() => router.push("/(contractor)/verification" as any)}
+            />
+          </YStack>
         )}
 
         {/* Settings */}

@@ -40,6 +40,11 @@
     "avatar": {
       "unsupportedFormat": "Použijte obrázek JPEG, PNG nebo WebP.",
       "tooManyPixels": "Obrázek je příliš velký. Zkuste menší."
+    },
+    "verification": {
+      "unavailable": "Ověření teď není dostupné. Zkuste to prosím později.",
+      "alreadyVerified": "Vaše totožnost už je ověřená.",
+      "tooManyAttempts": "Dnes už jste to zkoušeli příliš často. Zkuste to zítra."
     }
   },
   "auth": {
@@ -496,7 +501,8 @@
     "close": "Zavřít",
     "send": "Odeslat zprávu",
     "reviewRating": "Hodnoceno {{rating}} z 5",
-    "rateStars": "Ohodnotit {{rating}} z 5"
+    "rateStars": "Ohodnotit {{rating}} z 5",
+    "verifiedIdentity": "Totožnost ověřena"
   },
   "messages": {
     "title": "Zprávy",
@@ -539,6 +545,35 @@
         "title": "Archiv je prázdný",
         "body": "Sem se ukládají chaty k odmítnutým nabídkám a zrušeným zakázkám."
       }
+    }
+  },
+  "verification": {
+    "title": "Ověření totožnosti",
+    "badge": "Ověřeno",
+    "intro": "Potvrďte svou totožnost úředním dokladem. Klienti uvidí odznak ověření na vašem profilu i u každé nabídky, kterou pošlete.",
+    "whatHappens": "Jak to probíhá",
+    "stepDocument": "Vyfotíte občanský průkaz, pas nebo povolení k pobytu.",
+    "stepSelfie": "Pořídíte selfie, aby šlo porovnat obličej s dokladem.",
+    "stepBadge": "Po potvrzení se na vašem profilu objeví odznak ověření.",
+    "whatWeKeep": "Co si Profik ukládá",
+    "whatWeKeepBody": "Fotky jdou přímo našemu partnerovi pro ověřování a k Profiku se nikdy nedostanou. Ukládáme jen výsledek, křestní jméno, první písmeno příjmení a typ a platnost dokladu.",
+    "consentNote": "Ověření je dobrovolné a Profik funguje i bez něj. Pokračováním souhlasíte s tím, že náš partner zkontroluje váš doklad a vaši fotografii.",
+    "start": "Ověřit totožnost",
+    "resume": "Pokračovat v ověření",
+    "retry": "Zkusit znovu",
+    "publicNameNote": "Klienti vás vidí jako {{name}}.",
+    "checking": "Kontrolujeme ověření…",
+    "reviewNote": "Vaše doklady prochází kontrolou. Obvykle to trvá pár minut, někdy déle.",
+    "declinedNote": "Totožnost se nepodařilo potvrdit. Zkontrolujte, že jsou fotky ostré a doklad je celý v záběru, a zkuste to znovu.",
+    "browserFailed": "Na tomto zařízení se nepodařilo otevřít prohlížeč.",
+    "startFailed": "Ověření se nepodařilo spustit. Zkuste to prosím znovu.",
+    "status": {
+      "notStarted": "Neověřeno",
+      "inProgress": "Nedokončeno",
+      "inReview": "V kontrole",
+      "approved": "Ověřeno",
+      "declined": "Nepotvrzeno",
+      "expired": "Platnost vypršela"
     }
   }
 }

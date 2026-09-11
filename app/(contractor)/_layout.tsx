@@ -12,6 +12,10 @@ export default function ContractorLayout() {
       <Stack.Screen name="balance" />
       <Stack.Screen name="jobs/[id]" />
       <Stack.Screen name="offer-chat/[offerId]" />
+      <Stack.Screen name="verification/index" />
+      {/* Without this the profikcontractor:// deep link falls through to the
+          catch-all and shows "Not found". */}
+      <Stack.Screen name="verification/return" />
       <Stack.Screen name="profile/index" />
       <Stack.Screen name="profile/privacy-policy" />
       <Stack.Screen name="profile/help-support" />

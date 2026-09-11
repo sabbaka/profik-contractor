@@ -27,6 +27,10 @@ import type {
   Review,
   UnreadSummary,
 } from "./types";
+import type {
+  StartVerificationResponse,
+  VerificationSummary,
+} from "@/src/features/verification/types";
 
 /** Conversations fetched per page by the Messages tab. */
 export const CONVERSATIONS_PAGE_SIZE = 20;
@@ -57,6 +61,12 @@ export interface MeResponse {
    * badge without a second request. Absent from the login/signup responses.
    */
   unreadMessages?: number;
+  /**
+   * Identity verification, as `GET /auth/me` reports it. Like
+   * `unreadMessages`, only that endpoint populates it; the login and signup
+   * responses leave it undefined, so treat absence as "unknown", not "no".
+   */
+  identityVerification?: VerificationSummary;
 }
 
 // Best-effort MIME inference for image URIs returned by expo-image-picker
@@ -381,6 +391,33 @@ export const profikApi = createApi({
       }),
     }),
     /**
+     * Opens (or resumes) an identity verification session and returns the URL
+     * to send the contractor to. Invalidates "Me" because the server records
+     * the session immediately, so the status on the profile changes with it.
+     */
+    startVerification: builder.mutation<
+      StartVerificationResponse,
+      { language?: string } | void
+    >({
+      query: (args) => ({
+        url: "/verification/session",
+        method: "POST",
+        body: args ?? {},
+      }),
+      invalidatesTags: ["Me"],
+    }),
+    /**
+     * Asks the server to reconcile this account against the provider.
+     *
+     * The decision reaches the server by webhook, which the provider retries
+     * only twice before giving up — so this is the recovery path, not an
+     * optimisation. Called on returning from the browser and on resume.
+     */
+    refreshVerification: builder.mutation<VerificationSummary, void>({
+      query: () => ({ url: "/verification/refresh", method: "POST" }),
+      invalidatesTags: ["Me"],
+    }),
+    /**
      * The balance history screen, paged as it scrolls.
      *
      * Same shape as `/jobs/open`: a plain array rather than a `{ items,
@@ -504,4 +541,6 @@ export const {
   useDeleteAccountMutation,
   useUpdateProfileMutation,
   useUploadAvatarMutation,
+  useStartVerificationMutation,
+  useRefreshVerificationMutation,
 } = profikApi;
