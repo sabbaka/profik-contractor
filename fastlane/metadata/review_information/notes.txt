@@ -1,20 +1,26 @@
 Profik Pro is the contractor-side app of the Profik marketplace, which connects customers with vetted professionals for home cleaning services in the Czech Republic. The customer-side app ('Profik') is a separate app.
 
-The provided demo account is a contractor account. Sign-in flow:
+Browsing without an account: on first launch a short 3-screen onboarding appears and ends on 'Browse jobs'. Open jobs can be viewed on the list and on the map with no account at all, with the client's exact address withheld. An account is needed only to send an offer, to chat, and to manage the balance.
 
-1. On first launch a short 3-screen onboarding appears. Tap 'I already have an account', then sign in with the demo phone number listed in Sign-In Information above, with the country code '+420' pre-selected, and the password above.
-2. You will land on the Open Jobs tab.
+Sign-in flow — please note the app has no password field; sign-in is a one-time SMS code:
+
+1. From the last onboarding screen tap 'I already have an account', or tap 'Sign in' from any tab.
+2. Enter the demo phone number listed in Sign-In Information above; the country code '+420' is pre-selected.
+3. The app then asks for the code it would normally text you. Enter the value given as the password in Sign-In Information above — this demo number accepts that fixed code instead of a real SMS, so no phone is needed.
+4. You will land on the Open Jobs tab.
 
 Primary user flow to evaluate:
 
-1. Open Jobs tab → browse open cleaning jobs on the list and map (location permission will be requested — Allow, it is used to show jobs near you and their distance).
+1. Open Jobs tab -> browse open cleaning jobs on the list and map (location permission will be requested — Allow, it is used to show jobs near you and their distance).
 2. Tap a job to open the job detail: service type, property details, location, and the client's budget.
 3. Tap 'Make a counter offer' to set your price and message, or tap 'Accept' to accept the client's budget.
 4. The offer appears in the My Jobs tab (Pending / Accepted / Declined filters).
 5. Open an offer to chat with the client in the built-in Offer chat.
 6. The demo account has at least one open job visible and one active offer chat prepared for review.
 
-Login required: Profik Pro is account-based for contractors. Offers are submitted under the contractor's identity, balance top-ups and platform fees are tied to a prepaid account balance, offer chat and review reputation belong to the contractor profile, and job listings include client locations and budgets. There is no meaningful anonymous contractor mode, so job data is shown only to registered contractors.
+Account required for offers: browsing is open to everyone, as described above. An account is required to send an offer, because offers are submitted under the contractor's identity, balance top-ups and platform fees are tied to a prepaid account balance, and offer chat and review reputation belong to the contractor profile.
+
+Identity verification (new in this version): from the Profile tab a contractor can optionally confirm their identity. It is voluntary and gates nothing — every part of the app behaves identically without it, and the only effect is a 'Verified' badge on the contractor's profile and on the offers they send. Tapping 'Verify my identity' opens the system browser on the page of our verification partner, Didit, where the document and a selfie are photographed. The app never opens the camera itself and requests no camera permission; the browser returns to the app through a link and the outcome arrives from the partner. Photographs never reach Profik: we store only the result, the first name, the first letter of the surname, and the type, country and expiry date of the document. The reviewer does not need to complete this flow and should not submit a real document — nothing else in the app depends on it.
 
 Permissions used:
 - Location (while using the app): to show open jobs near the contractor on the map and the distance to each job.
@@ -22,6 +28,6 @@ Permissions used:
 
 Balance top-up: contractors can add funds to their platform balance, which is used to pay platform fees. The top-up is completed in an external Stripe web checkout page opened in the browser — not via In-App Purchase. This is compliant because the balance is used for real-world physical services (home cleaning) delivered outside the app, per App Store Review Guideline 3.1.5(a). The app sells no digital content or features.
 
-The app supports English and Czech. Language follows the device locale and can also be changed from the Profile tab.
+The app supports English, Czech and Ukrainian. Language follows the device locale and can also be changed from the Profile tab.
 
 Please contact the email above if any clarification is needed.

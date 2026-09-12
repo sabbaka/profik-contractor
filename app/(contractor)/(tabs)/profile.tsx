@@ -136,10 +136,15 @@ export default function ProfileRoute() {
   const isGuest = useIsGuest();
   const { data: user } = useMeQuery(undefined, { skip: isGuest });
 
+  // The server sends this block only while the provider is configured, so its
+  // absence is the feature's off switch — see the comment on
+  // getSummaryIfAvailable in the backend. Without it the card is not drawn at
+  // all, rather than drawn and answering 503 on tap.
+  const verification = user?.identityVerification;
+
   // Only `approved` earns the badge. Every other state — in review, declined,
   // lapsed — is a step on the way, and the row's value says which.
-  const verificationStatus =
-    user?.identityVerification?.status ?? "not_started";
+  const verificationStatus = verification?.status ?? "not_started";
   const isIdentityVerified = verificationStatus === "approved";
   const verificationValueKey = `verification.status.${
     VERIFICATION_VALUE_KEY[verificationStatus] ?? "notStarted"
@@ -435,7 +440,7 @@ export default function ProfileRoute() {
         {/* Identity verification. Its own card rather than a settings row: for
             an unverified contractor it is an invitation, and buried between
             Language and Appearance it reads as a setting nobody opens. */}
-        {!isGuest && (
+        {!isGuest && verification && (
           <YStack
             backgroundColor={colors.bgCard}
             borderRadius={16}
