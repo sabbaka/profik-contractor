@@ -62,6 +62,11 @@ eas build --platform ios --profile production
 eas build --platform android --profile apk    # installable Android test build
 ```
 
+`SENTRY_ALLOW_FAILURE=true` is set in `eas.json` because sourcemap upload is not
+worth a failed release: on 2026-09-12 a TLS hiccup between the EAS worker and
+sentry.io took down the iOS half of the client app's 1.1.24 after the binary had
+already compiled. The upload is still attempted; only its failure is survivable.
+
 Store listing metadata (title, descriptions, keywords in en/cs/sk, review notes) is maintained in `store.config.json` and mirrored as Fastlane metadata. See [fastlane/README.md](fastlane/README.md) for pushing metadata to App Store Connect and the remaining pre-submission checklist (demo contractor account, screenshots, age rating, pricing).
 
 The App Store Connect app record for `com.profik.contractor` is Apple ID `6787445540` ("Profik Pro"), referenced as `ascAppId` in `eas.json`.
