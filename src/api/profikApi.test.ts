@@ -312,7 +312,7 @@ describe("cache invalidation", () => {
     const store = signedIn();
     const stop = await watch(
       store,
-      profikApi.endpoints.getOpenJobs.initiate(undefined),
+      profikApi.endpoints.getOpenJobs.initiate({}),
     );
     expect(timesRead("/jobs/open")).toBe(1);
 

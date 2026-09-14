@@ -78,6 +78,7 @@ const config = {
     "expo-image",
     "expo-localization",
     "expo-status-bar",
+    "@react-native-community/datetimepicker",
     [
       "expo-image-picker",
       {

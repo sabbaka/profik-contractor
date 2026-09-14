@@ -19,6 +19,7 @@ import type {
   ConversationBucket,
   ConversationList,
   GetOfferedJobsParams,
+  GetOpenJobsParams,
   Job,
   Offer,
   OfferedJobItem,
@@ -174,20 +175,41 @@ export const profikApi = createApi({
      * the same reason as `getConversations` below: anything that invalidates
      * "Jobs" must refetch every loaded page, not just the current cursor's.
      */
-    getOpenJobs: builder.infiniteQuery<Job[], void, string | null>({
-      infiniteQueryOptions: forwardIdCursor<Job>(
-        OPEN_JOBS_PAGE_SIZE,
-        (job) => job.id,
-      ),
-      query: ({ pageParam }) => {
-        const params = new URLSearchParams({
-          limit: String(OPEN_JOBS_PAGE_SIZE),
-        });
-        if (pageParam) params.set("cursor", pageParam);
-        return { url: `/jobs/open?${params.toString()}`, method: "GET" };
+    getOpenJobs: builder.infiniteQuery<Job[], GetOpenJobsParams, string | null>(
+      {
+        infiniteQueryOptions: forwardIdCursor<Job>(
+          OPEN_JOBS_PAGE_SIZE,
+          (job) => job.id,
+        ),
+        query: ({ queryArg, pageParam }) => {
+          // The app is Cleaning-only today; `category` is sent unconditionally
+          // rather than surfaced as a filter so the contract doesn't have to
+          // change the day a second category opens up — see
+          // docs/open-jobs-filters-backend.md.
+          const params = new URLSearchParams({
+            limit: String(OPEN_JOBS_PAGE_SIZE),
+            category: "Cleaning",
+          });
+          if (pageParam) params.set("cursor", pageParam);
+          if (queryArg.priceMin != null)
+            params.set("priceMin", String(queryArg.priceMin));
+          if (queryArg.priceMax != null)
+            params.set("priceMax", String(queryArg.priceMax));
+          if (queryArg.dateFrom) params.set("dateFrom", queryArg.dateFrom);
+          if (queryArg.dateTo) params.set("dateTo", queryArg.dateTo);
+          // lat/lng are a pair server-side — a lone one is a 400 — so radiusKm
+          // only ever rides along with both.
+          if (queryArg.lat != null && queryArg.lng != null) {
+            params.set("lat", String(queryArg.lat));
+            params.set("lng", String(queryArg.lng));
+            if (queryArg.radiusKm != null)
+              params.set("radiusKm", String(queryArg.radiusKm));
+          }
+          return { url: `/jobs/open?${params.toString()}`, method: "GET" };
+        },
+        providesTags: ["Jobs"],
       },
-      providesTags: ["Jobs"],
-    }),
+    ),
     /**
      * The My jobs tab, one cache entry per filter, paged as the list scrolls.
      *

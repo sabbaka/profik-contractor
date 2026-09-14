@@ -116,7 +116,32 @@
     "errorTitle": "Zakázky se nepodařilo načíst",
     "errorBody": "Zkontrolujte připojení a zkuste to znovu.",
     "emptyTitle": "Vše máte zkontrolováno",
-    "emptyBody": "Nové zákaznické zakázky se zde objeví hned po zveřejnění."
+    "emptyBody": "Nové zákaznické zakázky se zde objeví hned po zveřejnění.",
+    "filters": {
+      "title": "Filtry",
+      "clearAll": "Vymazat vše",
+      "priceRangeLabel": "Cenové rozpětí (Kč)",
+      "priceFrom": "Od",
+      "priceTo": "Do",
+      "dateLabel": "Datum úklidu",
+      "dateFrom": "Od",
+      "dateTo": "Do",
+      "datePlaceholder": "Vybrat datum",
+      "dateDone": "Hotovo",
+      "locationLabel": "Okruh od vaší polohy",
+      "locationEnable": "Povolit polohu",
+      "locationRequesting": "Zjišťuji vaši polohu...",
+      "locationDenied": "Přístup k poloze byl zamítnut — povolte ho v Nastavení, chcete-li filtrovat podle vzdálenosti.",
+      "withinKm": "Do {{count}} km",
+      "withinKmPlus": "{{count}}+ km",
+      "showJobsLoading": "Zobrazit zakázky",
+      "showJobs_one": "Zobrazit {{count}} zakázku",
+      "showJobs_few": "Zobrazit {{count}} zakázky",
+      "showJobs_other": "Zobrazit {{count}} zakázek",
+      "showJobsMore_one": "Zobrazit {{count}}+ zakázku",
+      "showJobsMore_few": "Zobrazit {{count}}+ zakázky",
+      "showJobsMore_other": "Zobrazit {{count}}+ zakázek"
+    }
   },
   "my": {
     "title": "Moje zakázky",
@@ -502,7 +527,9 @@
     "send": "Odeslat zprávu",
     "reviewRating": "Hodnoceno {{rating}} z 5",
     "rateStars": "Ohodnotit {{rating}} z 5",
-    "verifiedIdentity": "Totožnost ověřena"
+    "verifiedIdentity": "Totožnost ověřena",
+    "openFilters": "Otevřít filtry",
+    "filtersActive": "{{count}} aktivních filtrů"
   },
   "messages": {
     "title": "Zprávy",

@@ -102,6 +102,26 @@ export interface GetOfferedJobsParams {
 }
 
 /**
+ * `GET /jobs/open` filter params — see docs/open-jobs-filters-backend.md.
+ * `category` is not exposed here: the app always sends `"Cleaning"` itself
+ * (only category open for business today), so it isn't part of the state a
+ * screen has to manage.
+ */
+export interface GetOpenJobsParams {
+  priceMin?: number;
+  priceMax?: number;
+  /** `YYYY-MM-DD`, inclusive. */
+  dateFrom?: string;
+  /** `YYYY-MM-DD`, inclusive. */
+  dateTo?: string;
+  /** Must be sent together with `lng`, or not at all. */
+  lat?: number;
+  lng?: number;
+  /** Only meaningful alongside `lat`/`lng`; ignored otherwise. Server default is 15. */
+  radiusKm?: number;
+}
+
+/**
  * Which tab of the Messages screen a conversation belongs to.
  *
  * The server decides this from `job.status` + `offer.status` and hands it over

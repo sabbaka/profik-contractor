@@ -118,7 +118,34 @@
     "errorTitle": "Не вдалося завантажити замовлення",
     "errorBody": "Перевірте з'єднання і спробуйте ще раз.",
     "emptyTitle": "Ви все переглянули",
-    "emptyBody": "Нові замовлення від клієнтів з'являтимуться тут одразу після публікації."
+    "emptyBody": "Нові замовлення від клієнтів з'являтимуться тут одразу після публікації.",
+    "filters": {
+      "title": "Фільтри",
+      "clearAll": "Скинути все",
+      "priceRangeLabel": "Діапазон ціни (Kč)",
+      "priceFrom": "Від",
+      "priceTo": "До",
+      "dateLabel": "Дата прибирання",
+      "dateFrom": "Від",
+      "dateTo": "До",
+      "datePlaceholder": "Обрати дату",
+      "dateDone": "Готово",
+      "locationLabel": "Радіус від вас",
+      "locationEnable": "Увімкнути геолокацію",
+      "locationRequesting": "Визначаємо ваше місцезнаходження...",
+      "locationDenied": "Доступ до геолокації заборонено — увімкніть його в Налаштуваннях, щоб фільтрувати за відстанню.",
+      "withinKm": "До {{count}} км",
+      "withinKmPlus": "{{count}}+ км",
+      "showJobsLoading": "Показати замовлення",
+      "showJobs_one": "Показати {{count}} замовлення",
+      "showJobs_few": "Показати {{count}} замовлення",
+      "showJobs_many": "Показати {{count}} замовлень",
+      "showJobs_other": "Показати {{count}} замовлення",
+      "showJobsMore_one": "Показати {{count}}+ замовлення",
+      "showJobsMore_few": "Показати {{count}}+ замовлення",
+      "showJobsMore_many": "Показати {{count}}+ замовлень",
+      "showJobsMore_other": "Показати {{count}}+ замовлення"
+    }
   },
   "my": {
     "title": "Мої замовлення",
@@ -504,7 +531,9 @@
     "send": "Надіслати повідомлення",
     "reviewRating": "Оцінка {{rating}} з 5",
     "rateStars": "Оцінити на {{rating}} з 5",
-    "verifiedIdentity": "Особу підтверджено"
+    "verifiedIdentity": "Особу підтверджено",
+    "openFilters": "Відкрити фільтри",
+    "filtersActive": "Активних фільтрів: {{count}}"
   },
   "messages": {
     "title": "Повідомлення",

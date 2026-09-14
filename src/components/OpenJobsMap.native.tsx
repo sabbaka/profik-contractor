@@ -8,11 +8,14 @@ export default function OpenJobsMapNative() {
   // Only the pages the Open tab happens to have loaded. Acceptable while this
   // screen is unreachable; a real map wants every job in the viewport, which
   // is a bbox query, not a scroll-driven page chain.
-  const { data } = useGetOpenJobsInfiniteQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-    refetchOnReconnect: true,
-    refetchOnFocus: true,
-  });
+  const { data } = useGetOpenJobsInfiniteQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    },
+  );
 
   const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
 

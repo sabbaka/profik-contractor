@@ -10,11 +10,14 @@ export default function OpenJobsMapWeb() {
   const colors = useThemeColors();
   // See the note in OpenJobsMap.native.tsx: these are the loaded pages, not
   // every open job.
-  const { data, error, refetch } = useGetOpenJobsInfiniteQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-    refetchOnReconnect: true,
-    refetchOnFocus: true,
-  });
+  const { data, error, refetch } = useGetOpenJobsInfiniteQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    },
+  );
   const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
 
   if (error) {

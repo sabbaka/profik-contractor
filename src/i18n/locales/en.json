@@ -116,7 +116,32 @@
     "errorTitle": "Couldn't load jobs",
     "errorBody": "Check your connection and try again.",
     "emptyTitle": "You're all caught up",
-    "emptyBody": "New customer jobs will appear here as soon as they're posted."
+    "emptyBody": "New customer jobs will appear here as soon as they're posted.",
+    "filters": {
+      "title": "Filters",
+      "clearAll": "Clear All",
+      "priceRangeLabel": "Price Range (Kč)",
+      "priceFrom": "From",
+      "priceTo": "To",
+      "dateLabel": "Cleaning Date",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "datePlaceholder": "Select date",
+      "dateDone": "Done",
+      "locationLabel": "Location Radius (from you)",
+      "locationEnable": "Enable location",
+      "locationRequesting": "Getting your location...",
+      "locationDenied": "Location permission denied — enable it in Settings to filter by distance.",
+      "withinKm": "Within {{count}} km",
+      "withinKmPlus": "{{count}}+ km",
+      "showJobsLoading": "Show Jobs",
+      "showJobs_one": "Show {{count}} job",
+      "showJobs_few": "Show {{count}} jobs",
+      "showJobs_other": "Show {{count}} jobs",
+      "showJobsMore_one": "Show {{count}}+ job",
+      "showJobsMore_few": "Show {{count}}+ jobs",
+      "showJobsMore_other": "Show {{count}}+ jobs"
+    }
   },
   "my": {
     "title": "My Jobs",
@@ -502,7 +527,9 @@
     "send": "Send message",
     "reviewRating": "Rated {{rating}} out of 5",
     "rateStars": "Rate {{rating}} out of 5",
-    "verifiedIdentity": "Identity verified"
+    "verifiedIdentity": "Identity verified",
+    "openFilters": "Open filters",
+    "filtersActive": "{{count}} filters active"
   },
   "messages": {
     "title": "Messages",
