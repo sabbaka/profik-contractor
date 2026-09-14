@@ -3,6 +3,7 @@ import { TabBar } from "@/src/components/ui/TabBar";
 import { JobsFilterProvider } from "@/src/context/JobsFilterContext";
 import { useGetUnreadCountQuery } from "@/src/api/profikApi";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
+import { useAppIconBadge } from "@/src/hooks/useAppIconBadge";
 import { Briefcase, MessageCircle, Search, User } from "@tamagui/lucide-icons";
 import { Tabs, useRouter } from "expo-router";
 import React from "react";
@@ -17,8 +18,9 @@ export default function TabsLayout() {
   const { data: unread } = useGetUnreadCountQuery(undefined, {
     skip: isGuest,
     refetchOnFocus: true,
-    pollingInterval: 60_000,
   });
+  // Same number, one more destination: the OS app icon badge.
+  useAppIconBadge(unread?.total);
 
   return (
     <JobsFilterProvider>

@@ -17,7 +17,8 @@ import {
   Send,
 } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { clearActiveChat, setActiveChat } from "@/src/features/notifications";
 import { logError } from "@/src/utils/logger";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
 import React, {
@@ -62,6 +63,26 @@ export default function OfferChatRoute() {
       jobStatus?: JobStatus;
     }>();
   const { data: me } = useMeQuery();
+
+  // Marks this offer's chat as "on screen" for the push notification handler
+  // (`usePushNotifications.ts`'s `isChatOnScreen`) — a message for this exact
+  // chat is delivered silently instead of banging out a banner for something
+  // already visible. Also gates the fallback poll below to this screen's own
+  // focus, since a native-stack screen can stay mounted underneath whatever
+  // gets pushed on top of it.
+  const [isScreenFocused, setIsScreenFocused] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      if (!offerId) return;
+      setIsScreenFocused(true);
+      setActiveChat(offerId);
+      return () => {
+        setIsScreenFocused(false);
+        clearActiveChat(offerId);
+      };
+    }, [offerId]),
+  );
+
   const {
     data: messages,
     isLoading,
@@ -69,9 +90,15 @@ export default function OfferChatRoute() {
   } = useGetOfferMessagesQuery(offerId, {
     skip: !offerId,
     refetchOnMountOrArgChange: true,
-    // There is no socket, so without polling an open chat never shows the
-    // client's replies.
-    pollingInterval: 10000,
+    refetchOnFocus: true,
+    // A push notification invalidates this chat's cache entry the moment a
+    // message is sent — see useNotificationInvalidation in
+    // usePushNotifications.ts — but push delivery isn't proven reliable
+    // enough yet to be the only guarantee, so this stays as a slower,
+    // focus-scoped fallback: only while this exact screen is the one on
+    // screen, not from underneath whatever got pushed on top of it.
+    pollingInterval: isScreenFocused ? 10000 : 0,
+    skipPollingIfUnfocused: true,
   });
   // The API returns oldest-first; the list is inverted, so feed it newest-first.
   const orderedMessages = useMemo(

@@ -42,6 +42,12 @@ export const JobDetail = () => {
     isFetching,
   } = useGetJobByIdQuery(id, {
     refetchOnMountOrArgChange: true,
+    // A push notification invalidates this job's cache entry the instant its
+    // status changes (see useNotificationInvalidation in
+    // usePushNotifications.ts); this covers the case where the push arrived
+    // while the app was backgrounded and only the return to the foreground —
+    // not a live listener — can catch it.
+    refetchOnFocus: true,
   });
 
   const {

@@ -55,6 +55,10 @@ export const useJobOffer = ({
   const { data: myOffer } = useGetMyOfferForJobQuery(jobId, {
     skip: !me || !canOffer,
     refetchOnMountOrArgChange: true,
+    // Same reasoning as getJobById in JobDetail.tsx: a push invalidates this
+    // the moment the offer's status changes, this just covers a push that
+    // arrived while the app was backgrounded.
+    refetchOnFocus: true,
   });
 
   const offerIdForChat = myOffer?.id ?? null;

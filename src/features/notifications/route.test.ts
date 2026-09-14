@@ -1,4 +1,4 @@
-import { resolveNotificationRoute } from "./route";
+import { readNotificationIds, resolveNotificationRoute } from "./route";
 
 const CHAT = "/(contractor)/offer-chat/[offerId]";
 const JOB = "/(contractor)/jobs/[id]";
@@ -89,5 +89,31 @@ describe("resolveNotificationRoute", () => {
     expect(resolveNotificationRoute(undefined)).toBeNull();
     expect(resolveNotificationRoute("o1")).toBeNull();
     expect(resolveNotificationRoute(42)).toBeNull();
+  });
+});
+
+/**
+ * `readNotificationIds` is the shared piece `resolveNotificationRoute` (a
+ * tap) and `useNotificationInvalidation` (an arrival, in
+ * `usePushNotifications.ts`) both read a push payload through — unlike
+ * routing, invalidation wants *both* ids at once when a payload carries them,
+ * not just the more specific one.
+ */
+describe("readNotificationIds", () => {
+  it("reads both ids when a payload carries them", () => {
+    expect(readNotificationIds({ offerId: "o1", jobId: "j1" })).toEqual({
+      offerId: "o1",
+      jobId: "j1",
+    });
+  });
+
+  it("returns an empty object for a payload with neither", () => {
+    expect(readNotificationIds({ type: "offer.created" })).toEqual({});
+  });
+
+  it("survives a payload that is not an object at all", () => {
+    expect(readNotificationIds(null)).toEqual({});
+    expect(readNotificationIds(undefined)).toEqual({});
+    expect(readNotificationIds("o1")).toEqual({});
   });
 });

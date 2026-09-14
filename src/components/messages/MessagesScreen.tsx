@@ -44,12 +44,6 @@ export function MessagesScreen() {
     skip: isGuest,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
-    // There's no socket, so without this a message that arrives while the
-    // contractor is sitting on this screen never shows up. Faster than the
-    // 60s tab badge in app/(contractor)/(tabs)/_layout.tsx (which is mounted
-    // for the whole session regardless of tab) since this only runs while
-    // someone is actively looking at the list.
-    pollingInterval: 15_000,
   });
   const {
     data,
@@ -66,9 +60,6 @@ export function MessagesScreen() {
       refetchOnMountOrArgChange: true,
       refetchOnReconnect: true,
       refetchOnFocus: true,
-      // Same reasoning as the unread count above: keep the list itself
-      // current while it's on screen, not just its badge.
-      pollingInterval: 15_000,
     },
   );
   const [markAllRead, { isLoading: isMarking }] = useMarkAllReadMutation();

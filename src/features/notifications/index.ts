@@ -1,2 +1,3 @@
 export type { PushPayload, NotificationRoute } from "./types";
-export { resolveNotificationRoute } from "./route";
+export { readNotificationIds, resolveNotificationRoute } from "./route";
+export { clearActiveChat, isChatOnScreen, setActiveChat } from "./activeChat";

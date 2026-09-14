@@ -19,6 +19,25 @@ function readId(
 }
 
 /**
+ * The ids a push payload can carry, read once and shared by both routing
+ * (`resolveNotificationRoute`, a tap) and cache invalidation
+ * (`useNotificationInvalidation` in `usePushNotifications.ts`, an arrival) —
+ * the two care about different things happening to the same payload, not
+ * different payloads.
+ */
+export function readNotificationIds(data: unknown): {
+  jobId?: string;
+  offerId?: string;
+} {
+  if (!data || typeof data !== "object") return {};
+  const payload = data as Record<string, unknown>;
+  return {
+    jobId: readId(payload, "jobId", "job_id"),
+    offerId: readId(payload, "offerId", "offer_id"),
+  };
+}
+
+/**
  * Turns a notification's `data` into the screen it is about, or null when it
  * carries nothing to navigate to.
  *
@@ -35,15 +54,12 @@ function readId(
 export function resolveNotificationRoute(
   data: unknown,
 ): NotificationRoute | null {
-  if (!data || typeof data !== "object") return null;
-  const payload = data as Record<string, unknown>;
+  const { jobId, offerId } = readNotificationIds(data);
 
-  const offerId = readId(payload, "offerId", "offer_id");
   if (offerId) {
     return buildOfferChatRoute({ offerId });
   }
 
-  const jobId = readId(payload, "jobId", "job_id");
   if (jobId) {
     return {
       pathname: "/(contractor)/jobs/[id]",

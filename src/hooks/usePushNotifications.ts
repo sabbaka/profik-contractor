@@ -1,8 +1,13 @@
 import {
+  profikApi,
   useRegisterPushTokenMutation,
   useUnregisterPushTokenMutation,
 } from "@/src/api/profikApi";
-import { resolveNotificationRoute } from "@/src/features/notifications";
+import {
+  isChatOnScreen,
+  readNotificationIds,
+  resolveNotificationRoute,
+} from "@/src/features/notifications";
 import { logError } from "@/src/utils/logger";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
@@ -11,19 +16,35 @@ import { router, useRootNavigationState } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
+import { useDispatch } from "react-redux";
 
 const PROJECT_ID =
   Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
 
-// Show notifications in foreground
+/**
+ * Decides what an arriving notification does while the app is open.
+ *
+ * Everything announces itself except news the reader is already looking at:
+ * a message for the offer chat on screen is delivered silently, because
+ * `useNotificationInvalidation` below is about to put it in the thread (that
+ * screen still polls too — see its own comment). Announcing it would banner,
+ * sound and badge a message the reader can already see arrive.
+ *
+ * Suppression is per offer, not per screen — a message from a different chat
+ * still deserves a banner while this one is open.
+ */
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
+  handleNotification: async (notification) => {
+    const { offerId } = readNotificationIds(notification.request.content.data);
+    const announce = !isChatOnScreen(offerId);
+    return {
+      shouldShowAlert: announce,
+      shouldPlaySound: announce,
+      shouldSetBadge: announce,
+      shouldShowBanner: announce,
+      shouldShowList: announce,
+    };
+  },
 });
 
 /**
@@ -105,6 +126,7 @@ export function usePushNotifications(token: string | null) {
   }, [token, language, registerPushToken]);
 
   useNotificationRouting(token);
+  useNotificationInvalidation(token);
 }
 
 /**
@@ -149,6 +171,72 @@ function useNotificationRouting(token: string | null) {
 
     router.push({ pathname: target.pathname, params: target.params } as any);
   }, [response, isNavigationReady, token]);
+}
+
+/**
+ * Treats an arriving notification as what it already is: the server telling
+ * us its data changed.
+ *
+ * The server knows an offer was accepted, or a message was sent — that is
+ * why it sent the push. Polling on a timer to discover the same fact is work
+ * both sides can skip, so the notification invalidates the cache entries it
+ * is about and RTK Query refetches only what a screen is actually subscribed
+ * to. Nothing is fetched when nothing on screen cares.
+ *
+ * This is arrival, not the tap `useNotificationRouting` handles above: it
+ * fires while the user may already be looking at the screen the news
+ * belongs to, which is the case a timer served worst. Ported from
+ * `profik_client`'s `usePushNotifications.ts`, which dropped its own polling
+ * in favour of this for the same reason.
+ *
+ * Delivery is only guaranteed in the foreground, which is the case that
+ * matters here — a notification that arrives in the background is followed
+ * by the user opening the app, and `refetchOnFocus` (wired on the queries
+ * these tags reach) covers that instead.
+ */
+function useNotificationInvalidation(token: string | null) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!token) return;
+
+    const subscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        const { jobId, offerId } = readNotificationIds(
+          notification.request.content.data,
+        );
+
+        const tags: any[] = [];
+        if (offerId) {
+          // Mirrors sendOfferMessage's own invalidation in profikApi.ts —
+          // this chat's thread plus the two blunt tags that keep the
+          // Messages list and its unread badge in step.
+          tags.push(
+            { type: "OfferMessages", id: offerId },
+            "Conversations",
+            "Unread",
+          );
+        }
+        if (jobId) {
+          // Mirrors createOffer's own invalidation — the job itself, its
+          // offer, and both list-level tags so My Jobs and Open Jobs pick
+          // up a status change without needing their own poll.
+          tags.push(
+            { type: "Jobs", id: jobId },
+            { type: "Jobs", id: "LIST" },
+            { type: "Offers", id: jobId },
+            { type: "Offers", id: "LIST" },
+            "Jobs",
+          );
+        }
+
+        if (tags.length === 0) return;
+        dispatch(profikApi.util.invalidateTags(tags));
+      },
+    );
+
+    return () => subscription.remove();
+  }, [dispatch, token]);
 }
 
 /**

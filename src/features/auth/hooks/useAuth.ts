@@ -1,6 +1,7 @@
 import { profikApi } from "@/src/api/profikApi";
 import { useUnregisterPushToken } from "@/src/hooks/usePushNotifications";
 import { logout as logoutAction } from "@/src/store/authSlice";
+import * as Notifications from "expo-notifications";
 import { useDispatch } from "react-redux";
 
 export interface UseAuthReturn {
@@ -19,6 +20,12 @@ export function useAuth(): UseAuthReturn {
     // header, and without it the next contractor to sign in on this device
     // keeps receiving the previous one's job notifications.
     await unregisterPushToken();
+
+    // useAppIconBadge (in the tabs layout) stops running the moment AuthGate
+    // unmounts it below, so nothing else re-syncs the icon after this —
+    // leaving the previous account's unread count sitting on it until
+    // whoever signs in next happens to have a lower one.
+    Notifications.setBadgeCountAsync(0).catch(() => {});
 
     // Clear auth state (token, user)
     dispatch(logoutAction());
