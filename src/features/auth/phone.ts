@@ -1,54 +1,132 @@
-const CZ_DIALLING_CODE = "420";
-const CZ_SUBSCRIBER_LENGTH = 9;
+import {
+  AsYouType,
+  getCountries,
+  getCountryCallingCode,
+  parsePhoneNumberFromString,
+  type CountryCode,
+} from "libphonenumber-js";
+
+/** Where the sign-in field starts. The app bills in CZK and works in Prague. */
+export const DEFAULT_COUNTRY: CountryCode = "CZ";
+
+export interface Country {
+  code: CountryCode;
+  /** Dialling code without the plus, e.g. "420". */
+  callingCode: string;
+  /** Localised name, or the ISO code where the platform cannot name it. */
+  name: string;
+  flag: string;
+}
 
 /**
  * Turns whatever the user typed into an E.164 number the backend will accept.
  *
- * The sign-in screen takes a free-form phone field rather than a masked one, so
- * this has to cope with everything a Czech user reasonably types: `777123456`,
- * `777 123 456`, `+420 777 123 456`, `00420777123456`. Anything that still
- * doesn't look like a phone number comes back as `null` — the caller turns that
- * into a field error rather than letting the API reject it with a 400.
+ * `country` is the one chosen in the field's selector, and it decides how a
+ * number without a country code is read — `777123456` is Czech under CZ and
+ * Polish under PL. A number that carries its own `+` ignores it, so pasting a
+ * full international number always works whatever the selector says.
  *
- * Czech Republic is the default country: a bare subscriber number gets `+420`.
- * A number that already carries a `+` is kept as-is, so foreign workers can
- * sign in with their own country code.
+ * Validation is per country rather than a digit count: libphonenumber knows
+ * that a Czech subscriber number is nine digits and a German one is not fixed
+ * at all. Anything it rejects comes back as `null`, and the caller turns that
+ * into a field error rather than letting the API answer 400 — or worse, letting
+ * an SMS go to a number that cannot exist.
  */
-export function normalizePhone(input: string): string | null {
+export function normalizePhone(
+  input: string,
+  country: CountryCode = DEFAULT_COUNTRY,
+): string | null {
   const trimmed = input.trim();
   if (!trimmed) return null;
 
-  const hasPlus = trimmed.startsWith("+");
-  let digits = trimmed.replace(/\D/g, "");
+  // 00 is the other way of writing +, and no national number starts with it.
+  const candidate = trimmed.startsWith("00") ? `+${trimmed.slice(2)}` : trimmed;
 
-  // 00 is the other way of writing +, and nobody's national number starts 00.
-  if (!hasPlus && digits.startsWith("00")) {
-    digits = digits.slice(2);
-    return toE164(digits);
-  }
-
-  if (hasPlus) return toE164(digits);
-
-  if (digits.length === CZ_SUBSCRIBER_LENGTH) {
-    return toE164(CZ_DIALLING_CODE + digits);
-  }
-
-  // Typed the country code without the plus.
-  if (digits.length === CZ_DIALLING_CODE.length + CZ_SUBSCRIBER_LENGTH) {
-    return toE164(digits);
-  }
-
-  return null;
-}
-
-/** E.164 allows 8–15 digits including the country code. */
-function toE164(digits: string): string | null {
-  if (digits.length < 8 || digits.length > 15) return null;
-  if (digits.startsWith("0")) return null;
-  return `+${digits}`;
+  const parsed = parsePhoneNumberFromString(candidate, country);
+  if (!parsed || !parsed.isValid()) return null;
+  return parsed.number;
 }
 
 /** True when `normalizePhone` can make an E.164 number out of the input. */
-export function isPhoneComplete(input: string): boolean {
-  return normalizePhone(input) !== null;
+export function isPhoneComplete(
+  input: string,
+  country: CountryCode = DEFAULT_COUNTRY,
+): boolean {
+  return normalizePhone(input, country) !== null;
+}
+
+/**
+ * Groups the digits as they are typed, the way the chosen country writes them:
+ * `777 123 456` for CZ, `7700 900000` for GB.
+ *
+ * Spacing only — `normalizePhone` strips it again on submit. What the reader
+ * sees has to be checkable against the number on their SIM, and a run of nine
+ * digits is not.
+ */
+export function formatPhoneInput(
+  input: string,
+  country: CountryCode = DEFAULT_COUNTRY,
+): string {
+  // AsYouType formats nothing it considers already international, so a pasted
+  // +420… keeps its own shape rather than being re-read under `country`.
+  return new AsYouType(country).input(input);
+}
+
+/** Whether the typed value names its own country, by a leading `+` or `00`. */
+export function hasExplicitCountryCode(input: string): boolean {
+  const trimmed = input.trim();
+  return trimmed.startsWith("+") || trimmed.startsWith("00");
+}
+
+/** The flag as regional indicator letters, which every platform renders. */
+export function flagEmoji(code: string): string {
+  return String.fromCodePoint(
+    ...[...code.toUpperCase()].map((c) => 0x1f1a5 + c.charCodeAt(0)),
+  );
+}
+
+/**
+ * Every country libphonenumber knows, named in the interface language and
+ * sorted by that name.
+ *
+ * Names come from `Intl.DisplayNames`, which this runtime may not carry — the
+ * app already relies on `Intl.NumberFormat` and `toLocaleDateString`, but
+ * `DisplayNames` is a later addition and Hermes has shipped without it. The
+ * fallback is the ISO code, so the row still reads `🇨🇿 CZ +420` and stays
+ * searchable by code; it is not an error worth reporting.
+ */
+export function listCountries(locale: string): Country[] {
+  const display = displayNames(locale);
+
+  return getCountries()
+    .map((code) => ({
+      code,
+      callingCode: getCountryCallingCode(code),
+      name: display?.of(code) ?? code,
+      flag: flagEmoji(code),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, locale));
+}
+
+function displayNames(locale: string): Intl.DisplayNames | undefined {
+  try {
+    return new Intl.DisplayNames([locale], { type: "region" });
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Matches a country against what was typed in the search box: its name, its
+ * ISO code, or its dialling code with or without the plus — people look for
+ * their country by all three.
+ */
+export function matchesCountryQuery(country: Country, query: string): boolean {
+  const needle = query.trim().toLowerCase().replace(/^\+/, "");
+  if (!needle) return true;
+  return (
+    country.name.toLowerCase().includes(needle) ||
+    country.code.toLowerCase().includes(needle) ||
+    country.callingCode.startsWith(needle)
+  );
 }
