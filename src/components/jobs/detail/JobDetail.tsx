@@ -2,7 +2,7 @@ import { useGetJobByIdQuery } from "@/src/api/profikApi";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { formatCountry } from "@/src/utils/country";
-import * as Linking from "expo-linking";
+import { buildJobShareUrl } from "@/src/utils/jobShareUrl";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -84,12 +84,6 @@ export const JobDetail = () => {
     contractorId: job?.contractorId ?? null,
   });
 
-  // The link is the profikcontractor:// custom scheme, not a real https URL —
-  // the app has no web domain or Universal Links / App Links setup yet, so
-  // there is nothing to fall back to for someone without the app installed.
-  // It works for anyone who has the app (job details are guest-accessible,
-  // no sign-in required); most messaging apps won't linkify it, but it opens
-  // straight to this job for whoever taps or pastes it with the app present.
   const handleShare = useCallback(() => {
     if (!job) return;
     const location = [job.city, formatCountry(job.country, t)]
@@ -101,7 +95,7 @@ export const JobDetail = () => {
       [formatCzk(job.price ?? 0), job.category].filter(Boolean).join(" · "),
     ];
     if (location) lines.push(location);
-    lines.push("", Linking.createURL(`jobs/${job.id}`));
+    lines.push("", buildJobShareUrl(job.id));
     Share.share({ message: lines.join("\n") }).catch(() => {});
   }, [job, t]);
 
