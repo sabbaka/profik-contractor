@@ -602,5 +602,23 @@
       "declined": "Nepotvrzeno",
       "expired": "Platnost vypršela"
     }
+  },
+  "appFeedback": {
+    "title": "Jak si vedeme?",
+    "subtitle": "Ohodnoťte svou zkušenost s aplikací Profik Pro.",
+    "submit": "Odeslat zpětnou vazbu",
+    "starLabel": "Hodnocení {{count}} z 5",
+    "placeholders": {
+      "positive": "Co se povedlo? (nepovinné)",
+      "negative": "Co se nepovedlo? (nepovinné)"
+    },
+    "errors": {
+      "rateLimitedTitle": "Děkujeme — už ji máme",
+      "rateLimited": "Zpětnou vazbu jste odeslali nedávno. Zkuste to prosím za chvíli.",
+      "unauthorized": "Pro odeslání se prosím znovu přihlaste.",
+      "validation": "Před odesláním vyberte hodnocení.",
+      "network": "Bez připojení. Zkontrolujte síť a zkuste to znovu.",
+      "unknown": "Zpětnou vazbu se nepodařilo odeslat. Zkuste to znovu."
+    }
   }
 }

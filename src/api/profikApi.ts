@@ -32,6 +32,10 @@ import type {
   StartVerificationResponse,
   VerificationSummary,
 } from "@/src/features/verification/types";
+import type {
+  AppFeedbackParams,
+  AppFeedbackResponse,
+} from "@/src/features/feedback/types";
 
 /** Conversations fetched per page by the Messages tab. */
 export const CONVERSATIONS_PAGE_SIZE = 20;
@@ -536,6 +540,12 @@ export const profikApi = createApi({
         );
       },
     }),
+    // In-app "rate Profik Pro" survey. The server is responsible for
+    // forwarding this on; the client only reports. Not tagged — nothing in
+    // the app reads feedback back.
+    sendAppFeedback: builder.mutation<AppFeedbackResponse, AppFeedbackParams>({
+      query: (body) => ({ url: "/feedback/app", method: "POST", body }),
+    }),
   }),
 });
 
@@ -565,4 +575,5 @@ export const {
   useUploadAvatarMutation,
   useStartVerificationMutation,
   useRefreshVerificationMutation,
+  useSendAppFeedbackMutation,
 } = profikApi;

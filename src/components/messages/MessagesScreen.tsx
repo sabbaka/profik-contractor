@@ -100,6 +100,7 @@ export function MessagesScreen() {
         jobTitle: conversation.job.title,
         offerPrice: conversation.offer.price,
         offerStatus: conversation.offer.status,
+        jobStatus: conversation.job.status,
       }) as any,
     );
   }, []);

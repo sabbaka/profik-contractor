@@ -601,5 +601,23 @@
       "declined": "Not confirmed",
       "expired": "Expired"
     }
+  },
+  "appFeedback": {
+    "title": "How are we doing?",
+    "subtitle": "Rate your experience with the Profik Pro app.",
+    "submit": "Send feedback",
+    "starLabel": "Rate {{count}} out of 5",
+    "placeholders": {
+      "positive": "What worked well? (optional)",
+      "negative": "What went wrong? (optional)"
+    },
+    "errors": {
+      "rateLimitedTitle": "Thanks — we already have it",
+      "rateLimited": "You've sent feedback recently. Give it a little time before sending more.",
+      "unauthorized": "Sign in again to send feedback.",
+      "validation": "Pick a rating before sending.",
+      "network": "No connection. Check your network and try again.",
+      "unknown": "Couldn't send your feedback. Please try again."
+    }
   }
 }

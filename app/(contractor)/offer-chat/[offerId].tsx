@@ -19,6 +19,11 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { clearActiveChat, setActiveChat } from "@/src/features/notifications";
+import { AppFeedbackSheet } from "@/src/components/feedback";
+import {
+  maybeRequestStoreReview,
+  useAppFeedbackPrompt,
+} from "@/src/features/feedback";
 import { logError } from "@/src/utils/logger";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
 import React, {
@@ -82,6 +87,32 @@ export default function OfferChatRoute() {
       };
     }, [offerId]),
   );
+
+  // App-review prompts — not job or client reviews, those live on JobDetail.
+  // `offerStatus`/`jobStatus` are the snapshot the caller navigated here
+  // with (see buildOfferChatRoute), the same one OfferStatusPill below
+  // renders from, not a live subscription.
+  //
+  // The job-completed check runs first: a completed job's offer is always
+  // also "accepted" (completion implies it), so checking offer-accepted
+  // first would keep re-triggering the survey branch forever and the store
+  // prompt would never get a turn. This keeps the two mutually exclusive per
+  // visit — both are idempotent internally (their own storage flag no-ops a
+  // repeat call), so nothing is lost by preferring the later milestone.
+  const {
+    isOpen: feedbackOpen,
+    requestPrompt,
+    closePrompt,
+  } = useAppFeedbackPrompt();
+  useEffect(() => {
+    if (jobStatus === "completed") {
+      void maybeRequestStoreReview();
+      return;
+    }
+    if (offerStatus === "accepted") {
+      void requestPrompt();
+    }
+  }, [offerStatus, jobStatus, requestPrompt]);
 
   const {
     data: messages,
@@ -409,6 +440,8 @@ export default function OfferChatRoute() {
           </Pressable>
         </XStack>
       </KeyboardAvoidingView>
+
+      <AppFeedbackSheet open={feedbackOpen} onOpenChange={closePrompt} />
     </SafeAreaView>
   );
 }
