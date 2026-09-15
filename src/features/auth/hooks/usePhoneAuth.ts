@@ -10,7 +10,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { classifyPhoneAuthError, phoneAuthErrorKey } from "../errors";
-import { normalizePhone } from "../phone";
+import { DEFAULT_COUNTRY, normalizePhone } from "../phone";
+import type { CountryCode } from "libphonenumber-js";
 
 export type PhoneAuthStep = "phone" | "code";
 
@@ -24,7 +25,7 @@ export interface UsePhoneAuthReturn {
   step: PhoneAuthStep;
   /** The normalized E.164 number the code was sent to, for the "we texted…" line. */
   phone: string | null;
-  requestCode: (rawPhone: string) => Promise<void>;
+  requestCode: (rawPhone: string, country?: CountryCode) => Promise<void>;
   verifyCode: (code: string) => Promise<void>;
   resend: () => Promise<void>;
   changeNumber: () => void;
@@ -77,8 +78,10 @@ export function usePhoneAuth(returnTo?: string): UsePhoneAuthReturn {
   );
 
   const requestCode = useCallback(
-    async (rawPhone: string) => {
-      const e164 = normalizePhone(rawPhone);
+    async (rawPhone: string, country: CountryCode = DEFAULT_COUNTRY) => {
+      // The selector decides how a number without a country code is read;
+      // one carrying its own `+` ignores it either way.
+      const e164 = normalizePhone(rawPhone, country);
       if (!e164) {
         setPhoneError(t("auth.errors.phoneInvalid"));
         return;

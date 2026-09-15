@@ -92,6 +92,11 @@
       "title": "What should we call you?",
       "subtitle": "Clients see this name on your offer when they choose who to hire.",
       "save": "Save and continue"
+    },
+    "country": {
+      "title": "Country code",
+      "search": "Search country or code",
+      "noResults": "No country matches that"
     }
   },
   "tabs": {
@@ -529,7 +534,8 @@
     "rateStars": "Rate {{rating}} out of 5",
     "verifiedIdentity": "Identity verified",
     "openFilters": "Open filters",
-    "filtersActive": "{{count}} filters active"
+    "filtersActive": "{{count}} filters active",
+    "chooseCountry": "Choose country code"
   },
   "messages": {
     "title": "Messages",

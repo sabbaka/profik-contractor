@@ -1,26 +1,30 @@
 import { FormInput, OTPInput } from "@/src/components/form";
+import { GradientCircle } from "@/src/components/ui/GradientCircle";
+import { NavHeader } from "@/src/components/ui/NavHeader";
+import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
 import { Button, Text } from "@/src/components/ui/ui";
+import { CountryPickerSheet } from "@/src/components/auth/CountryPickerSheet";
+import { DEFAULT_COUNTRY, formatPhoneInput } from "@/src/features/auth/phone";
 import { usePhoneAuth } from "@/src/features/auth/hooks/usePhoneAuth";
 import { useThemeColors } from "@/src/theme";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LinearGradient } from "expo-linear-gradient";
+import { ChevronDown, MessageSquare, Smartphone } from "@tamagui/lucide-icons";
+import { getCountryCallingCode, type CountryCode } from "libphonenumber-js";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Keyboard, Pressable, StyleSheet } from "react-native";
+import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
-import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { XStack, YStack } from "tamagui";
 import { z } from "zod";
 
 const OTP_LENGTH = 6;
 
-export type PhoneAuthScreenProps = {
+export interface PhoneAuthScreenProps {
   /** Where to land after signing in; defaults to the open-jobs tab. */
   returnTo?: string;
-};
+}
 
 /**
  * The app's only sign-in surface. There is no separate registration and no
@@ -33,9 +37,9 @@ export type PhoneAuthScreenProps = {
  * without an account stays reachable from here.
  */
 export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
-  const { t } = useTranslation();
-  const colors = useThemeColors();
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
+  const { t } = useTranslation();
   const [code, setCode] = useState("");
   const {
     step,
@@ -57,11 +61,15 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<{ phone: string }>({
     resolver: zodResolver(phoneSchema),
     defaultValues: { phone: "" },
   });
+
+  const [country, setCountry] = useState<CountryCode>(DEFAULT_COUNTRY);
+  const [countryPickerOpen, setCountryPickerOpen] = useState(false);
 
   // Codes arrive by SMS and are read off a notification, so waiting for a
   // Verify tap after the sixth digit is a tap for nothing.
@@ -82,6 +90,16 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
     verifyCode(code);
   }, [code, step, verifyCode]);
 
+  const handleClose = () => {
+    if (step === "code") {
+      setCode("");
+      changeNumber();
+      return;
+    }
+    if (router.canGoBack()) router.back();
+    else router.replace("/(contractor)/(tabs)/open" as any);
+  };
+
   const handleChangeNumber = () => {
     setCode("");
     changeNumber();
@@ -94,84 +112,94 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
 
   return (
     <YStack flex={1} backgroundColor={colors.bgSecondary}>
-      {/* "layout" mode: the content is vertically centred, and centring only
-          re-settles around the keyboard when the spacer is real. */}
+      <YStack paddingTop={insets.top}>
+        <NavHeader showBackLabel={false} onBack={handleClose} />
+      </YStack>
+      {/* "layout" mode: both steps hang their content off `flex={1}`, which
+          only rearranges around the keyboard when the spacer is real. */}
       <KeyboardAwareScreen
         mode="layout"
         contentContainerStyle={{
           flexGrow: 1,
-          justifyContent: "center",
-          paddingHorizontal: 24,
-          paddingTop: insets.top + 24,
-          paddingBottom: 24,
+          paddingTop: 16,
+          paddingBottom: 32,
+          paddingHorizontal: 20,
         }}
       >
         {step === "phone" ? (
-          <YStack gap={28}>
+          <YStack gap={28} flex={1}>
             <YStack gap={16}>
-              <YStack
-                width={56}
-                height={56}
-                borderRadius={18}
-                overflow="hidden"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <LinearGradient
-                  colors={PROFIK_GRADIENT.accent}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                />
-                <Text
-                  position="relative"
-                  zIndex={1}
-                  style={{
-                    color: "#FFFFFF",
-                    fontFamily: "Geist_700Bold",
-                    fontSize: 24,
-                    lineHeight: 30,
-                    textAlign: "center",
-                  }}
-                >
-                  P
-                </Text>
-              </YStack>
-              <YStack gap={6}>
+              <GradientCircle size={56} radius={16}>
+                <Smartphone size={28} color="#FFFFFF" />
+              </GradientCircle>
+              <YStack gap={8}>
                 <Text variant="display">{t("auth.phone.title")}</Text>
                 <Text variant="body">{t("auth.phone.subtitle")}</Text>
               </YStack>
             </YStack>
 
-            <YStack
-              backgroundColor={colors.bgCard}
-              borderRadius={24}
-              borderWidth={1}
-              borderColor={colors.borderSubtle}
-              padding={20}
-              gap={16}
+            <FormInput
+              name="phone"
+              control={control}
+              label={t("auth.labels.phone")}
+              placeholder={t("auth.placeholders.phone")}
+              keyboardType="phone-pad"
+              autoComplete="tel"
+              textContentType="telephoneNumber"
+              returnKeyType="done"
+              error={phoneError ?? errors.phone?.message}
+              // Inside the field, not above it: the dialling code is part of
+              // the number the reader is checking against their SIM.
+              prefix={
+                <Pressable
+                  onPress={() => setCountryPickerOpen(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t("a11y.chooseCountry")}
+                  hitSlop={8}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                >
+                  <XStack alignItems="center" gap={2}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        lineHeight: 20,
+                        fontFamily: "Inter_500Medium",
+                        color: colors.textPrimary,
+                        fontVariant: ["tabular-nums"],
+                      }}
+                    >
+                      +{getCountryCallingCode(country)}
+                    </Text>
+                    {/* No flag here. The code is the part being checked
+                        against the number, and a flag beside it is a second
+                        thing to read for the same fact. It stays in the
+                        picker, where the job is recognising a country rather
+                        than a code. */}
+                    <ChevronDown size={16} color={colors.textMuted} />
+                  </XStack>
+                </Pressable>
+              }
+              onValueChange={(next) =>
+                setValue("phone", formatPhoneInput(next, country), {
+                  shouldValidate: false,
+                })
+              }
+            />
+
+            <CountryPickerSheet
+              open={countryPickerOpen}
+              onOpenChange={setCountryPickerOpen}
+              selected={country}
+              onSelect={setCountry}
+            />
+
+            <Button
+              variant={isLoading ? "primaryDisabled" : "primary"}
+              onPress={handleSubmit((data) => requestCode(data.phone, country))}
+              loading={isLoading}
             >
-              <FormInput
-                name="phone"
-                control={control}
-                placeholder={t("auth.placeholders.phone")}
-                keyboardType="phone-pad"
-                autoComplete="tel"
-                textContentType="telephoneNumber"
-                returnKeyType="done"
-                error={phoneError ?? errors.phone?.message}
-                flex={0}
-              />
-              <Button
-                loading={isLoading}
-                onPress={handleSubmit((data) => {
-                  Keyboard.dismiss();
-                  requestCode(data.phone);
-                })}
-              >
-                {t("auth.phone.continue")}
-              </Button>
-            </YStack>
+              {t("auth.phone.continue")}
+            </Button>
 
             <Text variant="bodySm" textAlign="center">
               {t("auth.phone.legal")}
@@ -200,14 +228,19 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
             </XStack>
           </YStack>
         ) : (
-          <YStack gap={28} alignItems="center">
-            <YStack alignItems="center" gap={8}>
-              <Text variant="display" textAlign="center">
-                {t("auth.otp.title")}
-              </Text>
-              <Text variant="body" textAlign="center">
-                {t("auth.otp.subtitle", { phone })}
-              </Text>
+          <YStack gap={32} flex={1} alignItems="center">
+            <YStack gap={16} alignItems="center">
+              <GradientCircle size={56} radius={16}>
+                <MessageSquare size={28} color="#FFFFFF" />
+              </GradientCircle>
+              <YStack gap={8} alignItems="center">
+                <Text variant="display" textAlign="center">
+                  {t("auth.otp.title")}
+                </Text>
+                <Text variant="body" textAlign="center">
+                  {t("auth.otp.subtitle", { phone })}
+                </Text>
+              </YStack>
             </YStack>
 
             <OTPInput
@@ -218,7 +251,7 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
               autoFocus
             />
 
-            <YStack width="100%" gap={16} alignItems="center">
+            <YStack width="100%" gap={16} alignItems="center" marginTop={4}>
               {secondsUntilResend > 0 ? (
                 <Text variant="bodySm">
                   {t("auth.otp.resendIn", { seconds: secondsUntilResend })}
@@ -243,14 +276,16 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
                 </Pressable>
               )}
 
-              <Pressable
-                onPress={handleChangeNumber}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel={t("auth.otp.changeNumber")}
-              >
-                <Text variant="bodySm">{t("auth.otp.changeNumber")}</Text>
-              </Pressable>
+              <XStack justifyContent="center">
+                <Pressable
+                  onPress={handleChangeNumber}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel={t("auth.otp.changeNumber")}
+                >
+                  <Text variant="bodySm">{t("auth.otp.changeNumber")}</Text>
+                </Pressable>
+              </XStack>
             </YStack>
           </YStack>
         )}

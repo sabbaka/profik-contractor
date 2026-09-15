@@ -1,5 +1,5 @@
 import { normalizeAuthReturnTo } from "@/src/features/auth/authReturnTo";
-import PhoneAuthScreen from "@/src/screens/Auth/PhoneAuthScreen";
+import PhoneAuthScreen from "@/src/components/auth/PhoneAuthScreen";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 

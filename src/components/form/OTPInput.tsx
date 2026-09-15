@@ -1,7 +1,8 @@
+import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import React, { useEffect, useRef, useState } from "react";
-import { Keyboard, Platform, TextInput } from "react-native";
-import { Text, XStack, YStack } from "tamagui";
+import { Keyboard, Platform, Pressable, TextInput } from "react-native";
+import { XStack, YStack } from "tamagui";
 
 interface OTPInputProps {
   length?: number;
@@ -36,64 +37,80 @@ export const OTPInput = ({
     if (cleaned.length === length) Keyboard.dismiss();
   };
 
-  const handlePress = () => {
-    inputRef.current?.focus();
-  };
+  const focusInput = () => inputRef.current?.focus();
   const digits = value.split("");
+  const hasError = !!error;
 
   return (
-    <YStack gap="$3" alignItems="center">
-      <XStack gap="$3" onPress={handlePress} cursor="pointer">
+    <YStack gap={12} alignItems="center">
+      <XStack gap={10}>
         {Array.from({ length }).map((_, index) => {
           const digit = digits[index] || "";
           const isFocused = focused && index === focusedIndex;
-          const isFilled = digit !== "";
-
           return (
-            <XStack
+            <Pressable
               key={index}
-              width={52}
-              height={60}
-              borderRadius={12}
-              backgroundColor={isFilled ? colors.bgCard : colors.surfaceInput}
-              alignItems="center"
-              justifyContent="center"
-              borderWidth={2}
-              borderColor={
-                error ? colors.error : isFocused ? colors.accent : "transparent"
+              onPress={focusInput}
+              style={({ pressed }) =>
+                pressed ? { transform: [{ scale: 0.97 }] } : null
               }
-              animation="quick"
-              pressStyle={{ scale: 0.98 }}
-              onPress={handlePress}
             >
-              <Text
-                fontSize={28}
-                fontWeight="700"
-                color={colors.textPrimary}
-                textAlign="center"
+              <YStack
+                width={48}
+                height={56}
+                borderRadius={12}
+                alignItems="center"
+                justifyContent="center"
+                backgroundColor={
+                  hasError
+                    ? colors.dangerBg
+                    : isFocused
+                      ? colors.accentLight
+                      : colors.surfaceInput
+                }
+                borderWidth={hasError ? 1.5 : isFocused ? 2 : 0}
+                borderColor={
+                  hasError
+                    ? colors.error
+                    : isFocused
+                      ? colors.accent
+                      : "transparent"
+                }
               >
-                {digit}
-              </Text>
-              {isFocused && !digit && (
-                <XStack
-                  position="absolute"
-                  width={2}
-                  height={28}
-                  backgroundColor={colors.accent}
-                  animation="quick"
-                  opacity={1}
-                />
-              )}
-            </XStack>
+                <Text
+                  style={{
+                    fontSize: 24,
+                    lineHeight: 30,
+                    fontFamily: "Inter_700Bold",
+                    color: colors.textPrimary,
+                    textAlign: "center",
+                  }}
+                >
+                  {digit}
+                </Text>
+                {isFocused && !digit ? (
+                  <YStack
+                    position="absolute"
+                    width={2}
+                    height={26}
+                    backgroundColor={colors.accent}
+                  />
+                ) : null}
+              </YStack>
+            </Pressable>
           );
         })}
       </XStack>
 
-      {error && (
-        <Text color={colors.error} fontSize="$3" textAlign="center">
+      {error ? (
+        <Text
+          variant="caption"
+          textAlign="center"
+          style={{ color: colors.error }}
+        >
           {error}
         </Text>
-      )}
+      ) : null}
 
       <TextInput
         ref={inputRef}
@@ -110,7 +127,7 @@ export const OTPInput = ({
           opacity: 0,
           height: 1,
           width: 1,
-          ...(Platform.OS === "web" && { pointerEvents: "none" }),
+          ...(Platform.OS === "web" && { pointerEvents: "none" as any }),
         }}
       />
     </YStack>

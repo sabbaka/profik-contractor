@@ -92,6 +92,11 @@
       "title": "Jak vám máme říkat?",
       "subtitle": "Zákazníci uvidí toto jméno u vaší nabídky, když si vybírají, koho najmou.",
       "save": "Uložit a pokračovat"
+    },
+    "country": {
+      "title": "Předvolba země",
+      "search": "Hledat zemi nebo předvolbu",
+      "noResults": "Žádná země neodpovídá"
     }
   },
   "tabs": {
@@ -529,7 +534,8 @@
     "rateStars": "Ohodnotit {{rating}} z 5",
     "verifiedIdentity": "Totožnost ověřena",
     "openFilters": "Otevřít filtry",
-    "filtersActive": "{{count}} aktivních filtrů"
+    "filtersActive": "{{count}} aktivních filtrů",
+    "chooseCountry": "Vybrat předvolbu země"
   },
   "messages": {
     "title": "Zprávy",
