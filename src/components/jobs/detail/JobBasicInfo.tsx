@@ -3,7 +3,7 @@ import { Text } from "@/src/components/ui/ui";
 import { formatCzk } from "@/src/utils/currency";
 import { dateLocale, formatSchedule } from "@/src/utils/jobSchedule";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
-import { Calendar, Clock, MapPin } from "@tamagui/lucide-icons";
+import { Calendar, Clock, History, MapPin } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,10 @@ interface JobBasicInfoProps {
   scheduledDates?: string[] | null;
   city?: string | null;
   timeSlot?: TimeSlot | null;
+  /** When the listing itself went up — the freshness signal for deciding
+   *  whether a job is likely still worth an offer. Separate from
+   *  `scheduledDates`, which is when the cleaning happens. */
+  createdAt?: string | null;
 }
 
 export const JobBasicInfo = ({
@@ -26,6 +30,7 @@ export const JobBasicInfo = ({
   scheduledDates,
   city,
   timeSlot,
+  createdAt,
 }: JobBasicInfoProps) => {
   const { t, i18n } = useTranslation();
   const date = useMemo(
@@ -35,6 +40,18 @@ export const JobBasicInfo = ({
       }),
     [scheduledDates, i18n.language, t],
   );
+  const postedText = useMemo(() => {
+    if (!createdAt) return null;
+    const posted = new Date(createdAt);
+    if (Number.isNaN(posted.getTime())) return null;
+    return t("job.posted", {
+      date: posted.toLocaleDateString(i18n.language, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    });
+  }, [createdAt, i18n.language, t]);
 
   return (
     <YStack borderRadius={24} overflow="hidden" padding={22} gap={16}>
@@ -91,6 +108,12 @@ export const JobBasicInfo = ({
           icon={<MapPin size={15} color="#FFFFFF" />}
           label={city || t("job.remote")}
         />
+        {postedText ? (
+          <Meta
+            icon={<History size={15} color="#FFFFFF" />}
+            label={postedText}
+          />
+        ) : null}
       </XStack>
     </YStack>
   );

@@ -184,6 +184,7 @@ export const JobDetail = () => {
             scheduledDates={job.scheduledDates}
             city={job.city}
             timeSlot={job.timeSlot}
+            createdAt={job.createdAt}
           />
         </YStack>
 
