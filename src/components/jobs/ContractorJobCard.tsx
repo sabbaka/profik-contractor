@@ -84,7 +84,13 @@ export function ContractorJobCard({
               <Text variant="chip" numberOfLines={1} flex={1}>
                 {job?.category || t("job.service")}
               </Text>
-              <Text variant="price">{formatCzk(job?.price ?? 0)}</Text>
+              {/* Open Jobs (no myOffer yet) puts the price in the footer's
+                  bottom-right corner instead — see below. My Jobs keeps it
+                  here, where OfferStatusPill/the Message button already own
+                  the footer's two corners. */}
+              {myOffer ? (
+                <Text variant="price">{formatCzk(job?.price ?? 0)}</Text>
+              ) : null}
             </XStack>
             <Text variant="cardTitle" numberOfLines={2}>
               {job?.title || t("job.untitled")}
@@ -184,6 +190,8 @@ export function ContractorJobCard({
                 </Text>
               </XStack>
             </Pressable>
+          ) : !myOffer ? (
+            <Text variant="price">{formatCzk(job?.price ?? 0)}</Text>
           ) : null}
         </XStack>
       </YStack>
