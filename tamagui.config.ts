@@ -1,5 +1,40 @@
 import { config } from "@tamagui/config/v3";
+import { createAnimations } from "@tamagui/animations-moti";
 import { createTamagui } from "tamagui";
+
+/**
+ * `@tamagui/config/v3`'s native driver is `@tamagui/animations-react-native`
+ * — the classic RN `Animated` API, not `react-native-reanimated`, even
+ * though this app has Reanimated installed and uses it elsewhere (the Sheet
+ * pan-to-dismiss gesture, `react-native-keyboard-controller`). Every Tamagui
+ * `animation="..."` prop — a Sheet's slide-in, its overlay fade, a Button's
+ * press state — was riding the JS thread because of that, which is what
+ * made every bottom sheet in the app (filters, app review, ...) feel like it
+ * dropped frames on open: the app's own frames compete with Tamagui's for
+ * the same JS thread during the transition.
+ *
+ * `@tamagui/animations-moti` runs the identical preset shape on Reanimated's
+ * UI thread instead, so this only swaps the driver — the preset values below
+ * are copied verbatim from `@tamagui/config`'s own
+ * `animationsReactNative.native.js`, so every existing `animation="medium"` /
+ * `"lazy"` / `"quick"` etc. call site keeps its current feel, just off the
+ * JS thread. Keep the two in step if a preset here is ever tuned.
+ */
+const animations = createAnimations({
+  "75ms": { type: "timing", duration: 75 },
+  "100ms": { type: "timing", duration: 100 },
+  "200ms": { type: "timing", duration: 200 },
+  superBouncy: { type: "spring", damping: 5, mass: 0.7, stiffness: 200 },
+  bouncy: { type: "spring", damping: 9, mass: 0.9, stiffness: 150 },
+  lazy: { type: "spring", damping: 18, stiffness: 50 },
+  medium: { damping: 15, stiffness: 120, mass: 1 },
+  slowest: { type: "spring", damping: 15, stiffness: 10 },
+  slow: { type: "spring", damping: 15, stiffness: 40 },
+  quick: { type: "spring", damping: 20, mass: 1.2, stiffness: 250 },
+  tooltip: { type: "spring", damping: 10, mass: 0.9, stiffness: 100 },
+  quicker: { type: "spring", damping: 20, mass: 1, stiffness: 250 },
+  quickest: { damping: 14, mass: 0.1, stiffness: 380 },
+});
 
 /**
  * The Profik brand gradient — the single source of this colour pair.
@@ -184,6 +219,7 @@ const darkTheme = {
 
 const profikConfig = createTamagui({
   ...config,
+  animations,
   themes: {
     ...config.themes,
     light: lightTheme,
