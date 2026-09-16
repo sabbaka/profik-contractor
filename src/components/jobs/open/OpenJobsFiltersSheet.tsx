@@ -3,12 +3,13 @@ import {
   useGetOpenJobsInfiniteQuery,
 } from "@/src/api/profikApi";
 import { Button, Text, TextInput } from "@/src/components/ui/ui";
+import { useTabBarVisibility } from "@/src/context/TabBarVisibilityContext";
 import { useDebouncedValue } from "@/src/hooks/useDebouncedValue";
 import { useThemeColors, useThemeMode } from "@/src/theme";
 import { Slider } from "@tamagui/slider";
 import { Calendar, LocateFixed } from "@tamagui/lucide-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Animated,
@@ -18,8 +19,8 @@ import {
   Platform,
   Pressable,
   TouchableWithoutFeedback,
-  useWindowDimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Sheet, XStack, YStack } from "tamagui";
 import { useDeviceLocation } from "./hooks/useDeviceLocation";
 import {
@@ -68,20 +69,21 @@ export function OpenJobsFiltersSheet({
   const colors = useThemeColors();
   const { mode } = useThemeMode();
   const location = useDeviceLocation();
-  const windowHeight = useWindowDimensions().height;
+  const insets = useSafeAreaInsets();
+  const { hideTabBar, showTabBar } = useTabBarVisibility();
 
-  // `snapPointsMode="fit"` sizes the frame to its actual content, but
-  // Tamagui's Sheet resolves the very first open's target position before it
-  // has measured the frame at all — its internal Y-position calc treats an
-  // unmeasured (zero) frame height as "fully expanded", so the sheet opens
-  // covering the whole screen the first time and only sizes correctly from
-  // the second open onward, once a real measurement exists. Percent-mode
-  // snap points don't depend on that measurement at all, so this computes
-  // the equivalent percentage from the content's own measured height
-  // instead — same auto-fit result, without the race. 78 matches this
-  // sheet's very first (percent-based) height, before "fit" was tried, as
-  // the fallback for the handful of frames before the first onLayout fires.
-  const [snapPercent, setSnapPercent] = useState(78);
+  // Being non-modal (see the `Sheet` below) is what makes this necessary —
+  // this sheet paints inside the Open tab's own screen content, below the
+  // TabBar the tab navigator renders as its own overlay, so without this the
+  // bar stays visible in front of (or straight through) the sheet the whole
+  // time it's open. Effect, not a render-time call: `hideTabBar`/
+  // `showTabBar` update state on a *different* component (the tab layout),
+  // which a render is not allowed to do to anything but its own.
+  useEffect(() => {
+    if (!open) return;
+    hideTabBar();
+    return () => showTabBar();
+  }, [open, hideTabBar, showTabBar]);
 
   const [draft, setDraft] = useState(applied);
   const [activeDateField, setActiveDateField] = useState<"from" | "to" | null>(
@@ -199,29 +201,39 @@ export function OpenJobsFiltersSheet({
   return (
     <>
       <Sheet
-        // `modal`, unlike ReviewSheet/NamePromptSheet: this is the only sheet
-        // opened from a *tab* screen, where a persistent bottom TabBar is
-        // rendered by the tab navigator itself, outside this component's own
-        // tree — a non-modal Sheet stays inside that tree and painted *under*
-        // the tab bar for any content tall enough to reach it, which is what
-        // this one is. A modal Sheet portals to the app root (above
-        // `PortalProvider` in app/_layout.tsx), which sits above the tab bar
-        // too. `unmountChildrenWhenHidden={false}` keeps this consistent with
-        // the non-modal sheets: the draft and the granted GPS location survive
-        // closing and reopening within the same screen visit.
-        modal
+        // `modal={false}`, matching ReviewSheet/NamePromptSheet/
+        // AppFeedbackSheet/CountryPickerSheet. It was `modal` for a while,
+        // to paint above the Open tab's persistent TabBar (rendered by the
+        // tab navigator itself, outside this component's tree — a
+        // non-modal Sheet paints inline, in this component's own stacking
+        // context, which sits *below* the navigator-level TabBar). That
+        // trade-off is real and accepted here, not a settled non-issue:
+        // `useTabBarVisibility` below hides the TabBar for as long as this
+        // sheet is open specifically to cover for it.
+        modal={false}
         unmountChildrenWhenHidden={false}
         open={open}
         onOpenChange={onOpenChange}
-        // Computed from the content's own measured height (see
-        // `snapPercent` above) rather than "fit" mode — a short, unfiltered
-        // draft still doesn't leave a slab of empty sheet below the "Show
-        // Jobs" button, just without "fit"'s first-open bug.
-        snapPoints={[snapPercent]}
+        // A fixed percentage — not `snapPointsMode="fit"` (opens full-screen
+        // the first time; see the git history on this file for the
+        // measurement race that causes it) and not a height computed from
+        // `onLayout` either (tried, more than once; never held up against a
+        // late-arriving `insets.bottom` or the `modal` swap above without
+        // its own new failure mode). This is deliberately the boring,
+        // unclever option: a little empty space under the button on a
+        // short, unfiltered draft, permanently, rather than any more rounds
+        // of "fit it to content" chasing a new edge case every time.
+        snapPoints={[72]}
         dismissOnSnapToBottom
         zIndex={100_000}
         animation="medium"
-        moveOnKeyboardChange
+        // Off, deliberately: at a fixed 78% height, sliding the whole frame
+        // up by the keyboard's height on top of that can push its top edge
+        // past the screen's own top (this is what "улетает" looked like
+        // during this file's earlier fixed-height attempt, under
+        // `modal={true}`). The two inputs that raise the keyboard here
+        // (price min/max) sit at the very top of the content, so they're
+        // never actually hidden behind it — nothing here needs this prop.
       >
         <Sheet.Overlay
           animation="lazy"
@@ -243,24 +255,10 @@ export function OpenJobsFiltersSheet({
           </YStack>
           <Sheet.ScrollView
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ paddingBottom: 32 }}
+            contentContainerStyle={{ paddingBottom: 32 + insets.bottom }}
           >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <YStack
-                paddingHorizontal={20}
-                gap={22}
-                onLayout={(e) => {
-                  // The drag handle above (~20px) and the ScrollView's own
-                  // bottom padding (32px) sit outside this YStack, so a fixed
-                  // buffer covers them plus a comfortable margin — no
-                  // measurement of those is needed since they don't change.
-                  const contentHeight = e.nativeEvent.layout.height;
-                  const percent = ((contentHeight + 90) / windowHeight) * 100;
-                  setSnapPercent(
-                    Math.min(92, Math.max(40, Math.round(percent))),
-                  );
-                }}
-              >
+              <YStack paddingHorizontal={20} gap={22}>
                 <XStack alignItems="center" justifyContent="space-between">
                   <Text variant="h3">{t("open.filters.title")}</Text>
                   <Pressable
@@ -384,6 +382,12 @@ export function OpenJobsFiltersSheet({
                         circular
                         elevate
                         backgroundColor={colors.accent}
+                        // Tamagui's Slider.Thumb ships a themed 2px border by
+                        // default (`bordered: 2` in its own unstyled variant)
+                        // — on this dark theme that reads as a stray grey
+                        // ring around the dot. `elevate`'s shadow is enough
+                        // depth on its own.
+                        borderWidth={0}
                       />
                     </Slider>
                   ) : (
