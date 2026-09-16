@@ -6,7 +6,7 @@ import {
 import { useThemeColors } from "@/src/theme";
 import { Star } from "@tamagui/lucide-icons";
 import * as Haptics from "expo-haptics";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -14,6 +14,7 @@ import {
   Keyboard,
   Pressable,
   TouchableWithoutFeedback,
+  useWindowDimensions,
 } from "react-native";
 import { Sheet, XStack, YStack } from "tamagui";
 
@@ -40,12 +41,28 @@ export function AppFeedbackSheet({
 }: AppFeedbackSheetProps) {
   const colors = useThemeColors();
   const { t } = useTranslation();
+  const windowHeight = useWindowDimensions().height;
   const { form, submit, isLoading, setValue, watch, reset } =
     useAppFeedbackForm({
       onSuccess: () => onOpenChange(false),
     });
 
   const rating = watch("rating");
+
+  // `snapPointsMode="fit"` (profik_client's own version of this sheet) sizes
+  // the frame to its content, which is exactly what avoids the huge gap
+  // below the button once the keyboard pushes the frame up — a fixed
+  // percent doesn't shrink, so `moveOnKeyboardChange` moving the frame
+  // upward just exposes empty space that used to sit below the fold. But
+  // Tamagui's Sheet resolves "fit"'s first-open target position before it
+  // has ever measured the frame — an unmeasured (zero) height reads as
+  // "fully expanded" in its Y-position calc, so the sheet covers the whole
+  // screen the very first time and only sizes correctly from the second
+  // open onward (see the identical fix and root-cause note on
+  // OpenJobsFiltersSheet). This computes the equivalent percentage from the
+  // content's own onLayout height instead, keeping "fit"'s result without
+  // the race.
+  const [snapPercent, setSnapPercent] = useState(58);
 
   useEffect(() => {
     if (!open) reset();
@@ -93,7 +110,10 @@ export function AppFeedbackSheet({
       modal={false}
       open={open}
       onOpenChange={onOpenChange}
-      snapPoints={[58]}
+      // Computed from the content's own measured height (see `snapPercent`
+      // above) rather than "fit" mode — same auto-fit result, without the
+      // first-open bug.
+      snapPoints={[snapPercent]}
       dismissOnSnapToBottom
       zIndex={100_000}
       animation="medium"
@@ -118,7 +138,19 @@ export function AppFeedbackSheet({
           />
         </YStack>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <YStack paddingHorizontal={20} paddingBottom={32} gap={20}>
+          <YStack
+            paddingHorizontal={20}
+            paddingBottom={32}
+            gap={20}
+            onLayout={(e) => {
+              // The drag handle above (~20px) sits outside this YStack, so a
+              // fixed buffer covers it plus a comfortable margin — it
+              // doesn't change, so it doesn't need measuring.
+              const contentHeight = e.nativeEvent.layout.height;
+              const percent = ((contentHeight + 40) / windowHeight) * 100;
+              setSnapPercent(Math.min(92, Math.max(40, Math.round(percent))));
+            }}
+          >
             <YStack alignItems="center" gap={6} paddingTop={8}>
               <Text variant="h3">{t("appFeedback.title")}</Text>
               <Text variant="body" style={{ textAlign: "center" }}>
