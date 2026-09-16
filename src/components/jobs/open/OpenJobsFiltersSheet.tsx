@@ -18,6 +18,7 @@ import {
   Platform,
   Pressable,
   TouchableWithoutFeedback,
+  useWindowDimensions,
 } from "react-native";
 import { Sheet, XStack, YStack } from "tamagui";
 import { useDeviceLocation } from "./hooks/useDeviceLocation";
@@ -67,6 +68,20 @@ export function OpenJobsFiltersSheet({
   const colors = useThemeColors();
   const { mode } = useThemeMode();
   const location = useDeviceLocation();
+  const windowHeight = useWindowDimensions().height;
+
+  // `snapPointsMode="fit"` sizes the frame to its actual content, but
+  // Tamagui's Sheet resolves the very first open's target position before it
+  // has measured the frame at all — its internal Y-position calc treats an
+  // unmeasured (zero) frame height as "fully expanded", so the sheet opens
+  // covering the whole screen the first time and only sizes correctly from
+  // the second open onward, once a real measurement exists. Percent-mode
+  // snap points don't depend on that measurement at all, so this computes
+  // the equivalent percentage from the content's own measured height
+  // instead — same auto-fit result, without the race. 78 matches this
+  // sheet's very first (percent-based) height, before "fit" was tried, as
+  // the fallback for the handful of frames before the first onLayout fires.
+  const [snapPercent, setSnapPercent] = useState(78);
 
   const [draft, setDraft] = useState(applied);
   const [activeDateField, setActiveDateField] = useState<"from" | "to" | null>(
@@ -198,10 +213,11 @@ export function OpenJobsFiltersSheet({
         unmountChildrenWhenHidden={false}
         open={open}
         onOpenChange={onOpenChange}
-        // "fit" sizes the frame to its actual content instead of a fixed
-        // percentage of the screen — a short, unfiltered draft no longer
-        // leaves a slab of empty sheet below the "Show Jobs" button.
-        snapPointsMode="fit"
+        // Computed from the content's own measured height (see
+        // `snapPercent` above) rather than "fit" mode — a short, unfiltered
+        // draft still doesn't leave a slab of empty sheet below the "Show
+        // Jobs" button, just without "fit"'s first-open bug.
+        snapPoints={[snapPercent]}
         dismissOnSnapToBottom
         zIndex={100_000}
         animation="medium"
@@ -230,7 +246,21 @@ export function OpenJobsFiltersSheet({
             contentContainerStyle={{ paddingBottom: 32 }}
           >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <YStack paddingHorizontal={20} gap={22}>
+              <YStack
+                paddingHorizontal={20}
+                gap={22}
+                onLayout={(e) => {
+                  // The drag handle above (~20px) and the ScrollView's own
+                  // bottom padding (32px) sit outside this YStack, so a fixed
+                  // buffer covers them plus a comfortable margin — no
+                  // measurement of those is needed since they don't change.
+                  const contentHeight = e.nativeEvent.layout.height;
+                  const percent = ((contentHeight + 90) / windowHeight) * 100;
+                  setSnapPercent(
+                    Math.min(92, Math.max(40, Math.round(percent))),
+                  );
+                }}
+              >
                 <XStack alignItems="center" justifyContent="space-between">
                   <Text variant="h3">{t("open.filters.title")}</Text>
                   <Pressable
