@@ -23,8 +23,16 @@ export default function TabsLayout() {
     skip: isGuest,
     refetchOnFocus: true,
   });
+  // Not just `unread?.total` — logging out doesn't unmount this layout
+  // (Profile is a guest-accessible route, so `AuthGate` never navigates
+  // away), and a `refetchOnFocus` request already in flight when the token
+  // clears can still resolve into the cache afterwards. Gating on `isGuest`
+  // directly, a plain synchronous Redux read with nothing to race, is what
+  // makes the badge actually disappear the moment logout finishes instead of
+  // only after the next cold start clears the stale cache entry for good.
+  const unreadTotal = isGuest ? undefined : unread?.total;
   // Same number, one more destination: the OS app icon badge.
-  useAppIconBadge(unread?.total);
+  useAppIconBadge(unreadTotal);
 
   const items: TabItem[] = [
     {
@@ -43,7 +51,7 @@ export default function TabsLayout() {
       key: "messages",
       label: t("tabs.messages"),
       icon: MessageCircle,
-      badge: unread?.total,
+      badge: unreadTotal,
       onPress: () => router.replace("/(contractor)/(tabs)/messages" as any),
     },
     {
