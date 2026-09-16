@@ -276,7 +276,7 @@
     "howWasIt": "How was working with them?",
     "yourRating": "Your rating",
     "tapToRate": "Tap to rate the client",
-    "tapToEdit": "Tap a star to change it",
+    "ratingLocked": "Your rating can't be changed once submitted",
     "submit": "Send review",
     "thankYou": "Thank you",
     "submitted": "Your review has been sent.",

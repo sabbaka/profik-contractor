@@ -17,8 +17,12 @@ interface RatingStarsProps {
  * that open `ReviewSheet` at whichever one was tapped.
  *
  * Doubles as the display of a review already left: with a rating the card
- * switches to "your rating" and tapping edits it, because the endpoint
- * upserts. Shown next to `JobReviewCard`, which is the opposite direction.
+ * switches to "your rating" and the stars go inert. `POST /jobs/:id/reviews`
+ * rejects a second submission for the same job with a 403 ("already
+ * reviewed") rather than overwriting it, so once `currentRating` is set
+ * there is nothing a re-tap could legitimately do — surfacing that 403 as an
+ * error would be worse than just not offering the tap. Shown next to
+ * `JobReviewCard`, which is the opposite direction.
  */
 export function RatingStars({
   currentRating = 0,
@@ -45,6 +49,17 @@ export function RatingStars({
       <XStack justifyContent="center" gap={8}>
         {[1, 2, 3, 4, 5].map((star) => {
           const active = currentRating >= star;
+          const starIcon = (
+            <Star
+              size={32}
+              color={active ? colors.accent : colors.borderSubtle}
+              fill={active ? colors.accent : "transparent"}
+              strokeWidth={2}
+            />
+          );
+          // Already rated: plain, non-interactive display — no Pressable, no
+          // button role, nothing implying a tap would do anything.
+          if (hasRated) return <XStack key={star}>{starIcon}</XStack>;
           return (
             <Pressable
               key={star}
@@ -57,12 +72,7 @@ export function RatingStars({
                 pressed ? { transform: [{ scale: 0.92 }] } : null
               }
             >
-              <Star
-                size={32}
-                color={active ? colors.accent : colors.borderSubtle}
-                fill={active ? colors.accent : "transparent"}
-                strokeWidth={2}
-              />
+              {starIcon}
             </Pressable>
           );
         })}
@@ -72,7 +82,7 @@ export function RatingStars({
         variant="caption"
         style={{ color: colors.textMuted, textAlign: "center" }}
       >
-        {hasRated ? t("review.tapToEdit") : t("review.tapToRate")}
+        {hasRated ? t("review.ratingLocked") : t("review.tapToRate")}
       </Text>
     </Card>
   );

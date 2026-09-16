@@ -276,7 +276,7 @@
     "howWasIt": "Jak se s ním spolupracovalo?",
     "yourRating": "Vaše hodnocení",
     "tapToRate": "Klepnutím ohodnotíte zákazníka",
-    "tapToEdit": "Klepnutím na hvězdičku změníte hodnocení",
+    "ratingLocked": "Hodnocení už po odeslání nelze změnit",
     "submit": "Odeslat hodnocení",
     "thankYou": "Děkujeme",
     "submitted": "Hodnocení bylo odesláno.",

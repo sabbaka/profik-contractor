@@ -22,10 +22,12 @@ interface UseReviewFormOptions {
 /**
  * The contractor's review of the client on a finished job.
  *
- * The endpoint upserts, so this hook has no separate edit path — submitting a
- * second time rewrites the first review. Zero stars is the only thing it
- * refuses locally; everything else the backend can object to comes back as a
- * code `extractErrorMessage` resolves out of `errors.review.*`.
+ * One submission per job — the backend rejects a second one with a 403
+ * ("already reviewed") rather than overwriting it, so `RatingStars` never
+ * offers a second tap once `myReview` exists and this form only ever runs
+ * once per job. Zero stars is the only thing it refuses locally; everything
+ * else the backend can object to comes back as a code `extractErrorMessage`
+ * resolves out of `errors.review.*`.
  */
 export const useReviewForm = ({
   jobId,

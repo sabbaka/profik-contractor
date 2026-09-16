@@ -26,9 +26,10 @@ interface ReviewSheetProps {
  * Where the contractor rates the client on a finished job: the stars tapped in
  * `RatingStars`, plus an optional comment.
  *
- * There is no separate edit mode — the endpoint upserts, so opening this again
- * on a job already rated and submitting rewrites that review. The comment
- * starts empty either way; the previous text is not returned to the author.
+ * There is no edit mode — `RatingStars` never reopens this once a rating
+ * exists (`useJobReview.openSheetAt` no-ops for that case), since the
+ * backend rejects a second submission for the same job rather than
+ * overwriting it.
  */
 export function ReviewSheet({
   open,

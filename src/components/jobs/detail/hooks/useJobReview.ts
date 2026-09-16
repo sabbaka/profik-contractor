@@ -22,8 +22,10 @@ interface UseJobReviewOptions {
  *
  * `GET /jobs/:id/reviews` returns both directions and filters by nothing, so
  * they are picked apart here: `targetId` is the one addressed to us, `authorId`
- * the one we wrote. Re-rating edits that second one — the endpoint upserts —
- * so the sheet opens pre-filled with it.
+ * the one we wrote. `POST /jobs/:id/reviews` rejects a second submission with
+ * a 403 ("already reviewed") rather than overwriting it, so `openSheetAt` is
+ * a no-op once `myReview` exists — there's no edit path to open the sheet
+ * for.
  */
 export const useJobReview = ({
   jobId,
@@ -59,10 +61,14 @@ export const useJobReview = ({
   // making the contractor pick it a second time.
   const [pendingRating, setPendingRating] = useState(0);
 
-  const openSheetAt = useCallback((star: number) => {
-    setPendingRating(star);
-    setSheetOpen(true);
-  }, []);
+  const openSheetAt = useCallback(
+    (star: number) => {
+      if (myReview) return;
+      setPendingRating(star);
+      setSheetOpen(true);
+    },
+    [myReview],
+  );
 
   return {
     isReviewable,
