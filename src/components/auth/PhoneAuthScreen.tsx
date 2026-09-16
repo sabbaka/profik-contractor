@@ -186,13 +186,6 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
               }
             />
 
-            <CountryPickerSheet
-              open={countryPickerOpen}
-              onOpenChange={setCountryPickerOpen}
-              selected={country}
-              onSelect={setCountry}
-            />
-
             <Button
               variant={isLoading ? "primaryDisabled" : "primary"}
               onPress={handleSubmit((data) => requestCode(data.phone, country))}
@@ -290,6 +283,25 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
           </YStack>
         )}
       </KeyboardAwareScreen>
+
+      {/* A sibling of the scrollable content, not nested inside it (it used
+          to sit between FormInput and the Button above, deep inside
+          KeyboardAwareScreen's ScrollView) — a Sheet is always absolutely
+          positioned relative to its nearest positioned ancestor, and a
+          ScrollView's content container is that ancestor's bounds, not the
+          screen's. Nested there, the sheet drew a stray border tracing that
+          smaller container instead of the real screen edges, and its drag
+          gesture's Y-position math was computed against the same wrong
+          bounds — matching "the sheet doesn't move at all" when dragging its
+          handle. Every other sheet in this app (ReviewSheet, NamePromptSheet,
+          AppFeedbackSheet) already sits here, as a direct child of the
+          screen's own root, for the same reason. */}
+      <CountryPickerSheet
+        open={countryPickerOpen}
+        onOpenChange={setCountryPickerOpen}
+        selected={country}
+        onSelect={setCountry}
+      />
     </YStack>
   );
 }

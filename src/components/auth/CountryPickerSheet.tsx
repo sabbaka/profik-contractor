@@ -56,18 +56,18 @@ export function CountryPickerSheet({
 
   return (
     <Sheet
-      // `modal`, matching profik_client's own version of this sheet. The
-      // `modal={false}` convention elsewhere in this app (ReviewSheet,
-      // NamePromptSheet, AppFeedbackSheet) exists specifically because a
-      // modal Sheet portals to the app root, which on iOS sits underneath a
-      // native fullScreenModal and opens invisibly — the login route has no
-      // such presentation (no app/auth/_layout.tsx, no `presentation` option
-      // anywhere in its stack), so that concern doesn't apply here. Using
-      // `modal={false}` anyway rendered this sheet through Tamagui's
-      // non-portaled, "custom" implementation instead of the native one,
-      // which is what was drawing a visible frame around the whole screen
-      // instead of a normal system sheet presentation.
-      modal
+      // Not `modal`, matching ReviewSheet/NamePromptSheet/AppFeedbackSheet —
+      // this is the pattern with a proven-working drag-to-dismiss gesture in
+      // this app. The border this sheet used to draw around the whole screen
+      // (and, it turned out, its broken drag gesture too) traced back to
+      // where it was rendered from, not to `modal`: it sat nested inside
+      // PhoneAuthScreen's KeyboardAwareScreen (a ScrollView), and a Sheet is
+      // always absolutely positioned relative to its nearest positioned
+      // ancestor — nested that deep, that ancestor was the ScrollView's
+      // content container, not the screen. Now that it renders as a sibling
+      // of the scrollable content (see PhoneAuthScreen.tsx), that's the
+      // screen's own root again, matching every other sheet in this app.
+      modal={false}
       open={open}
       onOpenChange={onOpenChange}
       snapPoints={[85]}
