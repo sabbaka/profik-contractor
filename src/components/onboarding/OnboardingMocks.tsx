@@ -114,7 +114,7 @@ export function FindWorkMock() {
             <Text
               style={{
                 color: colors.textPrimary,
-                fontFamily: "GeistMono_700Bold",
+                fontFamily: "InterTight_700Bold",
                 fontSize: 15,
                 lineHeight: 19,
               }}
@@ -223,7 +223,7 @@ export function PickJobsMock() {
           <Text
             style={{
               color: colors.textPrimary,
-              fontFamily: "GeistMono_700Bold",
+              fontFamily: "InterTight_700Bold",
               fontSize: 22,
               lineHeight: 28,
             }}
@@ -454,7 +454,7 @@ export function CreditsMock() {
           <Text
             style={{
               color: colors.accent,
-              fontFamily: "GeistMono_700Bold",
+              fontFamily: "InterTight_700Bold",
               fontSize: 30,
               lineHeight: 33,
             }}

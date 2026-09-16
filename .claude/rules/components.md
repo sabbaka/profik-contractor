@@ -188,7 +188,7 @@ English and get no keys, since nobody outside the team sees them (see the
 
 ## Layout traps this codebase has already hit
 
-- **A `Text` with a custom font (Geist, Inter bold weights) needs an explicit
+- **A `Text` with a custom font (Inter Tight, Inter bold weights) needs an explicit
   `lineHeight` and `textAlign="center"` when it sits centred in a fixed-size
   box** — e.g. a single-letter avatar badge. Without it, the glyph renders off
   a font-metric-driven line box that does not match the visual box, and looks

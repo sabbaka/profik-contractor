@@ -59,7 +59,7 @@ export const JobBasicInfo = ({
         <Text
           style={{
             color: "#FFFFFF",
-            fontFamily: "Geist_700Bold",
+            fontFamily: "InterTight_700Bold",
             fontSize: 27,
             lineHeight: 33,
           }}
@@ -69,7 +69,7 @@ export const JobBasicInfo = ({
         <Text
           style={{
             color: "#FFFFFF",
-            fontFamily: "GeistMono_700Bold",
+            fontFamily: "InterTight_700Bold",
             fontSize: 25,
             lineHeight: 31,
           }}

@@ -122,7 +122,7 @@ export default function EditProfileScreen() {
                   <Text
                     fontSize={36}
                     lineHeight={44}
-                    fontFamily="Geist_700Bold"
+                    fontFamily="InterTight_700Bold"
                     color="#FFFFFF"
                     textAlign="center"
                   >

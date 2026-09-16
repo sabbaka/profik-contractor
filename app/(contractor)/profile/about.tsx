@@ -65,7 +65,7 @@ export default function AboutScreen() {
               zIndex={1}
               style={{
                 color: "#FFFFFF",
-                fontFamily: "Geist_700Bold",
+                fontFamily: "InterTight_700Bold",
                 fontSize: 28,
                 lineHeight: 34,
                 textAlign: "center",

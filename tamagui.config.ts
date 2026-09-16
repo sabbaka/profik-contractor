@@ -55,9 +55,9 @@ export const PROFIK_GRADIENT = {
  * Profik design tokens — extracted directly from `profi-design.pen`.
  * Light theme + dark theme (mode: "light" | "dark" in the design file).
  *
- * The accent colour is an orange `#FF6C00`. The whole UI uses three font
- * families: Inter (body / labels), Geist (display headings) and Geist Mono
- * (numbers, prices). Backgrounds layer as bg-primary → bg-secondary → bg-card.
+ * The accent colour is an orange `#FF6C00`. The whole UI uses two font
+ * families: Inter (body / labels) and Inter Tight (display headings, numbers,
+ * prices). Backgrounds layer as bg-primary → bg-secondary → bg-card.
  */
 const lightTokens = {
   accent: "#FF6C00",

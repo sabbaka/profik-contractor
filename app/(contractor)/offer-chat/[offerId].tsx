@@ -266,7 +266,7 @@ export default function OfferChatRoute() {
                     <Text
                       style={{
                         color: colors.accent,
-                        fontFamily: "GeistMono_700Bold",
+                        fontFamily: "InterTight_700Bold",
                         fontSize: 11,
                         lineHeight: 15,
                       }}

@@ -52,7 +52,7 @@ export function OfferCostNote() {
             <Text
               style={{
                 color: colors.textPrimary,
-                fontFamily: "GeistMono_700Bold",
+                fontFamily: "InterTight_700Bold",
                 fontSize: 18,
                 lineHeight: 23,
               }}
@@ -64,7 +64,7 @@ export function OfferCostNote() {
                 <Text
                   style={{
                     color: colors.textMuted,
-                    fontFamily: "GeistMono_500Medium",
+                    fontFamily: "InterTight_500Medium",
                     fontSize: 12,
                     lineHeight: 17,
                     textDecorationLine: "line-through",
@@ -115,7 +115,7 @@ export function OfferCostNote() {
         <Text
           style={{
             color: colors.textPrimary,
-            fontFamily: "GeistMono_700Bold",
+            fontFamily: "InterTight_700Bold",
             fontSize: 12,
             lineHeight: 17,
           }}

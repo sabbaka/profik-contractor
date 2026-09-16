@@ -1,14 +1,9 @@
 import { Redirect, Slot, useSegments } from "expo-router";
 import {
-  Geist_400Regular,
-  Geist_500Medium,
-  Geist_600SemiBold,
-  Geist_700Bold,
-} from "@expo-google-fonts/geist";
-import {
-  GeistMono_500Medium,
-  GeistMono_700Bold,
-} from "@expo-google-fonts/geist-mono";
+  InterTight_500Medium,
+  InterTight_600SemiBold,
+  InterTight_700Bold,
+} from "@expo-google-fonts/inter-tight";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -62,7 +57,8 @@ Sentry.init({
 setupGlobalErrorHandlers();
 
 // Hold the native splash until fonts are ready. Without this the splash hides
-// immediately and the user stares at a blank screen while Geist/Inter load.
+// immediately and the user stares at a blank screen while Inter/Inter Tight
+// load.
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function PaperThemeProvider({ children }: { children: React.ReactNode }) {
@@ -187,12 +183,9 @@ function RootLayout() {
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
-    Geist_400Regular,
-    Geist_500Medium,
-    Geist_600SemiBold,
-    Geist_700Bold,
-    GeistMono_500Medium,
-    GeistMono_700Bold,
+    InterTight_500Medium,
+    InterTight_600SemiBold,
+    InterTight_700Bold,
   });
 
   useEffect(() => {

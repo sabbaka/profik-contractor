@@ -111,7 +111,7 @@ function DefaultFallback({
             <Text variant="sectionLabel">Dev info</Text>
             <Text
               variant="caption"
-              style={{ fontFamily: "GeistMono_500Medium" }}
+              style={{ fontFamily: "InterTight_500Medium" }}
             >
               {error.message}
             </Text>
@@ -119,7 +119,7 @@ function DefaultFallback({
               <Text
                 variant="caption"
                 style={{
-                  fontFamily: "GeistMono_500Medium",
+                  fontFamily: "InterTight_500Medium",
                   fontSize: 11,
                   lineHeight: 15,
                 }}

@@ -126,7 +126,7 @@ export default function OnboardingScreen() {
                   <Text
                     style={{
                       color: colors.accent,
-                      fontFamily: "Geist_700Bold",
+                      fontFamily: "InterTight_700Bold",
                       fontSize: 30,
                       lineHeight: 38,
                     }}
@@ -136,7 +136,7 @@ export default function OnboardingScreen() {
                   <Text
                     style={{
                       color: colors.textPrimary,
-                      fontFamily: "Geist_700Bold",
+                      fontFamily: "InterTight_700Bold",
                       fontSize: 30,
                       lineHeight: 38,
                     }}

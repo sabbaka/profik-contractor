@@ -134,7 +134,7 @@ export default function BalanceRoute() {
             zIndex={1}
             style={{
               color: "#FFFFFF",
-              fontFamily: "GeistMono_700Bold",
+              fontFamily: "InterTight_700Bold",
               fontSize: 32,
               lineHeight: 38,
             }}

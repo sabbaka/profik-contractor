@@ -70,7 +70,7 @@ export function PaymentHistoryRow({ entry }: PaymentHistoryRowProps) {
           <Text
             style={{
               color: credit ? colors.greenStrong : colors.textPrimary,
-              fontFamily: "GeistMono_700Bold",
+              fontFamily: "InterTight_700Bold",
               fontSize: 15,
               lineHeight: 20,
             }}

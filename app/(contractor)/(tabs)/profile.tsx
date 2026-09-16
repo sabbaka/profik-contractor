@@ -273,7 +273,7 @@ export default function ProfileRoute() {
                 zIndex={1}
                 fontSize={32}
                 lineHeight={40}
-                fontFamily="Geist_700Bold"
+                fontFamily="InterTight_700Bold"
                 color="#FFFFFF"
                 textAlign="center"
               >
@@ -327,7 +327,7 @@ export default function ProfileRoute() {
               zIndex={1}
               fontSize={32}
               lineHeight={40}
-              fontFamily="Geist_700Bold"
+              fontFamily="InterTight_700Bold"
               color="#FFFFFF"
               textAlign="center"
             >
@@ -415,7 +415,7 @@ export default function ProfileRoute() {
                 zIndex={1}
                 style={{
                   color: "#FFFFFF",
-                  fontFamily: "GeistMono_700Bold",
+                  fontFamily: "InterTight_700Bold",
                   fontSize: 25,
                   lineHeight: 31,
                 }}

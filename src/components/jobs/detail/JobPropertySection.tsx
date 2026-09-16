@@ -34,7 +34,7 @@ function Tile({ Icon, value, label }: TileProps) {
       <YStack gap={2}>
         <Text
           style={{
-            fontFamily: "Geist_700Bold",
+            fontFamily: "InterTight_700Bold",
             fontSize: 22,
             lineHeight: 26,
             color: colors.textPrimary,

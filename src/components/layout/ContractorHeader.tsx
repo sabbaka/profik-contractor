@@ -36,14 +36,16 @@ export default function ContractorHeader() {
       <YStack gap={1}>
         <UIText
           style={{
-            fontFamily: "Geist_700Bold",
+            fontFamily: "InterTight_700Bold",
             fontSize: 19,
             lineHeight: 23,
             color: colors.textPrimary,
           }}
         >
           Profik{" "}
-          <UIText style={{ color: colors.accent, fontFamily: "Geist_700Bold" }}>
+          <UIText
+            style={{ color: colors.accent, fontFamily: "InterTight_700Bold" }}
+          >
             Pro
           </UIText>
         </UIText>
