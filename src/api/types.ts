@@ -170,6 +170,13 @@ export interface Conversation {
     category: string;
     price: number;
     status: JobStatus;
+    /**
+     * The work name is built from these two at display time — `title` is the
+     * English the client's wizard wrote. Null on a job posted before the
+     * wizard asked for them. See `formatWorkName`.
+     */
+    serviceType: ServiceType | null;
+    propertyType: PropertyType | null;
   };
   counterparty: ConversationCounterparty;
   /** Null when nobody has written yet — the normal case in the Open tab. */
@@ -216,6 +223,9 @@ export type PaymentStatus = "pending" | "completed" | "failed";
 export interface PaymentHistoryJob {
   id: string;
   title: string;
+  /** See `Conversation["job"]` above — the same pair, for the same reason. */
+  serviceType: ServiceType | null;
+  propertyType: PropertyType | null;
 }
 
 /** `PaymentHistoryItemDto` — one row of the balance history. */

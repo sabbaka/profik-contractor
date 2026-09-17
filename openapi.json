@@ -574,14 +574,15 @@
             "name": "bucket",
             "required": false,
             "in": "query",
-            "description": "Restrict to one tab. Omitted returns every conversation.",
+            "description": "Restrict to one tab. Omitted returns every conversation. `active` is a filter rather than a bucket: it returns `open` and `in_progress` together, as one sorted and paginated list, and each item keeps its own `bucket`.",
             "schema": {
               "type": "string",
               "enum": [
                 "open",
                 "in_progress",
                 "completed",
-                "archived"
+                "archived",
+                "active"
               ]
             }
           },
@@ -2857,6 +2858,24 @@
               "canceled"
             ],
             "example": "in_progress"
+          },
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "deep",
+              "renovation"
+            ],
+            "nullable": true
+          },
+          "propertyType": {
+            "type": "string",
+            "enum": [
+              "apartment",
+              "house",
+              "commercial"
+            ],
+            "nullable": true
           }
         },
         "required": [
@@ -3042,9 +3061,10 @@
               "open",
               "in_progress",
               "completed",
-              "archived"
+              "archived",
+              "active"
             ],
-            "description": "Restrict to one tab. Omitted marks every conversation read."
+            "description": "Restrict to one tab. Omitted marks every conversation read. `active` covers `open` and `in_progress` together."
           }
         }
       },
@@ -4631,6 +4651,24 @@
           "title": {
             "type": "string",
             "example": "Weekly flat clean"
+          },
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "deep",
+              "renovation"
+            ],
+            "nullable": true
+          },
+          "propertyType": {
+            "type": "string",
+            "enum": [
+              "apartment",
+              "house",
+              "commercial"
+            ],
+            "nullable": true
           }
         },
         "required": [

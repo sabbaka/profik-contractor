@@ -222,6 +222,26 @@
     "country": {
       "CZ": "Česko",
       "US": "USA"
+    },
+    "workName": "{{service}} — {{property}}",
+    "serviceType": {
+      "standard": "Standardní úklid",
+      "deep": "Hloubkový úklid",
+      "renovation": "Úklid po rekonstrukci"
+    },
+    "propertyType": {
+      "apartment": "Byt",
+      "house": "Dům",
+      "commercial": "Komerční prostor"
+    },
+    "category": {
+      "Renovation": "Rekonstrukce",
+      "Plumbing": "Instalatérství",
+      "Electrical": "Elektroinstalace",
+      "Cleaning": "Úklid",
+      "Painting": "Malování",
+      "Moving": "Stěhování",
+      "Other": "Ostatní"
     }
   },
   "offer": {

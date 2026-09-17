@@ -226,6 +226,26 @@
     "country": {
       "CZ": "Чехія",
       "US": "США"
+    },
+    "workName": "{{service}} — {{property}}",
+    "serviceType": {
+      "standard": "Стандартне прибирання",
+      "deep": "Генеральне прибирання",
+      "renovation": "Прибирання після ремонту"
+    },
+    "propertyType": {
+      "apartment": "Квартира",
+      "house": "Будинок",
+      "commercial": "Комерційне"
+    },
+    "category": {
+      "Renovation": "Ремонт",
+      "Plumbing": "Сантехніка",
+      "Electrical": "Електрика",
+      "Cleaning": "Прибирання",
+      "Painting": "Малярні роботи",
+      "Moving": "Переїзд",
+      "Other": "Інше"
     }
   },
   "offer": {

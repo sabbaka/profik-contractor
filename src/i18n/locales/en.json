@@ -222,6 +222,26 @@
     "country": {
       "CZ": "Czechia",
       "US": "USA"
+    },
+    "workName": "{{service}} — {{property}}",
+    "serviceType": {
+      "standard": "Standard Cleaning",
+      "deep": "Deep Cleaning",
+      "renovation": "After Renovation"
+    },
+    "propertyType": {
+      "apartment": "Apartment",
+      "house": "House",
+      "commercial": "Commercial"
+    },
+    "category": {
+      "Renovation": "Renovation",
+      "Plumbing": "Plumbing",
+      "Electrical": "Electrical",
+      "Cleaning": "Cleaning",
+      "Painting": "Painting",
+      "Moving": "Moving",
+      "Other": "Other"
     }
   },
   "offer": {

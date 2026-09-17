@@ -26,8 +26,11 @@ const ALLOWED = [
   /^Reset onboarding$/, // __DEV__-only row on the Profile screen; nobody outside the team sees it
 ];
 
-// The locale files themselves, and the developer-facing crash screen.
-const SKIP_FILES = [/\/i18n\//, /\/ErrorBoundary\.tsx$/];
+// The locale files themselves, the developer-facing crash screen, and unit
+// tests — a spec renders nothing, so its fixtures ("Standard Cleaning —
+// Apartment", the stored title `formatWorkName` falls back to) are data the
+// test asserts on, not copy anyone reads.
+const SKIP_FILES = [/\/i18n\//, /\/ErrorBoundary\.tsx$/, /\.test\.tsx?$/];
 
 const NOT_COPY = new RegExp(
   String.raw`^(\s*|[$#/@.].*|https?:.*|[a-z0-9_-]+(\.[a-z0-9_]+)+` +

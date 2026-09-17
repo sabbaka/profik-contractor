@@ -84,4 +84,38 @@ describe("locale files", () => {
       expect({ language, blank }).toEqual({ language, blank: [] });
     }
   });
+
+  /**
+   * The checks above compare the three files against each other, so a value
+   * missing from all of them passes. These keys are built by interpolation —
+   * `job.serviceType.${job.serviceType}` in `formatWorkName` — which means a
+   * stored enum value nobody wrote copy for renders as the key itself on every
+   * screen that names a job. Enumerate the vocabularies instead.
+   */
+  it.each(Object.keys(LOCALES))(
+    "%s labels every enum value the apps interpolate",
+    (language) => {
+      const keys = new Set(flatten(LOCALES[language]));
+      const expected = [
+        ...["standard", "deep", "renovation"].map(
+          (v) => `job.serviceType.${v}`,
+        ),
+        ...["apartment", "house", "commercial"].map(
+          (v) => `job.propertyType.${v}`,
+        ),
+        ...[
+          "Renovation",
+          "Plumbing",
+          "Electrical",
+          "Cleaning",
+          "Painting",
+          "Moving",
+          "Other",
+        ].map((v) => `job.category.${v}`),
+        "job.workName",
+      ];
+
+      expect(expected.filter((key) => !keys.has(key))).toEqual([]);
+    },
+  );
 });
