@@ -98,6 +98,8 @@ export function MessagesScreen() {
         offerId: conversation.offerId,
         jobId: conversation.job.id,
         jobTitle: conversation.job.title,
+        serviceType: conversation.job.serviceType,
+        propertyType: conversation.job.propertyType,
         offerPrice: conversation.offer.price,
         offerStatus: conversation.offer.status,
         jobStatus: conversation.job.status,

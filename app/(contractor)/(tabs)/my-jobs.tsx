@@ -284,6 +284,8 @@ export default function MyJobsTab() {
                           offerId: item.myOffer.id,
                           jobId: item.job.id,
                           jobTitle: item.job.title,
+                          serviceType: item.job.serviceType,
+                          propertyType: item.job.propertyType,
                           offerPrice: item.myOffer.price,
                           offerStatus: item.myOffer.status,
                           jobStatus: item.job.status,

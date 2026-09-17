@@ -22,6 +22,8 @@ describe("buildOfferChatRoute", () => {
         offerId: OFFER_ID,
         jobId: "j1",
         jobTitle: "Deep clean",
+        serviceType: "deep",
+        propertyType: "house",
         offerPrice: 1200,
         offerStatus: "pending",
         jobStatus: "open",
@@ -30,10 +32,26 @@ describe("buildOfferChatRoute", () => {
       offerId: OFFER_ID,
       jobId: "j1",
       jobTitle: "Deep clean",
+      serviceType: "deep",
+      propertyType: "house",
       offerPrice: "1200",
       offerStatus: "pending",
       jobStatus: "open",
     });
+  });
+
+  // A job posted before the wizard asked for them: the header falls back to
+  // the stored title rather than showing nothing.
+  it("leaves out a service and property the job does not have", () => {
+    const params = buildOfferChatRoute({
+      offerId: OFFER_ID,
+      jobTitle: "Bathroom Renovation",
+      serviceType: null,
+      propertyType: null,
+    }).params;
+
+    expect(params).not.toHaveProperty("serviceType");
+    expect(params).not.toHaveProperty("propertyType");
   });
 
   // The guard is `!= null` and not truthiness for this reason.

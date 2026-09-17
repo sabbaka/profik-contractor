@@ -1,9 +1,18 @@
-import type { JobStatus, OfferStatus } from "@/src/api/types";
+import type {
+  JobStatus,
+  OfferStatus,
+  PropertyType,
+  ServiceType,
+} from "@/src/api/types";
 
 export interface OfferChatRouteInput {
   offerId: string;
   jobId?: string | null;
   jobTitle?: string | null;
+  /** What the chat header names the work from, so the strip follows the
+   *  reader's language rather than freezing the one picked at navigation. */
+  serviceType?: ServiceType | null;
+  propertyType?: PropertyType | null;
   offerPrice?: number | null;
   offerStatus?: OfferStatus | null;
   /** Travels with `offerStatus`: an accepted offer alone cannot say whether
@@ -26,6 +35,8 @@ export function buildOfferChatRoute({
   offerId,
   jobId,
   jobTitle,
+  serviceType,
+  propertyType,
   offerPrice,
   offerStatus,
   jobStatus,
@@ -36,6 +47,8 @@ export function buildOfferChatRoute({
       offerId,
       ...(jobId ? { jobId } : {}),
       ...(jobTitle ? { jobTitle } : {}),
+      ...(serviceType ? { serviceType } : {}),
+      ...(propertyType ? { propertyType } : {}),
       ...(offerPrice != null ? { offerPrice: String(offerPrice) } : {}),
       ...(offerStatus ? { offerStatus } : {}),
       ...(jobStatus ? { jobStatus } : {}),

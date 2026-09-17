@@ -1,4 +1,9 @@
-import type { JobStatus, OfferStatus } from "@/src/api/types";
+import type {
+  JobStatus,
+  OfferStatus,
+  PropertyType,
+  ServiceType,
+} from "@/src/api/types";
 import { Button, Text, TextInput } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
@@ -21,6 +26,10 @@ interface Props {
   /** Job the offer belongs to — travels into the chat as its header context. */
   jobId: string;
   jobTitle?: string;
+  /** Travel with `jobTitle`: the chat header names the work from these, in the
+   *  reader's own language, and falls back to the title. */
+  serviceType?: ServiceType | null;
+  propertyType?: PropertyType | null;
   /** Read together with `myOfferStatus`: see `OfferStatusPill`. */
   jobStatus?: JobStatus | null;
   offerIdForChat: string | null;
@@ -48,6 +57,8 @@ export const ContractorOfferSection = (props: Props) => {
     myOfferStatus,
     jobId,
     jobTitle,
+    serviceType,
+    propertyType,
     jobStatus,
     offerIdForChat,
     balance,
@@ -141,6 +152,8 @@ export const ContractorOfferSection = (props: Props) => {
                   offerId: offerIdForChat,
                   jobId,
                   jobTitle,
+                  serviceType,
+                  propertyType,
                   offerPrice: myOfferPrice,
                   offerStatus: myOfferStatus,
                   jobStatus,

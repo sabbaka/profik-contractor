@@ -8,7 +8,13 @@ import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
 import { formatCzk } from "@/src/utils/currency";
-import type { JobStatus, OfferStatus } from "@/src/api/types";
+import type {
+  JobStatus,
+  OfferStatus,
+  PropertyType,
+  ServiceType,
+} from "@/src/api/types";
+import { formatWorkName } from "@/src/utils/jobWorkName";
 import {
   BriefcaseBusiness,
   ChevronLeft,
@@ -58,15 +64,32 @@ export default function OfferChatRoute() {
   const isKeyboardVisible = useKeyboardState((state) => state.isVisible);
   // Job context travels in the route params — see `buildOfferChatRoute`. A
   // deep link carries only `offerId`, so every field below is optional.
-  const { offerId, jobId, jobTitle, offerPrice, offerStatus, jobStatus } =
-    useLocalSearchParams<{
-      offerId: string;
-      jobId?: string;
-      jobTitle?: string;
-      offerPrice?: string;
-      offerStatus?: OfferStatus;
-      jobStatus?: JobStatus;
-    }>();
+  const {
+    offerId,
+    jobId,
+    jobTitle,
+    serviceType,
+    propertyType,
+    offerPrice,
+    offerStatus,
+    jobStatus,
+  } = useLocalSearchParams<{
+    offerId: string;
+    jobId?: string;
+    jobTitle?: string;
+    serviceType?: ServiceType;
+    propertyType?: PropertyType;
+    offerPrice?: string;
+    offerStatus?: OfferStatus;
+    jobStatus?: JobStatus;
+  }>();
+
+  // Composed here rather than at the navigation site: a label resolved there
+  // would keep the old language after the reader switches it.
+  const workName =
+    jobTitle || serviceType
+      ? formatWorkName({ title: jobTitle, serviceType, propertyType }, t)
+      : undefined;
   const { data: me } = useMeQuery();
 
   // Marks this offer's chat as "on screen" for the push notification handler
@@ -213,7 +236,7 @@ export default function OfferChatRoute() {
         <XStack width={58} />
       </XStack>
 
-      {jobTitle ? (
+      {workName ? (
         <Pressable
           onPress={
             jobId
@@ -258,7 +281,7 @@ export default function OfferChatRoute() {
                   lineHeight: 17,
                 }}
               >
-                {jobTitle}
+                {workName}
               </Text>
               {offerPrice || offerStatus ? (
                 <XStack alignItems="center" gap={6}>
