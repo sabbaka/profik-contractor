@@ -8,13 +8,18 @@ import React, {
 } from "react";
 
 /**
- * Lets a screen ask the tab navigator to hide the TabBar while something of
- * its own is on screen — the Open Jobs filter sheet is the first user of
- * this, since it's non-modal (see `OpenJobsFiltersSheet.tsx`'s own comment on
- * why) and paints inside that screen's own stacking context, which sits
- * *below* the TabBar's. Rendered by `app/(contractor)/(tabs)/_layout.tsx`,
- * outside any single screen's own tree, so hiding has to be asked for rather
- * than just not rendering the bar locally.
+ * Lets a screen ask the tab navigator's chrome — the TabBar and, via
+ * `ContractorHeader`, the header above it — to get out of the way while
+ * something of its own is on screen. The Open Jobs filter sheet is the first
+ * user of this, since it's non-modal (see `OpenJobsFiltersSheet.tsx`'s own
+ * comment on why) and paints inside that screen's own stacking context,
+ * which sits *below* both the TabBar's and the header's. `TabBar` unmounts
+ * entirely on `hidden`; `ContractorHeader` instead paints a matching dark
+ * overlay over itself and stops accepting taps, since unlike the TabBar it
+ * still needs to occupy its layout space. Both are rendered by
+ * `app/(contractor)/(tabs)/_layout.tsx`, outside any single screen's own
+ * tree, so reacting to the sheet has to be asked for rather than read off
+ * something local.
  *
  * A ref-counted `hide`/`show` pair rather than a plain boolean setter: two
  * independent screens (or two overlapping opens of the same one) hiding it

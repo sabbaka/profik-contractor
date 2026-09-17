@@ -1,3 +1,4 @@
+import { useTabBarVisibility } from "@/src/context/TabBarVisibilityContext";
 import { useThemeColors } from "@/src/theme";
 import { useSegments } from "expo-router";
 import { Text as UIText } from "@/src/components/ui/ui";
@@ -11,6 +12,13 @@ export default function ContractorHeader() {
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const segments = useSegments() as string[];
+  // The Open Jobs filter sheet (see `OpenJobsFiltersSheet.tsx`) is
+  // non-modal, so its own `Sheet.Overlay` only darkens the tab content
+  // beneath it — this header is a sibling further up the tree and paints
+  // untouched above it. Reusing the same `hidden` signal that already hides
+  // the TabBar for that sheet, so the header dims (and stops accepting
+  // taps) in step with it rather than sitting lit above a dimmed screen.
+  const { hidden } = useTabBarVisibility();
 
   const isJobDetail = segments.includes("jobs") && segments.includes("[id]");
   const isOfferChat = segments.includes("offer-chat");
@@ -26,6 +34,7 @@ export default function ContractorHeader() {
 
   return (
     <XStack
+      position="relative"
       backgroundColor={colors.bgSecondary}
       alignItems="center"
       justifyContent="space-between"
@@ -52,6 +61,17 @@ export default function ContractorHeader() {
         <UIText variant="caption">{t("header.workspace")}</UIText>
       </YStack>
       {isProfileTab ? null : <ContractorProfileHeaderButton />}
+      {hidden ? (
+        <YStack
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          backgroundColor="rgba(0,0,0,0.5)"
+          pointerEvents="auto"
+        />
+      ) : null}
     </XStack>
   );
 }
