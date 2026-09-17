@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useGetOpenJobsInfiniteQuery } from "../api/profikApi";
+import { formatCategory, formatWorkName } from "../utils/jobWorkName";
 
 export default function OpenJobsMapWeb() {
   const { t } = useTranslation();
@@ -73,10 +74,10 @@ export default function OpenJobsMapWeb() {
           }
         >
           <Text style={{ fontWeight: "600", color: colors.textPrimary }}>
-            {j.title}
+            {formatWorkName(j, t)}
           </Text>
           <Text style={{ marginBottom: 4, color: colors.textSecondary }}>
-            {j.category}
+            {formatCategory(j.category, t)}
           </Text>
           <Text style={{ color: colors.textSecondary }} numberOfLines={2}>
             {j.description}

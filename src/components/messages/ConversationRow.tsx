@@ -2,6 +2,7 @@ import type { Conversation } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { resolveAvatarUrl } from "@/src/features/auth/utils";
 import { useThemeColors } from "@/src/theme";
+import { formatWorkName } from "@/src/utils/jobWorkName";
 import { BriefcaseBusiness } from "@tamagui/lucide-icons";
 import { Image } from "expo-image";
 import React from "react";
@@ -47,7 +48,7 @@ export function ConversationRow({
       accessibilityRole="button"
       accessibilityLabel={t("messages.openChatA11y", {
         name,
-        title: job.title,
+        title: formatWorkName(job, t),
       })}
       style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
     >
@@ -129,7 +130,7 @@ export function ConversationRow({
                 lineHeight: 16,
               }}
             >
-              {job.title}
+              {formatWorkName(job, t)}
             </Text>
           </XStack>
 

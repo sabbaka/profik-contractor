@@ -2,6 +2,7 @@ import { useGetJobByIdQuery } from "@/src/api/profikApi";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
 import { formatCountry } from "@/src/utils/country";
+import { formatCategory, formatWorkName } from "@/src/utils/jobWorkName";
 import { buildJobShareUrl } from "@/src/utils/jobShareUrl";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback } from "react";
@@ -96,9 +97,11 @@ export const JobDetail = () => {
       .filter(Boolean)
       .join(", ");
     const lines = [
-      job.title,
+      formatWorkName(job, t),
       "",
-      [formatCzk(job.price ?? 0), job.category].filter(Boolean).join(" · "),
+      [formatCzk(job.price ?? 0), formatCategory(job.category, t)]
+        .filter(Boolean)
+        .join(" · "),
     ];
     if (location) lines.push(location);
     lines.push("", buildJobShareUrl(job.id));
@@ -180,6 +183,8 @@ export const JobDetail = () => {
           <JobBasicInfo
             category={job.category}
             title={job.title}
+            serviceType={job.serviceType}
+            propertyType={job.propertyType}
             price={job.price ?? 0}
             scheduledDates={job.scheduledDates}
             city={job.city}
@@ -252,6 +257,8 @@ export const JobDetail = () => {
                 balance={balance}
                 canAffordOffer={canAffordOffer}
                 jobTitle={job.title}
+                serviceType={job.serviceType}
+                propertyType={job.propertyType}
                 jobStatus={job.status}
                 hasOffered={hasOffered}
                 myOfferPrice={myOfferPrice}

@@ -1,7 +1,8 @@
-import type { TimeSlot } from "@/src/api/types";
+import type { PropertyType, ServiceType, TimeSlot } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { formatCzk } from "@/src/utils/currency";
 import { dateLocale, formatSchedule } from "@/src/utils/jobSchedule";
+import { formatCategory, formatWorkName } from "@/src/utils/jobWorkName";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { Calendar, Clock, History, MapPin } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,6 +14,10 @@ import { XStack, YStack } from "tamagui";
 interface JobBasicInfoProps {
   category?: string | null;
   title: string;
+  /** What the work is named from, in the reader's own language; `title` is the
+   *  English the client's wizard wrote and is only the fallback. */
+  serviceType?: ServiceType | null;
+  propertyType?: PropertyType | null;
   price: number;
   scheduledDates?: string[] | null;
   city?: string | null;
@@ -26,6 +31,8 @@ interface JobBasicInfoProps {
 export const JobBasicInfo = ({
   category,
   title,
+  serviceType,
+  propertyType,
   price,
   scheduledDates,
   city,
@@ -71,7 +78,7 @@ export const JobBasicInfo = ({
             letterSpacing: 0.6,
           }}
         >
-          {category || t("job.serviceRequest")}
+          {formatCategory(category, t) || t("job.serviceRequest")}
         </Text>
         <Text
           style={{
@@ -81,7 +88,7 @@ export const JobBasicInfo = ({
             lineHeight: 33,
           }}
         >
-          {title}
+          {formatWorkName({ title, serviceType, propertyType }, t)}
         </Text>
         <Text
           style={{

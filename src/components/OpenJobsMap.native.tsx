@@ -1,10 +1,13 @@
 import { router } from "expo-router";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useGetOpenJobsInfiniteQuery } from "../api/profikApi";
+import { formatCategory, formatWorkName } from "../utils/jobWorkName";
 
 export default function OpenJobsMapNative() {
+  const { t } = useTranslation();
   // Only the pages the Open tab happens to have loaded. Acceptable while this
   // screen is unreachable; a real map wants every job in the viewport, which
   // is a bbox query, not a scroll-driven page chain.
@@ -54,8 +57,8 @@ export default function OpenJobsMapNative() {
         <Marker
           key={j.id}
           coordinate={{ latitude: j.lat as number, longitude: j.lng as number }}
-          title={j.title}
-          description={j.category}
+          title={formatWorkName(j, t)}
+          description={formatCategory(j.category, t)}
           onCalloutPress={() =>
             router.push({
               pathname: "/(contractor)/jobs/[id]",

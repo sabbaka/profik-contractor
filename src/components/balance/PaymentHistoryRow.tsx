@@ -2,6 +2,7 @@ import type { PaymentHistoryItem, PaymentStatus } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { formatCzk } from "@/src/utils/currency";
+import { formatWorkName } from "@/src/utils/jobWorkName";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -102,7 +103,7 @@ export function PaymentHistoryRow({ entry }: PaymentHistoryRowProps) {
                 lineHeight: 16,
               }}
             >
-              {entry.job.title}
+              {formatWorkName(entry.job, t)}
             </Text>
           </XStack>
         ) : null}

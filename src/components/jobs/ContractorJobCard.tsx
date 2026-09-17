@@ -16,6 +16,7 @@ import { Pressable } from "react-native";
 import { XStack, YStack } from "tamagui";
 import { OfferStatusPill } from "./OfferStatusPill";
 import { formatCountry } from "@/src/utils/country";
+import { formatCategory, formatWorkName } from "@/src/utils/jobWorkName";
 
 interface ContractorJobCardProps {
   job: any;
@@ -82,7 +83,7 @@ export function ContractorJobCard({
           <YStack flex={1} gap={4}>
             <XStack justifyContent="space-between" alignItems="center" gap={8}>
               <Text variant="chip" numberOfLines={1} flex={1}>
-                {job?.category || t("job.service")}
+                {formatCategory(job?.category, t) || t("job.service")}
               </Text>
               {/* Open Jobs (no myOffer yet) puts the price in the footer's
                   bottom-right corner instead — see below. My Jobs keeps it
@@ -93,7 +94,7 @@ export function ContractorJobCard({
               ) : null}
             </XStack>
             <Text variant="cardTitle" numberOfLines={2}>
-              {job?.title || t("job.untitled")}
+              {formatWorkName(job, t)}
             </Text>
             <YStack gap={5} marginTop={4}>
               <XStack alignItems="center" gap={6}>
@@ -165,7 +166,7 @@ export function ContractorJobCard({
               hitSlop={10}
               accessibilityRole="button"
               accessibilityLabel={t("job.messageClientA11y", {
-                title: job?.title || t("job.untitled"),
+                title: formatWorkName(job, t),
               })}
               style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1 })}
             >
