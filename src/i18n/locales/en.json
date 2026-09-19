@@ -28,6 +28,9 @@
       "contractorsOnly": "Only a contractor account can send offers.",
       "insufficientBalance": "Your balance is too low to send an offer."
     },
+    "payment": {
+      "checkoutFailed": "We couldn't start the payment. Please try again."
+    },
     "review": {
       "ratingRequired": "Pick a rating first.",
       "ratingRange": "Choose between 1 and 5 stars."
@@ -343,7 +346,10 @@
     "errors": {
       "amountRequired": "Amount is required",
       "amountNumber": "Must be a valid number",
-      "amountPositive": "Amount must be greater than 0"
+      "amountPositive": "Amount must be greater than 0",
+      "amountWhole": "Enter a whole number of CZK",
+      "amountMin": "Minimum top-up is {{amount}} Kč",
+      "amountMax": "Maximum top-up is {{amount}} Kč"
     },
     "history": {
       "title": "Transaction history",

@@ -28,6 +28,9 @@
       "contractorsOnly": "Nabídky může posílat jen účet profíka.",
       "insufficientBalance": "Na odeslání nabídky nemáte dost prostředků."
     },
+    "payment": {
+      "checkoutFailed": "Platbu se nepodařilo zahájit. Zkuste to prosím znovu."
+    },
     "review": {
       "ratingRequired": "Nejprve vyberte hodnocení.",
       "ratingRange": "Vyberte 1 až 5 hvězdiček."
@@ -343,7 +346,10 @@
     "errors": {
       "amountRequired": "Částka je povinná",
       "amountNumber": "Musí být platné číslo",
-      "amountPositive": "Částka musí být větší než 0"
+      "amountPositive": "Částka musí být větší než 0",
+      "amountWhole": "Zadejte celé číslo v Kč",
+      "amountMin": "Minimální dobití je {{amount}} Kč",
+      "amountMax": "Maximální dobití je {{amount}} Kč"
     },
     "history": {
       "title": "Historie transakcí",

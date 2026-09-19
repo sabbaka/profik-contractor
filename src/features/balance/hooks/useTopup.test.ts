@@ -25,8 +25,12 @@ jest.mock("expo-web-browser", () => ({
   openAuthSessionAsync: jest.fn(),
 }));
 
+// The real i18n module is loaded through extractErrorMessage, which asks it
+// whether a translation exists — so the mock has to carry the plugin its
+// initialisation uses, or importing it throws.
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+  initReactI18next: { type: "3rdParty", init: () => {} },
 }));
 
 /** Balance the poll sees on each successive attempt. */
@@ -184,5 +188,48 @@ describe("when the top-up cannot start", () => {
       success: false,
       error: "balance.topupFailed",
     });
+  });
+
+  it("reads a refused checkout out of the locale by its code", async () => {
+    mockTopupMutation.mockReturnValue({
+      unwrap: async () => {
+        throw {
+          data: {
+            code: "payment.checkoutFailed",
+            message: "Could not start the payment. Please try again.",
+          },
+        };
+      },
+    });
+    const result = await setUp();
+
+    const outcome = await runTopup(() => result.current.topup(400));
+
+    // `t` is the identity in this file, so the key itself is the evidence the
+    // translated line won over the server's English.
+    expect(outcome).toMatchObject({
+      success: false,
+      error: "errors.payment.checkoutFailed",
+    });
+  });
+
+  // P-07: the crash. Validation failures used to arrive as an array of rules
+  // and went straight into Alert.alert, which is typed string — fatal under
+  // the new architecture. The server sends one string now; this is the belt
+  // to that braces.
+  it("never hands Alert.alert anything but a string", async () => {
+    mockTopupMutation.mockReturnValue({
+      unwrap: async () => {
+        throw { data: { message: ["Minimum top-up is 15 CZK"] } };
+      },
+    });
+    const result = await setUp();
+
+    const outcome = await runTopup(() => result.current.topup(1));
+
+    const { error } = outcome as typeof outcome & { error?: unknown };
+    expect(typeof error).toBe("string");
+    const [, message] = (Alert.alert as jest.Mock).mock.calls.at(-1) ?? [];
+    expect(typeof message).toBe("string");
   });
 });

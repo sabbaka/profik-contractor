@@ -2136,8 +2136,14 @@
               }
             }
           },
+          "400": {
+            "description": "Amount is not a whole number of CZK between 15 and 100 000, or returnUrl is not a Profik app link"
+          },
           "403": {
             "description": "Only contractors can top-up balance"
+          },
+          "503": {
+            "description": "Stripe would not open a checkout. The top-up is recorded as failed and nothing was charged — code `payment.checkoutFailed`"
           }
         },
         "security": [
