@@ -59,7 +59,7 @@ export type ApiError =
  * validation failures and on anything the framework raises itself, which the
  * app still tells apart by HTTP status.
  */
-function serverErrorCode(error: unknown): string | null {
+export function serverErrorCode(error: unknown): string | null {
   if (
     error &&
     typeof error === "object" &&

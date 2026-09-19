@@ -12,6 +12,8 @@
     "src/store/rtkListeners.test.ts": "d7a63ef1b3d2bccd1ddbf76fd2336d70fe996f0e333629c06b578f156fe9be5c",
     "src/store/rtkListeners.ts": "aefa0c6e03c726d4083ac285c0112ffbbbb39abcd1d0c7b374f85e15c89afbc8",
     "src/utils/appearanceStorage.ts": "63d69813d08a63b43d059005783859d600e90057bcb3525c33400eacaef73fe2",
+    "src/utils/conversationClosed.test.ts": "cfb04bcdcda606bfa809fc164d429c02ce83d43fd319a11cc27d5e2501d83c6a",
+    "src/utils/conversationClosed.ts": "80568ccb7446b2821031858a67c6a39f27ced1f61c4f4133e789b050e7710f26",
     "src/utils/languageStorage.ts": "aa1bf15816333918cbed7f61f2b6977c86b3ca414948b6f559f872b0f2d33411",
     "src/utils/logger.test.ts": "6a8b95dcbc13f0785f975b567587b120a47f1c2431aa2561928302d189fb5d53",
     "src/utils/logger.ts": "de737968d5de158d624f7fb24ac96487a7edffd6e6478691bf0455ed1748cccd",

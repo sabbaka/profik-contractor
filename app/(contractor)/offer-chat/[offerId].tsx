@@ -25,6 +25,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { clearActiveChat, setActiveChat } from "@/src/features/notifications";
+import { isConversationClosed } from "@/src/utils/conversationClosed";
+import { serverErrorCode } from "@/src/features/auth/types";
 import { AppFeedbackSheet } from "@/src/components/feedback";
 import {
   maybeRequestStoreReview,
@@ -180,6 +182,17 @@ export default function OfferChatRoute() {
       .catch(logError);
   }, [offerId, newestMessageId, markConversationRead]);
 
+  /**
+   * Set when the server refuses a message because the conversation is over.
+   *
+   * A chat reached from a push carries only an offer id, so the statuses below
+   * can both be undefined and the screen cannot know. The refusal is what it
+   * learns from, and it only ever moves one way — a closed conversation does
+   * not reopen.
+   */
+  const [refused, setRefused] = useState(false);
+  const closed = refused || isConversationClosed(offerStatus, jobStatus);
+
   const handleSend = useCallback(async () => {
     if (!offerId || !content.trim()) return;
     try {
@@ -187,6 +200,11 @@ export default function OfferChatRoute() {
       setContent("");
     } catch (err) {
       logError(err);
+      if (serverErrorCode(err) === "offer.conversationClosed") {
+        setRefused(true);
+        Alert.alert(t("chat.notSentTitle"), t("chat.closedBody"));
+        return;
+      }
       Alert.alert(t("chat.notSentTitle"), t("chat.notSentBody"));
     }
   }, [offerId, content, sendMessage, t]);
@@ -401,67 +419,91 @@ export default function OfferChatRoute() {
           />
         )}
 
-        <XStack
-          paddingHorizontal={16}
-          paddingTop={10}
-          // The home indicator sits behind the keyboard, so its inset is only
-          // worth reserving while the keyboard is down.
-          paddingBottom={
-            isKeyboardVisible ? 10 : Math.max(insets.bottom, 10) + 6
-          }
-          alignItems="flex-end"
-          gap={9}
-          backgroundColor={colors.bgPrimary}
-          borderTopWidth={1}
-          borderTopColor={colors.borderSubtle}
-        >
-          <TextInput
-            value={content}
-            onChangeText={setContent}
-            placeholder={t("chat.placeholders.message")}
-            placeholderTextColor={colors.textMuted}
-            multiline
-            maxLength={1000}
-            style={{
-              flex: 1,
-              minHeight: 44,
-              maxHeight: 110,
-              borderRadius: 22,
-              backgroundColor: colors.surfaceInput,
-              color: colors.textPrimary,
-              paddingHorizontal: 16,
-              paddingVertical: 11,
-              fontSize: 15,
-              fontFamily: "Inter_400Regular",
-            }}
-          />
-          <Pressable
-            disabled={isSending || !content.trim()}
-            onPress={handleSend}
-            accessibilityRole="button"
-            accessibilityLabel={t("a11y.send")}
-            style={({ pressed }) => ({
-              opacity: isSending || !content.trim() ? 0.45 : pressed ? 0.8 : 1,
-            })}
+        {closed ? (
+          /* The server refuses a message on a declined offer or a cancelled
+             job, so the composer would only collect a message that bounces.
+             The history above stays readable — that is the whole point of
+             replacing the field rather than closing the screen. */
+          <YStack
+            paddingHorizontal={16}
+            paddingTop={12}
+            paddingBottom={Math.max(insets.bottom, 12) + 4}
+            gap={2}
+            backgroundColor={colors.bgPrimary}
+            borderTopWidth={1}
+            borderTopColor={colors.borderSubtle}
           >
-            <YStack
-              width={44}
-              height={44}
-              borderRadius={9999}
-              overflow="hidden"
-              alignItems="center"
-              justifyContent="center"
+            <Text variant="bodyStrong" textAlign="center">
+              {t("chat.closedTitle")}
+            </Text>
+            <Text variant="bodySm" textAlign="center">
+              {t("chat.closedBody")}
+            </Text>
+          </YStack>
+        ) : (
+          <XStack
+            paddingHorizontal={16}
+            paddingTop={10}
+            // The home indicator sits behind the keyboard, so its inset is only
+            // worth reserving while the keyboard is down.
+            paddingBottom={
+              isKeyboardVisible ? 10 : Math.max(insets.bottom, 10) + 6
+            }
+            alignItems="flex-end"
+            gap={9}
+            backgroundColor={colors.bgPrimary}
+            borderTopWidth={1}
+            borderTopColor={colors.borderSubtle}
+          >
+            <TextInput
+              value={content}
+              onChangeText={setContent}
+              placeholder={t("chat.placeholders.message")}
+              placeholderTextColor={colors.textMuted}
+              multiline
+              maxLength={1000}
+              style={{
+                flex: 1,
+                minHeight: 44,
+                maxHeight: 110,
+                borderRadius: 22,
+                backgroundColor: colors.surfaceInput,
+                color: colors.textPrimary,
+                paddingHorizontal: 16,
+                paddingVertical: 11,
+                fontSize: 15,
+                fontFamily: "Inter_400Regular",
+              }}
+            />
+            <Pressable
+              disabled={isSending || !content.trim()}
+              onPress={handleSend}
+              accessibilityRole="button"
+              accessibilityLabel={t("a11y.send")}
+              style={({ pressed }) => ({
+                opacity:
+                  isSending || !content.trim() ? 0.45 : pressed ? 0.8 : 1,
+              })}
             >
-              <LinearGradient
-                colors={PROFIK_GRADIENT.accent}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={StyleSheet.absoluteFill}
-              />
-              <Send size={18} color="#FFFFFF" />
-            </YStack>
-          </Pressable>
-        </XStack>
+              <YStack
+                width={44}
+                height={44}
+                borderRadius={9999}
+                overflow="hidden"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <LinearGradient
+                  colors={PROFIK_GRADIENT.accent}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+                <Send size={18} color="#FFFFFF" />
+              </YStack>
+            </Pressable>
+          </XStack>
+        )}
       </KeyboardAvoidingView>
 
       <AppFeedbackSheet open={feedbackOpen} onOpenChange={closePrompt} />

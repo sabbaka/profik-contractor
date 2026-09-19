@@ -26,7 +26,8 @@
       "notParticipant": "Nejste součástí této nabídky.",
       "duplicate": "Na tuto zakázku jste už nabídku poslali.",
       "contractorsOnly": "Nabídky může posílat jen účet profíka.",
-      "insufficientBalance": "Na odeslání nabídky nemáte dost prostředků."
+      "insufficientBalance": "Na odeslání nabídky nemáte dost prostředků.",
+      "conversationClosed": "Konverzace je uzavřená — nové zprávy už poslat nelze."
     },
     "payment": {
       "checkoutFailed": "Platbu se nepodařilo zahájit. Zkuste to prosím znovu."
@@ -313,6 +314,8 @@
     "invalidOffer": "Neplatná nabídka",
     "notSentTitle": "Zpráva nebyla odeslána",
     "notSentBody": "Zkuste to prosím znovu.",
+    "closedTitle": "Konverzace je uzavřená",
+    "closedBody": "Nabídka byla odmítnuta, nové zprávy už poslat nelze. Vše dosud napsané zůstává.",
     "emptyTitle": "Začněte konverzaci",
     "emptyBody": "Zeptejte se na detail nebo potvrďte podmínky své nabídky.",
     "placeholders": {
