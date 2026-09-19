@@ -549,7 +549,7 @@
             }
           },
           "403": {
-            "description": "Only clients can reject offers"
+            "description": "Only clients can reject offers, or offer already processed"
           },
           "404": {
             "description": "Offer not found"
@@ -774,7 +774,7 @@
             }
           },
           "403": {
-            "description": "Only participants of the offer can send messages"
+            "description": "Only participants of the offer can send messages, and only while the conversation is open — a declined offer or a cancelled job closes it to new messages while leaving the history readable"
           },
           "404": {
             "description": "Offer not found"
