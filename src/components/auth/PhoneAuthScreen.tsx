@@ -65,7 +65,6 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<{ phone: string }>({
     resolver: zodResolver(phoneSchema),
@@ -190,19 +189,16 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
                 // belongs to the selector, so move it there and keep only the
                 // national part here. Also catches a pasted foreign number,
                 // which used to leave the two contradicting each other.
+                //
+                // Returned rather than written with `setValue`: the field's
+                // own `onChange` runs straight after this and would put the
+                // raw text back.
                 const split = splitCountryCode(next);
                 if (split) {
                   setCountry(split.country);
-                  setValue(
-                    "phone",
-                    formatPhoneInput(split.nationalNumber, split.country),
-                    { shouldValidate: false },
-                  );
-                  return;
+                  return formatPhoneInput(split.nationalNumber, split.country);
                 }
-                setValue("phone", formatPhoneInput(next, country), {
-                  shouldValidate: false,
-                });
+                return formatPhoneInput(next, country);
               }}
             />
 

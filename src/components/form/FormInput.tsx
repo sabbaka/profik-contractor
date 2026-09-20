@@ -15,7 +15,13 @@ interface FormInputProps<TFieldValues extends FieldValues> extends Omit<
   placeholder?: string;
   error?: string;
   flex?: number;
-  onValueChange?: (value: string) => void;
+  /**
+   * Called with what was just typed. Returning a string replaces what gets
+   * stored — the phone field uses this to move a typed or autofilled country
+   * code out to its selector. Returning nothing keeps the raw text, so
+   * side-effect-only handlers behave as before.
+   */
+  onValueChange?: (value: string) => string | void;
   /**
    * Optional leading element, inside the field rather than before it — a
    * dialling code belongs to the number the reader is checking, not to the
@@ -83,8 +89,8 @@ export const FormInput = <TFieldValues extends FieldValues>({
               onBlur={onBlur}
               placeholderTextColor={colors.textMuted}
               onChangeText={(next) => {
-                onValueChange?.(next);
-                onChange(next);
+                const replacement = onValueChange?.(next);
+                onChange(typeof replacement === "string" ? replacement : next);
               }}
               style={[
                 {
