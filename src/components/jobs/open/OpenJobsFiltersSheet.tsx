@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import {
   Animated,
   Easing,
+  InputAccessoryView,
   Keyboard,
   Modal,
   Platform,
@@ -33,6 +34,12 @@ import {
 } from "./hooks/useOpenJobsFilters";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+// A numeric keyboard has no return key to dismiss it with, and the only other
+// way out of it here — tapping a blank patch of the sheet — is mostly covered
+// by the keyboard itself. iOS-only: `InputAccessoryView` renders nothing on
+// Android, which has a system back gesture for this.
+const PRICE_ACCESSORY_ID = "openJobsPriceAccessory";
 
 interface OpenJobsFiltersSheetProps {
   open: boolean;
@@ -292,6 +299,7 @@ export function OpenJobsFiltersSheet({
                       </Text>
                       <TextInput
                         keyboardType="numeric"
+                        inputAccessoryViewID={PRICE_ACCESSORY_ID}
                         value={draft.priceMin}
                         onChangeText={(v) =>
                           setDraft((d) => ({ ...d, priceMin: v }))
@@ -303,6 +311,7 @@ export function OpenJobsFiltersSheet({
                       <Text variant="caption">{t("open.filters.priceTo")}</Text>
                       <TextInput
                         keyboardType="numeric"
+                        inputAccessoryViewID={PRICE_ACCESSORY_ID}
                         value={draft.priceMax}
                         onChangeText={(v) =>
                           setDraft((d) => ({ ...d, priceMax: v }))
@@ -425,6 +434,36 @@ export function OpenJobsFiltersSheet({
           </Sheet.ScrollView>
         </Sheet.Frame>
       </Sheet>
+
+      {/* The way out of the numeric keyboard. Without it the only exit is a
+          tap on bare sheet, and the keyboard covers the bottom of the sheet
+          — including the Show-jobs button — so there is often no bare sheet
+          left to tap: the filters end up unreachable behind their own
+          keyboard. Rendered outside the Sheet because iOS attaches it to the
+          keyboard itself, not to whatever view declares it. */}
+      {Platform.OS === "ios" ? (
+        <InputAccessoryView nativeID={PRICE_ACCESSORY_ID}>
+          <XStack
+            justifyContent="flex-end"
+            alignItems="center"
+            paddingHorizontal={20}
+            height={44}
+            backgroundColor={colors.bgPrimary}
+            borderTopWidth={1}
+            borderTopColor={colors.borderSubtle}
+          >
+            <Pressable
+              onPress={Keyboard.dismiss}
+              hitSlop={8}
+              accessibilityRole="button"
+            >
+              <Text variant="bodyStrong" style={{ color: colors.accent }}>
+                {t("common.done")}
+              </Text>
+            </Pressable>
+          </XStack>
+        </InputAccessoryView>
+      ) : null}
 
       {/* A separate native Modal, not part of the Sheet's own view tree — the
           iOS spinner is itself a continuously vertical-drag-responsive
