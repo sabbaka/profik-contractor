@@ -248,6 +248,12 @@ export function OpenJobsFiltersSheet({
         // never actually hidden behind it — nothing here needs this prop.
       >
         <Sheet.Overlay
+          // Explicit, not Tamagui's own themed default — that default reads
+          // visibly lighter than `ContractorHeader`'s own dim overlay (see
+          // its comment on why it needs one at all, since this Sheet is
+          // non-modal), leaving a hard seam right at the header's bottom
+          // edge. Same literal in both places is what removes it.
+          backgroundColor="rgba(0,0,0,0.5)"
           animation="lazy"
           enterStyle={{ opacity: 0 }}
           exitStyle={{ opacity: 0 }}
