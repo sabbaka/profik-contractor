@@ -342,6 +342,7 @@
     "usedFor": "Používá se pro služby kontraktora a přístup k zakázkám.",
     "addFunds": "Přidat kredit",
     "amountBody": "Zadejte částku, kterou chcete přidat.",
+    "rateNote": "Platíte v korunách — každá 1 Kč přidá 1 kredit.",
     "amountPlaceholder": "Částka v Kč",
     "continuePayment": "Pokračovat k platbě",
     "secureBody": "Platba proběhne bezpečně ve webovém zobrazení a potom se automaticky vrátíte sem.",
@@ -474,7 +475,7 @@
   "onboarding": {
     "cta": {
       "next": "Další",
-      "claim": "Získat 500 Kč"
+      "claim": "Získat 500 kreditů"
     },
     "steps": {
       "find": {
@@ -522,16 +523,16 @@
       "credits": {
         "titleAccent": "100 nabídek",
         "titleRest": "jako dárek",
-        "body": "Po registraci vám na účet připíšeme 500 Kč — to stačí na 100 nabídek a první zakázky",
+        "body": "Po registraci vám na účet připíšeme 500 kreditů — to stačí na 100 nabídek a první zakázky",
         "card": {
           "title": "Uvítací bonus",
           "subtitle": "Připíšeme hned po registraci",
           "amount": "500",
-          "unit": "Kč",
+          "unit": "kreditů",
           "rowBonus": "Bonus za registraci",
-          "rowBonusValue": "500 Kč",
+          "rowBonusValue": "500 kreditů",
           "rowCost": "Cena za nabídku",
-          "rowCostValue": "5 Kč",
+          "rowCostValue": "5 kreditů",
           "rowOffers": "Kolik nabídek pošlete",
           "rowOffersValue": "100",
           "note": "Bez karty — reagovat můžete hned"
@@ -656,5 +657,10 @@
       "network": "Bez připojení. Zkontrolujte síť a zkuste to znovu.",
       "unknown": "Zpětnou vazbu se nepodařilo odeslat. Zkuste to znovu."
     }
+  },
+  "credits": {
+    "amount_one": "{{amount}} kredit",
+    "amount_few": "{{amount}} kredity",
+    "amount_other": "{{amount}} kreditů"
   }
 }

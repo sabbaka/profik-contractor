@@ -7,7 +7,7 @@ import {
 } from "@/src/components/ui/ui";
 import { useTopupForm } from "@/src/features/balance/forms";
 import { useThemeColors } from "@/src/theme";
-import { formatCzk } from "@/src/utils/currency";
+import { formatCredits } from "@/src/utils/currency";
 import {
   ChevronLeft,
   ChevronRight,
@@ -35,7 +35,9 @@ export default function BalanceRoute() {
     useTopupForm({
       onSuccess: (updated, next) => {
         if (updated && next !== undefined) {
-          setSnackbarMsg(t("balance.updatedTo", { amount: formatCzk(next) }));
+          setSnackbarMsg(
+            t("balance.updatedTo", { amount: formatCredits(next, t) }),
+          );
           setSnackbarVisible(true);
         }
       },
@@ -139,7 +141,7 @@ export default function BalanceRoute() {
               lineHeight: 38,
             }}
           >
-            {formatCzk(balance)}
+            {formatCredits(balance, t)}
           </Text>
           <Text
             position="relative"
@@ -193,6 +195,10 @@ export default function BalanceRoute() {
           <YStack gap={4}>
             <Text variant="h4">{t("balance.addFunds")}</Text>
             <Text variant="bodySm">{t("balance.amountBody")}</Text>
+            {/* The field asks for crowns because Stripe charges crowns, while
+                the balance above it counts credits. Without the rate between
+                them the two numbers look like a discrepancy. */}
+            <Text variant="caption">{t("balance.rateNote")}</Text>
           </YStack>
           <FormInput
             flex={0}

@@ -1,7 +1,7 @@
 import { useMeQuery } from "@/src/api/profikApi";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { formatCzk } from "@/src/utils/currency";
+import { formatCredits } from "@/src/utils/currency";
 import {
   OFFER_COST_CZK,
   OFFER_DISCOUNT_PERCENT,
@@ -57,7 +57,7 @@ export function OfferCostNote() {
                 lineHeight: 23,
               }}
             >
-              {formatCzk(OFFER_COST_CZK)}
+              {formatCredits(OFFER_COST_CZK, t)}
             </Text>
             {OFFER_HAS_DISCOUNT ? (
               <>
@@ -70,7 +70,7 @@ export function OfferCostNote() {
                     textDecorationLine: "line-through",
                   }}
                 >
-                  {formatCzk(OFFER_FULL_COST_CZK)}
+                  {formatCredits(OFFER_FULL_COST_CZK, t)}
                 </Text>
                 <XStack
                   backgroundColor={colors.accent}
@@ -120,7 +120,7 @@ export function OfferCostNote() {
             lineHeight: 17,
           }}
         >
-          {formatCzk(me?.balance ?? 0)}
+          {formatCredits(me?.balance ?? 0, t)}
         </Text>
       </XStack>
     </YStack>

@@ -1,7 +1,7 @@
 import type { PaymentHistoryItem, PaymentStatus } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { formatCzk } from "@/src/utils/currency";
+import { formatCredits } from "@/src/utils/currency";
 import { formatWorkName } from "@/src/utils/jobWorkName";
 import {
   ArrowDownLeft,
@@ -77,7 +77,7 @@ export function PaymentHistoryRow({ entry }: PaymentHistoryRowProps) {
             }}
           >
             {credit ? "+" : ""}
-            {formatCzk(entry.amount)}
+            {formatCredits(entry.amount, t)}
           </Text>
         </XStack>
 

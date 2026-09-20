@@ -1,6 +1,6 @@
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { formatCzk } from "@/src/utils/currency";
+import { formatCredits } from "@/src/utils/currency";
 import { CircleAlert } from "@tamagui/lucide-icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -53,8 +53,8 @@ export function OfferBalanceWarning({ balance }: OfferBalanceWarningProps) {
           }}
         >
           {t("offer.balance.body", {
-            price: formatCzk(OFFER_COST_CZK),
-            balance: formatCzk(balance),
+            price: formatCredits(OFFER_COST_CZK, t),
+            balance: formatCredits(balance, t),
           })}
         </Text>
       </YStack>

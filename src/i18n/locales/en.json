@@ -342,6 +342,7 @@
     "usedFor": "Used for contractor services and job access.",
     "addFunds": "Add funds",
     "amountBody": "Enter the amount you'd like to add.",
+    "rateNote": "You pay in CZK — every 1 Kč adds 1 credit.",
     "amountPlaceholder": "Amount in CZK",
     "continuePayment": "Continue to payment",
     "secureBody": "Payment is completed securely in a web view, then you'll return here automatically.",
@@ -474,7 +475,7 @@
   "onboarding": {
     "cta": {
       "next": "Next",
-      "claim": "Claim 500 Kč"
+      "claim": "Claim 500 credits"
     },
     "steps": {
       "find": {
@@ -522,16 +523,16 @@
       "credits": {
         "titleAccent": "100 offers",
         "titleRest": "on the house",
-        "body": "We add 500 Kč to your balance right after sign-up — enough to send 100 offers and land your first jobs",
+        "body": "We add 500 credits to your balance right after sign-up — enough to send 100 offers and land your first jobs",
         "card": {
           "title": "Welcome bonus",
           "subtitle": "Added right after sign-up",
           "amount": "500",
-          "unit": "Kč",
+          "unit": "credits",
           "rowBonus": "Bonus on sign-up",
-          "rowBonusValue": "500 Kč",
+          "rowBonusValue": "500 credits",
           "rowCost": "Cost per offer",
-          "rowCostValue": "5 Kč",
+          "rowCostValue": "5 credits",
           "rowOffers": "Offers you can send",
           "rowOffersValue": "100",
           "note": "No card needed — start responding right away"
@@ -655,5 +656,9 @@
       "network": "No connection. Check your network and try again.",
       "unknown": "Couldn't send your feedback. Please try again."
     }
+  },
+  "credits": {
+    "amount_one": "{{amount}} credit",
+    "amount_other": "{{amount}} credits"
   }
 }

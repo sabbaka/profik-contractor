@@ -5,7 +5,7 @@ import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { extractErrorMessage } from "@/src/features/auth/types";
 import { resolveAvatarUrl } from "@/src/features/auth/utils";
 import { useThemeColors, useThemeMode } from "@/src/theme";
-import { formatCzk } from "@/src/utils/currency";
+import { formatCredits } from "@/src/utils/currency";
 import {
   APP_LANGUAGES,
   getStoredLanguage,
@@ -420,7 +420,7 @@ export default function ProfileRoute() {
                   lineHeight: 31,
                 }}
               >
-                {formatCzk(user?.balance ?? 0)}
+                {formatCredits(user?.balance ?? 0, t)}
               </Text>
               <Text
                 position="relative"
