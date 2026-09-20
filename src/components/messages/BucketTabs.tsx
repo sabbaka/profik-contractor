@@ -1,5 +1,5 @@
-import type { ConversationBucket } from "@/src/api/types";
-import { CONVERSATION_BUCKETS } from "@/src/api/types";
+import type { ConversationBucket, MessagesTab } from "@/src/api/types";
+import { MESSAGES_TABS } from "@/src/api/types";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
@@ -9,26 +9,32 @@ import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet } from "react-native";
 import { XStack, YStack } from "tamagui";
 
-// Hidden for now — the Archive bucket isn't ready to show yet. The
-// ConversationBucket type and the backend contract keep "archived"; this
-// just keeps it out of the switcher until it's re-enabled.
-const VISIBLE_BUCKETS = CONVERSATION_BUCKETS.filter(
-  (bucket) => bucket !== "archived",
-);
+/**
+ * Unread waiting behind a tab. `active` is a filter over two buckets, so its
+ * dot has to add both — the server reports unread per bucket, not per tab.
+ */
+function unreadForTab(
+  tab: MessagesTab,
+  byBucket: Record<ConversationBucket, number> | undefined,
+): number {
+  if (!byBucket) return 0;
+  return tab === "active"
+    ? byBucket.open + byBucket.in_progress
+    : byBucket[tab];
+}
 
 interface BucketTabsProps {
-  value: ConversationBucket;
-  onChange: (bucket: ConversationBucket) => void;
+  value: MessagesTab;
+  onChange: (tab: MessagesTab) => void;
   /** Unread per bucket, so a tab can flag messages waiting out of view. */
   unreadByBucket?: Record<ConversationBucket, number>;
 }
 
 /**
- * The Open / In progress / Completed switcher above the Messages list
- * (Archive is hidden for now — see `VISIBLE_BUCKETS`).
+ * The Active / Completed switcher above the Messages list.
  *
- * Underlined text tabs rather than the app's usual filter pills: four pills
- * with their padding need about 430pt and the screen has 350.
+ * Underlined text tabs rather than the app's usual filter pills, matching the
+ * rest of the Messages header.
  */
 export function BucketTabs({
   value,
@@ -40,13 +46,13 @@ export function BucketTabs({
 
   return (
     <XStack paddingHorizontal={20} gap={18} alignItems="flex-end">
-      {VISIBLE_BUCKETS.map((bucket) => {
-        const active = bucket === value;
-        const hasUnread = (unreadByBucket?.[bucket] ?? 0) > 0;
+      {MESSAGES_TABS.map((tab) => {
+        const active = tab === value;
+        const hasUnread = unreadForTab(tab, unreadByBucket) > 0;
         return (
           <Pressable
-            key={bucket}
-            onPress={() => onChange(bucket)}
+            key={tab}
+            onPress={() => onChange(tab)}
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
             hitSlop={8}
@@ -64,7 +70,7 @@ export function BucketTabs({
                     lineHeight: 20,
                   }}
                 >
-                  {t(`messages.buckets.${bucket}`)}
+                  {t(`messages.tabs.${tab}`)}
                 </Text>
                 {hasUnread && !active ? (
                   <YStack

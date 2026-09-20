@@ -584,20 +584,14 @@
     "findJob": "Najít zakázku",
     "guestTitle": "Přihlaste se a uvidíte zprávy",
     "guestBody": "Přihlaste se telefonem, abyste mohli posílat nabídky a psát si s klienty.",
-    "buckets": {
-      "open": "Otevřené",
-      "in_progress": "V práci",
-      "completed": "Dokončené",
-      "archived": "Archiv"
+    "tabs": {
+      "active": "Aktivní",
+      "completed": "Dokončené"
     },
     "empty": {
-      "open": {
-        "title": "Zatím žádné otevřené zakázky",
-        "body": "Tady se objeví chaty k zakázkám, na které jste reagovali. Detaily a podmínky si domluvíte ještě před začátkem práce."
-      },
-      "in_progress": {
-        "title": "Nic není v práci",
-        "body": "Jakmile klient přijme vaši nabídku, chat k té zakázce se přesune sem."
+      "active": {
+        "title": "Zatím žádné aktivní chaty",
+        "body": "Tady se objeví chaty k zakázkám, na které jste reagovali, a zůstanou tu i poté, co klient přijme vaši nabídku. Detaily si domluvíte ještě před začátkem práce."
       },
       "completed": {
         "title": "Zatím žádné dokončené zakázky",

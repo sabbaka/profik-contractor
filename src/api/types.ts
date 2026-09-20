@@ -131,12 +131,22 @@ export interface GetOpenJobsParams {
 export type ConversationBucket =
   "open" | "in_progress" | "completed" | "archived";
 
-export const CONVERSATION_BUCKETS: ConversationBucket[] = [
-  "open",
-  "in_progress",
-  "completed",
-  "archived",
-];
+/**
+ * What `GET /offers/conversations?bucket=` accepts: a bucket, or `active` — a
+ * filter rather than a bucket, returning `open` and `in_progress` together as
+ * one sorted, paginated list. Each item still carries its own `bucket`.
+ */
+export type ConversationFilter = ConversationBucket | "active";
+
+/**
+ * The two tabs of the Messages screen. `active` is every chat still in play —
+ * open or in progress — so the contractor is not asked to know which of the
+ * two a conversation is in. Declined and cancelled chats (`archived`) are not
+ * shown for now.
+ */
+export type MessagesTab = Extract<ConversationFilter, "active" | "completed">;
+
+export const MESSAGES_TABS: MessagesTab[] = ["active", "completed"];
 
 /** `ConversationCounterpartyDto` — the other side of the chat, whoever you are. */
 export interface ConversationCounterparty {
@@ -193,7 +203,7 @@ export interface ConversationList {
 }
 
 export interface GetConversationsParams {
-  bucket?: ConversationBucket;
+  bucket?: ConversationFilter;
   cursor?: string;
   limit?: number;
 }

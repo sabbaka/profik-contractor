@@ -4,7 +4,7 @@ import {
   useMarkAllReadMutation,
   useMeQuery,
 } from "@/src/api/profikApi";
-import type { Conversation, ConversationBucket } from "@/src/api/types";
+import type { Conversation, MessagesTab } from "@/src/api/types";
 import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
 import { ListFooterSpinner } from "@/src/components/ui/ListFooterSpinner";
 import { Button, Text } from "@/src/components/ui/ui";
@@ -23,8 +23,8 @@ import { ConversationRow } from "./ConversationRow";
 import { useConversationTime } from "./useConversationTime";
 
 /**
- * The Messages tab: every chat the contractor has, grouped by what state the
- * job is in.
+ * The Messages tab: every chat the contractor has, split into the ones still
+ * in play (Active) and the ones for finished jobs (Completed).
  *
  * Conversations exist per offer, so this list is also the only place that
  * shows chats for jobs that were declined or went to someone else — reaching
@@ -37,7 +37,7 @@ export function MessagesScreen() {
   const isGuest = useIsGuest();
   const formatTime = useConversationTime();
 
-  const [bucket, setBucket] = useState<ConversationBucket>("open");
+  const [tab, setTab] = useState<MessagesTab>("active");
 
   const { data: me } = useMeQuery(undefined, { skip: isGuest });
   const { data: unread } = useGetUnreadCountQuery(undefined, {
@@ -54,7 +54,7 @@ export function MessagesScreen() {
     error,
     refetch,
   } = useGetConversationsInfiniteQuery(
-    { bucket },
+    { bucket: tab },
     {
       skip: isGuest,
       refetchOnMountOrArgChange: true,
@@ -72,8 +72,8 @@ export function MessagesScreen() {
   );
   const totalUnread = unread?.total ?? 0;
 
-  const handleBucketChange = useCallback((next: ConversationBucket) => {
-    setBucket(next);
+  const handleTabChange = useCallback((next: MessagesTab) => {
+    setTab(next);
   }, []);
 
   // Guarded on `isFetchingNextPage`, not `isFetching`: the latter is true on
@@ -170,8 +170,8 @@ export function MessagesScreen() {
       />
 
       <BucketTabs
-        value={bucket}
-        onChange={handleBucketChange}
+        value={tab}
+        onChange={handleTabChange}
         unreadByBucket={unread?.byBucket}
       />
       <YStack height={1} backgroundColor={colors.borderSubtle} />
@@ -224,9 +224,9 @@ export function MessagesScreen() {
           ListEmptyComponent={
             <EmptyState
               Icon={MessageCircle}
-              title={t(`messages.empty.${bucket}.title`)}
-              body={t(`messages.empty.${bucket}.body`)}
-              ctaLabel={bucket === "open" ? t("messages.findJob") : undefined}
+              title={t(`messages.empty.${tab}.title`)}
+              body={t(`messages.empty.${tab}.body`)}
+              ctaLabel={tab === "active" ? t("messages.findJob") : undefined}
               onPress={() => router.replace("/(contractor)/(tabs)/open" as any)}
             />
           }

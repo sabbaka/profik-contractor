@@ -16,7 +16,7 @@ import i18n from "../i18n";
 import { logout } from "../store/authSlice";
 import { forwardIdCursor } from "./pagination";
 import type {
-  ConversationBucket,
+  ConversationFilter,
   ConversationList,
   GetOfferedJobsParams,
   GetOpenJobsParams,
@@ -349,7 +349,7 @@ export const profikApi = createApi({
      */
     getConversations: builder.infiniteQuery<
       ConversationList,
-      { bucket?: ConversationBucket },
+      { bucket?: ConversationFilter },
       string | null
     >({
       infiniteQueryOptions: {

@@ -583,20 +583,14 @@
     "findJob": "Find a job",
     "guestTitle": "Sign in to see your messages",
     "guestBody": "Sign in with your phone to send offers and chat with clients here.",
-    "buckets": {
-      "open": "Open",
-      "in_progress": "In progress",
-      "completed": "Completed",
-      "archived": "Archive"
+    "tabs": {
+      "active": "Active",
+      "completed": "Completed"
     },
     "empty": {
-      "open": {
-        "title": "No open jobs yet",
-        "body": "Chats appear here for jobs you responded to. You can agree the details and terms before the work starts."
-      },
-      "in_progress": {
-        "title": "Nothing in progress",
-        "body": "Once a client accepts your offer, the chat for that job moves here."
+      "active": {
+        "title": "No active chats yet",
+        "body": "Chats appear here for jobs you responded to, and stay here once a client accepts your offer. You can agree the details before the work starts."
       },
       "completed": {
         "title": "No finished jobs yet",
