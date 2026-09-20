@@ -548,10 +548,13 @@ export default function ProfileRoute() {
           </YStack>
         )}
 
-        {/* Logout */}
+        {/* Logout. Signing out is reversible and ordinary — it used to wear
+            the same red-bordered card as deleting the account, which left the
+            irreversible one with nothing to stand apart by. */}
         {!isGuest && (
           <Pressable
             onPress={logout}
+            accessibilityRole="button"
             style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
           >
             <XStack
@@ -562,12 +565,12 @@ export default function ProfileRoute() {
               gap={8}
               backgroundColor={colors.bgCard}
               borderWidth={1}
-              borderColor={colors.dangerBg}
+              borderColor={colors.borderSubtle}
             >
-              <LogOut size={18} color={colors.error} />
+              <LogOut size={18} color={colors.textPrimary} />
               <Text
                 style={{
-                  color: colors.error,
+                  color: colors.textPrimary,
                   fontSize: 15,
                   fontFamily: "Inter_600SemiBold",
                 }}
@@ -578,30 +581,28 @@ export default function ProfileRoute() {
           </Pressable>
         )}
 
+        {/* Set apart and quiet: a card of its own weight put the one action
+            that cannot be undone on the same footing as signing out. The
+            confirmation it opens is unchanged. */}
         {!isGuest && (
           <Pressable
             onPress={confirmDelete}
             disabled={isDeleting}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: isDeleting }}
             style={({ pressed }) => ({
               opacity: pressed || isDeleting ? 0.85 : 1,
             })}
           >
-            <YStack
-              paddingVertical={16}
-              paddingHorizontal={18}
-              borderRadius={16}
-              gap={6}
-              backgroundColor={colors.bgCard}
-              borderWidth={1}
-              borderColor={colors.dangerBg}
-            >
-              <XStack alignItems="center" gap={10}>
-                <Trash2 size={18} color={colors.dangerStrong} />
+            <YStack paddingTop={20} gap={6} alignItems="center">
+              <XStack alignItems="center" gap={8}>
+                <Trash2 size={16} color={colors.error} />
                 <Text
                   style={{
-                    color: colors.dangerStrong,
-                    fontSize: 15,
-                    fontFamily: "Inter_600SemiBold",
+                    color: colors.error,
+                    fontSize: 14,
+                    lineHeight: 20,
+                    fontFamily: "Inter_500Medium",
                   }}
                 >
                   {isDeleting
@@ -609,7 +610,11 @@ export default function ProfileRoute() {
                     : t("profile.deleteAccount")}
                 </Text>
               </XStack>
-              <Text variant="caption" style={{ color: colors.textMuted }}>
+              <Text
+                variant="caption"
+                textAlign="center"
+                style={{ color: colors.textMuted }}
+              >
                 {t("profile.deleteHelp")}
               </Text>
             </YStack>
