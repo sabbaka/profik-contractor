@@ -1,5 +1,6 @@
 import { useMeQuery } from "@/src/api/profikApi";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Keyboard } from "react-native";
 import { useIsGuest } from "./useIsGuest";
 
 export interface NameGateSheetProps {
@@ -31,6 +32,35 @@ export function useNameGate(): UseNameGateReturn {
   const { data: user } = useMeQuery(undefined, { skip: isGuest });
   const [open, setOpen] = useState(false);
   const pendingAction = useRef<(() => void) | null>(null);
+  const hideSub = useRef<ReturnType<typeof Keyboard.addListener> | null>(null);
+
+  useEffect(
+    () => () => {
+      hideSub.current?.remove();
+      hideSub.current = null;
+    },
+    [],
+  );
+
+  // The sheet rides over the keyboard on a show event it hears while already
+  // mounted, so opening it on top of a keyboard that is *already* up leaves it
+  // underneath: no show event ever fires, and the sheet focusing its own input
+  // only hands first responder between two fields, which doesn't emit one
+  // either. Letting the keyboard go down first restores the order the sheet
+  // expects — it opens, focuses its input, and rides that show event up.
+  const openPrompt = useCallback(() => {
+    if (!Keyboard.isVisible()) {
+      setOpen(true);
+      return;
+    }
+    hideSub.current?.remove();
+    hideSub.current = Keyboard.addListener("keyboardDidHide", () => {
+      hideSub.current?.remove();
+      hideSub.current = null;
+      setOpen(true);
+    });
+    Keyboard.dismiss();
+  }, []);
 
   const withName = useCallback(
     (action: () => void) => {
@@ -39,12 +69,16 @@ export function useNameGate(): UseNameGateReturn {
         return;
       }
       pendingAction.current = action;
-      setOpen(true);
+      openPrompt();
     },
-    [user?.name],
+    [openPrompt, user?.name],
   );
 
   const onOpenChange = useCallback((next: boolean) => {
+    if (!next) {
+      hideSub.current?.remove();
+      hideSub.current = null;
+    }
     setOpen(next);
     // Dismissing abandons the action rather than queueing it for later —
     // otherwise closing the sheet would silently send the offer anyway.
