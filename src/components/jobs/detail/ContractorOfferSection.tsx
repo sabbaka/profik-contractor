@@ -103,6 +103,8 @@ export const ContractorOfferSection = (props: Props) => {
   }
 
   if (hasOffered) {
+    const isAccepted = myOfferStatus === "accepted";
+
     return (
       <YStack
         padding={18}
@@ -142,10 +144,20 @@ export const ContractorOfferSection = (props: Props) => {
           ) : null}
         </YStack>
         {offerIdForChat ? (
+          // Once the offer is accepted this is the only thing left to do on
+          // the screen, and it sat at the bottom of a long scroll as the
+          // lowest-contrast element on it: transparent, grey-bordered, grey
+          // text. Pending and declined keep the quiet variant — there the
+          // reader is looking at the offer, not acting on it.
           <Button
-            variant="secondary"
+            variant={isAccepted ? "primary" : "secondary"}
             size="md"
-            iconLeft={<MessageCircle size={17} color={colors.textSecondary} />}
+            iconLeft={
+              <MessageCircle
+                size={17}
+                color={isAccepted ? "#FFFFFF" : colors.textSecondary}
+              />
+            }
             onPress={() =>
               router.push(
                 buildOfferChatRoute({
