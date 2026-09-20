@@ -5,6 +5,7 @@ import {
   listCountries,
   matchesCountryQuery,
   normalizePhone,
+  splitCountryCode,
 } from "./phone";
 
 describe("normalizePhone", () => {
@@ -92,6 +93,64 @@ describe("hasExplicitCountryCode", () => {
       expect(hasExplicitCountryCode(input)).toBe(false);
     },
   );
+});
+
+/**
+ * The dialling code beside the field is a selector, not text, so the field is
+ * expected to hold the national number alone. Autofill writes a whole
+ * international number into it regardless — this is what keeps the two from
+ * both claiming the country code.
+ */
+describe("splitCountryCode", () => {
+  it("takes the country code off an autofilled number", () => {
+    expect(splitCountryCode("+420777123456")).toEqual({
+      country: "CZ",
+      nationalNumber: "777123456",
+    });
+  });
+
+  it("reads a number however it was spaced or written", () => {
+    expect(splitCountryCode("+420 777 123 456")).toEqual({
+      country: "CZ",
+      nationalNumber: "777123456",
+    });
+    expect(splitCountryCode("  +420777123456  ")).toEqual({
+      country: "CZ",
+      nationalNumber: "777123456",
+    });
+    // 00 is the other way of writing +, as `normalizePhone` also reads it.
+    expect(splitCountryCode("00420777123456")).toEqual({
+      country: "CZ",
+      nationalNumber: "777123456",
+    });
+  });
+
+  it("names the country the number carries, not the one selected", () => {
+    expect(splitCountryCode("+48501234567")).toEqual({
+      country: "PL",
+      nationalNumber: "501234567",
+    });
+  });
+
+  it("leaves a number with no country code alone", () => {
+    expect(splitCountryCode("777123456")).toBeNull();
+    expect(splitCountryCode("")).toBeNull();
+  });
+
+  /**
+   * Someone typing a country code by hand passes through every prefix of it.
+   * Answering early would move the selector under them mid-keystroke.
+   */
+  it.each(["+", "+4", "+42", "+420"])(
+    "holds off while %s is still being typed",
+    (input) => {
+      expect(splitCountryCode(input)).toBeNull();
+    },
+  );
+
+  it("says nothing about a dialling code that names no country", () => {
+    expect(splitCountryCode("+999123456")).toBeNull();
+  });
 });
 
 /**

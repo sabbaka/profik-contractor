@@ -4,7 +4,11 @@ import { NavHeader } from "@/src/components/ui/NavHeader";
 import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
 import { Button, Text } from "@/src/components/ui/ui";
 import { CountryPickerSheet } from "@/src/components/auth/CountryPickerSheet";
-import { DEFAULT_COUNTRY, formatPhoneInput } from "@/src/features/auth/phone";
+import {
+  DEFAULT_COUNTRY,
+  formatPhoneInput,
+  splitCountryCode,
+} from "@/src/features/auth/phone";
 import { usePhoneAuth } from "@/src/features/auth/hooks/usePhoneAuth";
 import { useThemeColors } from "@/src/theme";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -179,11 +183,27 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
                   </XStack>
                 </Pressable>
               }
-              onValueChange={(next) =>
+              onValueChange={(next) => {
+                // Autofill puts the whole international number in the field,
+                // beside a selector that already shows the dialling code —
+                // hence the +420+420 the field used to read. The country code
+                // belongs to the selector, so move it there and keep only the
+                // national part here. Also catches a pasted foreign number,
+                // which used to leave the two contradicting each other.
+                const split = splitCountryCode(next);
+                if (split) {
+                  setCountry(split.country);
+                  setValue(
+                    "phone",
+                    formatPhoneInput(split.nationalNumber, split.country),
+                    { shouldValidate: false },
+                  );
+                  return;
+                }
                 setValue("phone", formatPhoneInput(next, country), {
                   shouldValidate: false,
-                })
-              }
+                });
+              }}
             />
 
             <Button

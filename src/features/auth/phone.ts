@@ -78,6 +78,44 @@ export function hasExplicitCountryCode(input: string): boolean {
   return trimmed.startsWith("+") || trimmed.startsWith("00");
 }
 
+export interface SplitPhone {
+  country: CountryCode;
+  /** The number without its dialling code, unformatted. */
+  nationalNumber: string;
+}
+
+/**
+ * Separates a number that names its own country into that country and the
+ * national part the field should hold.
+ *
+ * The dialling code beside the input is a selector, not text: it is not part of
+ * the form value, so the field is expected to carry the national number alone.
+ * Autofill does not know that and writes the full `+420 777 123 456` into it,
+ * which lands beside a selector already reading +420 — the screen then shows
+ * `+420+420 777 123 456`. Moving the country code to the selector keeps the two
+ * halves telling the same story, and covers the other direction too: a number
+ * pasted with a `+48` now moves the selector to Poland instead of leaving it
+ * contradicting the value.
+ *
+ * `null` means the value names no country, or names one that cannot be
+ * identified yet — a lone `+` or half a dialling code, which someone typing by
+ * hand passes through on the way to a whole number.
+ */
+export function splitCountryCode(input: string): SplitPhone | null {
+  if (!hasExplicitCountryCode(input)) return null;
+
+  const trimmed = input.trim();
+  // 00 is the other way of writing +, the same as `normalizePhone` reads it.
+  const candidate = trimmed.startsWith("00") ? `+${trimmed.slice(2)}` : trimmed;
+
+  // No default country: the point is to read the one the value carries, and
+  // passing a fallback would invent an answer for a half-typed dialling code.
+  const parsed = parsePhoneNumberFromString(candidate);
+  if (!parsed?.country) return null;
+
+  return { country: parsed.country, nationalNumber: parsed.nationalNumber };
+}
+
 /** The flag as regional indicator letters, which every platform renders. */
 export function flagEmoji(code: string): string {
   return String.fromCodePoint(
