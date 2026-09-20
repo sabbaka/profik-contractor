@@ -1,4 +1,11 @@
-import { Redirect, Slot, useSegments } from "expo-router";
+import {
+  DarkTheme,
+  DefaultTheme,
+  Redirect,
+  Slot,
+  ThemeProvider as NavigationThemeProvider,
+  useSegments,
+} from "expo-router";
 import {
   InterTight_500Medium,
   InterTight_600SemiBold,
@@ -13,6 +20,7 @@ import {
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 import "../src/i18n";
 import "react-native-reanimated";
 
@@ -92,6 +100,15 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   usePushNotifications(token);
 
+  // The native window sits behind every screen and is white by default, so
+  // it shows in the rounded corners of a screen mid-transition no matter what
+  // the navigators paint on top — painting `contentStyle`/`sceneStyle` alone
+  // did not remove it. Follows the theme rather than a fixed colour so a dark
+  // app on a light OS (or the reverse) is not white either.
+  useEffect(() => {
+    SystemUI.setBackgroundColorAsync(colors.bgPrimary).catch(() => {});
+  }, [colors.bgPrimary]);
+
   useEffect(() => {
     // @ts-ignore hydrate token on app start
     dispatch(loadTokenFromStorage());
@@ -148,7 +165,45 @@ function AuthGate({ children }: { children: React.ReactNode }) {
       return <Redirect href={"/(contractor)/(tabs)/open" as any} />;
     }
   }
-  return <>{children}</>;
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.bgPrimary }}>
+      {children}
+    </View>
+  );
+}
+
+/**
+ * Hands the navigators the app's own palette. Without a navigation theme they
+ * fall back to the built-in light one — a pale grey ground that no screen ever
+ * paints, but that the navigator containers do, so it shows through in the
+ * rounded corners of a screen mid-push or mid-swipe-back on a dark app. Imported
+ * from `expo-router`, not `@react-navigation/native`: since SDK 56 the router
+ * refuses to bundle a direct react-navigation import. Kept apart from
+ * `ThemedApp` because it has to sit *inside* `<Theme>` to read the colours the
+ * user's appearance choice resolves to.
+ */
+function NavigationTheme({ children }: { children: React.ReactNode }) {
+  const { mode } = useThemeMode();
+  const colors = useThemeColors();
+  const base = mode === "dark" ? DarkTheme : DefaultTheme;
+
+  return (
+    <NavigationThemeProvider
+      value={{
+        ...base,
+        colors: {
+          ...base.colors,
+          background: colors.bgPrimary,
+          card: colors.bgPrimary,
+          border: colors.borderSubtle,
+          text: colors.textPrimary,
+          primary: colors.accent,
+        },
+      }}
+    >
+      {children}
+    </NavigationThemeProvider>
+  );
 }
 
 function ThemedApp() {
@@ -163,9 +218,11 @@ function ThemedApp() {
         <PaperThemeProvider>
           <PortalProvider>
             <ErrorBoundary context="root">
-              <AuthGate>
-                <Slot />
-              </AuthGate>
+              <NavigationTheme>
+                <AuthGate>
+                  <Slot />
+                </AuthGate>
+              </NavigationTheme>
             </ErrorBoundary>
             <StatusBar style={mode === "dark" ? "light" : "dark"} />
           </PortalProvider>
