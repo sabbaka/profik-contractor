@@ -1,4 +1,5 @@
 import { useDeleteAccountMutation, useMeQuery } from "@/src/api/profikApi";
+import { OptionSheet } from "@/src/components/ui/OptionSheet";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
@@ -34,7 +35,7 @@ import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -174,23 +175,14 @@ export default function ProfileRoute() {
         ? t("profile.appearance.dark")
         : t("profile.appearance.light");
 
-  const handleAppearancePress = () => {
-    Alert.alert(t("profile.appearance.title"), undefined, [
-      {
-        text: t("profile.appearance.system"),
-        onPress: () => setPreference("system"),
-      },
-      {
-        text: t("profile.appearance.light"),
-        onPress: () => setPreference("light"),
-      },
-      {
-        text: t("profile.appearance.dark"),
-        onPress: () => setPreference("dark"),
-      },
-      { text: t("common.cancel"), style: "cancel" },
-    ]);
-  };
+  const appearanceOptions = useMemo(
+    () =>
+      (["system", "light", "dark"] as const).map((value) => ({
+        value,
+        label: t(`profile.appearance.${value}`),
+      })),
+    [t],
+  );
 
   const handleChangeLanguage = async (lng: AppLanguage) => {
     setLanguage(lng);
@@ -198,15 +190,17 @@ export default function ProfileRoute() {
     await setStoredLanguage(lng);
   };
 
-  const handleLanguagePress = () => {
-    Alert.alert(t("profile.language.title"), undefined, [
-      ...APP_LANGUAGES.map((lng) => ({
-        text: t(LANGUAGE_LABEL_KEY[lng]),
-        onPress: () => handleChangeLanguage(lng),
+  const languageOptions = useMemo(
+    () =>
+      APP_LANGUAGES.map((lng) => ({
+        value: lng,
+        label: t(LANGUAGE_LABEL_KEY[lng]),
       })),
-      { text: t("common.cancel"), style: "cancel" as const },
-    ]);
-  };
+    [t],
+  );
+
+  const [languageSheetOpen, setLanguageSheetOpen] = useState(false);
+  const [appearanceSheetOpen, setAppearanceSheetOpen] = useState(false);
 
   const handleDeleteConfirmed = async () => {
     try {
@@ -482,7 +476,7 @@ export default function ProfileRoute() {
             iconBg={colors.infoBg}
             icon={<Globe size={18} color={colors.infoStrong} />}
             value={t(LANGUAGE_LABEL_KEY[language])}
-            onPress={handleLanguagePress}
+            onPress={() => setLanguageSheetOpen(true)}
           />
           <Divider />
           <ProfileRow
@@ -490,7 +484,7 @@ export default function ProfileRoute() {
             iconBg={colors.infoBg}
             icon={<Moon size={18} color={colors.purple} />}
             value={appearanceLabel}
-            onPress={handleAppearancePress}
+            onPress={() => setAppearanceSheetOpen(true)}
           />
         </YStack>
 
@@ -631,6 +625,23 @@ export default function ProfileRoute() {
           })}
         </Text>
       </ScrollView>
+
+      <OptionSheet
+        open={languageSheetOpen}
+        onOpenChange={setLanguageSheetOpen}
+        title={t("profile.language.title")}
+        options={languageOptions}
+        selected={language}
+        onSelect={handleChangeLanguage}
+      />
+      <OptionSheet
+        open={appearanceSheetOpen}
+        onOpenChange={setAppearanceSheetOpen}
+        title={t("profile.appearance.title")}
+        options={appearanceOptions}
+        selected={preference}
+        onSelect={setPreference}
+      />
     </YStack>
   );
 }
