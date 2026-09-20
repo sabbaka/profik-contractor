@@ -12,7 +12,7 @@ import { logError } from "@/src/utils/logger";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { router, useRootNavigationState } from "expo-router";
+import { router, useRootNavigationState, useSegments } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
@@ -148,7 +148,14 @@ export function usePushNotifications(token: string | null) {
 function useNotificationRouting(token: string | null) {
   const response = Notifications.useLastNotificationResponse();
   const navigationState = useRootNavigationState();
-  const isNavigationReady = Boolean(navigationState?.key);
+  const segments = useSegments() as unknown as string[];
+  // A mounted navigator is not yet a settled one: on a cold start it sits on
+  // `app/index.tsx` first, whose `<Redirect>` to the Open tab runs after this
+  // effect would already have pushed the chat — and replaces it, so the tap
+  // lands on Open Jobs instead. Empty segments mean that redirect has not
+  // happened yet.
+  const isNavigationReady =
+    Boolean(navigationState?.key) && segments.length > 0;
 
   // Responses stay readable after handling, so remember the last one we acted
   // on. Without this, any re-render would navigate again.
