@@ -7,6 +7,7 @@ import {
 } from "@/src/context/TabBarVisibilityContext";
 import { useGetUnreadCountQuery } from "@/src/api/profikApi";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
+import { useThemeColors } from "@/src/theme";
 import { useAppIconBadge } from "@/src/hooks/useAppIconBadge";
 import { Briefcase, MessageCircle, Search, User } from "@tamagui/lucide-icons";
 import { Tabs, useRouter } from "expo-router";
@@ -16,6 +17,7 @@ import { useTranslation } from "react-i18next";
 export default function TabsLayout() {
   const { t } = useTranslation();
   const router = useRouter();
+  const colors = useThemeColors();
   const isGuest = useIsGuest();
   // Drives the badge from wherever the contractor is in the app, not just
   // while the Messages tab is on screen.
@@ -67,7 +69,12 @@ export default function TabsLayout() {
       <JobsFilterProvider>
         <ContractorHeader />
         <Tabs
-          screenOptions={{ headerShown: false }}
+          // Same reason as the stack's `contentStyle`: the scene container under
+          // the tabs defaults to white, and shows through between two screens.
+          screenOptions={{
+            headerShown: false,
+            sceneStyle: { backgroundColor: colors.bgPrimary },
+          }}
           tabBar={({ state }) => (
             <ContractorTabBar state={state} items={items} />
           )}
