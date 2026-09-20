@@ -113,6 +113,11 @@ export function OpenJobsFiltersSheet({
   const [pickerProgress] = useState(() => new Animated.Value(0));
 
   const openDateField = (field: "from" | "to") => {
+    // The picker is a native `Modal`, which on iOS is its own window — a
+    // keyboard left up by the price fields outlives it and floats over the
+    // panel's own Done row. The date fields swallow the tap that would
+    // otherwise reach `Keyboard.dismiss` below, so nothing else closes it.
+    Keyboard.dismiss();
     setActiveDateField(field);
     setPickerVisible(true);
     pickerProgress.setValue(0);
