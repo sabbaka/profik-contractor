@@ -78,8 +78,13 @@ export default function MyJobsTab() {
   const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
   // `isLoading && !data` rather than bare `isLoading`: on an infinite query
   // the latter would blank a list that already has pages behind it.
-  const loading =
-    (isLoading && !data) || changing || (isFetching && !jobs.length);
+  //
+  // Deliberately not `isFetching && !jobs.length` on top of that: this tab
+  // refetches on every focus, so on an empty filter that clause swapped the
+  // empty state for a full-screen spinner and back each time the tab was
+  // opened. A first load is `isLoading`, and a filter change is `changing` —
+  // between them they already cover every wait worth a spinner.
+  const loading = (isLoading && !data) || changing;
   const currentLabel = t(`my.labels.${filter}`);
 
   const { isRefreshing, handleRefresh } = useManualRefresh(refetch);
