@@ -388,7 +388,6 @@
     "updateFailed": "Failed to update profile",
     "deleteAccount": "Delete Account",
     "deletingAccount": "Deleting Account...",
-    "deleteHelp": "Permanently delete your account and remove access to the app.",
     "deleteTitle": "Delete account?",
     "deleteDescription": "This permanently deletes your account and personal data. Your sent offers and messages will be anonymized. This cannot be undone.",
     "deleteCancel": "Cancel",

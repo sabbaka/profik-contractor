@@ -522,6 +522,60 @@ export default function ProfileRoute() {
           />
         </YStack>
 
+        {/* Right under About, in a card of the same weight as its neighbours
+            but with no danger border or fill — only the icon carries the
+            red, so the irreversible action reads as one more row rather than
+            a warning. Log out is not next to it on purpose; it closes the
+            screen, below. The confirmation it opens is unchanged. */}
+        {!isGuest && (
+          <YStack
+            backgroundColor={colors.bgCard}
+            borderRadius={16}
+            borderWidth={1}
+            borderColor={colors.borderSubtle}
+            overflow="hidden"
+          >
+            <Pressable
+              onPress={confirmDelete}
+              disabled={isDeleting}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: isDeleting }}
+              style={({ pressed }) => ({
+                opacity: pressed || isDeleting ? 0.85 : 1,
+              })}
+            >
+              <XStack
+                paddingVertical={14}
+                paddingHorizontal={16}
+                alignItems="center"
+                gap={12}
+              >
+                <YStack
+                  width={36}
+                  height={36}
+                  borderRadius={10}
+                  alignItems="center"
+                  justifyContent="center"
+                  backgroundColor={colors.surfaceInput}
+                >
+                  <Trash2 size={18} color={colors.error} />
+                </YStack>
+                <Text
+                  style={{
+                    color: colors.textSecondary,
+                    fontSize: 15,
+                    fontFamily: "Inter_500Medium",
+                  }}
+                >
+                  {isDeleting
+                    ? t("profile.deletingAccount")
+                    : t("profile.deleteAccount")}
+                </Text>
+              </XStack>
+            </Pressable>
+          </YStack>
+        )}
+
         {/* Developer */}
         {__DEV__ && (
           <YStack
@@ -542,14 +596,18 @@ export default function ProfileRoute() {
           </YStack>
         )}
 
-        {/* Logout. Signing out is reversible and ordinary — it used to wear
-            the same red-bordered card as deleting the account, which left the
+        {/* Logout, last and set apart from the rows above by the extra margin.
+            Signing out is reversible and ordinary — it used to wear the same
+            red-bordered card as deleting the account, which left the
             irreversible one with nothing to stand apart by. */}
         {!isGuest && (
           <Pressable
             onPress={logout}
             accessibilityRole="button"
-            style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+            style={({ pressed }) => ({
+              marginTop: 16,
+              opacity: pressed ? 0.85 : 1,
+            })}
           >
             <XStack
               height={52}
@@ -572,46 +630,6 @@ export default function ProfileRoute() {
                 {t("profile.logout")}
               </Text>
             </XStack>
-          </Pressable>
-        )}
-
-        {/* Set apart and quiet: a card of its own weight put the one action
-            that cannot be undone on the same footing as signing out. The
-            confirmation it opens is unchanged. */}
-        {!isGuest && (
-          <Pressable
-            onPress={confirmDelete}
-            disabled={isDeleting}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: isDeleting }}
-            style={({ pressed }) => ({
-              opacity: pressed || isDeleting ? 0.85 : 1,
-            })}
-          >
-            <YStack paddingTop={20} gap={6} alignItems="center">
-              <XStack alignItems="center" gap={8}>
-                <Trash2 size={16} color={colors.error} />
-                <Text
-                  style={{
-                    color: colors.error,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    fontFamily: "Inter_500Medium",
-                  }}
-                >
-                  {isDeleting
-                    ? t("profile.deletingAccount")
-                    : t("profile.deleteAccount")}
-                </Text>
-              </XStack>
-              <Text
-                variant="caption"
-                textAlign="center"
-                style={{ color: colors.textMuted }}
-              >
-                {t("profile.deleteHelp")}
-              </Text>
-            </YStack>
           </Pressable>
         )}
 

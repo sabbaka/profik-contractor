@@ -388,7 +388,6 @@
     "updateFailed": "Profil se nepodařilo aktualizovat",
     "deleteAccount": "Smazat účet",
     "deletingAccount": "Mažu účet...",
-    "deleteHelp": "Trvale smaže váš účet a odebere přístup do aplikace.",
     "deleteTitle": "Smazat účet?",
     "deleteDescription": "Tímto trvale smažete svůj účet a osobní údaje. Vaše odeslané nabídky a zprávy budou anonymizovány. Tuto akci nelze vrátit zpět.",
     "deleteCancel": "Zrušit",
