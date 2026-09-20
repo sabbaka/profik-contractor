@@ -149,32 +149,24 @@ export function FindWorkMock() {
 
       <YStack height={1} backgroundColor={colors.divider} />
 
-      <XStack alignItems="center" justifyContent="space-between">
-        <XStack alignItems="center" gap={6}>
-          <YStack
-            width={6}
-            height={6}
-            borderRadius={9999}
-            backgroundColor={colors.statusOpenText}
-          />
-          <Text
-            style={{
-              color: colors.statusOpenText,
-              fontFamily: "Inter_600SemiBold",
-              fontSize: 11,
-            }}
-          >
-            {c("status")}
-          </Text>
-        </XStack>
+      {/* Status only. There used to be a "12 new today" counter beside it,
+          invented here rather than read from anything — a number in a mock
+          screenshot still reads as a promise about the real one. */}
+      <XStack alignItems="center" gap={6}>
+        <YStack
+          width={6}
+          height={6}
+          borderRadius={9999}
+          backgroundColor={colors.statusOpenText}
+        />
         <Text
           style={{
-            color: colors.accent,
+            color: colors.statusOpenText,
             fontFamily: "Inter_600SemiBold",
             fontSize: 11,
           }}
         >
-          {c("badge")}
+          {c("status")}
         </Text>
       </XStack>
     </MockCard>
