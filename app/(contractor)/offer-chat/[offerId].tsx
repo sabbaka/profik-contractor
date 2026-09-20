@@ -139,11 +139,7 @@ export default function OfferChatRoute() {
     }
   }, [offerStatus, jobStatus, requestPrompt]);
 
-  const {
-    data: messages,
-    isLoading,
-    isFetching,
-  } = useGetOfferMessagesQuery(offerId, {
+  const { data: messages, isLoading } = useGetOfferMessagesQuery(offerId, {
     skip: !offerId,
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
@@ -344,7 +340,12 @@ export default function OfferChatRoute() {
           <YStack flex={1} alignItems="center" justifyContent="center">
             <Spinner color={colors.accent} />
           </YStack>
-        ) : !messages?.length && !isFetching ? (
+        ) : // `isLoading`, not `isFetching`: the latter goes true on every
+        // refetch of the same cache entry, and this screen polls every ten
+        // seconds while focused. Keyed to it, the empty state blinked out and
+        // back on each poll — and again the moment the first message was sent,
+        // since sending invalidates the tag rather than inserting optimistically.
+        !messages?.length && !isLoading ? (
           <YStack
             flex={1}
             alignItems="center"
