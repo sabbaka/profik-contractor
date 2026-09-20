@@ -2,13 +2,14 @@ import { FormInput } from "@/src/components/form";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useEditProfileForm } from "@/src/features/auth/hooks/useEditProfileForm";
 import { useThemeColors } from "@/src/theme";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
   Keyboard,
   TextInput,
   TouchableWithoutFeedback,
+  useWindowDimensions,
 } from "react-native";
 import { Sheet, YStack } from "tamagui";
 
@@ -40,6 +41,15 @@ export function NamePromptSheet({
     email: "",
   });
   const inputRef = useRef<TextInput>(null);
+  const windowHeight = useWindowDimensions().height;
+
+  // Sized to the content's own measured height, not a fixed percentage:
+  // `moveOnKeyboardChange` lifts the whole frame by the keyboard's height, so
+  // any slack below the button ends up as a gap between the sheet and the
+  // keyboard. Not `snapPointsMode="fit"` either — it opens full-screen the
+  // first time; see `AppFeedbackSheet.tsx` for the root cause. That sheet is
+  // the reference for this pattern (also `modal={false}`).
+  const [snapPercent, setSnapPercent] = useState(36);
 
   useEffect(() => {
     if (!open) {
@@ -73,7 +83,7 @@ export function NamePromptSheet({
       modal={false}
       open={open}
       onOpenChange={onOpenChange}
-      snapPoints={[42]}
+      snapPoints={[snapPercent]}
       dismissOnSnapToBottom
       zIndex={100_000}
       animation="medium"
@@ -98,7 +108,18 @@ export function NamePromptSheet({
           />
         </YStack>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <YStack paddingHorizontal={20} paddingBottom={32} gap={20}>
+          <YStack
+            paddingHorizontal={20}
+            paddingBottom={32}
+            gap={20}
+            onLayout={(e) => {
+              // The drag handle above (~20px) sits outside this YStack; the
+              // fixed buffer covers it plus a margin.
+              const percent =
+                ((e.nativeEvent.layout.height + 40) / windowHeight) * 100;
+              setSnapPercent(Math.min(92, Math.max(25, Math.round(percent))));
+            }}
+          >
             <YStack gap={6} paddingTop={8}>
               <Text variant="h3">{t("auth.name.title")}</Text>
               <Text variant="body">{t("auth.name.subtitle")}</Text>
