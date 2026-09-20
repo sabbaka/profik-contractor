@@ -8,7 +8,7 @@ import { Alert, Linking, Pressable, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
-const SUPPORT_EMAIL = "sabbakaz@gmail.com";
+const SUPPORT_EMAIL = "info@profik.app";
 
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
