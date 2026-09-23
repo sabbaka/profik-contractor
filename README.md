@@ -67,6 +67,34 @@ worth a failed release: on 2026-09-12 a TLS hiccup between the EAS worker and
 sentry.io took down the iOS half of the client app's 1.1.24 after the binary had
 already compiled. The upload is still attempted; only its failure is survivable.
 
+### Over-the-air updates
+
+JS, copy and assets can reach installed users without a store round trip. An
+update downloads in the background and takes effect on the **next** cold start,
+so it lands on the second launch after it is published.
+
+```bash
+eas update --branch production --environment production --message "fix: ..."
+eas env:exec production -- npx sentry-expo-upload-sourcemaps dist
+```
+
+`--environment production` is not optional. There is no default, and without it
+the bundle is built from your local `.env` — `EXPO_PUBLIC_API_URL` is baked into
+the JS, so an update published from a laptop on a local backend would send every
+user there. The second line is what keeps OTA stack traces symbolicated: the
+Sentry Expo plugin is a prebuild-time mod and does not run during `eas update`.
+
+An update only reaches builds whose `version` matches it — `runtimeVersion` is
+`appVersion`. Publishing after `npm version` targets a version nobody is running
+yet and silently reaches no one.
+
+Stage on `preview` first. `eas build --profile preview` is a release build (an
+APK, or an iOS simulator app built on EAS) with `expo-updates` live; the
+`simulator` and `development` profiles are dev clients and cannot show you this.
+
+What an update can and cannot carry, and how to roll one back, is in
+[.claude/rules/release.md](.claude/rules/release.md).
+
 Store listing metadata (title, descriptions, keywords in en/cs/sk, review notes) is maintained in `store.config.json` and mirrored as Fastlane metadata. See [fastlane/README.md](fastlane/README.md) for pushing metadata to App Store Connect and the remaining pre-submission checklist (demo contractor account, screenshots, age rating, pricing).
 
 The App Store Connect app record for `com.profik.contractor` is Apple ID `6787445540` ("Profik Pro"), referenced as `ascAppId` in `eas.json`.

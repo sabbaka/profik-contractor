@@ -14,14 +14,27 @@
     "production": {
       "extends": "base",
       "distribution": "store",
+      "channel": "production",
       "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
       }
     },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "channel": "preview",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
     "apk": {
       "extends": "base",
       "distribution": "internal",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
       }
@@ -29,6 +42,8 @@
     "development": {
       "extends": "base",
       "developmentClient": true,
+      "distribution": "internal",
+      "channel": "preview",
       "android": {
         "buildType": "apk"
       }
@@ -37,6 +52,7 @@
       "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
+      "channel": "preview",
       "ios": {
         "simulator": true
       }

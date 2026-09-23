@@ -20,6 +20,25 @@ const config = {
   scheme: "profikcontractor",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
+  // EAS Update. `eas update:configure` cannot write this: it only patches
+  // app.json, and for a dynamic .ts config it prints the block and exits. The
+  // URL is the project's manifest endpoint — `https://u.expo.dev/` followed by
+  // `extra.eas.projectId` below — so the two have to be kept in step by hand.
+  updates: {
+    url: "https://u.expo.dev/40e934e5-f375-4c9d-a65d-de5f48d4ae49",
+    // Do not hold the splash screen waiting on the network. The app launches
+    // with the bundle it already has, a newer one downloads in the background,
+    // and it takes effect on the *next* cold start — so a change lands on the
+    // second launch after it is published, never the first.
+    fallbackToCacheTimeout: 0,
+  },
+  // The compatibility boundary between a JS bundle and a binary. Keyed to
+  // `version` from package.json because a store release bumps it anyway, and
+  // because buildNumber/versionCode belong to EAS and must not be written here
+  // (.claude/rules/release.md). The consequence is the trap: after
+  // `npm version`, an update targets a runtime version no phone is running
+  // yet, and publishes successfully to nobody.
+  runtimeVersion: { policy: "appVersion" },
   ios: {
     bundleIdentifier: "com.profik.contractor",
     supportsTablet: false,
