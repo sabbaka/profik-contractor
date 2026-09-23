@@ -2,7 +2,7 @@
 
 The contractor-side app of the Profik marketplace: cleaning professionals browse open jobs near them, send priced offers, chat with clients, and manage their platform balance. The customer-side app lives in the sibling `profik/` directory; both share the backend in `profik-backend/`.
 
-Built with Expo SDK 54 / React Native 0.81 / Expo Router, Redux Toolkit + RTK Query, and Tamagui.
+Built with Expo SDK 57 / React Native 0.86 / Expo Router, Redux Toolkit + RTK Query, and Tamagui.
 
 - **Store title:** Profik Pro
 - **Bundle ID / package:** `com.profik.contractor`
