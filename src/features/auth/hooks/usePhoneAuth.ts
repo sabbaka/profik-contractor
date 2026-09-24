@@ -6,12 +6,14 @@ import {
 import { setToken } from "@/src/store/authSlice";
 import { identifyUser, track } from "@/src/utils/analytics";
 import { logError } from "@/src/utils/logger";
+import { setCachedTerms } from "@/src/utils/termsStorage";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { classifyPhoneAuthError, phoneAuthErrorKey } from "../errors";
 import { DEFAULT_COUNTRY, normalizePhone } from "../phone";
+import { termsRequired, toCachedTerms } from "../terms";
 import type { CountryCode } from "libphonenumber-js";
 
 export type PhoneAuthStep = "phone" | "code";
@@ -151,11 +153,33 @@ export function usePhoneAuth(returnTo?: string): UsePhoneAuthReturn {
         // Optional throughout: analytics is never allowed to be the reason a
         // sign-in fails, and the navigation below it has to run regardless.
         if (res.user?.id) identifyUser(res.user.id);
+        // Sent before the branch below, not after: a registration that lands
+        // on the consent screen is still a completed sign-up, and tracking it
+        // only on the path that reaches the app would quietly undercount every
+        // new account.
         track(
           isFreshAccount(res.user?.createdAt)
             ? "sign_up_completed"
             : "login_completed",
         );
+
+        // The response already says whether this account owes an acceptance,
+        // so the consent screen is reached with no extra round trip — and a
+        // brand-new account always does, which is how signing up gets the
+        // checkbox without the phone screen carrying one.
+        //
+        // Written to storage here as well, so the next cold launch can decide
+        // which screen to paint before the network answers.
+        const cached = toCachedTerms(res.user?.terms);
+        if (cached) await setCachedTerms(cached);
+
+        if (termsRequired(res.user)) {
+          router.replace({
+            pathname: "/terms",
+            params: { returnTo: returnTo ?? "/(contractor)/(tabs)/open" },
+          } as any);
+          return;
+        }
 
         router.replace((returnTo ?? "/(contractor)/(tabs)/open") as any);
       } catch (error: unknown) {

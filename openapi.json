@@ -102,7 +102,16 @@
       "post": {
         "description": "Signs the user in, creating the account on first use. Phone is the only required field; name and email are optional and can be set later.",
         "operationId": "verifyOtp",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "accept-language",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -276,6 +285,59 @@
           }
         ],
         "summary": "Get current user information",
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/terms/accept": {
+      "post": {
+        "description": "Records the acceptance and answers with the same `terms` block GET /auth/me carries, so the caller can update its cache without a second request. Idempotent: accepting an edition already accepted changes nothing and still answers 200.",
+        "operationId": "acceptTerms",
+        "parameters": [
+          {
+            "name": "accept-language",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptTermsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Acceptance recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TermsAcceptResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "The posted version is not the edition in force — the documents changed between rendering the screen and this call. Refetch GET /auth/me and show the new edition rather than retrying."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Accept the current edition of the Terms of Use",
         "tags": [
           "Authentication"
         ]
@@ -2392,6 +2454,58 @@
           "displayName"
         ]
       },
+      "TermsStateDto": {
+        "type": "object",
+        "properties": {
+          "required": {
+            "type": "boolean",
+            "example": false,
+            "description": "True when the account has not accepted the current edition — either never, or only an older one. The apps show the consent screen on this and nothing else."
+          },
+          "currentVersion": {
+            "type": "string",
+            "example": "2026-10-01",
+            "description": "Effective date of the edition in force. Post this back verbatim to POST /auth/terms/accept; anything else is rejected."
+          },
+          "acceptedVersion": {
+            "type": "object",
+            "example": null,
+            "nullable": true,
+            "description": "Edition this account last accepted, or null if it never has. Null and an outdated value both mean `required`, but they are different sentences on screen: \"please review\" against \"our Terms have changed\"."
+          },
+          "acceptedAt": {
+            "type": "object",
+            "example": "2026-10-01T09:00:00.000Z",
+            "nullable": true,
+            "description": "When that acceptance happened."
+          },
+          "termsUrl": {
+            "type": "string",
+            "example": "https://profik.app/obchodni-podminky",
+            "description": "Canonical Terms of Use. Always the edition in force."
+          },
+          "privacyUrl": {
+            "type": "string",
+            "example": "https://profik.app/zasady-ochrany-osobnich-udaju",
+            "description": "Canonical Privacy Policy. Disclosed, not accepted."
+          },
+          "acceptedTermsUrl": {
+            "type": "object",
+            "example": "https://profik.app/obchodni-podminky-2026-10-01",
+            "nullable": true,
+            "description": "Immutable copy of the edition this account accepted — the text that was actually on screen, not whatever is current now. Null until they have accepted something."
+          }
+        },
+        "required": [
+          "required",
+          "currentVersion",
+          "acceptedVersion",
+          "acceptedAt",
+          "termsUrl",
+          "privacyUrl",
+          "acceptedTermsUrl"
+        ]
+      },
       "UserResponseDto": {
         "type": "object",
         "properties": {
@@ -2455,6 +2569,14 @@
                 "$ref": "#/components/schemas/VerificationSummaryDto"
               }
             ]
+          },
+          "terms": {
+            "description": "Terms-of-use state. Always present, on every response that carries a user — sign-in, sign-up and GET /auth/me alike — because the apps gate on it at launch as well as right after a code is verified.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TermsStateDto"
+              }
+            ]
           }
         },
         "required": [
@@ -2463,7 +2585,8 @@
           "name",
           "role",
           "balance",
-          "createdAt"
+          "createdAt",
+          "terms"
         ]
       },
       "AuthResponseDto": {
@@ -2514,6 +2637,38 @@
           "success"
         ]
       },
+      "AcceptTermsDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "example": "2026-10-01",
+            "description": "The edition being accepted, copied verbatim from `terms.currentVersion`."
+          },
+          "locale": {
+            "type": "string",
+            "example": "cs",
+            "enum": [
+              "en",
+              "cs",
+              "uk"
+            ],
+            "description": "UI language in front of the person as they accepted. Falls back to the Accept-Language header. The binding document is Czech, so this records what they were actually reading."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "client_app",
+              "contractor_app",
+              "landing"
+            ],
+            "description": "Where the acceptance happened. Defaults to the session context; the landing page sends `landing` explicitly. Evidence, not authorization."
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
       "VerifyOtpDto": {
         "type": "object",
         "properties": {
@@ -2545,6 +2700,14 @@
             "type": "string",
             "example": "user@example.com",
             "description": "Optional email, only used when creating the account"
+          },
+          "terms": {
+            "description": "Acceptance of the Terms collected before this call, by a caller that has nowhere to show the consent screen afterwards — the landing page, where this request is what creates the account. Recorded only when the version matches the edition in force; a stale value (a CDN-cached page, say) records nothing and the answer still says an acceptance is required, so the person is asked again in the app. The two apps leave this out and use POST /auth/terms/accept.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AcceptTermsDto"
+              }
+            ]
           }
         },
         "required": [
@@ -2589,6 +2752,17 @@
           "phone",
           "code",
           "newPassword"
+        ]
+      },
+      "TermsAcceptResponseDto": {
+        "type": "object",
+        "properties": {
+          "terms": {
+            "$ref": "#/components/schemas/TermsStateDto"
+          }
+        },
+        "required": [
+          "terms"
         ]
       },
       "CreateOfferDto": {
@@ -4696,6 +4870,7 @@
               "offer_fee",
               "signup_bonus",
               "opening_balance",
+              "account_deleted",
               "job"
             ],
             "example": "offer_fee"

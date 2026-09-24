@@ -22,6 +22,30 @@ jest.mock("react-i18next", () => ({
 
 jest.mock("@/src/utils/logger", () => ({ logError: jest.fn() }));
 
+jest.mock("@/src/utils/termsStorage", () => ({
+  setCachedTerms: jest.fn(async () => undefined),
+}));
+
+/**
+ * A response from an account that has already accepted. Every existing test
+ * here predates the terms block and asserts the landing route, so this is what
+ * keeps them describing the ordinary sign-in rather than the consent screen.
+ */
+const ACCEPTED = {
+  token: "jwt-1",
+  user: {
+    terms: {
+      required: false,
+      currentVersion: "2026-10-01",
+      acceptedVersion: "2026-10-01",
+      acceptedAt: "2026-10-01T09:00:00.000Z",
+      termsUrl: "https://profik.app/obchodni-podminky",
+      privacyUrl: "https://profik.app/zasady-ochrany-osobnich-udaju",
+      acceptedTermsUrl: "https://profik.app/obchodni-podminky-2026-10-01",
+    },
+  },
+};
+
 /** RTK Query mutations are called then unwrapped; `unwrap` is what can reject. */
 const resolves = (mutation: jest.Mock, value: unknown = {}) =>
   mutation.mockReturnValue({ unwrap: async () => value });
@@ -36,7 +60,7 @@ const rejects = (mutation: jest.Mock, error: unknown) =>
 beforeEach(() => {
   jest.useFakeTimers();
   resolves(mockRequestOtpCode);
-  resolves(mockVerifyOtpCode, { token: "jwt-1" });
+  resolves(mockVerifyOtpCode, ACCEPTED);
 });
 
 afterEach(() => {
@@ -196,6 +220,61 @@ describe("verifying the code", () => {
     );
   });
 
+  // A brand-new account has never accepted anything, so this is also the path
+  // every registration takes — which is why the phone screen itself needs no
+  // checkbox and a returning contractor sees nothing new.
+  it("stops at the consent screen when the account still owes an acceptance", async () => {
+    resolves(mockVerifyOtpCode, {
+      token: "jwt-1",
+      user: { terms: { ...ACCEPTED.user.terms, required: true } },
+    });
+    const result = await reachCodeStep();
+
+    await act(async () => {
+      await result.current.verifyCode("123456");
+    });
+
+    expect(router.replace).toHaveBeenCalledWith({
+      pathname: "/terms",
+      params: { returnTo: "/(contractor)/(tabs)/open" },
+    });
+  });
+
+  it("carries the destination through the consent screen", async () => {
+    resolves(mockVerifyOtpCode, {
+      token: "jwt-1",
+      user: { terms: { ...ACCEPTED.user.terms, required: true } },
+    });
+    const result = await reachCodeStep(
+      "/(contractor)/jobs/3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    );
+
+    await act(async () => {
+      await result.current.verifyCode("123456");
+    });
+
+    expect(router.replace).toHaveBeenCalledWith({
+      pathname: "/terms",
+      params: {
+        returnTo: "/(contractor)/jobs/3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      },
+    });
+  });
+
+  // A backend that has been rolled back, or an older one on staging, answers
+  // without the block at all. Being asked a little late is recoverable; being
+  // held behind a screen nobody can dismiss is not.
+  it("lets the person through when the response carries no terms at all", async () => {
+    resolves(mockVerifyOtpCode, { token: "jwt-1", user: {} });
+    const result = await reachCodeStep();
+
+    await act(async () => {
+      await result.current.verifyCode("123456");
+    });
+
+    expect(router.replace).toHaveBeenCalledWith("/(contractor)/(tabs)/open");
+  });
+
   // Verification fires by itself on the sixth digit, so it can be reached
   // twice for one code if a render slips between the two.
   it("verifies once even when it is asked twice", async () => {
@@ -282,7 +361,7 @@ describe("telling the failures apart", () => {
     await act(async () => {
       await result.current.verifyCode("111111");
     });
-    resolves(mockVerifyOtpCode, { token: "jwt-1" });
+    resolves(mockVerifyOtpCode, ACCEPTED);
     await act(async () => {
       await result.current.verifyCode("123456");
     });

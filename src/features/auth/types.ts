@@ -2,6 +2,7 @@ import type { SerializedError } from "@reduxjs/toolkit";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import i18n from "@/src/i18n";
+import type { TermsState } from "./terms";
 
 export interface User {
   id: string;
@@ -14,6 +15,13 @@ export interface User {
   balance: number;
   avatarUrl?: string | null;
   createdAt: string;
+  /**
+   * Terms-of-use state. Optional in the type, not on the wire: the server
+   * always sends it, and the app reads its absence as "nothing to accept" so
+   * that a rollback cannot lock every install behind an undismissable screen.
+   * See `termsRequired`.
+   */
+  terms?: TermsState;
 }
 
 export interface UploadAvatarParams {
@@ -42,6 +50,13 @@ export interface VerifyOtpParams {
   role: "client" | "contractor";
   name?: string;
   email?: string;
+}
+
+export interface AcceptTermsParams {
+  /** Echoed back from `terms.currentVersion`; the server refuses anything else. */
+  version: string;
+  /** What the person was reading. The binding document is Czech. */
+  locale?: string;
 }
 
 export interface OtpRequestResponse {
