@@ -1,6 +1,7 @@
 import { profikApi } from "@/src/api/profikApi";
 import { useUnregisterPushToken } from "@/src/hooks/usePushNotifications";
 import { logout as logoutAction } from "@/src/store/authSlice";
+import { resetAnalytics } from "@/src/utils/analytics";
 import * as Notifications from "expo-notifications";
 import { useDispatch } from "react-redux";
 
@@ -33,6 +34,10 @@ export function useAuth(): UseAuthReturn {
     // Reset API state to clear cached data
     // @ts-ignore - util is available on the api instance
     dispatch(profikApi.util.resetApiState());
+
+    // Same reason as the cache reset above, one layer over: an identity that
+    // outlives the session files the next person's events under this one.
+    resetAnalytics();
 
     // No need to navigate manually, AuthGate in _layout.tsx will handle redirection
     // when it detects token is null

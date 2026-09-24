@@ -26,6 +26,7 @@ import "react-native-reanimated";
 
 import { ErrorBoundary } from "@/src/components/ui/ErrorBoundary";
 import { isGuestAccessibleRoute } from "@/src/features/auth/guestRoutes";
+import { useAnalyticsContext } from "@/src/hooks/useAnalyticsContext";
 import { usePushNotifications } from "@/src/hooks/usePushNotifications";
 import { ThemeProvider, useThemeColors, useThemeMode } from "@/src/theme";
 import {
@@ -99,6 +100,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   >(null);
 
   usePushNotifications(token);
+  useAnalyticsContext();
 
   // The native window sits behind every screen and is white by default, so
   // it shows in the rounded corners of a screen mid-transition no matter what

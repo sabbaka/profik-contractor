@@ -7,6 +7,7 @@ import {
 } from "@/src/components/ui/ui";
 import { useTopupForm } from "@/src/features/balance/forms";
 import { useThemeColors } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { formatCredits } from "@/src/utils/currency";
 import {
   ChevronLeft,
@@ -16,8 +17,8 @@ import {
   WalletCards,
 } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import React, { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -29,6 +30,12 @@ export default function BalanceRoute() {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
+  // Only two of the spec's three values are ever actually navigated with —
+  // see the two call sites of `router.push("/(contractor)/balance", ...)`.
+  // A deep link or any other route with no param falls back to "manual".
+  const { entryPoint } = useLocalSearchParams<{
+    entryPoint?: "profile" | "insufficient_balance";
+  }>();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const { form, isLoading, balance, isBalanceLoading, refetchBalance, submit } =
@@ -42,6 +49,16 @@ export default function BalanceRoute() {
         }
       },
     });
+
+  const viewedReported = useRef(false);
+  useEffect(() => {
+    if (balance === undefined || viewedReported.current) return;
+    viewedReported.current = true;
+    track("balance_topup_screen_viewed", {
+      balance_kc: balance,
+      entry_point: entryPoint ?? "manual",
+    });
+  }, [balance, entryPoint]);
 
   if (isBalanceLoading) {
     return (

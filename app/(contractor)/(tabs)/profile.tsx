@@ -377,7 +377,12 @@ export default function ProfileRoute() {
         {/* Balance */}
         {!isGuest && (
           <Pressable
-            onPress={() => router.push("/(contractor)/balance" as any)}
+            onPress={() =>
+              router.push({
+                pathname: "/(contractor)/balance",
+                params: { entryPoint: "profile" },
+              } as any)
+            }
             style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
           >
             <YStack borderRadius={20} overflow="hidden" padding={18} gap={5}>

@@ -1,5 +1,6 @@
 import { useCreateReviewMutation } from "@/src/api/profikApi";
 import { extractErrorMessage } from "@/src/features/auth/types";
+import { track } from "@/src/utils/analytics";
 import { logError } from "@/src/utils/logger";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -55,6 +56,7 @@ export const useReviewForm = ({
         comment: data.comment?.trim() || undefined,
       }).unwrap();
 
+      track("client_rating_sent", { job_id: jobId, rating: data.rating });
       Alert.alert(t("review.thankYou"), t("review.submitted"));
       onSuccess();
     } catch (err: unknown) {

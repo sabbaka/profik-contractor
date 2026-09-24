@@ -11,6 +11,7 @@ import {
 } from "@/src/features/auth/phone";
 import { usePhoneAuth } from "@/src/features/auth/hooks/usePhoneAuth";
 import { useThemeColors } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, MessageSquare, Smartphone } from "@tamagui/lucide-icons";
 import { getCountryCallingCode, type CountryCode } from "libphonenumber-js";
@@ -73,6 +74,10 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
 
   const [country, setCountry] = useState<CountryCode>(DEFAULT_COUNTRY);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
+
+  useEffect(() => {
+    track("sign_up_started");
+  }, []);
 
   // Codes arrive by SMS and are read off a notification, so waiting for a
   // Verify tap after the sixth digit is a tap for nothing.
@@ -216,9 +221,10 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
 
             <XStack justifyContent="center">
               <Pressable
-                onPress={() =>
-                  router.replace("/(contractor)/(tabs)/open" as any)
-                }
+                onPress={() => {
+                  track("sign_up_as_guest_clicked");
+                  router.replace("/(contractor)/(tabs)/open" as any);
+                }}
                 hitSlop={8}
                 accessibilityRole="button"
                 accessibilityLabel={t("guest.browseJobs")}

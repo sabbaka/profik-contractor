@@ -26,6 +26,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { clearActiveChat, setActiveChat } from "@/src/features/notifications";
 import { isConversationClosed } from "@/src/utils/conversationClosed";
+import { track } from "@/src/utils/analytics";
 import { serverErrorCode } from "@/src/features/auth/types";
 import { AppFeedbackSheet } from "@/src/components/feedback";
 import {
@@ -193,6 +194,7 @@ export default function OfferChatRoute() {
     if (!offerId || !content.trim()) return;
     try {
       await sendMessage({ offerId, content: content.trim() }).unwrap();
+      track("chat_message_sent");
       setContent("");
     } catch (err) {
       logError(err);

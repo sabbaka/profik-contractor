@@ -6,6 +6,7 @@ import type {
 } from "@/src/api/types";
 import { Button, Text, TextInput } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { formatCzk } from "@/src/utils/currency";
 import { MessageCircle, Send, Sparkles } from "@tamagui/lucide-icons";
 import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
@@ -13,6 +14,7 @@ import { buildOfferChatRoute } from "@/src/components/jobs/offerChatRoute";
 import { OfferBalanceWarning } from "./OfferBalanceWarning";
 import { OfferCostNote } from "./OfferCostNote";
 import { router } from "expo-router";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { XStack, YStack } from "tamagui";
 
@@ -73,6 +75,35 @@ export const ContractorOfferSection = (props: Props) => {
     onSubmitOffer,
     isSubmitting,
   } = props;
+
+  // Once per time the balance-blocked view actually shows, not once per
+  // render — `mode` toggling between idle and counter re-renders this same
+  // component instance without the balance itself having changed.
+  const insufficientBalanceReported = useRef(false);
+  useEffect(() => {
+    if (hasOffered || canAffordOffer) {
+      insufficientBalanceReported.current = false;
+      return;
+    }
+    if (insufficientBalanceReported.current) return;
+    insufficientBalanceReported.current = true;
+    track("job_responce_insufficient_balance_viewed");
+  }, [hasOffered, canAffordOffer]);
+
+  // Counter mode's price field fires this once per time the form is opened,
+  // not on every keystroke — the spec's "ввод цены" is answered by "the
+  // reader started filling this in", not by a debounce on the raw text.
+  const counterPriceReported = useRef(false);
+  useEffect(() => {
+    if (mode !== "counter") counterPriceReported.current = false;
+  }, [mode]);
+  const handleCounterPriceChange = (value: string) => {
+    if (!counterPriceReported.current && value.trim()) {
+      counterPriceReported.current = true;
+      track("job_responce_counter_price_entered");
+    }
+    setPrice(value);
+  };
 
   // A finished or cancelled job cannot take another offer, so the CTA is gone
   // rather than disabled — pressing it would spend 5 Kč on a rejection. A
@@ -158,7 +189,8 @@ export const ContractorOfferSection = (props: Props) => {
                 color={isAccepted ? "#FFFFFF" : colors.textSecondary}
               />
             }
-            onPress={() =>
+            onPress={() => {
+              track("job_responce_message_customer_clicked");
               router.push(
                 buildOfferChatRoute({
                   offerId: offerIdForChat,
@@ -170,8 +202,8 @@ export const ContractorOfferSection = (props: Props) => {
                   offerStatus: myOfferStatus,
                   jobStatus,
                 }) as any,
-              )
-            }
+              );
+            }}
           >
             {t("offer.messageCustomer")}
           </Button>
@@ -206,7 +238,7 @@ export const ContractorOfferSection = (props: Props) => {
           <TextInput
             placeholder={t("offer.pricePlaceholder")}
             value={price}
-            onChangeText={setPrice}
+            onChangeText={handleCounterPriceChange}
             keyboardType="decimal-pad"
           />
           <TextInput
@@ -235,7 +267,14 @@ export const ContractorOfferSection = (props: Props) => {
         ) : (
           <>
             <OfferBalanceWarning balance={balance} />
-            <Button onPress={() => router.push("/(contractor)/balance" as any)}>
+            <Button
+              onPress={() =>
+                router.push({
+                  pathname: "/(contractor)/balance",
+                  params: { entryPoint: "insufficient_balance" },
+                } as any)
+              }
+            >
               {t("offer.balance.topUp")}
             </Button>
           </>
@@ -283,12 +322,21 @@ export const ContractorOfferSection = (props: Props) => {
               primary button "Send offer for 2 400 Kč" reads as "pay 2 400 Kč".
               The amount is already in the hero above, and what actually leaves
               the balance is spelled out underneath. */}
-          <Button loading={isSubmitting} onPress={onAcceptClientPrice}>
+          <Button
+            loading={isSubmitting}
+            onPress={() => {
+              track("job_responce_reply_clicked");
+              onAcceptClientPrice();
+            }}
+          >
             {t("offer.sendAtClientPrice")}
           </Button>
           <Button
             variant="secondary"
-            onPress={() => setMode("counter")}
+            onPress={() => {
+              track("job_responce_reply_clicked");
+              setMode("counter");
+            }}
             disabled={isSubmitting}
           >
             {t("offer.makeCounter")}
@@ -300,7 +348,14 @@ export const ContractorOfferSection = (props: Props) => {
           {/* Both offer buttons are gone rather than disabled: they cost the
               same and would fail the same way, so the only action left is the
               one that unblocks them. */}
-          <Button onPress={() => router.push("/(contractor)/balance" as any)}>
+          <Button
+            onPress={() =>
+              router.push({
+                pathname: "/(contractor)/balance",
+                params: { entryPoint: "insufficient_balance" },
+              } as any)
+            }
+          >
             {t("offer.balance.topUp")}
           </Button>
         </>

@@ -11,10 +11,17 @@ import { Button, Text } from "@/src/components/ui/ui";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useManualRefresh } from "@/src/hooks/useManualRefresh";
 import { useThemeColors } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { logError } from "@/src/utils/logger";
 import { CheckCheck, Lock, MessageCircle } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, RefreshControl } from "react-native";
 import { Spinner, XStack, YStack } from "tamagui";
@@ -71,6 +78,21 @@ export function MessagesScreen() {
     [data?.pages],
   );
   const totalUnread = unread?.total ?? 0;
+
+  // Once the list has actually resolved, not on mount — a count sent while
+  // the first page is still in flight reports every screen as empty. Keyed
+  // by tab so switching Active/Completed reports the new one too.
+  const inboxReportedFor = useRef<MessagesTab | null>(null);
+  useEffect(() => {
+    if (isGuest || isLoading || inboxReportedFor.current === tab) return;
+    inboxReportedFor.current = tab;
+    track("chat_messages_inbox_viewed", {
+      conversations_count: conversations.length,
+      unread_count: unread?.total ?? 0,
+      active_tab: tab,
+      state: conversations.length ? "list" : "empty",
+    });
+  }, [conversations.length, isGuest, isLoading, tab, unread?.total]);
 
   const handleTabChange = useCallback((next: MessagesTab) => {
     setTab(next);

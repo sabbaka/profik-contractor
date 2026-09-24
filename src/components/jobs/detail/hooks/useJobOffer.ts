@@ -6,6 +6,7 @@ import {
 import { OFFER_COST_CZK } from "@/src/components/jobs/detail/offerPricing";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useNameGate } from "@/src/features/auth/hooks/useNameGate";
+import { track } from "@/src/utils/analytics";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
@@ -93,6 +94,14 @@ export const useJobOffer = ({
         price: jobPrice,
       }).unwrap();
 
+      track("job_responce_sent", {
+        job_id: jobId,
+        offer_price_kc: jobPrice,
+        is_counter_offer: false,
+        offer_cost_charged_kc: OFFER_COST_CZK,
+        balance_after_kc: balance - OFFER_COST_CZK,
+      });
+
       Alert.alert(t("common.success"), t("offer.submitted"));
       setModeState("idle");
       setPrice("");
@@ -102,7 +111,7 @@ export const useJobOffer = ({
       const msg = err?.data?.message || t("offer.failedSubmit");
       Alert.alert(t("common.error"), msg);
     }
-  }, [canOffer, jobId, jobPrice, createOffer, onSuccess, t]);
+  }, [canOffer, jobId, jobPrice, balance, createOffer, onSuccess, t]);
 
   const sendOffer = useCallback(async () => {
     if (!canOffer) {
@@ -136,6 +145,14 @@ export const useJobOffer = ({
         message: message.trim() || undefined,
       }).unwrap();
 
+      track("job_responce_sent", {
+        job_id: jobId,
+        offer_price_kc: priceNum,
+        is_counter_offer: true,
+        offer_cost_charged_kc: OFFER_COST_CZK,
+        balance_after_kc: balance - OFFER_COST_CZK,
+      });
+
       Alert.alert(t("common.success"), t("offer.submitted"));
       setModeState("idle");
       setMessage("");
@@ -145,7 +162,17 @@ export const useJobOffer = ({
       const msg = err?.data?.message || t("offer.failedSubmit");
       Alert.alert(t("common.error"), msg);
     }
-  }, [canOffer, price, message, mode, jobId, createOffer, onSuccess, t]);
+  }, [
+    canOffer,
+    price,
+    message,
+    mode,
+    jobId,
+    balance,
+    createOffer,
+    onSuccess,
+    t,
+  ]);
 
   // Everything the contractor can get wrong is checked here, before the name
   // sheet can appear — being asked for your name and only then told the price

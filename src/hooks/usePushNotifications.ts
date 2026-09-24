@@ -8,6 +8,7 @@ import {
   readNotificationIds,
   resolveNotificationRoute,
 } from "@/src/features/notifications";
+import { track } from "@/src/utils/analytics";
 import { logError } from "@/src/utils/logger";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
@@ -209,9 +210,26 @@ function useNotificationInvalidation(token: string | null) {
 
     const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
-        const { jobId, offerId } = readNotificationIds(
-          notification.request.content.data,
-        );
+        const data = notification.request.content.data;
+        const { jobId, offerId } = readNotificationIds(data);
+        const pushType = (data as { type?: string } | null)?.type;
+
+        // Only `type: "message_received"` is a chat message — `offerId`
+        // alone also carries "offer_created"/"job_completed" pushes about
+        // the same conversation, and counting those would overstate how
+        // often a client actually wrote something.
+        if (offerId && pushType === "message_received") {
+          track("chat_message_received");
+        }
+        // Fires on the actual status transition, not on every time the
+        // contractor happens to look at an already-completed job — the
+        // job detail screen used to report this on view, which both
+        // double-counted a job revisited later and never fired at all for
+        // one nobody reopened. `offer_price_kc` isn't in the push payload,
+        // so it goes out without one; see `AnalyticsEventMap`.
+        if (jobId && pushType === "job_completed") {
+          track("job_completed", { job_id: jobId });
+        }
 
         const tags: any[] = [];
         if (offerId) {

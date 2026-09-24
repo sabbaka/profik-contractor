@@ -2,11 +2,13 @@ import { useGetOpenJobsInfiniteQuery } from "@/src/api/profikApi";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
 import { ListFooterSpinner } from "@/src/components/ui/ListFooterSpinner";
 import { Button, Text } from "@/src/components/ui/ui";
+import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useManualRefresh } from "@/src/hooks/useManualRefresh";
 import { useThemeColors } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { BriefcaseBusiness, SlidersHorizontal } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, RefreshControl } from "react-native";
 import { Spinner, XStack, YStack } from "tamagui";
@@ -23,6 +25,7 @@ import { useOpenJobsFilters } from "./hooks/useOpenJobsFilters";
 export function OpenJobsScreen() {
   const { t } = useTranslation();
   const colors = useThemeColors();
+  const isGuest = useIsGuest();
   const { applied, coords, params, activeCount, apply } = useOpenJobsFilters();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -40,6 +43,20 @@ export function OpenJobsScreen() {
     refetchOnFocus: true,
   });
   const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
+
+  // Once the first page has actually resolved, not on mount — a count sent
+  // while it is still in flight reports every visit as empty. Guarded so a
+  // filter change or a refetch doesn't re-report the same visit.
+  const viewedReported = useRef(false);
+  useEffect(() => {
+    if (isLoading || viewedReported.current) return;
+    viewedReported.current = true;
+    track("open_jobs_screen_viewed", {
+      jobs_count: jobs.length,
+      state: jobs.length ? "list" : "empty",
+      is_authenticated: !isGuest,
+    });
+  }, [isLoading, jobs.length, isGuest]);
 
   const { isRefreshing, handleRefresh } = useManualRefresh(refetch);
 
@@ -204,15 +221,22 @@ export function OpenJobsScreen() {
               </Text>
             </YStack>
           }
-          renderItem={({ item }: { item: any }) => (
+          renderItem={({ item, index }: { item: any; index: number }) => (
             <ContractorJobCard
               job={item}
-              onPress={() =>
+              onPress={() => {
+                track("job_card_clicked", {
+                  job_id: item.id,
+                  job_category: item.category ?? undefined,
+                  job_price_kc: item.price ?? 0,
+                  job_city: item.city,
+                  position_in_list: index,
+                });
                 router.push({
                   pathname: "/(contractor)/jobs/[id]",
                   params: { id: item.id },
-                })
-              }
+                });
+              }}
             />
           )}
         />

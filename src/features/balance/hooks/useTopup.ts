@@ -1,4 +1,5 @@
 import { useMeQuery, useTopupBalanceMutation } from "@/src/api/profikApi";
+import { track } from "@/src/utils/analytics";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 import { Alert } from "react-native";
@@ -70,6 +71,17 @@ export function useTopup(): UseTopupReturn {
         if (!balanceUpdated) {
           const r = await refetchBalance();
           finalBalance = r.data?.balance ?? startBalance;
+        }
+
+        if (balanceUpdated) {
+          // The requested amount, not the delta actually credited — the two
+          // should be the same number, but this is what the reader asked
+          // for, and it is the one PostHog can report on regardless of
+          // whether the poll above caught the exact webhook.
+          track("balance_topup_payment_completed", {
+            amount_kc: amount,
+            balance_after_kc: finalBalance,
+          });
         }
 
         return { success: true, balanceUpdated, newBalance: finalBalance };

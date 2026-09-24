@@ -6,6 +6,7 @@ import { Button, Text, TextInput } from "@/src/components/ui/ui";
 import { useTabBarVisibility } from "@/src/context/TabBarVisibilityContext";
 import { useDebouncedValue } from "@/src/hooks/useDebouncedValue";
 import { useThemeColors, useThemeMode } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { Slider } from "@tamagui/slider";
 import { Calendar, LocateFixed } from "@tamagui/lucide-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -192,7 +193,37 @@ export function OpenJobsFiltersSheet({
   };
 
   const handleShow = () => {
-    onApply(draft, draft.radiusKm != null ? coords : null);
+    const appliedCoords = draft.radiusKm != null ? coords : null;
+    const finalParams = buildOpenJobsParams(draft, appliedCoords);
+    // One event per active filter *group*, not one for the whole draft — the
+    // spec's "chip" model assumes one filter changes at a time, and this is
+    // the closest match to that within a sheet that applies all three at
+    // once. `jobs_count_after` is the same number for every group here: the
+    // one "Show N jobs" itself just displayed.
+    const jobsCountAfter = previewCount ?? 0;
+    if (finalParams.priceMin != null || finalParams.priceMax != null) {
+      track("open_jobs_filter_applied", {
+        filter_name: "price_range",
+        filter_value: `${finalParams.priceMin ?? 0}-${finalParams.priceMax ?? ""}`,
+        jobs_count_after: jobsCountAfter,
+      });
+    }
+    if (finalParams.dateFrom != null || finalParams.dateTo != null) {
+      track("open_jobs_filter_applied", {
+        filter_name: "date_range",
+        filter_value: `${finalParams.dateFrom ?? ""}-${finalParams.dateTo ?? ""}`,
+        jobs_count_after: jobsCountAfter,
+      });
+    }
+    if (finalParams.lat != null && finalParams.lng != null) {
+      track("open_jobs_filter_applied", {
+        filter_name: "radius",
+        filter_value: String(finalParams.radiusKm ?? DEFAULT_RADIUS_KM),
+        jobs_count_after: jobsCountAfter,
+      });
+    }
+
+    onApply(draft, appliedCoords);
     onOpenChange(false);
   };
 

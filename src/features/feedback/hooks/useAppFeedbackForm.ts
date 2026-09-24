@@ -1,4 +1,5 @@
 import { useSendAppFeedbackMutation } from "@/src/api/profikApi";
+import { track } from "@/src/utils/analytics";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Constants from "expo-constants";
 import { useForm } from "react-hook-form";
@@ -51,6 +52,9 @@ export function useAppFeedbackForm({ onSuccess }: UseAppFeedbackFormOptions) {
               appVersion: appVersionLabel(),
               locale: i18n.language,
             }).unwrap();
+            // No job id: the survey rates the app, and the offer that opened
+            // it is not what is being scored.
+            track("app_rating_sent", { rating: data.rating });
             onSuccess();
             resolve({ success: true });
           } catch (error: unknown) {

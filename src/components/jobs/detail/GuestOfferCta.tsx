@@ -1,8 +1,9 @@
 import { Button, Text } from "@/src/components/ui/ui";
 import { buildJobDetailReturnTo } from "@/src/features/auth/authReturnTo";
 import { useThemeColors } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { YStack } from "tamagui";
 
@@ -11,6 +12,10 @@ export const GuestOfferCta = ({ jobId }: { jobId: string }) => {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const returnTo = buildJobDetailReturnTo(jobId);
+
+  useEffect(() => {
+    track("job_responce_guest_blocked_viewed");
+  }, []);
 
   return (
     <YStack

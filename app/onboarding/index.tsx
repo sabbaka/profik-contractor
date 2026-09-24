@@ -3,6 +3,7 @@ import { StepProgress } from "@/src/components/onboarding/StepProgress";
 import { ONBOARDING_STEPS } from "@/src/components/onboarding/steps";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
+import { track } from "@/src/utils/analytics";
 import { setHasSeenOnboarding } from "@/src/utils/onboardingStorage";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -42,6 +43,13 @@ export default function OnboardingScreen() {
   const position = useSharedValue(0);
   const [index, setIndex] = useState(0);
   const [illustration, setIllustration] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    // "reinstall" is the spec's other value, but there is nothing on this
+    // screen that can tell a fresh install apart from a reinstall — both look
+    // identical to a router that has never seen onboarding completed.
+    track("onboarding_started", { entry_point: "first_launch" });
+  }, []);
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -88,6 +96,7 @@ export default function OnboardingScreen() {
       scrollRef.current?.scrollTo({ x: next * width, animated: true });
       return;
     }
+    track("onboarding_completed");
     await setHasSeenOnboarding();
     router.replace("/auth/login" as any);
   }, [index, width]);

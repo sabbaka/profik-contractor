@@ -4,6 +4,7 @@ import {
   useVerifyOtpCodeMutation,
 } from "@/src/api/profikApi";
 import { setToken } from "@/src/store/authSlice";
+import { identifyUser, track } from "@/src/utils/analytics";
 import { logError } from "@/src/utils/logger";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -20,6 +21,20 @@ export type PhoneAuthStep = "phone" | "code";
  * keeps the user well clear of that ceiling while still feeling responsive.
  */
 const RESEND_COOLDOWN_SECONDS = 60;
+
+/**
+ * `verifyOtpCode` answers both signing up and signing in, and says nothing
+ * about which just happened. The account's age is the only signal available:
+ * one created within this window is this request's doing.
+ */
+const NEW_ACCOUNT_WINDOW_MS = 60_000;
+
+function isFreshAccount(createdAt: string | undefined): boolean {
+  if (!createdAt) return false;
+  const created = new Date(createdAt).getTime();
+  if (Number.isNaN(created)) return false;
+  return Date.now() - created < NEW_ACCOUNT_WINDOW_MS;
+}
 
 export interface UsePhoneAuthReturn {
   step: PhoneAuthStep;
@@ -132,6 +147,15 @@ export function usePhoneAuth(returnTo?: string): UsePhoneAuthReturn {
         // otherwise the next user sees the previous one's data.
         // @ts-ignore - util is available on the api instance
         dispatch(profikApi.util.resetApiState());
+
+        // Optional throughout: analytics is never allowed to be the reason a
+        // sign-in fails, and the navigation below it has to run regardless.
+        if (res.user?.id) identifyUser(res.user.id);
+        track(
+          isFreshAccount(res.user?.createdAt)
+            ? "sign_up_completed"
+            : "login_completed",
+        );
 
         router.replace((returnTo ?? "/(contractor)/(tabs)/open") as any);
       } catch (error: unknown) {
