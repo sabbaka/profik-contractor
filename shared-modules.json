@@ -7,6 +7,8 @@
     "src/features/auth/errors.ts": "9cb2bb99bea22844a1870f23e7fb524a7e10f6eb6e8633bd31f5c8fe4d61d819",
     "src/features/auth/phone.test.ts": "98127379e9a4db4df8da3e5aaab673695a00b8d313949df29bf36c13328fe3f6",
     "src/features/auth/phone.ts": "2212abe157dcc50493083f294a9fe1909f941d9fbbc6143f103f02818d686114",
+    "src/features/auth/terms.test.ts": "18c5be54818cb5e7e76d90451b81e8a35f670b1d36f1a3d00e6f896a41591dc6",
+    "src/features/auth/terms.ts": "2e106ada9f43bf8662e4c40154ca3584cfbc390460c684de546987c2ea5f00d5",
     "src/features/auth/utils.ts": "53131fca72ff177fe9978c30301999ed1c2e9527e3b8e580ee8817f4739b242d",
     "src/store/authSlice.test.ts": "03f287abe8361febe979e51fdd528f4986199bdb2611d403095ae3fbc9c521db",
     "src/store/rtkListeners.test.ts": "d7a63ef1b3d2bccd1ddbf76fd2336d70fe996f0e333629c06b578f156fe9be5c",
@@ -18,7 +20,9 @@
     "src/utils/logger.test.ts": "6a8b95dcbc13f0785f975b567587b120a47f1c2431aa2561928302d189fb5d53",
     "src/utils/logger.ts": "de737968d5de158d624f7fb24ac96487a7edffd6e6478691bf0455ed1748cccd",
     "src/utils/onboardingStorage.ts": "5cd82c211247648b7e76fd84d51866a6b48b74c69a72b31eaf66db556724e28c",
+    "src/utils/openLegalDocument.ts": "d0f2ca9e05153d5e1bf3dfa5310cb30f57059b78b1340c367aece64ddf7cb77e",
     "src/utils/setupGlobalErrorHandlers.ts": "d6ccd29ddd6606b2281b77b2c2db4edb69d8a64d6378f2a8d510ddb7120c0256",
+    "src/utils/termsStorage.ts": "9a0e8e962ac97f46625a949ab28d9ed09377ecdc724488422c1edffaa4941ccd",
     "src/utils/tokenStorage.ts": "e6e81fe52f00d5f5b81b006990a96afa50eaf6ad7f742a0d698df10b4755850c"
   }
 }

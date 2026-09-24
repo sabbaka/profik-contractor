@@ -210,9 +210,12 @@ export default function PhoneAuthScreen({ returnTo }: PhoneAuthScreenProps) {
               {t("auth.phone.continue")}
             </Button>
 
-            <Text variant="bodySm" textAlign="center">
-              {t("auth.phone.legal")}
-            </Text>
+            {/* There used to be a line here saying "by continuing you agree
+                to our Terms" — unlinked, so it asserted an agreement without
+                giving anyone a way to read what they were agreeing to. That is
+                browsewrap, and it is what this app moved away from. Agreement
+                is now an explicit act on its own screen, straight after the
+                code is verified, where the documents are one tap away. */}
 
             <XStack justifyContent="center">
               <Pressable

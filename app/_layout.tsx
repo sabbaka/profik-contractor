@@ -26,6 +26,13 @@ import "react-native-reanimated";
 
 import { ErrorBoundary } from "@/src/components/ui/ErrorBoundary";
 import { isGuestAccessibleRoute } from "@/src/features/auth/guestRoutes";
+import {
+  termsRequired,
+  toCachedTerms,
+  type CachedTerms,
+} from "@/src/features/auth/terms";
+import { getCachedTerms, setCachedTerms } from "@/src/utils/termsStorage";
+import { useMeQuery } from "@/src/api/profikApi";
 import { usePushNotifications } from "@/src/hooks/usePushNotifications";
 import { ThemeProvider, useThemeColors, useThemeMode } from "@/src/theme";
 import {
@@ -97,8 +104,20 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const [hasSeenOnboarding, setHasSeenOnboardingState] = useState<
     boolean | null
   >(null);
+  // `undefined` = storage not read yet, `null` = read and there was nothing.
+  // The gate below waits on the first and treats the second as "no answer
+  // cached", which fails open.
+  const [cachedTerms, setCachedTermsState] = useState<
+    CachedTerms | null | undefined
+  >(undefined);
 
   usePushNotifications(token);
+
+  // The first /auth/me this app makes at launch. Nothing waits on it — the
+  // cached answer below paints the first frame — but it is what corrects a
+  // stale cache, and it self-heals a dead token for free, because
+  // baseQueryWithReauth logs out on a 401 when one is held.
+  const { data: me } = useMeQuery(undefined, { skip: !token });
 
   // The native window sits behind every screen and is white by default, so
   // it shows in the rounded corners of a screen mid-transition no matter what
@@ -138,7 +157,32 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  if (loading || hasSeenOnboarding === null) {
+  // Same shape as the onboarding read above, and it resolves alongside it, so
+  // waiting on it adds nothing to how long the splash is up.
+  useEffect(() => {
+    let mounted = true;
+    getCachedTerms()
+      .then((value) => {
+        if (mounted) setCachedTermsState(value);
+      })
+      .catch(() => {
+        if (mounted) setCachedTermsState(null);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Whatever the server last said is written back, so the *next* launch starts
+  // from the truth rather than from an answer that may be an edition out of
+  // date. Only storage is updated here: this render already prefers the live
+  // answer over the cached one, so there is no state to move.
+  useEffect(() => {
+    const fresh = toCachedTerms(me?.terms);
+    if (fresh) void setCachedTerms(fresh);
+  }, [me?.terms]);
+
+  if (loading || hasSeenOnboarding === null || cachedTerms === undefined) {
     return (
       <View
         style={{
@@ -155,6 +199,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
   const isAuthRoute = segments[0] === "auth";
   const isOnboardingRoute = segments[0] === "onboarding";
+  const isTermsRoute = segments[0] === "terms";
 
   if (!token && !isAuthRoute && !isOnboardingRoute) {
     if (!hasSeenOnboarding) {
@@ -164,6 +209,25 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     if (!isGuestAccessibleRoute(segments)) {
       return <Redirect href={"/(contractor)/(tabs)/open" as any} />;
     }
+  }
+
+  // The live answer when it has arrived, the cached one until then. Gating on
+  // `useMeQuery`'s loading state instead would put a network round trip in
+  // front of every launch, for the sake of the rare account that owes an
+  // acceptance — and would leave a launch with no network painting nothing at
+  // all. A fresh install restoring a token from the keychain has no cache, so
+  // it falls open and may show the feed for one frame before redirecting; that
+  // happens once per install.
+  const needsTerms = me ? termsRequired(me) : (cachedTerms?.required ?? false);
+
+  if (token && needsTerms && !isTermsRoute) {
+    return <Redirect href={"/terms" as any} />;
+  }
+
+  // Once accepted the screen must stop being reachable by hand, or a stale
+  // navigation state can strand someone on a screen with nothing left to do.
+  if (token && !needsTerms && isTermsRoute) {
+    return <Redirect href={"/(contractor)/(tabs)/open" as any} />;
   }
   return (
     <View style={{ flex: 1, backgroundColor: colors.bgPrimary }}>

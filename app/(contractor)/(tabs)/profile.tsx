@@ -15,12 +15,16 @@ import {
   type AppLanguage,
 } from "@/src/utils/languageStorage";
 import { clearHasSeenOnboarding } from "@/src/utils/onboardingStorage";
+import { termsUrlOf } from "@/src/features/auth/terms";
+import { openLegalDocument } from "@/src/utils/openLegalDocument";
+import { dateLocale } from "@/src/utils/jobSchedule";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
 import {
   BadgeCheck,
   Bell,
   ChevronRight,
   Edit3,
+  FileText,
   Globe,
   HelpCircle,
   Info,
@@ -496,6 +500,31 @@ export default function ProfileRoute() {
           borderColor={colors.borderSubtle}
           overflow="hidden"
         >
+          {/* The binding document lives on profik.app, so this leaves the app
+              rather than showing a second copy of it. `value` carries the date
+              they accepted, and the tap opens *that* edition rather than
+              whatever is current — the point of keeping it is being able to
+              read what was actually on screen at the time. */}
+          <ProfileRow
+            label={t("profile.menu.terms")}
+            iconBg={colors.infoBg}
+            icon={<FileText size={18} color={colors.infoStrong} />}
+            value={
+              user?.terms?.acceptedAt
+                ? t("profile.menu.termsAccepted", {
+                    date: new Date(user.terms.acceptedAt).toLocaleDateString(
+                      dateLocale(i18n.language),
+                    ),
+                  })
+                : undefined
+            }
+            onPress={() => {
+              void openLegalDocument(
+                user?.terms?.acceptedTermsUrl ?? termsUrlOf(user?.terms),
+              );
+            }}
+          />
+          <Divider />
           <ProfileRow
             label={t("profile.menu.privacyPolicy")}
             iconBg={colors.greenSoftBg}

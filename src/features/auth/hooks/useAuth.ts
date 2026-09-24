@@ -1,6 +1,7 @@
 import { profikApi } from "@/src/api/profikApi";
 import { useUnregisterPushToken } from "@/src/hooks/usePushNotifications";
 import { logout as logoutAction } from "@/src/store/authSlice";
+import { clearCachedTerms } from "@/src/utils/termsStorage";
 import * as Notifications from "expo-notifications";
 import { useDispatch } from "react-redux";
 
@@ -33,6 +34,10 @@ export function useAuth(): UseAuthReturn {
     // Reset API state to clear cached data
     // @ts-ignore - util is available on the api instance
     dispatch(profikApi.util.resetApiState());
+
+    // The cached terms answer is about the account that just left. Keeping it
+    // would decide the next account's first frame, and the two can differ.
+    await clearCachedTerms();
 
     // No need to navigate manually, AuthGate in _layout.tsx will handle redirection
     // when it detects token is null

@@ -6,12 +6,14 @@ import type {
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { File as ExpoFile } from "expo-file-system";
 import type {
+  AcceptTermsParams,
   AuthResponse,
   OtpRequestResponse,
   RequestOtpParams,
   UploadAvatarParams,
   VerifyOtpParams,
 } from "../features/auth/types";
+import type { TermsState } from "../features/auth/terms";
 import i18n from "../i18n";
 import { logout } from "../store/authSlice";
 import { forwardIdCursor } from "./pagination";
@@ -72,6 +74,13 @@ export interface MeResponse {
    * responses leave it undefined, so treat absence as "unknown", not "no".
    */
   identityVerification?: VerificationSummary;
+  /**
+   * Terms-of-use state. Optional in the type, not on the wire: the server
+   * always sends it, and the app reads its absence as "nothing to accept" so
+   * that a rollback cannot lock every install behind an undismissable screen.
+   * See `termsRequired`.
+   */
+  terms?: TermsState;
 }
 
 // Best-effort MIME inference for image URIs returned by expo-image-picker
@@ -168,6 +177,34 @@ export const profikApi = createApi({
     me: builder.query<MeResponse, void>({
       query: () => ({ url: "/auth/me", method: "GET" }),
       providesTags: ["Me"],
+    }),
+    /**
+     * Records that the person accepted the current edition of the Terms.
+     *
+     * The answer carries the same `terms` block `me` does, and it is written
+     * straight into that cache rather than invalidating it. Invalidating would
+     * fire a second request while the consent screen is already navigating
+     * away, and the screen behind it would render for a frame with the old
+     * answer — which is the screen it just left.
+     */
+    acceptTerms: builder.mutation<{ terms: TermsState }, AcceptTermsParams>({
+      query: (body) => ({
+        url: "/auth/terms/accept",
+        method: "POST",
+        body,
+      }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            profikApi.util.updateQueryData("me", undefined, (draft) => {
+              draft.terms = data.terms;
+            }),
+          );
+        } catch {
+          // The screen shows the error and stays put; nothing to patch.
+        }
+      },
     }),
     /**
      * The Open tab's feed, paged as the contractor scrolls.
@@ -553,6 +590,7 @@ export const {
   useRequestOtpCodeMutation,
   useVerifyOtpCodeMutation,
   useMeQuery,
+  useAcceptTermsMutation,
   useGetOpenJobsInfiniteQuery,
   useGetOfferedJobsInfiniteQuery,
   useGetJobByIdQuery,

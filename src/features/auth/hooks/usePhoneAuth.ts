@@ -5,12 +5,14 @@ import {
 } from "@/src/api/profikApi";
 import { setToken } from "@/src/store/authSlice";
 import { logError } from "@/src/utils/logger";
+import { setCachedTerms } from "@/src/utils/termsStorage";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { classifyPhoneAuthError, phoneAuthErrorKey } from "../errors";
 import { DEFAULT_COUNTRY, normalizePhone } from "../phone";
+import { termsRequired, toCachedTerms } from "../terms";
 import type { CountryCode } from "libphonenumber-js";
 
 export type PhoneAuthStep = "phone" | "code";
@@ -132,6 +134,24 @@ export function usePhoneAuth(returnTo?: string): UsePhoneAuthReturn {
         // otherwise the next user sees the previous one's data.
         // @ts-ignore - util is available on the api instance
         dispatch(profikApi.util.resetApiState());
+
+        // The response already says whether this account owes an acceptance,
+        // so the consent screen is reached with no extra round trip — and a
+        // brand-new account always does, which is how signing up gets the
+        // checkbox without the phone screen carrying one.
+        //
+        // Written to storage here as well, so the next cold launch can decide
+        // which screen to paint before the network answers.
+        const cached = toCachedTerms(res.user?.terms);
+        if (cached) await setCachedTerms(cached);
+
+        if (termsRequired(res.user)) {
+          router.replace({
+            pathname: "/terms",
+            params: { returnTo: returnTo ?? "/(contractor)/(tabs)/open" },
+          } as any);
+          return;
+        }
 
         router.replace((returnTo ?? "/(contractor)/(tabs)/open") as any);
       } catch (error: unknown) {

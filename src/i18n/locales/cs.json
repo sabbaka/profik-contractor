@@ -50,6 +50,9 @@
       "unavailable": "Ověření teď není dostupné. Zkuste to prosím později.",
       "alreadyVerified": "Vaše totožnost už je ověřená.",
       "tooManyAttempts": "Dnes už jste to zkoušeli příliš často. Zkuste to zítra."
+    },
+    "terms": {
+      "versionMismatch": "Podmínky byly aktualizovány. Přečtěte si je prosím znovu."
     }
   },
   "auth": {
@@ -74,8 +77,7 @@
     "phone": {
       "title": "Zadejte svůj telefon",
       "subtitle": "Pošleme vám kód přes SMS. Heslo nepotřebujete — pokud jste tu poprvé, vytvoříme vám účet.",
-      "continue": "Pokračovat",
-      "legal": "Pokračováním souhlasíte s našimi podmínkami a zásadami ochrany osobních údajů."
+      "continue": "Pokračovat"
     },
     "otp": {
       "title": "Zadejte kód",
@@ -408,6 +410,8 @@
       "notifications": "Oznámení",
       "language": "Jazyk",
       "appearance": "Vzhled",
+      "terms": "Obchodní podmínky",
+      "termsAccepted": "Potvrzeno {{date}}",
       "privacyPolicy": "Zásady ochrany osobních údajů",
       "helpSupport": "Nápověda a podpora",
       "about": "O aplikaci"
@@ -443,7 +447,8 @@
     "retentionTitle": "Uchovávání a mazání údajů",
     "retention": "Vaše údaje jsou uchovávány po dobu, kdy je účet aktivní. Účet můžete kdykoli trvale smazat v nastavení účtu -> Smazat účet; vaše minulé nabídky a zprávy se anonymizují, aby historie zakázek klientům zůstala zachována.",
     "contactTitle": "Kontaktujte nás",
-    "contact": "Pokud máte dotazy ohledně těchto zásad, kontaktujte nás na {{email}}."
+    "contact": "Pokud máte dotazy ohledně těchto zásad, kontaktujte nás na {{email}}.",
+    "fullVersion": "Úplné znění zásad najdete na profik.app"
   },
   "support": {
     "title": "Nápověda a podpora",
@@ -654,5 +659,31 @@
     "amount_one": "{{amount}} kredit",
     "amount_few": "{{amount}} kredity",
     "amount_other": "{{amount}} kreditů"
+  },
+  "terms": {
+    "gate": {
+      "firstTitle": "Než začnete",
+      "firstBody": "Přečtěte si prosím naše obchodní podmínky a potvrďte je. Zabere to chvilku a ptáme se jen jednou.",
+      "updatedTitle": "Změnili jsme podmínky",
+      "updatedBody": "Zveřejnili jsme novou verzi obchodních podmínek. Přečtěte si ji prosím a potvrďte, abyste mohli pokračovat.",
+      "summaryTitle": "Ve zkratce",
+      "summary": {
+        "platform": "Profik je tržiště. Spojujeme vás s klienty, kteří hledají úklid; pracujete samostatně, nejste náš zaměstnanec.",
+        "contract": "Dohoda o úklidu je mezi vámi a klientem. Profik není její stranou a z dohodnuté částky si neúčtuje žádnou provizi.",
+        "money": "Odeslání nabídky stojí 5 kreditů ze zůstatku. Nové účty začínají s 500 kredity. Poplatek se strhává při odeslání nabídky a nevrací se, pokud klient nezareaguje.",
+        "leaving": "Účet můžete kdykoli smazat ve svém profilu."
+      },
+      "bindingLanguage": "Toto je shrnutí, ne smlouva. Úplné znění podmínek je zveřejněno v češtině a česká verze je závazná.",
+      "readTerms": "Přečíst úplné obchodní podmínky",
+      "readPrivacy": "Přečíst zásady ochrany osobních údajů",
+      "checkbox": "Přečetl/a jsem si obchodní podmínky a souhlasím s nimi",
+      "privacyNotice": "Vaše osobní údaje zpracováváme způsobem popsaným v zásadách ochrany osobních údajů. Nic tam neodsouhlasujete — říkají, co s údaji děláme a o co nás můžete požádat.",
+      "accept": "Souhlasím a pokračovat",
+      "decideLater": "Rozhodnout se později",
+      "signOutTitle": "Rozhodnout se později?",
+      "signOutBody": "Odhlásíme vás a zeptáme se příště znovu. Váš účet i vše v něm zůstane beze změny.",
+      "signOut": "Odhlásit se",
+      "linkFailed": "Dokument se nepodařilo otevřít. Najdete ho na profik.app."
+    }
   }
 }

@@ -1,5 +1,7 @@
 import { Text } from "@/src/components/ui/ui";
+import { FALLBACK_PRIVACY_URL } from "@/src/features/auth/terms";
 import { useThemeColors } from "@/src/theme";
+import { openLegalDocument } from "@/src/utils/openLegalDocument";
 import { ChevronLeft } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -9,6 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
 const SUPPORT_EMAIL = "info@profik.app";
+const PRIVACY_POLICY_URL = FALLBACK_PRIVACY_URL;
 
 function Section({ title, body }: { title: string; body: string }) {
   return (
@@ -82,6 +85,21 @@ export default function PrivacyPolicyScreen() {
           title={t("privacy.contactTitle")}
           body={t("privacy.contact", { email: SUPPORT_EMAIL })}
         />
+
+        {/* What is above is a plain-language summary written for this screen,
+            not the policy itself. The published document is the one that
+            governs, so the way to it belongs here rather than only in the
+            consent screen. */}
+        <Pressable
+          onPress={() => void openLegalDocument(PRIVACY_POLICY_URL)}
+          accessibilityRole="link"
+          hitSlop={8}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+        >
+          <Text variant="body" style={{ color: colors.accent }}>
+            {t("privacy.fullVersion")}
+          </Text>
+        </Pressable>
       </ScrollView>
     </YStack>
   );

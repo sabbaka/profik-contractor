@@ -50,6 +50,9 @@
       "unavailable": "Verification isn't available right now. Please try again later.",
       "alreadyVerified": "Your identity is already verified.",
       "tooManyAttempts": "Too many attempts today. Please try again tomorrow."
+    },
+    "terms": {
+      "versionMismatch": "These terms have been updated. Please read them again."
     }
   },
   "auth": {
@@ -74,8 +77,7 @@
     "phone": {
       "title": "Enter your phone",
       "subtitle": "We'll text you a code. No password needed — if you're new, this creates your account.",
-      "continue": "Continue",
-      "legal": "By continuing you agree to our Terms and Privacy Policy."
+      "continue": "Continue"
     },
     "otp": {
       "title": "Enter the code",
@@ -408,6 +410,8 @@
       "notifications": "Notifications",
       "language": "Language",
       "appearance": "Appearance",
+      "terms": "Terms of Use",
+      "termsAccepted": "Accepted {{date}}",
       "privacyPolicy": "Privacy Policy",
       "helpSupport": "Help & Support",
       "about": "About"
@@ -443,7 +447,8 @@
     "retentionTitle": "Data retention & deletion",
     "retention": "Your data is kept for as long as your account is active. You can permanently delete your account at any time from Account settings -> Delete account; your past offers and messages are anonymized rather than removed, so job history for clients stays intact.",
     "contactTitle": "Contact us",
-    "contact": "If you have questions about this policy, contact us at {{email}}."
+    "contact": "If you have questions about this policy, contact us at {{email}}.",
+    "fullVersion": "Read the full Privacy Policy at profik.app"
   },
   "support": {
     "title": "Help & Support",
@@ -652,5 +657,31 @@
   "credits": {
     "amount_one": "{{amount}} credit",
     "amount_other": "{{amount}} credits"
+  },
+  "terms": {
+    "gate": {
+      "firstTitle": "Before you start",
+      "firstBody": "Please read and accept our Terms of Use. It takes a minute and we only ask once.",
+      "updatedTitle": "Our Terms have changed",
+      "updatedBody": "We have published a new version of the Terms of Use. Please read and accept it to carry on.",
+      "summaryTitle": "The short version",
+      "summary": {
+        "platform": "Profik is a marketplace. We put you in touch with clients looking for cleaning; you work as an independent business, not as our employee.",
+        "contract": "The agreement about the work is between you and the client. Profik is not a party to it and takes no commission from what you agree.",
+        "money": "Replying to a job costs 5 credits from your balance. New accounts start with 500. The fee is charged when the offer is sent and is not returned if the client does not reply.",
+        "leaving": "You can delete your account at any time from your profile."
+      },
+      "bindingLanguage": "This is a summary, not the agreement. The full Terms are published in Czech, and the Czech version is the binding one.",
+      "readTerms": "Read the full Terms of Use",
+      "readPrivacy": "Read the Privacy Policy",
+      "checkbox": "I have read and accept the Terms of Use",
+      "privacyNotice": "We also process your personal data as described in the Privacy Policy. There is nothing to accept there — it tells you what we do and what you can ask of us.",
+      "accept": "Accept and continue",
+      "decideLater": "Decide later",
+      "signOutTitle": "Decide later?",
+      "signOutBody": "We will sign you out and ask again next time. Your account and everything in it stays as it is.",
+      "signOut": "Sign out",
+      "linkFailed": "Could not open the document. It is available at profik.app."
+    }
   }
 }
