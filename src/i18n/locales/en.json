@@ -663,7 +663,7 @@
       "summary": {
         "platform": "Profik is a marketplace. We put you in touch with clients looking for cleaning; you work as an independent business, not as our employee.",
         "contract": "The agreement about the work is between you and the client. Profik is not a party to it and takes no commission from what you agree.",
-        "money": "Replying to a job costs 5 credits from your balance. New accounts start with 500. The fee is charged when the offer is sent and is not returned if the client does not reply.",
+        "money": "Sending a response to a job costs 5 credits from your balance. New accounts start with 500. The fee is charged when the response is sent and is not returned if the client does not reply.",
         "leaving": "You can delete your account at any time from your profile."
       },
       "bindingLanguage": "This is a summary, not the agreement. The full Terms are published in Czech, and the Czech version is the binding one.",

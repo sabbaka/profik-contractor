@@ -665,7 +665,7 @@
       "summary": {
         "platform": "Profik je tržiště. Spojujeme vás s klienty, kteří hledají úklid; pracujete samostatně, nejste náš zaměstnanec.",
         "contract": "Dohoda o úklidu je mezi vámi a klientem. Profik není její stranou a z dohodnuté částky si neúčtuje žádnou provizi.",
-        "money": "Odeslání nabídky stojí 5 kreditů ze zůstatku. Nové účty začínají s 500 kredity. Poplatek se strhává při odeslání nabídky a nevrací se, pokud klient nezareaguje.",
+        "money": "Odeslání reakce stojí 5 kreditů ze zůstatku. Nové účty začínají s 500 kredity. Poplatek se strhává při odeslání reakce a nevrací se, pokud klient nezareaguje.",
         "leaving": "Účet můžete kdykoli smazat ve svém profilu."
       },
       "bindingLanguage": "Toto je shrnutí, ne smlouva. Úplné znění podmínek je zveřejněno v češtině a česká verze je závazná.",
