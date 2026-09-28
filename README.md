@@ -43,11 +43,15 @@ Releasing is a pushed tag. EAS builds both platforms and submits each one to
 its store; see `.eas/workflows/release.yml`.
 
 ```bash
-npm version patch          # bumps package.json and the lockfile together
-git commit -am "chore(release): $(node -p "require('./package.json').version")"
-git tag "v$(node -p "require('./package.json').version")"
+npm version patch -m "chore(release): %s"   # bumps package.json and the lockfile, commits, tags
 git push && git push --tags
 ```
+
+`npm version` does the commit and the tag itself — `git-tag-version` is on by
+default and no `.npmrc` here turns it off. Separate `git commit` and `git tag`
+steps used to be written here and they cannot work: the first has nothing left
+to commit, the second finds the tag already there. `-m` is only for the message;
+without it the commit is titled with the bare version.
 
 The version lives in `package.json` only — `app.config.ts` and
 `fastlane/Deliverfile` read it from there. Build numbers are not in this

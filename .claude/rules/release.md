@@ -11,8 +11,14 @@ from there (`const { version } = require('./package.json')`), and so does
 `fastlane/Deliverfile`.
 
 ```bash
-npm version patch   # bumps package.json and the lockfile together
+npm version patch -m "chore(release): %s"
 ```
+
+It bumps `package.json` and the lockfile, **and commits and tags them itself** —
+`git-tag-version` is on and nothing here turns it off. `-m` only sets the commit
+message; leave it out and the commit is titled with the bare version. Do not
+follow it with a separate `git commit` or `git tag`: there is nothing left to
+commit and the tag already exists.
 
 Never hand-edit a version string. A bump typed into `app.config.ts` or a
 store config drifts from `package.json` on the next `npm version`, and the

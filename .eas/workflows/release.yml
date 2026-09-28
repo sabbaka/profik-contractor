@@ -10,8 +10,8 @@
 # where they run on every push and pull request.
 #
 # To release:
-#   npm version patch && git commit -am "chore(release): $(node -p "require('./package.json').version")"
-#   git tag "v$(node -p "require('./package.json').version")" && git push && git push --tags
+#   npm version patch -m "chore(release): %s"   # commits and tags on its own
+#   git push && git push --tags
 #
 # Build numbers are not in this repository — EAS owns them and increments them
 # per build (cli.appVersionSource: "remote" in eas.json).
