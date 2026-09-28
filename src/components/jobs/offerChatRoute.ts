@@ -18,6 +18,15 @@ export interface OfferChatRouteInput {
   /** Travels with `offerStatus`: an accepted offer alone cannot say whether
    *  the work is still running or already done. */
   jobStatus?: JobStatus | null;
+  /**
+   * The chat's own header is the client's name, not a static label — see
+   * `app/(contractor)/offer-chat/[offerId].tsx`. Only the Messages list
+   * actually has this (`ConversationDto.counterparty.name`); neither
+   * `GET /jobs/:id` nor `GET /jobs/me/offered` return a client name, so a
+   * caller reached from either of those omits it and the screen falls back
+   * to a generic "Client" label instead of guessing.
+   */
+  clientName?: string | null;
 }
 
 /**
@@ -40,6 +49,7 @@ export function buildOfferChatRoute({
   offerPrice,
   offerStatus,
   jobStatus,
+  clientName,
 }: OfferChatRouteInput) {
   return {
     pathname: "/(contractor)/offer-chat/[offerId]",
@@ -52,6 +62,7 @@ export function buildOfferChatRoute({
       ...(offerPrice != null ? { offerPrice: String(offerPrice) } : {}),
       ...(offerStatus ? { offerStatus } : {}),
       ...(jobStatus ? { jobStatus } : {}),
+      ...(clientName ? { clientName } : {}),
     },
   };
 }

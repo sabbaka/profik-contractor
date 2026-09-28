@@ -125,6 +125,7 @@ export function MessagesScreen() {
         offerPrice: conversation.offer.price,
         offerStatus: conversation.offer.status,
         jobStatus: conversation.job.status,
+        clientName: conversation.counterparty.name,
       }) as any,
     );
   }, []);

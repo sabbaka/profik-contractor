@@ -76,6 +76,7 @@ export default function OfferChatRoute() {
     offerPrice,
     offerStatus,
     jobStatus,
+    clientName,
   } = useLocalSearchParams<{
     offerId: string;
     jobId?: string;
@@ -85,6 +86,7 @@ export default function OfferChatRoute() {
     offerPrice?: string;
     offerStatus?: OfferStatus;
     jobStatus?: JobStatus;
+    clientName?: string;
   }>();
 
   // Composed here rather than at the navigation site: a label resolved there
@@ -237,16 +239,14 @@ export default function OfferChatRoute() {
             </Text>
           </XStack>
         </Pressable>
+        {/* The client's real name when it travelled with the navigation
+            (only the Messages list actually has it — see
+            `buildOfferChatRoute`'s doc comment), a generic fallback
+            otherwise. No subtitle: this used to read "OFFER CONVERSATION",
+            which is exactly the word this screen no longer uses. */}
         <YStack alignItems="center">
-          <Text variant="h5">{t("chat.title")}</Text>
-          <Text
-            style={{
-              color: colors.success,
-              fontFamily: "Inter_500Medium",
-              fontSize: 10,
-            }}
-          >
-            {t("chat.eyebrow")}
+          <Text variant="h5">
+            {clientName?.trim() || t("messages.unnamedClient")}
           </Text>
         </YStack>
         <XStack width={58} />
