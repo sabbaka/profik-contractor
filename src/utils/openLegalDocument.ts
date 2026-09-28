@@ -10,12 +10,19 @@ import { logError } from "./logger";
  * second edition to keep in step with it — which is exactly how an app ends up
  * showing something other than what people agreed to.
  *
+ * No `canOpenURL` guard, deliberately. For an `https` URL that check answers
+ * from Android's package visibility rather than from whether a browser exists,
+ * and neither app declares a `queries` block — so it can answer false on a
+ * phone that would have opened the link perfectly well. The cost of that
+ * false negative lands in the worst possible place: someone being asked to
+ * accept a document the app has just told them it cannot show. `openURL` either
+ * opens or throws, and throwing is what the caller already handles.
+ *
  * Answers whether it opened, so a caller can say so rather than looking as
  * though the tap did nothing.
  */
 export async function openLegalDocument(url: string): Promise<boolean> {
   try {
-    if (!(await Linking.canOpenURL(url))) return false;
     await Linking.openURL(url);
     return true;
   } catch (error) {

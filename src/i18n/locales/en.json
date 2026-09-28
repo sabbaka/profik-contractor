@@ -676,7 +676,8 @@
       "signOutTitle": "Decide later?",
       "signOutBody": "We will sign you out and ask again next time. Your account and everything in it stays as it is.",
       "signOut": "Sign out",
-      "linkFailed": "Could not open the document. It is available at profik.app."
+      "linkFailed": "Could not open the document. It is available at profik.app.",
+      "loadFailed": "We could not load the Terms. Check your connection and try again."
     }
   }
 }

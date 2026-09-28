@@ -678,7 +678,8 @@
       "signOutTitle": "Rozhodnout se později?",
       "signOutBody": "Odhlásíme vás a zeptáme se příště znovu. Váš účet i vše v něm zůstane beze změny.",
       "signOut": "Odhlásit se",
-      "linkFailed": "Dokument se nepodařilo otevřít. Najdete ho na profik.app."
+      "linkFailed": "Dokument se nepodařilo otevřít. Najdete ho na profik.app.",
+      "loadFailed": "Podmínky se nepodařilo načíst. Zkontrolujte připojení a zkuste to znovu."
     }
   }
 }

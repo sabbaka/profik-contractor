@@ -2648,12 +2648,7 @@
           "locale": {
             "type": "string",
             "example": "cs",
-            "enum": [
-              "en",
-              "cs",
-              "uk"
-            ],
-            "description": "UI language in front of the person as they accepted. Falls back to the Accept-Language header. The binding document is Czech, so this records what they were actually reading."
+            "description": "UI language in front of the person as they accepted. Falls back to the Accept-Language header. The binding document is Czech, so this records what they were actually reading. Narrowed to a language the platform speaks rather than rejected: a value we do not recognise is stored as nothing. See AuthService.acceptTerms for why this one is not validated."
           },
           "source": {
             "type": "string",

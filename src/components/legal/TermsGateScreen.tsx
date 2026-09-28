@@ -45,8 +45,14 @@ export function TermsGateScreen({ returnTo }: { returnTo?: string }) {
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
 
-  const { data: me, refetch } = useMeQuery();
-  const [acceptTerms, { isLoading }] = useAcceptTermsMutation();
+  // Arriving here with `me` still in flight is the ordinary path, not an edge
+  // case: AuthGate deliberately does not wait for /auth/me, and usePhoneAuth
+  // resets the cache immediately before navigating here. So this screen owns
+  // the wait, and has to show it — a button that is simply grey while the
+  // answer is on its way reads as a broken screen, and offline it never stops
+  // reading that way.
+  const { data: me, isLoading: loadingTerms, isError, refetch } = useMeQuery();
+  const [acceptTerms, { isLoading: accepting }] = useAcceptTermsMutation();
 
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,10 +78,16 @@ export function TermsGateScreen({ returnTo }: { returnTo?: string }) {
         locale: i18n.language,
       }).unwrap();
 
-      const cached = toCachedTerms(result.terms);
-      if (cached) await setCachedTerms(cached);
-
+      // Navigate before persisting, not after. The mutation patches the `me`
+      // cache as it resolves, and the moment it does AuthGate sees an
+      // acceptance that is no longer owed and redirects this route to home —
+      // so anything awaited in between is a window in which the destination
+      // this screen was given gets overwritten by that redirect. The cache
+      // write is for the next cold launch and nothing here waits on it.
       router.replace((returnTo ?? "/(contractor)/(tabs)/open") as any);
+
+      const cached = toCachedTerms(result.terms);
+      if (cached) void setCachedTerms(cached);
     } catch (err) {
       // 409 means the documents were revised between this screen rendering and
       // the tap. Refetching is the fix rather than a retry: the new version,
@@ -196,6 +208,26 @@ export function TermsGateScreen({ returnTo }: { returnTo?: string }) {
 
         <Text variant="caption">{t("terms.gate.privacyNotice")}</Text>
 
+        {/* Two different failures, and the person needs to tell them apart.
+            `error` is "we asked and were refused"; this one is "we never got
+            the terms in the first place", which is what an offline launch
+            looks like and which no amount of tapping Accept will fix. */}
+        {isError && !terms ? (
+          <YStack gap={8}>
+            <Text variant="bodySm" color="$danger">
+              {t("terms.gate.loadFailed")}
+            </Text>
+            <Button
+              variant="secondary"
+              size="md"
+              onPress={() => void refetch()}
+              loading={loadingTerms}
+            >
+              {t("common.retry")}
+            </Button>
+          </YStack>
+        ) : null}
+
         {error ? (
           <Text variant="bodySm" color="$danger">
             {error}
@@ -209,12 +241,15 @@ export function TermsGateScreen({ returnTo }: { returnTo?: string }) {
         paddingTop={8}
         gap={12}
       >
+        {/* `loading` covers the wait for the terms as well as the accept
+            itself: until they arrive there is nothing to accept, and a button
+            that is merely grey does not say so. */}
         <Button
-          variant={agreed ? "primary" : "primaryDisabled"}
+          variant={agreed && terms ? "primary" : "primaryDisabled"}
           size="lg"
           fullWidth
-          disabled={!agreed || isLoading || !terms}
-          loading={isLoading}
+          disabled={!agreed || accepting || !terms}
+          loading={accepting || loadingTerms}
           onPress={() => void handleAccept()}
         >
           {t("terms.gate.accept")}
