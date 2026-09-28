@@ -19,15 +19,15 @@
       "notCompleted": "Tato zakázka ještě není dokončená.",
       "notParticipant": "Nejste součástí této zakázky.",
       "missingParticipants": "Zakázka zatím nemá obě strany.",
-      "closedToOffers": "Tato zakázka už nepřijímá nabídky."
+      "closedToOffers": "Tato zakázka už nepřijímá reakce."
     },
     "offer": {
-      "notFound": "Tato nabídka už neexistuje.",
-      "alreadyProcessed": "Na tuto nabídku už bylo odpovězeno.",
-      "notParticipant": "Nejste součástí této nabídky.",
-      "duplicate": "Na tuto zakázku jste už nabídku poslali.",
-      "contractorsOnly": "Nabídky může posílat jen účet profíka.",
-      "insufficientBalance": "Na odeslání nabídky nemáte dost prostředků.",
+      "notFound": "Tato reakce už neexistuje.",
+      "alreadyProcessed": "Na tuto reakci už bylo odpovězeno.",
+      "notParticipant": "Nejste součástí této reakce.",
+      "duplicate": "Na tuto zakázku jste už reakci poslali.",
+      "contractorsOnly": "Reakce může posílat jen účet PRO.",
+      "insufficientBalance": "Na odeslání reakce nemáte dost prostředků.",
       "conversationClosed": "Konverzace je uzavřená — nové zprávy už poslat nelze."
     },
     "payment": {
@@ -39,7 +39,7 @@
     },
     "user": {
       "notFound": "Tento účet se nepodařilo najít.",
-      "contractorNotFound": "Tohoto specialistu se nepodařilo najít.",
+      "contractorNotFound": "Tohoto PRO se nepodařilo najít.",
       "emailInUse": "Tento e-mail se už používá."
     },
     "avatar": {
@@ -95,7 +95,7 @@
     },
     "name": {
       "title": "Jak vám máme říkat?",
-      "subtitle": "Zákazníci uvidí toto jméno u vaší nabídky, když si vybírají, koho najmou.",
+      "subtitle": "Zákazníci uvidí toto jméno u vaší reakce, když si vybírají, koho najmou.",
       "save": "Uložit a pokračovat"
     },
     "country": {
@@ -106,15 +106,12 @@
   },
   "tabs": {
     "openJobs": "ZAKÁZKY",
-    "myJobs": "MOJE ZAKÁZKY",
+    "myJobs": "MOJE",
     "profile": "PROFIL",
     "messages": "ZPRÁVY"
   },
-  "header": {
-    "workspace": "Pracovní prostor"
-  },
   "open": {
-    "title": "Otevřené zakázky",
+    "title": "Dostupné zakázky",
     "finding": "Hledám příležitosti...",
     "available_one": "{{count}} zakázka ve vašem okolí",
     "available_few": "{{count}} zakázky ve vašem okolí",
@@ -122,7 +119,7 @@
     "availableMore_one": "{{count}}+ zakázka ve vašem okolí",
     "availableMore_few": "{{count}}+ zakázky ve vašem okolí",
     "availableMore_other": "{{count}}+ zakázek ve vašem okolí",
-    "loading": "Načítám otevřené zakázky...",
+    "loading": "Načítám dostupné zakázky...",
     "errorTitle": "Zakázky se nepodařilo načíst",
     "errorBody": "Zkontrolujte připojení a zkuste to znovu.",
     "emptyTitle": "Vše máte zkontrolováno",
@@ -155,23 +152,23 @@
   },
   "my": {
     "title": "Moje zakázky",
-    "subtitle": "Sledujte nabídky a aktivní práci",
+    "subtitle": "Sledujte své reakce a aktivní zakázky",
     "filters": {
-      "pending": "Čekající",
-      "active": "Probíhá",
-      "completed": "Dokončené",
-      "declined": "Odmítnuté"
+      "pending": "Odesláno",
+      "active": "Přijato",
+      "completed": "Dokončeno",
+      "declined": "Odmítnuto"
     },
     "labels": {
-      "pending": "čekající nabídky",
-      "active": "probíhajících zakázek",
+      "pending": "odeslané reakce",
+      "active": "přijatých zakázek",
       "completed": "dokončených zakázek",
-      "declined": "odmítnuté nabídky"
+      "declined": "odmítnuté reakce"
     },
     "loading": "Načítám {{label}}...",
     "errorTitle": "Vaše zakázky se nepodařilo načíst",
     "emptyTitle": "Žádné {{label}}",
-    "emptyBody": "Zakázky se mezi záložkami přesouvají samy — když klient odpoví na vaši nabídku a když je práce hotová."
+    "emptyBody": "Zakázky se mezi záložkami přesouvají samy — když zákazník odpoví na vaši reakci a když je práce hotová."
   },
   "job": {
     "back": "Zpět",
@@ -192,19 +189,19 @@
     "service": "Služba",
     "untitled": "Zakázka bez názvu",
     "posted": "Zveřejněno {{date}}",
-    "openForOffers": "Otevřeno nabídkám",
+    "openForOffers": "Otevřeno pro reakce",
     "detailsCta": "Detail",
     "about": "O této zakázce",
     "location": "Lokalita",
     "status": {
-      "pending": "Čekající",
-      "accepted": "Přijatá",
-      "declined": "Odmítnutá",
-      "in_progress": "Probíhá",
-      "completed": "Dokončená",
-      "canceled": "Zrušená"
+      "pending": "Odesláno",
+      "accepted": "Přijato",
+      "declined": "Odmítnuto",
+      "in_progress": "Přijato",
+      "completed": "Dokončeno",
+      "canceled": "Zrušeno"
     },
-    "exactAddressAfterAccept": "Přesná adresa a poloha se zobrazí po přijetí vaší nabídky.",
+    "exactAddressAfterAccept": "Přesná adresa a poloha se zobrazí po přijetí vaší reakce.",
     "property": {
       "title": "Nemovitost",
       "rooms": "Pokoje",
@@ -222,7 +219,7 @@
     },
     "notes": "Doplňující poznámky",
     "messageClient": "Napsat",
-    "messageClientA11y": "Napsat klientovi o zakázce {{title}}",
+    "messageClientA11y": "Napsat zákazníkovi o zakázce {{title}}",
     "shareA11y": "Sdílet tuto zakázku",
     "country": {
       "CZ": "Česko",
@@ -250,48 +247,48 @@
     }
   },
   "offer": {
-    "yourOffer": "Vaše nabídka",
+    "yourOffer": "Vaše reakce",
     "sentToCustomer": "Odesláno zákazníkovi",
     "yourPrice": "VAŠE CENA",
     "messageCustomer": "Napsat zákazníkovi",
-    "makeCounterTitle": "Nabídněte svou cenu",
+    "makeCounterTitle": "Nastavte svou cenu",
     "makeCounterBody": "Nastavte férovou cenu a popište zákazníkovi, co je v ní zahrnuto.",
     "pricePlaceholder": "Vaše cena v Kč",
     "messagePlaceholder": "Popište, co je zahrnuto...",
-    "sendCounter": "Poslat nabídku",
+    "sendCounter": "Odeslat reakci",
     "interestedTitle": "Máte o zakázku zájem?",
     "interestedBody": "Odpovězte hned a oslovte zákazníka mezi prvními.",
-    "makeCounter": "Nabídnout jinou cenu",
+    "makeCounter": "Navrhnout jinou cenu",
     "unauthorizedTitle": "Neoprávněný přístup",
-    "unauthorizedBody": "Nabídky mohou posílat pouze kontraktoři.",
-    "submitted": "Nabídka byla úspěšně odeslána",
-    "failedSubmit": "Nabídku se nepodařilo odeslat",
+    "unauthorizedBody": "Reakce mohou posílat pouze PRO.",
+    "submitted": "Reakce byla úspěšně odeslána",
+    "failedSubmit": "Reakci se nepodařilo odeslat",
     "validation": {
-      "priceRequired": "Zadejte prosím cenu nabídky.",
+      "priceRequired": "Zadejte prosím cenu reakce.",
       "pricePositive": "Cena musí být kladné číslo.",
-      "messageRequired": "Vysvětlete prosím klientovi svou cenu."
+      "messageRequired": "Vysvětlete prosím zákazníkovi svou cenu."
     },
-    "sendAtClientPrice": "Poslat nabídku",
-    "costNote": "Při odeslání nabídky se z účtu strhne {{price}}",
+    "sendAtClientPrice": "Odeslat reakci",
+    "costNote": "Při odeslání reakce se z účtu strhne {{price}}",
     "cost": {
-      "label": "Cena za nabídku",
+      "label": "Cena za reakci",
       "discount": "−{{percent}} %",
       "balance": "Váš zůstatek"
     },
     "balance": {
       "title": "Nedostatečný zůstatek",
-      "body": "Nabídka stojí {{price}} · máte {{balance}}",
+      "body": "Reakce stojí {{price}} · máte {{balance}}",
       "topUp": "Dobít zůstatek",
-      "interestedBody": "Dobijte zůstatek, abyste mohli na tuto zakázku poslat nabídku."
+      "interestedBody": "Dobijte zůstatek, abyste mohli na tuto zakázku poslat reakci."
     },
     "closed": {
       "completedTitle": "Zakázka je dokončená",
-      "completedBody": "Zadavatel ji uzavřel, nabídky už nepřijímá.",
+      "completedBody": "Zákazník ji uzavřel, reakce už nepřijímá.",
       "canceledTitle": "Zakázka byla zrušena",
-      "canceledBody": "Zadavatel ji zrušil, nabídky už nepřijímá."
+      "canceledBody": "Zákazník ji zrušil, reakce už nepřijímá."
     },
     "ownJobTitle": "Toto je vaše zakázka",
-    "ownJobBody": "Tuto zakázku jste zadali vy. Spravujte ji a prohlížejte nabídky v aplikaci Profik."
+    "ownJobBody": "Tuto zakázku jste zadali vy. Spravujte ji a prohlížejte reakce v aplikaci Profik."
   },
   "review": {
     "receivedTitle": "Hodnocení od zákazníka",
@@ -310,19 +307,17 @@
     }
   },
   "chat": {
-    "title": "Chat se zákazníkem",
-    "eyebrow": "KONVERZACE K NABÍDCE",
-    "invalidOffer": "Neplatná nabídka",
+    "invalidOffer": "Neplatná reakce",
     "notSentTitle": "Zpráva nebyla odeslána",
     "notSentBody": "Zkuste to prosím znovu.",
     "closedTitle": "Konverzace je uzavřená",
-    "closedBody": "Nabídka byla odmítnuta, nové zprávy už poslat nelze. Vše dosud napsané zůstává.",
+    "closedBody": "Reakce byla odmítnuta, nové zprávy už poslat nelze. Vše dosud napsané zůstává.",
     "emptyTitle": "Začněte konverzaci",
-    "emptyBody": "Zeptejte se na detail nebo potvrďte podmínky své nabídky.",
+    "emptyBody": "Zeptejte se na detail nebo potvrďte podmínky své reakce.",
     "placeholders": {
       "message": "Napište zprávu..."
     },
-    "yourOffer": "Vaše nabídka {{price}}",
+    "yourOffer": "Vaše reakce {{price}}",
     "openJob": "Otevřít detail zakázky"
   },
   "map": {
@@ -330,7 +325,7 @@
     "previewUnavailableWebSentence": "Náhled mapy není na webu dostupný.",
     "unavailable": "Mapa není dostupná",
     "coordinates": "Šířka: {{lat}} Délka: {{lng}}",
-    "openJobsFailed": "Otevřené zakázky se nepodařilo načíst",
+    "openJobsFailed": "Dostupné zakázky se nepodařilo načíst",
     "openInMaps": "Otevřít v Mapách"
   },
   "balance": {
@@ -338,9 +333,9 @@
     "loading": "Načítám zůstatek...",
     "loadFailed": "Zůstatek se nepodařilo načíst",
     "available": "DOSTUPNÝ ZŮSTATEK",
-    "tapToAddFunds": "Klepnutím přidáte kredit",
-    "usedFor": "Používá se pro služby kontraktora a přístup k zakázkám.",
-    "addFunds": "Přidat kredit",
+    "tapToAddFunds": "Klepnutím dobijte kredit",
+    "usedFor": "Používá se jen na odesílání reakcí.",
+    "addFunds": "Dobít kredit",
     "amountBody": "Zadejte částku, kterou chcete přidat.",
     "rateNote": "Platíte v korunách — každá 1 Kč přidá 1 kredit.",
     "amountPlaceholder": "Částka v Kč",
@@ -361,10 +356,10 @@
       "loading": "Načítám historii...",
       "errorTitle": "Historii se nepodařilo načíst",
       "emptyTitle": "Zatím žádné transakce",
-      "emptyBody": "Dobití a poplatky za nabídky se zobrazí tady.",
+      "emptyBody": "Dobití a poplatky za reakce se zobrazí tady.",
       "type": {
         "topup": "Dobití",
-        "offerFee": "Poplatek za nabídku",
+        "offerFee": "Poplatek za reakci",
         "signupBonus": "Uvítací bonus",
         "openingBalance": "Počáteční zůstatek"
       },
@@ -389,7 +384,7 @@
     "deleteAccount": "Smazat účet",
     "deletingAccount": "Mažu účet...",
     "deleteTitle": "Smazat účet?",
-    "deleteDescription": "Tímto trvale smažete svůj účet a osobní údaje. Vaše odeslané nabídky a zprávy budou anonymizovány. Tuto akci nelze vrátit zpět.",
+    "deleteDescription": "Tímto trvale smažete svůj účet a osobní údaje. Vaše odeslané reakce a zprávy budou anonymizovány. Tuto akci nelze vrátit zpět.",
     "deleteCancel": "Zrušit",
     "deleteConfirm": "Smazat",
     "deleteSuccessTitle": "Účet byl smazán",
@@ -398,7 +393,7 @@
     "version": "Verze {{version}}",
     "balance": {
       "available": "DOSTUPNÝ ZŮSTATEK",
-      "tapToAddFunds": "Klepnutím přidáte kredit"
+      "tapToAddFunds": "Klepnutím dobijte kredit"
     },
     "placeholders": {
       "name": "Vaše jméno",
@@ -429,19 +424,19 @@
   },
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
-    "intro": "Tyto zásady vysvětlují, jaké informace Profik Pro shromažďuje a jak jsou používány. Profik Pro je kontraktorská aplikace tržiště Profik, které spojuje zákazníky s úklidovými profesionály v České republice.",
+    "intro": "Tyto zásady vysvětlují, jaké informace Profik Pro shromažďuje a jak jsou používány. Profik Pro je aplikace pro PRO na tržišti Profik, které spojuje zákazníky s PRO v České republice.",
     "dataCollectedTitle": "Informace, které shromažďujeme",
-    "dataCollected": "Údaje o účtu, které zadáte (jméno, e-mail, telefonní číslo, heslo), nabídky a zprávy, které posíláte klientům, a historii doplnění kreditu.",
+    "dataCollected": "Údaje o účtu, které zadáte (jméno, e-mail, telefonní číslo, heslo), reakce a zprávy, které posíláte zákazníkům, a historii doplnění kreditu.",
     "locationTitle": "Poloha",
-    "location": "Při používání aplikace používáme polohu vašeho zařízení, abychom zobrazili otevřené zakázky ve vašem okolí na mapě a vzdálenost každé zakázky od vaší aktuální polohy. Poloha není sledována na pozadí.",
+    "location": "Při používání aplikace používáme polohu vašeho zařízení, abychom zobrazili dostupné zakázky ve vašem okolí na mapě a vzdálenost každé zakázky od vaší aktuální polohy. Poloha není sledována na pozadí.",
     "notificationsTitle": "Oznámení",
-    "notifications": "Používáme token push oznámení vašeho zařízení, abychom vás upozornili na nové zprávy od klientů a změny nabídek.",
+    "notifications": "Používáme token push oznámení vašeho zařízení, abychom vás upozornili na nové zprávy od zákazníků a změny reakcí.",
     "balanceTitle": "Doplnění kreditu",
     "balance": "Doplnění kreditu probíhá na externí zabezpečené stránce Stripe Checkout otevřené v prohlížeči - Profik Pro neukládá údaje o vaší kartě.",
     "sharingTitle": "Jak jsou vaše údaje sdíleny",
-    "sharing": "Klienti vidí vaše jméno, profil a nabídky, které jim pošlete na jejich zakázky. Vaše telefonní číslo není nikdy sdíleno s klienty - veškerá komunikace probíhá přes chat k nabídce v aplikaci.",
+    "sharing": "Zákazníci vidí vaše jméno, profil a reakce, které jim pošlete na jejich zakázky. Vaše telefonní číslo není nikdy sdíleno se zákazníky - veškerá komunikace probíhá přes chat v aplikaci.",
     "retentionTitle": "Uchovávání a mazání údajů",
-    "retention": "Vaše údaje jsou uchovávány po dobu, kdy je účet aktivní. Účet můžete kdykoli trvale smazat v nastavení účtu -> Smazat účet; vaše minulé nabídky a zprávy se anonymizují, aby historie zakázek klientům zůstala zachována.",
+    "retention": "Vaše údaje jsou uchovávány po dobu, kdy je účet aktivní. Účet můžete kdykoli trvale smazat v nastavení účtu -> Smazat účet; vaše minulé reakce a zprávy se anonymizují, aby historie zakázek zákazníkům zůstala zachována.",
     "contactTitle": "Kontaktujte nás",
     "contact": "Pokud máte dotazy ohledně těchto zásad, kontaktujte nás na {{email}}."
   },
@@ -450,11 +445,11 @@
     "intro": "Potřebujete s něčím poradit? Zde najdete odpovědi na časté dotazy, případně nás můžete kontaktovat přímo.",
     "faqTitle": "Často kladené dotazy",
     "faq1Q": "Jak najdu zakázky?",
-    "faq1A": "Na kartě Otevřené zakázky procházejte zakázky ve vašem okolí na mapě i v seznamu. Klepnutím na zakázku zobrazíte typ služby, detaily nemovitosti, lokalitu a rozpočet klienta.",
-    "faq2Q": "Jak pošlu nabídku?",
-    "faq2A": "Otevřete zakázku, klepněte na Odeslat nabídku, nastavte cenu a volitelnou zprávu a odešlete ji. Stav sledujte v Moje zakázky v sekcích Čekající / Přijaté / Odmítnuté.",
-    "faq3Q": "Jak napíšu klientovi?",
-    "faq3A": "Otevřete svou nabídku a přejděte do Chatu k nabídce, kde můžete klientovi napsat přímo - telefonní číslo sdílet nemusíte.",
+    "faq1A": "Na kartě Dostupné zakázky procházejte zakázky ve vašem okolí na mapě i v seznamu. Klepnutím na zakázku zobrazíte typ služby, detaily nemovitosti, lokalitu a rozpočet zákazníka.",
+    "faq2Q": "Jak odešlu reakci?",
+    "faq2A": "Otevřete zakázku, klepněte na Odeslat reakci, nastavte cenu a volitelnou zprávu a odešlete ji. Stav sledujte v Moje zakázky v sekcích Odesláno / Přijato / Odmítnuto.",
+    "faq3Q": "Jak napíšu zákazníkovi?",
+    "faq3A": "Otevřete svou reakci a přejděte do chatu, kde můžete zákazníkovi napsat přímo - telefonní číslo sdílet nemusíte.",
     "faq4Q": "Jak přidám kredit na zůstatek?",
     "faq4A": "V profilu otevřete Zůstatek, zadejte částku a pokračujte na zabezpečenou platební stránku. Zůstatek se používá k úhradě platformních poplatků.",
     "faq5Q": "Jak smažu svůj účet?",
@@ -467,7 +462,7 @@
   "about": {
     "title": "O aplikaci",
     "tagline": "Úklidové zakázky kolem vás",
-    "description": "Profik Pro je aplikace pro úklidové profesionály, kteří chtějí stálý přísun zakázek ve svém okolí. Prohlížejte otevřené zakázky, pošlete svou cenu, chatujte s klienty a odveďte práci - vše v jedné aplikaci.",
+    "description": "Profik Pro je aplikace pro PRO, kteří chtějí stálý přísun zakázek ve svém okolí. Prohlížejte dostupné zakázky, pošlete svou cenu, chatujte se zákazníky a odveďte práci - vše v jedné aplikaci.",
     "version": "Verze {{version}}",
     "copyright": "© {{year}} Profik"
   },
@@ -479,49 +474,49 @@
     "steps": {
       "find": {
         "titleAccent": "Hledáte práci?",
-        "titleRest": "Klienti už vás hledají",
-        "body": "Klienti zadávají zakázky — vy si vyberete ty, které vám sedí, a pošlete svou nabídku",
+        "titleRest": "Zákazníci už vás hledají",
+        "body": "Zákazníci zadávají zakázky — vy si vyberete ty, které vám sedí, a pošlete svou reakci",
         "card": {
           "category": "Hloubkový úklid",
           "price": "2 400 Kč",
           "title": "Úklid bytu po vystěhování, 2+kk",
           "meta": "Praha 7 · 2,4 km od vás",
-          "status": "Otevřeno nabídkám"
+          "status": "Otevřeno pro reakce"
         }
       },
       "pick": {
         "titleAccent": "Vybírejte zakázky,",
         "titleRest": "které vám sedí",
-        "body": "Prohlédněte si detaily zakázky, podmínky i rozpočet klienta. Reagujte jen na to, co vás zajímá",
+        "body": "Prohlédněte si detaily zakázky, podmínky i rozpočet zákazníka. Reagujte jen na to, co vás zajímá",
         "card": {
           "category": "HLOUBKOVÝ ÚKLID",
           "title": "Úklid bytu po vystěhování, 2+kk",
           "price": "2 400 Kč",
-          "budget": "Rozpočet klienta",
+          "budget": "Rozpočet zákazníka",
           "location": "Praha 7, 170 00 · 2,4 km od vás",
           "date": "Pátek 5. 9. · dopoledne",
           "details": "2+kk · 54 m² · trouba a okna",
-          "accept": "Poslat nabídku za 2 400 Kč",
-          "counter": "Nabídnout jinou cenu"
+          "accept": "Odeslat reakci za 2 400 Kč",
+          "counter": "Navrhnout jinou cenu"
         }
       },
       "paid": {
         "titleAccent": "Platbu dostanete",
-        "titleRest": "přímo od klienta",
-        "body": "Domluvte si s klientem detaily i cenu. Po dokončení zakázky vám zaplatí přímo",
+        "titleRest": "přímo od zákazníka",
+        "body": "Domluvte si se zákazníkem detaily i cenu. Po dokončení zakázky vám zaplatí přímo",
         "card": {
           "name": "Jana K.",
-          "status": "Klientka · online",
+          "status": "Zákaznice · online",
           "message1": "Zvládnete to v pátek dopoledne?",
           "message2": "Ano — pátek 8:00, 2 200 Kč včetně všeho.",
           "message3": "Platí, uvidíme se v pátek!",
-          "note": "Klient platí přímo vám — 2 200 Kč"
+          "note": "Zákazník platí přímo vám — 2 200 Kč"
         }
       },
       "credits": {
-        "titleAccent": "100 nabídek",
+        "titleAccent": "100 reakcí",
         "titleRest": "jako dárek",
-        "body": "Po registraci vám na účet připíšeme 500 kreditů — to stačí na 100 nabídek a první zakázky",
+        "body": "Po registraci vám na účet připíšeme 500 kreditů — to stačí na 100 reakcí a první zakázky",
         "card": {
           "title": "Uvítací bonus",
           "subtitle": "Připíšeme hned po registraci",
@@ -529,9 +524,9 @@
           "unit": "kreditů",
           "rowBonus": "Bonus za registraci",
           "rowBonusValue": "500 kreditů",
-          "rowCost": "Cena za nabídku",
+          "rowCost": "Cena za reakci",
           "rowCostValue": "5 kreditů",
-          "rowOffers": "Kolik nabídek pošlete",
+          "rowOffers": "Kolik reakcí pošlete",
           "rowOffersValue": "100",
           "note": "Bez karty — reagovat můžete hned"
         }
@@ -550,11 +545,11 @@
     "signIn": "Přihlásit se",
     "browseJobs": "Prohlížet zakázky bez účtu",
     "myJobsTitle": "Přihlaste se a uvidíte své zakázky",
-    "myJobsBody": "Přihlaste se telefonem, abyste mohli posílat nabídky a sledovat jejich stav.",
+    "myJobsBody": "Přihlaste se telefonem, abyste mohli posílat reakce a sledovat jejich stav.",
     "profileTitle": "Prohlížíte jako host",
-    "profileBody": "Přihlaste se pro správu profilu, kreditu a nabídek.",
-    "signInToOffer": "Přihlaste se a pošlete nabídku",
-    "signInToOfferBody": "Prohlížení je zdarma — přihlaste se telefonním číslem a pošlete zákazníkovi nabídku."
+    "profileBody": "Přihlaste se pro správu profilu, kreditu a reakcí.",
+    "signInToOffer": "Přihlaste se a reagujte",
+    "signInToOfferBody": "Prohlížení je zdarma — přihlaste se telefonním číslem a pošlete zákazníkovi svou reakci."
   },
   "a11y": {
     "close": "Zavřít",
@@ -568,7 +563,7 @@
   },
   "messages": {
     "title": "Zprávy",
-    "subtitle": "Tady najdete své chaty s klienty",
+    "subtitle": "Tady najdete své chaty se zákazníky",
     "unreadSubtitle_one": "{{count}} nepřečtená zpráva",
     "unreadSubtitle_few": "{{count}} nepřečtené zprávy",
     "unreadSubtitle_other": "{{count}} nepřečtených zpráv",
@@ -577,13 +572,13 @@
     "errorBody": "Zkontrolujte připojení a zkuste to znovu.",
     "markAllRead": "Označit vše jako přečtené",
     "yesterday": "Včera",
-    "unnamedClient": "Klient",
+    "unnamedClient": "Zákazník",
     "noMessagesYet": "Zatím žádné zprávy — pozdravte",
     "youPrefix": "Vy: {{text}}",
     "openChatA11y": "Otevřít chat s {{name}} o zakázce {{title}}",
     "findJob": "Najít zakázku",
     "guestTitle": "Přihlaste se a uvidíte zprávy",
-    "guestBody": "Přihlaste se telefonem, abyste mohli posílat nabídky a psát si s klienty.",
+    "guestBody": "Přihlaste se telefonem, abyste mohli posílat reakce a psát si se zákazníky.",
     "tabs": {
       "active": "Aktivní",
       "completed": "Dokončené"
@@ -591,7 +586,7 @@
     "empty": {
       "active": {
         "title": "Zatím žádné aktivní chaty",
-        "body": "Tady se objeví chaty k zakázkám, na které jste reagovali, a zůstanou tu i poté, co klient přijme vaši nabídku. Detaily si domluvíte ještě před začátkem práce."
+        "body": "Tady se objeví chaty k zakázkám, na které jste reagovali, a zůstanou tu i poté, co zákazník přijme vaši reakci. Detaily si domluvíte ještě před začátkem práce."
       },
       "completed": {
         "title": "Zatím žádné dokončené zakázky",
@@ -599,14 +594,14 @@
       },
       "archived": {
         "title": "Archiv je prázdný",
-        "body": "Sem se ukládají chaty k odmítnutým nabídkám a zrušeným zakázkám."
+        "body": "Sem se ukládají chaty k odmítnutým reakcím a zrušeným zakázkám."
       }
     }
   },
   "verification": {
     "title": "Ověření totožnosti",
     "badge": "Ověřeno",
-    "intro": "Potvrďte svou totožnost úředním dokladem. Klienti uvidí odznak ověření na vašem profilu i u každé nabídky, kterou pošlete.",
+    "intro": "Potvrďte svou totožnost úředním dokladem. Zákazníci uvidí odznak ověření na vašem profilu i u každé reakce, kterou pošlete.",
     "whatHappens": "Jak to probíhá",
     "stepDocument": "Vyfotíte občanský průkaz, pas nebo povolení k pobytu.",
     "stepSelfie": "Pořídíte selfie, aby šlo porovnat obličej s dokladem.",
@@ -617,7 +612,7 @@
     "start": "Ověřit totožnost",
     "resume": "Pokračovat v ověření",
     "retry": "Zkusit znovu",
-    "publicNameNote": "Klienti vás vidí jako {{name}}.",
+    "publicNameNote": "Zákazníci vás vidí jako {{name}}.",
     "checking": "Kontrolujeme ověření…",
     "reviewNote": "Vaše doklady prochází kontrolou. Obvykle to trvá pár minut, někdy déle.",
     "declinedNote": "Totožnost se nepodařilo potvrdit. Zkontrolujte, že jsou fotky ostré a doklad je celý v záběru, a zkuste to znovu.",

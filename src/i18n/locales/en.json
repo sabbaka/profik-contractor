@@ -19,15 +19,15 @@
       "notCompleted": "This job isn't finished yet.",
       "notParticipant": "You're not part of this job.",
       "missingParticipants": "This job doesn't have both people yet.",
-      "closedToOffers": "This job is closed to new offers."
+      "closedToOffers": "This job is closed to new responses."
     },
     "offer": {
-      "notFound": "This offer no longer exists.",
-      "alreadyProcessed": "This offer has already been answered.",
-      "notParticipant": "You're not part of this offer.",
-      "duplicate": "You've already sent an offer for this job.",
-      "contractorsOnly": "Only a contractor account can send offers.",
-      "insufficientBalance": "Your balance is too low to send an offer.",
+      "notFound": "This response no longer exists.",
+      "alreadyProcessed": "This response has already been answered.",
+      "notParticipant": "You're not part of this response.",
+      "duplicate": "You've already sent a response for this job.",
+      "contractorsOnly": "Only a PRO account can send responses.",
+      "insufficientBalance": "Your balance is too low to send a response.",
       "conversationClosed": "This conversation is closed — no new messages can be sent."
     },
     "payment": {
@@ -39,7 +39,7 @@
     },
     "user": {
       "notFound": "We couldn't find this account.",
-      "contractorNotFound": "We couldn't find this specialist.",
+      "contractorNotFound": "We couldn't find this PRO.",
       "emailInUse": "That email is already in use."
     },
     "avatar": {
@@ -95,7 +95,7 @@
     },
     "name": {
       "title": "What should we call you?",
-      "subtitle": "Clients see this name on your offer when they choose who to hire.",
+      "subtitle": "Clients see this name on your response when they choose who to hire.",
       "save": "Save and continue"
     },
     "country": {
@@ -110,9 +110,6 @@
     "profile": "PROFILE",
     "messages": "MESSAGES"
   },
-  "header": {
-    "workspace": "Contractor workspace"
-  },
   "open": {
     "title": "Open Jobs",
     "finding": "Finding opportunities...",
@@ -126,7 +123,7 @@
     "errorTitle": "Couldn't load jobs",
     "errorBody": "Check your connection and try again.",
     "emptyTitle": "You're all caught up",
-    "emptyBody": "New customer jobs will appear here as soon as they're posted.",
+    "emptyBody": "New client jobs will appear here as soon as they're posted.",
     "filters": {
       "title": "Filters",
       "clearAll": "Clear All",
@@ -155,23 +152,23 @@
   },
   "my": {
     "title": "My Jobs",
-    "subtitle": "Track your offers and active work",
+    "subtitle": "Track your Responses and active work",
     "filters": {
-      "pending": "Pending",
-      "active": "In progress",
-      "completed": "Completed",
+      "pending": "Sent",
+      "active": "Accepted",
+      "completed": "Done",
       "declined": "Declined"
     },
     "labels": {
-      "pending": "pending offers",
-      "active": "jobs in progress",
+      "pending": "sent responses",
+      "active": "accepted jobs",
       "completed": "completed jobs",
-      "declined": "declined offers"
+      "declined": "declined responses"
     },
     "loading": "Loading {{label}}...",
     "errorTitle": "Couldn't load your jobs",
     "emptyTitle": "No {{label}}",
-    "emptyBody": "Jobs move between these tabs on their own — when the client answers your offer, and when the work is done."
+    "emptyBody": "Jobs move between these tabs on their own — when the client answers your response, and when the work is done."
   },
   "job": {
     "back": "Back",
@@ -192,19 +189,19 @@
     "service": "Service",
     "untitled": "Untitled job",
     "posted": "Posted {{date}}",
-    "openForOffers": "Open for offers",
+    "openForOffers": "Open for responses",
     "detailsCta": "Details",
     "about": "About this job",
     "location": "Location",
     "status": {
-      "pending": "Pending",
+      "pending": "Sent",
       "accepted": "Accepted",
       "declined": "Declined",
-      "in_progress": "In progress",
-      "completed": "Completed",
+      "in_progress": "Accepted",
+      "completed": "Done",
       "canceled": "Cancelled"
     },
-    "exactAddressAfterAccept": "Exact address and precise location are shared once your offer is accepted.",
+    "exactAddressAfterAccept": "Exact address and precise location are shared once your response is accepted.",
     "property": {
       "title": "Property",
       "rooms": "Rooms",
@@ -250,48 +247,48 @@
     }
   },
   "offer": {
-    "yourOffer": "Your offer",
-    "sentToCustomer": "Sent to the customer",
+    "yourOffer": "Your response",
+    "sentToCustomer": "Sent to the client",
     "yourPrice": "YOUR PRICE",
-    "messageCustomer": "Message customer",
-    "makeCounterTitle": "Offer your price",
-    "makeCounterBody": "Set a fair price and tell the customer what's included.",
+    "messageCustomer": "Message Client",
+    "makeCounterTitle": "Set your price",
+    "makeCounterBody": "Set a fair price and tell the client what's included.",
     "pricePlaceholder": "Your price in CZK",
     "messagePlaceholder": "Explain what's included...",
-    "sendCounter": "Send offer",
+    "sendCounter": "Send Response",
     "interestedTitle": "Interested in this job?",
-    "interestedBody": "Respond now to reach the customer early.",
-    "makeCounter": "Offer a different price",
+    "interestedBody": "Respond now to reach the client early.",
+    "makeCounter": "Propose a different price",
     "unauthorizedTitle": "Unauthorized",
-    "unauthorizedBody": "Only contractors can submit offers.",
-    "submitted": "Offer submitted successfully",
-    "failedSubmit": "Failed to submit offer",
+    "unauthorizedBody": "Only PROs can send responses.",
+    "submitted": "Response sent successfully",
+    "failedSubmit": "Failed to send response",
     "validation": {
-      "priceRequired": "Please enter your offer price.",
+      "priceRequired": "Please enter your response price.",
       "pricePositive": "Price must be a positive number.",
       "messageRequired": "Please explain your price to the client."
     },
-    "sendAtClientPrice": "Send offer",
-    "costNote": "{{price}} is deducted when you send an offer",
+    "sendAtClientPrice": "Send Response",
+    "costNote": "{{price}} is deducted when you send a response",
     "cost": {
-      "label": "Cost per offer",
+      "label": "Cost per response",
       "discount": "−{{percent}}%",
       "balance": "Your balance"
     },
     "balance": {
       "title": "Not enough balance",
-      "body": "An offer costs {{price}} · you have {{balance}}",
+      "body": "A response costs {{price}} · you have {{balance}}",
       "topUp": "Top up balance",
-      "interestedBody": "Top up your balance to send an offer on this job."
+      "interestedBody": "Top up your balance to send a response on this job."
     },
     "closed": {
       "completedTitle": "This job is finished",
-      "completedBody": "The client has closed it — offers are no longer accepted.",
+      "completedBody": "The client has closed it — responses are no longer accepted.",
       "canceledTitle": "This job was canceled",
-      "canceledBody": "The client canceled it — offers are no longer accepted."
+      "canceledBody": "The client canceled it — responses are no longer accepted."
     },
     "ownJobTitle": "This is your job",
-    "ownJobBody": "You posted this job. Manage it and review the offers in the Profik app."
+    "ownJobBody": "You posted this job. Manage it and review the responses in the Profik app."
   },
   "review": {
     "receivedTitle": "Client's review",
@@ -310,19 +307,17 @@
     }
   },
   "chat": {
-    "title": "Customer chat",
-    "eyebrow": "OFFER CONVERSATION",
-    "invalidOffer": "Invalid offer",
+    "invalidOffer": "Invalid response",
     "notSentTitle": "Message not sent",
     "notSentBody": "Please try again.",
     "closedTitle": "This conversation is closed",
-    "closedBody": "The offer was declined, so no new messages can be sent. Everything said before is still here.",
+    "closedBody": "The response was declined, so no new messages can be sent. Everything said before is still here.",
     "emptyTitle": "Start the conversation",
-    "emptyBody": "Ask a question or confirm the details of your offer.",
+    "emptyBody": "Ask a question or confirm the details of your response.",
     "placeholders": {
       "message": "Write a message..."
     },
-    "yourOffer": "Your offer {{price}}",
+    "yourOffer": "Your response {{price}}",
     "openJob": "Open job details"
   },
   "map": {
@@ -338,9 +333,9 @@
     "loading": "Loading balance...",
     "loadFailed": "Couldn't load balance",
     "available": "AVAILABLE BALANCE",
-    "tapToAddFunds": "Tap to add funds",
-    "usedFor": "Used for contractor services and job access.",
-    "addFunds": "Add funds",
+    "tapToAddFunds": "Tap to Top Up",
+    "usedFor": "Used only to send responses.",
+    "addFunds": "Top Up",
     "amountBody": "Enter the amount you'd like to add.",
     "rateNote": "You pay in CZK — every 1 Kč adds 1 credit.",
     "amountPlaceholder": "Amount in CZK",
@@ -361,10 +356,10 @@
       "loading": "Loading history...",
       "errorTitle": "Couldn't load history",
       "emptyTitle": "No transactions yet",
-      "emptyBody": "Top-ups and offer fees will show up here.",
+      "emptyBody": "Top-ups and response fees will show up here.",
       "type": {
         "topup": "Top-up",
-        "offerFee": "Offer fee",
+        "offerFee": "Response fee",
         "signupBonus": "Welcome bonus",
         "openingBalance": "Starting balance"
       },
@@ -389,7 +384,7 @@
     "deleteAccount": "Delete Account",
     "deletingAccount": "Deleting Account...",
     "deleteTitle": "Delete account?",
-    "deleteDescription": "This permanently deletes your account and personal data. Your sent offers and messages will be anonymized. This cannot be undone.",
+    "deleteDescription": "This permanently deletes your account and personal data. Your sent responses and messages will be anonymized. This cannot be undone.",
     "deleteCancel": "Cancel",
     "deleteConfirm": "Delete",
     "deleteSuccessTitle": "Account deleted",
@@ -398,7 +393,7 @@
     "version": "Version {{version}}",
     "balance": {
       "available": "AVAILABLE BALANCE",
-      "tapToAddFunds": "Tap to add funds"
+      "tapToAddFunds": "Tap to Top Up"
     },
     "placeholders": {
       "name": "Your name",
@@ -429,19 +424,19 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "intro": "This policy explains what information Profik Pro collects and how it is used. Profik Pro is the contractor-side app of the Profik marketplace, which connects customers with cleaning professionals in the Czech Republic.",
+    "intro": "This policy explains what information Profik Pro collects and how it is used. Profik Pro is the PRO-side app of the Profik marketplace, which connects clients with PRO in the Czech Republic.",
     "dataCollectedTitle": "Information we collect",
-    "dataCollected": "Account details you provide (name, email, phone number, password), the offers and messages you send to clients, and your balance top-up history.",
+    "dataCollected": "Account details you provide (name, email, phone number, password), the responses and messages you send to clients, and your balance top-up history.",
     "locationTitle": "Location",
     "location": "While you are using the app, we use your device location to show open jobs near you on the map and how far each job is from your current position. Location is not tracked in the background.",
     "notificationsTitle": "Notifications",
-    "notifications": "We use your device's push notification token to alert you about new client messages and offer updates.",
+    "notifications": "We use your device's push notification token to alert you about new client messages and response updates.",
     "balanceTitle": "Balance top-ups",
-    "balance": "Adding funds to your balance is completed in an external, secure Stripe checkout page opened in your browser - Profik Pro does not store your card details.",
+    "balance": "Topping up your balance is completed in an external, secure Stripe checkout page opened in your browser - Profik Pro does not store your card details.",
     "sharingTitle": "How your information is shared",
-    "sharing": "Clients can see your name, profile, and the offers you send on their jobs. Your phone number is never shared with clients - all communication happens through the in-app offer chat.",
+    "sharing": "Clients can see your name, profile, and the responses you send on their jobs. Your phone number is never shared with clients - all communication happens through the in-app chat.",
     "retentionTitle": "Data retention & deletion",
-    "retention": "Your data is kept for as long as your account is active. You can permanently delete your account at any time from Account settings -> Delete account; your past offers and messages are anonymized rather than removed, so job history for clients stays intact.",
+    "retention": "Your data is kept for as long as your account is active. You can permanently delete your account at any time from Account settings -> Delete account; your past responses and messages are anonymized rather than removed, so job history for clients stays intact.",
     "contactTitle": "Contact us",
     "contact": "If you have questions about this policy, contact us at {{email}}."
   },
@@ -451,11 +446,11 @@
     "faqTitle": "Frequently asked questions",
     "faq1Q": "How do I find jobs?",
     "faq1A": "On the Open Jobs tab, browse jobs near you on the map and list. Tap a job to see its service type, property details, location, and the client's budget.",
-    "faq2Q": "How do I send an offer?",
-    "faq2A": "Open a job, tap Send Offer, set your price and an optional message, then submit. Track it in My Jobs under Pending / Accepted / Declined.",
+    "faq2Q": "How do I send a response?",
+    "faq2A": "Open a job, tap Send Response, set your price and an optional message, then submit. Track it in My Jobs under Sent / Accepted / Declined.",
     "faq3Q": "How do I message a client?",
-    "faq3A": "Open your offer and tap into the Offer Chat to message the client directly - no need to share your phone number.",
-    "faq4Q": "How do I add funds to my balance?",
+    "faq3A": "Open your response and tap into the chat to message the client directly - no need to share your phone number.",
+    "faq4Q": "How do I top up my balance?",
     "faq4A": "Open Balance from your profile, enter an amount, and continue to the secure payment page. Your balance is used to pay platform fees.",
     "faq5Q": "How do I delete my account?",
     "faq5A": "Go to Account settings and scroll to Delete account. This permanently removes your account and cannot be undone.",
@@ -467,7 +462,7 @@
   "about": {
     "title": "About",
     "tagline": "Find cleaning jobs near you",
-    "description": "Profik Pro is the app for cleaning professionals who want a steady stream of local jobs. Browse open jobs near you, send your price, chat with clients, and get the job done - all in one app.",
+    "description": "Profik Pro is the app for PRO who want a steady stream of local jobs. Browse open jobs near you, send your price, chat with clients, and get the job done - all in one app.",
     "version": "Version {{version}}",
     "copyright": "© {{year}} Profik"
   },
@@ -480,13 +475,13 @@
       "find": {
         "titleAccent": "Need work?",
         "titleRest": "Clients are already looking",
-        "body": "Clients post their tasks — you pick the ones that fit and send your offer",
+        "body": "Clients post their tasks — you pick the ones that fit and send your response",
         "card": {
           "category": "Deep cleaning",
           "price": "2 400 Kč",
           "title": "Move-out apartment cleaning, 2+kk",
           "meta": "Praha 7 · 2.4 km away",
-          "status": "Open for offers"
+          "status": "Open for responses"
         }
       },
       "pick": {
@@ -501,8 +496,8 @@
           "location": "Praha 7, 170 00 · 2.4 km away",
           "date": "Friday, Sep 5 · morning",
           "details": "2+kk · 54 m² · oven and windows",
-          "accept": "Send offer for 2 400 Kč",
-          "counter": "Offer a different price"
+          "accept": "Send response for 2 400 Kč",
+          "counter": "Propose a different price"
         }
       },
       "paid": {
@@ -519,9 +514,9 @@
         }
       },
       "credits": {
-        "titleAccent": "100 offers",
+        "titleAccent": "100 responses",
         "titleRest": "on the house",
-        "body": "We add 500 credits to your balance right after sign-up — enough to send 100 offers and land your first jobs",
+        "body": "We add 500 credits to your balance right after sign-up — enough to send 100 responses and land your first jobs",
         "card": {
           "title": "Welcome bonus",
           "subtitle": "Added right after sign-up",
@@ -529,9 +524,9 @@
           "unit": "credits",
           "rowBonus": "Bonus on sign-up",
           "rowBonusValue": "500 credits",
-          "rowCost": "Cost per offer",
+          "rowCost": "Cost per response",
           "rowCostValue": "5 credits",
-          "rowOffers": "Offers you can send",
+          "rowOffers": "Responses you can send",
           "rowOffersValue": "100",
           "note": "No card needed — start responding right away"
         }
@@ -550,11 +545,11 @@
     "signIn": "Sign in",
     "browseJobs": "Browse jobs without an account",
     "myJobsTitle": "Sign in to see your jobs",
-    "myJobsBody": "Sign in with your phone to send offers and track their status here.",
+    "myJobsBody": "Sign in with your phone to send responses and track their status here.",
     "profileTitle": "You're browsing as a guest",
-    "profileBody": "Sign in to manage your profile, balance and offers.",
-    "signInToOffer": "Sign in to make an offer",
-    "signInToOfferBody": "Browsing is free — sign in with your phone number to send the client your offer."
+    "profileBody": "Sign in to manage your profile, balance and responses.",
+    "signInToOffer": "Sign in to respond",
+    "signInToOfferBody": "Browsing is free — sign in with your phone number to send the client your response."
   },
   "a11y": {
     "close": "Close",
@@ -582,7 +577,7 @@
     "openChatA11y": "Open chat with {{name}} about {{title}}",
     "findJob": "Find a job",
     "guestTitle": "Sign in to see your messages",
-    "guestBody": "Sign in with your phone to send offers and chat with clients here.",
+    "guestBody": "Sign in with your phone to send responses and chat with clients here.",
     "tabs": {
       "active": "Active",
       "completed": "Completed"
@@ -590,7 +585,7 @@
     "empty": {
       "active": {
         "title": "No active chats yet",
-        "body": "Chats appear here for jobs you responded to, and stay here once a client accepts your offer. You can agree the details before the work starts."
+        "body": "Chats appear here for jobs you responded to, and stay here once a client accepts your response. You can agree the details before the work starts."
       },
       "completed": {
         "title": "No finished jobs yet",
@@ -598,14 +593,14 @@
       },
       "archived": {
         "title": "Archive is empty",
-        "body": "Chats for declined offers and cancelled jobs end up here."
+        "body": "Chats for declined responses and cancelled jobs end up here."
       }
     }
   },
   "verification": {
     "title": "Identity verification",
     "badge": "Verified",
-    "intro": "Confirm who you are with a government ID. Clients see a verified badge on your profile and on every offer you send.",
+    "intro": "Confirm who you are with a government ID. Clients see a verified badge on your profile and on every response you send.",
     "whatHappens": "How it works",
     "stepDocument": "Photograph your ID card, passport or residence permit.",
     "stepSelfie": "Take a selfie, so your face can be matched to the document.",
