@@ -1,14 +1,12 @@
 import { useTabBarVisibility } from "@/src/context/TabBarVisibilityContext";
 import { useThemeColors } from "@/src/theme";
 import { useSegments } from "expo-router";
-import { Text as UIText } from "@/src/components/ui/ui";
-import { useTranslation } from "react-i18next";
+import { ProfikLogo } from "@/src/components/ui/ProfikLogo";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AnimatePresence, XStack, YStack } from "tamagui";
 import ContractorProfileHeaderButton from "../profile/ContractorProfileHeaderButton";
 
 export default function ContractorHeader() {
-  const { t } = useTranslation();
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const segments = useSegments() as string[];
@@ -42,24 +40,7 @@ export default function ContractorHeader() {
       paddingTop={insets.top + 8}
       paddingBottom={8}
     >
-      <YStack gap={1}>
-        <UIText
-          style={{
-            fontFamily: "InterTight_700Bold",
-            fontSize: 19,
-            lineHeight: 23,
-            color: colors.textPrimary,
-          }}
-        >
-          Profik{" "}
-          <UIText
-            style={{ color: colors.accent, fontFamily: "InterTight_700Bold" }}
-          >
-            Pro
-          </UIText>
-        </UIText>
-        <UIText variant="caption">{t("header.workspace")}</UIText>
-      </YStack>
+      <ProfikLogo size={26} />
       {isProfileTab ? null : <ContractorProfileHeaderButton />}
       {/* `AnimatePresence` + `enterStyle`/`exitStyle`, not a live `opacity`
           prop toggle — a toggled prop animated the fade-in in step with

@@ -37,7 +37,7 @@ const animations = createAnimations({
 });
 
 /**
- * The Profik brand gradient — the single source of this colour pair.
+ * The Profik brand gradients — the single source of these colour values.
  *
  * Deliberately theme-independent: it is the brand mark, not a themed surface,
  * so it is a module constant rather than a theme token, and it reads the same
@@ -49,6 +49,14 @@ const animations = createAnimations({
  */
 export const PROFIK_GRADIENT = {
   accent: ["#FF8A2B", "#E85D00"] as const,
+  /**
+   * The logo's own gradient — amber → orange → red, as `landing-page.pen`
+   * draws the mark. Wider than `accent` on purpose, and not a replacement for
+   * it: `accent` still paints buttons, avatars and every other themed
+   * surface, where three stops would be noise. Only `ProfikLogo` reads this.
+   */
+  mark: ["#FFB800", "#FF7A18", "#F5133F"] as const,
+  markStops: [0, 0.45, 1] as const,
 };
 
 /**

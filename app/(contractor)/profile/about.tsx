@@ -1,13 +1,12 @@
+import { ProfikMark, ProfikWordmark } from "@/src/components/ui/ProfikLogo";
 import { Text } from "@/src/components/ui/ui";
 import { useThemeColors } from "@/src/theme";
-import { PROFIK_GRADIENT } from "@/tamagui.config";
 import { ChevronLeft } from "@tamagui/lucide-icons";
 import Constants from "expo-constants";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { XStack, YStack } from "tamagui";
 
@@ -46,35 +45,10 @@ export default function AboutScreen() {
         }}
       >
         <YStack alignItems="center" gap={12} paddingVertical={12}>
-          <YStack
-            width={72}
-            height={72}
-            borderRadius={9999}
-            overflow="hidden"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <LinearGradient
-              colors={PROFIK_GRADIENT.accent}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <Text
-              position="relative"
-              zIndex={1}
-              style={{
-                color: "#FFFFFF",
-                fontFamily: "InterTight_700Bold",
-                fontSize: 28,
-                lineHeight: 34,
-                textAlign: "center",
-              }}
-            >
-              P
-            </Text>
-          </YStack>
-          <Text variant="h3">Profik Pro</Text>
+          {/* The mark alone, with the name spelled out below it — the lockup
+              would repeat the mark twice on top of its own wordmark. */}
+          <ProfikMark height={72} />
+          <ProfikWordmark fontSize={32} />
           <Text variant="body" textAlign="center">
             {t("about.tagline")}
           </Text>
