@@ -6,6 +6,7 @@
   "build": {
     "base": {
       "node": "22.16.0",
+      "channel": "preview",
       "env": {
         "EAS_BUILD_NO_EXPO_GO_WARNING": "true",
         "SENTRY_ALLOW_FAILURE": "true"
