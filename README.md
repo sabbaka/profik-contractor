@@ -75,7 +75,7 @@ so it lands on the second launch after it is published.
 
 ```bash
 eas update --branch production --environment production --message "fix: ..."
-eas env:exec production -- npx sentry-expo-upload-sourcemaps dist
+eas env:exec production "npx sentry-expo-upload-sourcemaps dist"
 ```
 
 `--environment production` is not optional. There is no default, and without it

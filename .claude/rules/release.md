@@ -112,7 +112,7 @@ A non-empty diff means this is not an update.
 
 ```bash
 eas update --branch production --environment production --message "<what>"
-eas env:exec production -- npx sentry-expo-upload-sourcemaps dist
+eas env:exec production "npx sentry-expo-upload-sourcemaps dist"
 ```
 
 Both lines are load-bearing.
