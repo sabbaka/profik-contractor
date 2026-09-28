@@ -1,6 +1,7 @@
 {
   "note": "Modules whose logic is mirrored in profik, and the test files that cover them. Doc comments may differ where each app names its own endpoints. See scripts/check-shared-modules.mjs.",
   "files": {
+    "eas.json": "af0b4c95e8f23a1c53697f98b5d5969cc79c28f91e5d743a113af7066595035b",
     "src/api/pagination.test.ts": "a80d57ded6305034726d1eff6b23dbc85b0a97f0622b5fc213889aefd244ea88",
     "src/api/pagination.ts": "fb201de7d8bf225cee89ab657f7e5e4b96ffce1a516ed72b426ca21bcc495427",
     "src/features/auth/errors.test.ts": "7c693873141114a6a749577ccfc4e4569166e10cf34b0b4bfd72c1850c0afff1",
