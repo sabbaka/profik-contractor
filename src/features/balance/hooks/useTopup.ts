@@ -89,20 +89,10 @@ export function useTopup(): UseTopupReturn {
 
       return { success: true, balanceUpdated: false };
     } catch (err: unknown) {
-      // Only a reply from the server is worth quoting. `err.data.message`
-      // used to be read straight out and handed to Alert.alert, which is typed
-      // string — the server's validation failures arrive as an array of rules,
-      // and under the new architecture that killed the call rather than
-      // printing oddly. The shared extractor resolves an error code out of
-      // `errors.*` first, so a refused checkout reads in the reader's
-      // language; anything with no server body at all (a dropped connection,
-      // a thrown Error) stays our own translated line rather than leaking a
-      // stack message onto the screen.
-      const fromServer =
-        err && typeof err === "object" && "data" in err && err.data
-          ? extractErrorMessage(err, t)
-          : null;
-      const errorMessage = fromServer || t("balance.topupFailed");
+      // A refused checkout with a code reads as itself in the reader's
+      // language; anything else — no code, a dropped connection, a thrown
+      // Error — is our own top-up failure line, never the server's English.
+      const errorMessage = extractErrorMessage(err, t, "balance.topupFailed");
       Alert.alert(t("common.error"), errorMessage);
       return { success: false, error: errorMessage };
     }

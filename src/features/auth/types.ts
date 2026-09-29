@@ -2,6 +2,7 @@ import type { SerializedError } from "@reduxjs/toolkit";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import i18n from "@/src/i18n";
+import * as Sentry from "@sentry/react-native";
 import type { TermsState } from "./terms";
 
 export interface User {
@@ -92,28 +93,58 @@ export function serverErrorCode(error: unknown): string | null {
 /**
  * Message to show for an error from the API.
  *
- * Pass `t` and an error carrying a code is read out of `errors.*` in the active
- * locale. Without a key for it — or without `t` — the server's own English
- * message is used, which is what every caller got before codes existed, so a
- * missing translation degrades rather than breaks.
+ * An error carrying a code is read out of `errors.*` in the active locale.
+ * Anything else — no code, a code with no key yet, a transport failure — gets
+ * `fallbackKey`, never the server's own text: that is English, written for
+ * developers ("price must not be less than 200"), and a server case worth
+ * wording for people gets a code of its own. The raw text goes to the Sentry
+ * breadcrumbs, so it still rides along with whatever event follows.
  */
 export function extractErrorMessage(
   error: unknown,
-  t?: (key: string) => string,
+  t: (key: string) => string,
+  fallbackKey = "errors.unknown",
 ): string {
   const code = serverErrorCode(error);
-  if (t && code && i18n.exists(`errors.${code}`)) {
+  if (code && i18n.exists(`errors.${code}`)) {
     return t(`errors.${code}`);
   }
-  if (error && typeof error === "object") {
-    if ("data" in error && error.data && typeof error.data === "object") {
-      if ("message" in error.data && typeof error.data.message === "string") {
-        return error.data.message;
-      }
-    }
-    if ("message" in error && typeof error.message === "string") {
-      return error.message;
+  const raw = rawErrorMessage(error);
+  if (raw) {
+    Sentry.addBreadcrumb({
+      category: "api.error",
+      level: "warning",
+      message: raw,
+      data: {
+        ...(errorStatus(error) != null && { status: errorStatus(error) }),
+        ...(code && { code }),
+      },
+    });
+  }
+  return t(fallbackKey);
+}
+
+function errorStatus(error: unknown): number | string | undefined {
+  if (error && typeof error === "object" && "status" in error) {
+    const { status } = error as { status: unknown };
+    if (typeof status === "number" || typeof status === "string") return status;
+  }
+  return undefined;
+}
+
+function rawErrorMessage(error: unknown): string | undefined {
+  if (!error || typeof error !== "object") return undefined;
+  if ("data" in error && error.data && typeof error.data === "object") {
+    if ("message" in error.data) {
+      const { message } = error.data as { message: unknown };
+      if (typeof message === "string") return message;
+      // Nest's ValidationPipe answers with one message per failed field.
+      if (Array.isArray(message)) return message.join("; ");
     }
   }
-  return "An unknown error occurred";
+  if ("error" in error && typeof error.error === "string") return error.error;
+  if ("message" in error && typeof error.message === "string") {
+    return error.message;
+  }
+  return undefined;
 }

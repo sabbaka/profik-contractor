@@ -94,10 +94,15 @@ that function.
 
 ## Errors
 
-`extractErrorMessage` (`src/features/auth/types.ts`) pulls a server message out
-of an unknown error. It's fine for the common case and is reused outside auth
-(e.g. `profile.tsx`'s delete-account flow) — despite living in `features/auth`,
-treat it as the app's general-purpose extractor rather than duplicating it.
+`extractErrorMessage` (`src/features/auth/types.ts`) turns an unknown error into
+a message for people: a server `code` with a key in `errors.*` is translated;
+anything else gets a generic translated text (`errors.unknown`, or the
+`fallbackKey` the caller passes when it has a more specific one, e.g.
+`offer.failedSubmit`). It never returns the server's own text — that is English
+written for developers, and it goes to the Sentry breadcrumbs instead. A server
+case worth its own wording gets a `code` on the backend and a key here. Never
+show `error.data.message` directly. Despite living in `features/auth`, treat it
+as the app's general-purpose extractor; the client app carries the same one.
 
 When an endpoint has failure modes the user should be told apart, classify by
 status instead of surfacing a raw string. `classifyPhoneAuthError` in

@@ -159,19 +159,44 @@ describe("waiting for Stripe to credit the balance", () => {
 });
 
 describe("when the top-up cannot start", () => {
-  it("reports the server's message and does not poll", async () => {
+  it("reports a coded refusal in the reader's language and does not poll", async () => {
     mockTopupMutation.mockReturnValue({
       unwrap: async () => {
-        throw { data: { message: "Card declined" } };
+        throw {
+          status: 503,
+          data: {
+            code: "payment.checkoutFailed",
+            message: "Payment provider is unavailable",
+          },
+        };
       },
     });
     const result = await setUp();
 
     const outcome = await runTopup(() => result.current.topup(400));
 
-    expect(outcome).toMatchObject({ success: false, error: "Card declined" });
+    expect(outcome).toMatchObject({
+      success: false,
+      error: "errors.payment.checkoutFailed",
+    });
     expect(Alert.alert).toHaveBeenCalled();
     expect(mockRefetchBalance).not.toHaveBeenCalled();
+  });
+
+  it("does not quote a refusal that carries no code", async () => {
+    mockTopupMutation.mockReturnValue({
+      unwrap: async () => {
+        throw { status: 400, data: { message: "amount must be an integer" } };
+      },
+    });
+    const result = await setUp();
+
+    const outcome = await runTopup(() => result.current.topup(400));
+
+    expect(outcome).toMatchObject({
+      success: false,
+      error: "balance.topupFailed",
+    });
   });
 
   it("falls back to translated copy when the server says nothing useful", async () => {
