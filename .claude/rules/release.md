@@ -47,8 +47,12 @@ counter expensive to get wrong, and why the counter was handed to EAS.
 ## Releasing is a pushed tag
 
 A tag `v<version>` triggers `.eas/workflows/release.yml`, which builds both
-platforms and submits each to its store. Android goes to the **alpha** track,
-iOS to TestFlight via App Store Connect.
+platforms and submits each to its store. Android goes to the **internal**
+track, iOS to TestFlight via App Store Connect.
+
+Closed testing (`alpha`) is reached by promoting that release in Play Console,
+not by a second submit: EAS submits to one track, and Play refuses the same
+`versionCode` a second time.
 
 Consequences worth stating plainly before you tag:
 
