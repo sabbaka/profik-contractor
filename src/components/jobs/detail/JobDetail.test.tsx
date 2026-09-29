@@ -213,7 +213,11 @@ describe("Job detail", () => {
         routes({
           "POST /offers": {
             status: 403,
-            body: { statusCode: 403, message: "Insufficient balance" },
+            body: {
+              statusCode: 403,
+              code: "offer.insufficientBalance",
+              message: "Insufficient balance",
+            },
           },
         }),
       );
@@ -226,11 +230,34 @@ describe("Job detail", () => {
       await waitFor(() =>
         expect(alertSpy()).toHaveBeenCalledWith(
           "Error",
-          "Insufficient balance",
+          "Your balance is too low to send a response.",
         ),
       );
       expect(screen.getByText("Interested in this job?")).toBeOnTheScreen();
       expect(screen.queryByText("Your response")).not.toBeOnTheScreen();
+    });
+
+    it("does not quote a refusal that carries no code", async () => {
+      mockApi(
+        routes({
+          "POST /offers": {
+            status: 400,
+            body: { statusCode: 400, message: ["price must be a number"] },
+          },
+        }),
+      );
+      await renderWithProviders(<JobDetail />, { authed: true });
+
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Send Response" }),
+      );
+
+      await waitFor(() =>
+        expect(alertSpy()).toHaveBeenCalledWith(
+          "Error",
+          "Failed to send response",
+        ),
+      );
     });
 
     it("sends a contractor who cannot afford it to top up instead", async () => {

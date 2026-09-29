@@ -28,6 +28,8 @@ jest.mock("@/src/features/auth/hooks/useNameGate", () => ({
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+  // The error extractor loads the real i18n instance, which registers this.
+  initReactI18next: { type: "3rdParty", init: () => {} },
 }));
 
 const CONTRACTOR = { id: "u1", role: "contractor", balance: 100 };
@@ -226,10 +228,10 @@ describe("countering with your own price", () => {
     expect(result.current.message).toBe("");
   });
 
-  it("keeps the form when the server refuses, and says why", async () => {
+  it("keeps the form when the server refuses, without quoting it", async () => {
     mockCreateOffer.mockReturnValue({
       unwrap: async () => {
-        throw { data: { message: "Not enough balance" } };
+        throw { status: 400, data: { message: "price must be a number" } };
       },
     });
     const result = await setUp();
@@ -246,7 +248,9 @@ describe("countering with your own price", () => {
     expect(result.current.price).toBe("900");
     expect((Alert.alert as jest.Mock).mock.calls.at(-1)).toEqual([
       "common.error",
-      "Not enough balance",
+      // A refusal with no code has no wording of ours: the offer's own
+      // failure line, never the server's English.
+      "offer.failedSubmit",
     ]);
   });
 });

@@ -11,6 +11,7 @@
     "validation": "Validation"
   },
   "errors": {
+    "unknown": "Something went wrong. Please try again.",
     "job": {
       "notFound": "This job no longer exists.",
       "notYours": "This job belongs to someone else.",

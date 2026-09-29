@@ -11,6 +11,7 @@
     "validation": "Validace"
   },
   "errors": {
+    "unknown": "Něco se pokazilo. Zkuste to prosím znovu.",
     "job": {
       "notFound": "Tato zakázka už neexistuje.",
       "notYours": "Tato zakázka patří někomu jinému.",

@@ -131,8 +131,8 @@ export function useIdentityVerification(): UseIdentityVerificationReturn {
       awaitingReturn.current = false;
       // extractErrorMessage resolves the backend's code out of `errors.*`, so
       // "already verified", "too many attempts" and "not configured" each read
-      // as themselves rather than as one generic failure. It always returns
-      // something — the server's own English message when there is no key.
+      // as themselves rather than as one generic failure; anything without a
+      // key gets the generic translated line, never the server's English.
       Alert.alert(t("common.error"), extractErrorMessage(error, t));
       return false;
     }

@@ -4,6 +4,7 @@ import {
   useMeQuery,
 } from "@/src/api/profikApi";
 import { OFFER_COST_CZK } from "@/src/components/jobs/detail/offerPricing";
+import { extractErrorMessage } from "@/src/features/auth/types";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useNameGate } from "@/src/features/auth/hooks/useNameGate";
 import { track } from "@/src/utils/analytics";
@@ -107,9 +108,11 @@ export const useJobOffer = ({
       setPrice("");
       setMessage("");
       onSuccess?.();
-    } catch (err: any) {
-      const msg = err?.data?.message || t("offer.failedSubmit");
-      Alert.alert(t("common.error"), msg);
+    } catch (err) {
+      Alert.alert(
+        t("common.error"),
+        extractErrorMessage(err, t, "offer.failedSubmit"),
+      );
     }
   }, [canOffer, jobId, jobPrice, balance, createOffer, onSuccess, t]);
 
@@ -158,9 +161,11 @@ export const useJobOffer = ({
       setMessage("");
       setPrice("");
       onSuccess?.();
-    } catch (err: any) {
-      const msg = err?.data?.message || t("offer.failedSubmit");
-      Alert.alert(t("common.error"), msg);
+    } catch (err) {
+      Alert.alert(
+        t("common.error"),
+        extractErrorMessage(err, t, "offer.failedSubmit"),
+      );
     }
   }, [
     canOffer,
