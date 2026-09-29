@@ -1,7 +1,9 @@
+import { profikApi } from "@/src/api/profikApi";
 import type { Job } from "@/src/api/types";
 import { apiCalls, mockApi } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
-import { fireEvent, screen } from "@testing-library/react-native";
+import * as analytics from "@/src/utils/analytics";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react-native";
 import { router } from "expo-router";
 import { OpenJobsScreen } from "./OpenJobsScreen";
 
@@ -135,5 +137,75 @@ describe("Open Jobs", () => {
 
     expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
     expect(screen.getByText("2 jobs available near you")).toBeOnTheScreen();
+  });
+
+  it("keeps the loaded jobs when a later refresh fails, and offers a retry", async () => {
+    let fail = false;
+    mockApi({
+      "GET /jobs/open": () =>
+        fail
+          ? { status: 500, body: { message: "Internal server error" } }
+          : { body: JOBS },
+    });
+    const { store } = await renderWithProviders(<OpenJobsScreen />);
+    expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
+
+    // What happens behind the contractor's back: an offer sent elsewhere
+    // invalidates "Jobs", or the app comes back to the foreground.
+    fail = true;
+    await act(async () => {
+      store.dispatch(profikApi.util.invalidateTags(["Jobs"]));
+    });
+    await screen.findByRole("button", {
+      name: "Couldn't refresh jobs. Tap to try again.",
+    });
+
+    expect(screen.getByText("Úklid bytu 2+kk")).toBeOnTheScreen();
+    expect(screen.getByText("2 jobs available near you")).toBeOnTheScreen();
+    expect(screen.queryByText("Couldn't load jobs")).not.toBeOnTheScreen();
+
+    fail = false;
+    await fireEvent.press(
+      screen.getByRole("button", {
+        name: "Couldn't refresh jobs. Tap to try again.",
+      }),
+    );
+
+    expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
+    await screen.findByText("2 jobs available near you");
+    await waitFor(() =>
+      expect(
+        screen.queryByText("Couldn't refresh jobs. Tap to try again."),
+      ).not.toBeOnTheScreen(),
+    );
+  });
+
+  it("reports a failed first load as an error, not an empty feed", async () => {
+    const track = jest.spyOn(analytics, "track");
+    mockApi({
+      "GET /jobs/open": { status: 500, body: { message: "Internal error" } },
+    });
+    await renderWithProviders(<OpenJobsScreen />);
+    await screen.findByText("Couldn't load jobs");
+
+    expect(track).toHaveBeenCalledWith("open_jobs_screen_viewed", {
+      state: "error",
+      is_authenticated: false,
+    });
+    track.mockRestore();
+  });
+
+  it("reports a loaded feed with its count", async () => {
+    const track = jest.spyOn(analytics, "track");
+    mockApi({ "GET /jobs/open": { body: JOBS } });
+    await renderWithProviders(<OpenJobsScreen />);
+    await screen.findByText("Úklid bytu 2+kk");
+
+    expect(track).toHaveBeenCalledWith("open_jobs_screen_viewed", {
+      jobs_count: 2,
+      state: "list",
+      is_authenticated: false,
+    });
+    track.mockRestore();
   });
 });

@@ -124,6 +124,7 @@
     "loading": "Načítám dostupné zakázky...",
     "errorTitle": "Zakázky se nepodařilo načíst",
     "errorBody": "Zkontrolujte připojení a zkuste to znovu.",
+    "refreshError": "Zakázky se nepodařilo obnovit. Klepnutím to zkuste znovu.",
     "emptyTitle": "Vše máte zkontrolováno",
     "emptyBody": "Nové zákaznické zakázky se zde objeví hned po zveřejnění.",
     "filters": {

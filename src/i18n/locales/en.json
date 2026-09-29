@@ -124,6 +124,7 @@
     "loading": "Loading open jobs...",
     "errorTitle": "Couldn't load jobs",
     "errorBody": "Check your connection and try again.",
+    "refreshError": "Couldn't refresh jobs. Tap to try again.",
     "emptyTitle": "You're all caught up",
     "emptyBody": "New client jobs will appear here as soon as they're posted.",
     "filters": {
