@@ -81,14 +81,18 @@ export function OpenJobsScreen() {
           <Text variant="h1">{t("open.title")}</Text>
           {/* The count is what has been loaded, not what exists — the endpoint
               answers with a page, not a total. While more pages remain, say so
-              with a "+" instead of claiming a number we do not have. */}
-          <Text variant="bodySm">
-            {isLoading
-              ? t("open.finding")
-              : hasNextPage
-                ? t("open.availableMore", { count: jobs.length })
-                : t("open.available", { count: jobs.length })}
-          </Text>
+              with a "+" instead of claiming a number we do not have. When the
+              body shows the error, there is no count at all: "0 jobs" above
+              "Couldn't load jobs" reads as an empty feed. */}
+          {!(error && !isLoading) && (
+            <Text variant="bodySm">
+              {isLoading
+                ? t("open.finding")
+                : hasNextPage
+                  ? t("open.availableMore", { count: jobs.length })
+                  : t("open.available", { count: jobs.length })}
+            </Text>
+          )}
         </YStack>
         <Pressable
           onPress={() => setFiltersOpen(true)}

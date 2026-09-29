@@ -127,9 +127,13 @@ describe("Open Jobs", () => {
       screen.getByText("Check your connection and try again."),
     ).toBeOnTheScreen();
     expect(screen.queryByText("Úklid bytu 2+kk")).not.toBeOnTheScreen();
+    // Nothing was loaded, so the header has no count to claim — "0 jobs
+    // available" above "Couldn't load jobs" reads as an empty feed.
+    expect(screen.queryByText(/available near you/)).not.toBeOnTheScreen();
 
     await fireEvent.press(screen.getByText("Retry"));
 
     expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
+    expect(screen.getByText("2 jobs available near you")).toBeOnTheScreen();
   });
 });
