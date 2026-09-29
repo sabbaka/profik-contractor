@@ -15,6 +15,7 @@ process.env.EXPO_PUBLIC_API_URL = "https://api.test.invalid";
 // src/utils/logger.ts imports Sentry at module load, so anything that logs pulls
 // the native SDK in. Tests assert on the logger's own behaviour, not on Sentry.
 jest.mock("@sentry/react-native", () => ({
+  addBreadcrumb: jest.fn(),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
   init: jest.fn(),
