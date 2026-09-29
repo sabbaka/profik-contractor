@@ -48,7 +48,7 @@ export default function EditProfileScreen() {
       Alert.alert(t("common.success"), t("profile.updateSuccess"));
       router.back();
     } else {
-      Alert.alert(t("common.error"), result.error || t("profile.updateFailed"));
+      Alert.alert(t("common.error"), result.error);
     }
   };
 
