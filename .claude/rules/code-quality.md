@@ -36,25 +36,69 @@ Rules of thumb:
 ## Tests
 
 `jest` with the `jest-expo` preset. Tests sit next to the code they cover as
-`*.test.ts`, and they cover **logic, not screens** — pure functions and hooks
-through `renderHook`. Nothing renders a component, which is what keeps Tamagui
-and reanimated out of the test environment entirely; that boundary is the
-reason the setup is small enough to stay working.
+`*.test.ts(x)`, and they cover **logic and screen behaviour, not appearance**.
+
+- **Logic** — pure functions, and hooks through `renderHook`.
+- **Screens** — rendered with `renderWithProviders` from
+  `src/test-utils/renderWithProviders.tsx`, which wraps them in the providers
+  `app/_layout.tsx` uses and a real store. The network is mocked at `fetch`
+  with `mockApi` from `src/test-utils/mockApi.ts`, never at the hooks, so the
+  real RTK Query layer — the URL each endpoint builds, its params, the auth
+  header, the cache and its invalidation — runs in the test. A request no route
+  answers fails the test and names the URL.
+
+A screen test asserts what the person gets: what is shown in each state (data,
+empty, error, loading), what is sent to the API, and where a press navigates.
+Query by text, role and accessibility label, the way a reader finds things;
+reach for `testID` only when nothing else can. No snapshot tests — a snapshot
+fails on every restyle and passes on a broken flow.
+
+Layout, the keyboard, gestures and animations are Maestro's job, not jest's.
+Nothing here lays anything out, so a jest test cannot tell you a button is off
+screen or behind the keyboard.
 
 There is no coverage threshold. Coverage on a suite this young is a number, not
 a signal — the tests that exist were written for places that have already
-broken, and that is the standard for adding one.
+broken, or for flows that would cost a release if they did, and that is the
+standard for adding one.
 
-Two things to know before writing one:
+Things to know before writing one:
 
-- **`renderHook` is async** (RNTL 14, React 19). `await` it, and `await act()`.
+- **`render`, `renderHook` and `fireEvent` are async** (RNTL 14, React 19).
+  `await` all three, and `await act()`. An un-awaited `fireEvent` shows up as
+  "overlapping act() calls" and a test that looks at the screen too early.
 - **A `jest.mock` factory may only reference names prefixed with `mock`.** Jest
   hoists the factory above the imports, so anything else is not yet defined.
+- **Reanimated is kept out by one swap.** `tamagui.config.ts` animates through
+  `@tamagui/animations-moti`, which imports moti and reanimated's worklet
+  runtime — native code jest cannot start. `jest.setup.ts` replaces it with
+  `@tamagui/animations-react-native`, which takes the same presets on the plain
+  `Animated` API. Do not import reanimated into a screen test; if a screen
+  starts pulling it in some other way, mock that entry point the same way.
+- **`expo-router` is mocked, and there is no navigator.** Assert on `router`
+  (`useRouter()` returns the same object). `useLocalSearchParams` is a
+  `jest.fn` — set its return value per test. `useFocusEffect` runs as a plain
+  effect, so a mounted screen counts as focused.
+- **Native components a screen needs are mocked in its own test file** when
+  only that screen uses them — the map on the job detail and `expo-location`
+  under the Open Jobs filters are the examples.
+- **Tests for route files live in `__tests__/app/`, never under `app/`.**
+  expo-router turns every `.ts`/`.tsx` under `app/` into a route — its ignore
+  pattern spares only `+api`, `+html` and `+native-intent` — so a test beside
+  its route would be bundled into the app and would call `jest.mock` on a
+  device where `jest` does not exist. Mirror the route's path
+  (`__tests__/app/(contractor)/offer-chat/[offerId].test.tsx` tests `app/(contractor)/offer-chat/[offerId].tsx`)
+  and import it through `@/app/...`. `__tests__/app/routeTree.test.ts` fails
+  the suite if a test file ever appears under `app/`. Screens that live in
+  `src/components/` keep their test beside them.
 
 Global mocks live in `jest.setup.ts` — Sentry, `expo-router`, AsyncStorage,
-SecureStore, and `EXPO_PUBLIC_API_URL`, which `profikApi` reads at module load.
+SecureStore, `expo-file-system`, `expo-localization`, PostHog,
+`react-native-keyboard-controller`, the animations driver, and
+`EXPO_PUBLIC_API_URL`, which `profikApi` reads at module load.
 The setup, `jest.config.js` and `babel.config.js` are byte-identical to the
-client app's; keep them that way.
+client app's, and `src/test-utils/` differs only by the contractor's
+`TabBarVisibilityProvider`; keep them that way.
 
 ## Modules mirrored in the client app
 

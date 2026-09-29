@@ -38,9 +38,19 @@ module.exports = {
         )
       : pattern,
   ),
-  // Screens are deliberately out of scope — these tests cover logic, so nothing
-  // here renders Tamagui or reanimated. `.spec` is matched alongside `.test`
+  // Screens render through src/test-utils/renderWithProviders — see
+  // .claude/rules/code-quality.md. `.spec` is matched alongside `.test`
   // because nothing is named that way today, and a file that was would be
   // skipped in silence rather than failing.
   testMatch: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+  // Without this, coverage counts only files some test imports, which reads as
+  // 80-90% while most of the app is never loaded. Listing the source tree makes
+  // the number honest; there is still no threshold on purpose.
+  collectCoverageFrom: [
+    "app/**/*.{ts,tsx}",
+    "src/**/*.{ts,tsx}",
+    "!**/*.d.ts",
+    "!**/*.{test,spec}.{ts,tsx}",
+    "!src/test-utils/**",
+  ],
 };
