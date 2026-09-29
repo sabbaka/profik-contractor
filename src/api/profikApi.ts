@@ -360,7 +360,17 @@ export const profikApi = createApi({
       // waiting for a refetch. The invalidation above still runs and converges
       // on the same row.
       async onQueryStarted({ jobId }, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
+        let data: Offer;
+        try {
+          ({ data } = await queryFulfilled);
+        } catch {
+          // A refusal (403 on a short balance, say) reaches the caller through
+          // the mutation's own result, and the screen alerts it. Letting it
+          // escape here would also surface as an unhandled rejection, which
+          // the global handler reports to Sentry — once per refused offer.
+          // Only the request is caught: a broken cache patch below still throws.
+          return;
+        }
         dispatch(
           profikApi.util.upsertQueryData("getMyOfferForJob", jobId, data),
         );
@@ -531,7 +541,13 @@ export const profikApi = createApi({
     >({
       query: (body) => ({ url: "/users/me", method: "PATCH", body }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
+        let data: MeResponse;
+        try {
+          ({ data } = await queryFulfilled);
+        } catch {
+          // The form shows the failure itself; see createOffer.
+          return;
+        }
         // Merge, never replace. This answers with a UserResponseDto, which is
         // not the shape GET /auth/me returns — `unreadMessages` rides along
         // with /auth/me only. Overwriting the whole cache entry drops it, and
@@ -566,7 +582,13 @@ export const profikApi = createApi({
         };
       },
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        const { data } = await queryFulfilled;
+        let data: MeResponse;
+        try {
+          ({ data } = await queryFulfilled);
+        } catch {
+          // The form shows the failure itself; see createOffer.
+          return;
+        }
         // Merged for the same reason as updateProfile above — and this is
         // where it was caught: replacing the entry sent the phone number on
         // the profile screen to "—" the moment the avatar changed.

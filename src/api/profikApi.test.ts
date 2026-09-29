@@ -238,6 +238,68 @@ describe("the me cache is merged, never replaced", () => {
 });
 
 /**
+ * A refused mutation is the caller's to report: the screen reads the rejected
+ * result and alerts it. An `onQueryStarted` that awaits `queryFulfilled` without
+ * a catch rethrows that same failure into nowhere, and the app's global handler
+ * then files it in Sentry as an `unhandledRejection` — once per refusal.
+ */
+describe("a refused mutation leaks no unhandled rejection", () => {
+  let leaked: unknown[];
+  const onLeak = (reason: unknown) => leaked.push(reason);
+
+  beforeEach(() => {
+    leaked = [];
+    process.on("unhandledRejection", onLeak);
+  });
+
+  afterEach(() => {
+    process.off("unhandledRejection", onLeak);
+  });
+
+  /**
+   * Node reports an unhandled rejection a macrotask after it happens, and this
+   * file fakes the global timers — hence the real `setImmediate`.
+   */
+  const settle = () =>
+    new Promise((resolve) =>
+      jest
+        .requireActual<typeof import("timers")>("timers")
+        .setImmediate(resolve),
+    );
+
+  it.each([
+    [
+      "createOffer",
+      () => profikApi.endpoints.createOffer.initiate({ jobId: "j1", price: 1 }),
+    ],
+    [
+      "updateProfile",
+      () => profikApi.endpoints.updateProfile.initiate({ name: "Anna" }),
+    ],
+    [
+      "uploadAvatar",
+      () => profikApi.endpoints.uploadAvatar.initiate({ uri: "file:///a.jpg" }),
+    ],
+  ])("%s", async (_name, thunk) => {
+    const store = makeStore();
+    store.dispatch(setToken("tok-123"));
+    global.fetch = respond(403, {
+      statusCode: 403,
+      message: "Forbidden",
+    }) as unknown as typeof fetch;
+
+    const result = await run<{ error?: unknown; unwrap: unknown }>(
+      store,
+      thunk(),
+    );
+    await settle();
+
+    expect(result.error).toMatchObject({ status: 403 });
+    expect(leaked).toEqual([]);
+  });
+});
+
+/**
  * Cache invalidation, exercised as a refetch rather than by reading the tag
  * arrays back: a tag is only correct relative to what provides it, and the
  * three bugs this covers were all a mutation whose tags looked right and

@@ -1,4 +1,4 @@
-import { profikApi, type MeResponse } from "@/src/api/profikApi";
+import type { MeResponse } from "@/src/api/profikApi";
 import type { Job, Offer } from "@/src/api/types";
 import { apiCalls, mockApi, type MockRoutes } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
@@ -95,38 +95,6 @@ const offerPosts = async (api: jest.SpyInstance) =>
   );
 
 const alertSpy = () => Alert.alert as jest.Mock;
-
-/**
- * Wraps createOffer's onQueryStarted so the rejected queryFulfilled it does not
- * catch stops escaping as an unhandled rejection. Returns the undo.
- */
-function swallowCreateOfferRejection() {
-  let undo = () => {};
-  profikApi.enhanceEndpoints({
-    endpoints: {
-      createOffer: (definition) => {
-        const original = definition.onQueryStarted;
-        definition.onQueryStarted = async (arg, lifecycle) => {
-          try {
-            await original?.(arg, lifecycle);
-          } catch {
-            // The leak itself — see the test that calls this.
-          }
-        };
-        undo = () => {
-          definition.onQueryStarted = original;
-        };
-      },
-    },
-  });
-  return () => undo();
-}
-
-let undoSwallow: (() => void) | undefined;
-afterEach(() => {
-  undoSwallow?.();
-  undoSwallow = undefined;
-});
 
 beforeEach(() => {
   jest.mocked(useLocalSearchParams).mockReturnValue({ id: JOB.id });
@@ -241,13 +209,6 @@ describe("Job detail", () => {
     });
 
     it("says why the server refused, and keeps the buttons", async () => {
-      // createOffer's onQueryStarted awaits queryFulfilled without a catch
-      // (src/api/profikApi.ts), so every refused offer also leaks an unhandled
-      // rejection — which the app's global handler reports to Sentry, and
-      // which jest pins on whatever test is running. Swallowed here, for this
-      // test only, so it can be about what the reader sees. Delete
-      // `swallowCreateOfferRejection` once the endpoint catches it.
-      undoSwallow = swallowCreateOfferRejection();
       mockApi(
         routes({
           "POST /offers": {
