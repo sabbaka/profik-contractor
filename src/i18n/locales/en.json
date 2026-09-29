@@ -20,7 +20,8 @@
       "notCompleted": "This job isn't finished yet.",
       "notParticipant": "You're not part of this job.",
       "missingParticipants": "This job doesn't have both people yet.",
-      "closedToOffers": "This job is closed to new responses."
+      "closedToOffers": "This job is closed to new responses.",
+      "invalidScheduledDate": "The chosen date isn't valid. Go back and pick it again."
     },
     "offer": {
       "notFound": "This response no longer exists.",
@@ -29,7 +30,8 @@
       "duplicate": "You've already sent a response for this job.",
       "contractorsOnly": "Only a PRO account can send responses.",
       "insufficientBalance": "Your balance is too low to send a response.",
-      "conversationClosed": "This conversation is closed — no new messages can be sent."
+      "conversationClosed": "This conversation is closed — no new messages can be sent.",
+      "ownJob": "You can't send a response to your own job."
     },
     "payment": {
       "checkoutFailed": "We couldn't start the payment. Please try again."

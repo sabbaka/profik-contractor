@@ -20,7 +20,8 @@
       "notCompleted": "Tato zakázka ještě není dokončená.",
       "notParticipant": "Nejste součástí této zakázky.",
       "missingParticipants": "Zakázka zatím nemá obě strany.",
-      "closedToOffers": "Tato zakázka už nepřijímá reakce."
+      "closedToOffers": "Tato zakázka už nepřijímá reakce.",
+      "invalidScheduledDate": "Zvolené datum není platné. Vraťte se a vyberte ho znovu."
     },
     "offer": {
       "notFound": "Tato reakce už neexistuje.",
@@ -29,7 +30,8 @@
       "duplicate": "Na tuto zakázku jste už reakci poslali.",
       "contractorsOnly": "Reakce může posílat jen účet PRO.",
       "insufficientBalance": "Na odeslání reakce nemáte dost prostředků.",
-      "conversationClosed": "Konverzace je uzavřená — nové zprávy už poslat nelze."
+      "conversationClosed": "Konverzace je uzavřená — nové zprávy už poslat nelze.",
+      "ownJob": "Na vlastní zakázku reakci poslat nemůžete."
     },
     "payment": {
       "checkoutFailed": "Platbu se nepodařilo zahájit. Zkuste to prosím znovu."
