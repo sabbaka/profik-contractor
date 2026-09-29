@@ -1,4 +1,4 @@
-import { profikApi } from "@/src/api/profikApi";
+import { OPEN_JOBS_PAGE_SIZE, profikApi } from "@/src/api/profikApi";
 import type { Job } from "@/src/api/types";
 import { apiCalls, mockApi } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
@@ -207,5 +207,74 @@ describe("Open Jobs", () => {
       is_authenticated: false,
     });
     track.mockRestore();
+  });
+
+  it("keeps the loaded page when the next page fails", async () => {
+    const firstPage = Array.from({ length: OPEN_JOBS_PAGE_SIZE }, (_, i) =>
+      job({ id: `job-${i + 1}`, title: `Zakázka ${i + 1}` }),
+    );
+    let failNext = true;
+    mockApi({
+      "GET /jobs/open": ({ url }) =>
+        !new URL(url).searchParams.has("cursor")
+          ? { body: firstPage }
+          : failNext
+            ? { status: 500, body: { message: "Internal server error" } }
+            : { body: [job({ id: "job-21", title: "Zakázka 21" })] },
+    });
+    await renderWithProviders(<OpenJobsScreen />);
+    // A full page means there may be more: the header says "20+".
+    expect(
+      await screen.findByText("20+ jobs available near you"),
+    ).toBeOnTheScreen();
+
+    await fireEvent(screen.getByText("Zakázka 1"), "endReached");
+
+    expect(
+      await screen.findByRole("button", {
+        name: "Couldn't refresh jobs. Tap to try again.",
+      }),
+    ).toBeOnTheScreen();
+    expect(screen.getByText("Zakázka 1")).toBeOnTheScreen();
+    expect(screen.getByText("20+ jobs available near you")).toBeOnTheScreen();
+    expect(screen.queryByText("Couldn't load jobs")).not.toBeOnTheScreen();
+
+    failNext = false;
+    await fireEvent.press(
+      screen.getByRole("button", {
+        name: "Couldn't refresh jobs. Tap to try again.",
+      }),
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByText("Couldn't refresh jobs. Tap to try again."),
+      ).not.toBeOnTheScreen(),
+    );
+    expect(screen.getByText("Zakázka 1")).toBeOnTheScreen();
+  });
+
+  it("shows the error, not the previous filters' jobs, when new filters fail", async () => {
+    // Anything with a price filter fails; the unfiltered feed loads.
+    mockApi({
+      "GET /jobs/open": ({ url }) =>
+        new URL(url).searchParams.has("priceMin")
+          ? { status: 500, body: { message: "Internal server error" } }
+          : { body: JOBS },
+    });
+    await renderWithProviders(<OpenJobsScreen />);
+    expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Open filters" }));
+    await fireEvent.changeText(screen.getByPlaceholderText("0"), "1000");
+    // The button's label is the sheet's own debounced preview count; press it
+    // whatever it says — applying uses the draft, not the preview.
+    await fireEvent.press(await screen.findByText(/^Show /));
+
+    expect(await screen.findByText("Couldn't load jobs")).toBeOnTheScreen();
+    expect(screen.queryByText("Úklid bytu 2+kk")).not.toBeOnTheScreen();
+    expect(screen.queryByText(/available near you/)).not.toBeOnTheScreen();
+    expect(
+      screen.queryByText("Couldn't refresh jobs. Tap to try again."),
+    ).not.toBeOnTheScreen();
   });
 });
