@@ -24,6 +24,19 @@ describe("extractErrorMessage", () => {
     expect(Sentry.addBreadcrumb).not.toHaveBeenCalled();
   });
 
+  // Each app words these for its own screens, so the test asks only that
+  // the code has wording of ours: not the generic line, not the server's.
+  it.each(["offer.ownJob", "job.invalidScheduledDate"])(
+    "has wording of its own for the backend's %s",
+    (code) => {
+      const error = serverError({ code, message: "Server wording" });
+      const message = extractErrorMessage(error, t);
+
+      expect(message).not.toBe(t("errors.unknown"));
+      expect(message).not.toBe("Server wording");
+    },
+  );
+
   it("never shows the server's own text for an error without a code", () => {
     const error = serverError({
       message: "price must not be less than 200",
