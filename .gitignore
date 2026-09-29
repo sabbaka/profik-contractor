@@ -47,6 +47,9 @@ app-example
 # eas.json points at the client repo's copy; this guards a local copy landing here.
 iron-bedrock-507417-m5-*.json
 
+# Firebase Android config — EAS supplies it as the GOOGLE_SERVICES_JSON file var
+google-services.json
+
 # Fastlane
 fastlane/report.xml
 fastlane/Preview.html

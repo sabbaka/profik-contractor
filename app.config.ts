@@ -65,6 +65,12 @@ const config = {
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
+    // Firebase config, without which getExpoPushTokenAsync throws and the
+    // device never registers for push. Expo Go bundles its own, which is why
+    // Android push appeared to work there and never did in an EAS build. EAS
+    // provides it as a file env var; a local build reads it from the root.
+    googleServicesFile:
+      process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
     config: {
       googleMaps: {
         apiKey: GOOGLE_MAPS_API_KEY,
