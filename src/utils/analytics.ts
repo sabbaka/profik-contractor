@@ -63,11 +63,14 @@ export interface AnalyticsEventMap {
   sign_up_completed: undefined;
   login_completed: undefined;
 
-  open_jobs_screen_viewed: {
-    jobs_count: number;
-    state: "list" | "empty";
-    is_authenticated: boolean;
-  };
+  /** `error`: the first page failed, so there is no count to report. */
+  open_jobs_screen_viewed:
+    | {
+        jobs_count: number;
+        state: "list" | "empty";
+        is_authenticated: boolean;
+      }
+    | { state: "error"; is_authenticated: boolean };
   /**
    * The spec was written against a chip-filter design ("выбор чипа-фильтра
    * (категория и т.п.)"); the sheet that shipped edits price, date and radius

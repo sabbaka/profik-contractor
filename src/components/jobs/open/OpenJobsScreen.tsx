@@ -6,7 +6,11 @@ import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { useManualRefresh } from "@/src/hooks/useManualRefresh";
 import { useThemeColors } from "@/src/theme";
 import { track } from "@/src/utils/analytics";
-import { BriefcaseBusiness, SlidersHorizontal } from "@tamagui/lucide-icons";
+import {
+  BriefcaseBusiness,
+  RefreshCw,
+  SlidersHorizontal,
+} from "@tamagui/lucide-icons";
 import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,7 +35,9 @@ export function OpenJobsScreen() {
 
   const {
     data,
+    currentData,
     isLoading,
+    isFetching,
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
@@ -43,20 +49,32 @@ export function OpenJobsScreen() {
     refetchOnFocus: true,
   });
   const jobs = useMemo(() => data?.pages.flat() ?? [], [data?.pages]);
+  // Only when nothing for these filters has loaded. A failed focus refetch or
+  // next page sets `error` too but keeps its pages, and must not hide them —
+  // same rule as the client's My jobs. `data` would still hold the previous
+  // filters' jobs after the sheet is applied.
+  const showError = Boolean(error) && !currentData;
+  const showRefreshError = Boolean(error) && !!currentData;
 
   // Once the first page has actually resolved, not on mount — a count sent
   // while it is still in flight reports every visit as empty. Guarded so a
-  // filter change or a refetch doesn't re-report the same visit.
+  // filter change or a refetch doesn't re-report the same visit. The full-
+  // screen error is its own state: reported as "empty" it inflated empty feeds.
   const viewedReported = useRef(false);
   useEffect(() => {
     if (isLoading || viewedReported.current) return;
     viewedReported.current = true;
-    track("open_jobs_screen_viewed", {
-      jobs_count: jobs.length,
-      state: jobs.length ? "list" : "empty",
-      is_authenticated: !isGuest,
-    });
-  }, [isLoading, jobs.length, isGuest]);
+    track(
+      "open_jobs_screen_viewed",
+      showError
+        ? { state: "error", is_authenticated: !isGuest }
+        : {
+            jobs_count: jobs.length,
+            state: jobs.length ? "list" : "empty",
+            is_authenticated: !isGuest,
+          },
+    );
+  }, [isLoading, showError, jobs.length, isGuest]);
 
   const { isRefreshing, handleRefresh } = useManualRefresh(refetch);
 
@@ -84,7 +102,7 @@ export function OpenJobsScreen() {
               with a "+" instead of claiming a number we do not have. When the
               body shows the error, there is no count at all: "0 jobs" above
               "Couldn't load jobs" reads as an empty feed. */}
-          {!(error && !isLoading) && (
+          {!showError && (
             <Text variant="bodySm">
               {isLoading
                 ? t("open.finding")
@@ -158,7 +176,7 @@ export function OpenJobsScreen() {
           <Spinner color={colors.accent} />
           <Text variant="bodySm">{t("open.loading")}</Text>
         </YStack>
-      ) : error ? (
+      ) : showError ? (
         <YStack
           flex={1}
           alignItems="center"
@@ -174,76 +192,112 @@ export function OpenJobsScreen() {
             variant="secondary"
             size="md"
             fullWidth={false}
-            onPress={refetch}
+            // `error` stays set while the retry runs, so this is the only sign
+            // the tap did anything.
+            loading={isFetching}
+            onPress={() => refetch()}
           >
             {t("common.retry")}
           </Button>
         </YStack>
       ) : (
-        <FlatList
-          data={jobs}
-          keyExtractor={(item: any) => item.id}
-          contentContainerStyle={{
-            paddingHorizontal: 20,
-            paddingTop: 4,
-            paddingBottom: 118,
-            flexGrow: jobs.length ? undefined : 1,
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={handleRefresh}
-              tintColor={colors.accent}
-            />
-          }
-          onEndReached={handleEndReached}
-          onEndReachedThreshold={0.4}
-          ListFooterComponent={
-            isFetchingNextPage ? <ListFooterSpinner /> : null
-          }
-          ListEmptyComponent={
-            <YStack
-              flex={1}
-              alignItems="center"
-              justifyContent="center"
-              gap={12}
-              paddingBottom={80}
+        <>
+          {showRefreshError && (
+            <Pressable
+              onPress={() => refetch()}
+              disabled={isFetching}
+              accessibilityRole="button"
+              accessibilityState={{ busy: isFetching }}
+              hitSlop={8}
             >
+              <XStack
+                marginHorizontal={20}
+                marginBottom={8}
+                paddingHorizontal={14}
+                paddingVertical={10}
+                borderRadius={12}
+                backgroundColor={colors.bgPrimary}
+                borderWidth={1}
+                borderColor={colors.borderSubtle}
+                alignItems="center"
+                gap={8}
+              >
+                {isFetching ? (
+                  <Spinner size="small" color={colors.accent} />
+                ) : (
+                  <RefreshCw size={16} color={colors.textSecondary} />
+                )}
+                <Text variant="bodySm" flex={1}>
+                  {t("open.refreshError")}
+                </Text>
+              </XStack>
+            </Pressable>
+          )}
+          <FlatList
+            data={jobs}
+            keyExtractor={(item: any) => item.id}
+            contentContainerStyle={{
+              paddingHorizontal: 20,
+              paddingTop: 4,
+              paddingBottom: 118,
+              flexGrow: jobs.length ? undefined : 1,
+            }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={handleRefresh}
+                tintColor={colors.accent}
+              />
+            }
+            onEndReached={handleEndReached}
+            onEndReachedThreshold={0.4}
+            ListFooterComponent={
+              isFetchingNextPage ? <ListFooterSpinner /> : null
+            }
+            ListEmptyComponent={
               <YStack
-                width={80}
-                height={80}
-                borderRadius={9999}
-                backgroundColor={colors.accentLight}
+                flex={1}
                 alignItems="center"
                 justifyContent="center"
+                gap={12}
+                paddingBottom={80}
               >
-                <BriefcaseBusiness size={32} color={colors.accent} />
+                <YStack
+                  width={80}
+                  height={80}
+                  borderRadius={9999}
+                  backgroundColor={colors.accentLight}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <BriefcaseBusiness size={32} color={colors.accent} />
+                </YStack>
+                <Text variant="h4">{t("open.emptyTitle")}</Text>
+                <Text variant="bodySm" textAlign="center" maxWidth={270}>
+                  {t("open.emptyBody")}
+                </Text>
               </YStack>
-              <Text variant="h4">{t("open.emptyTitle")}</Text>
-              <Text variant="bodySm" textAlign="center" maxWidth={270}>
-                {t("open.emptyBody")}
-              </Text>
-            </YStack>
-          }
-          renderItem={({ item, index }: { item: any; index: number }) => (
-            <ContractorJobCard
-              job={item}
-              onPress={() => {
-                track("job_card_clicked", {
-                  job_id: item.id,
-                  job_category: item.category ?? undefined,
-                  job_price_kc: item.price ?? 0,
-                  job_city: item.city,
-                  position_in_list: index,
-                });
-                router.push({
-                  pathname: "/(contractor)/jobs/[id]",
-                  params: { id: item.id },
-                });
-              }}
-            />
-          )}
-        />
+            }
+            renderItem={({ item, index }: { item: any; index: number }) => (
+              <ContractorJobCard
+                job={item}
+                onPress={() => {
+                  track("job_card_clicked", {
+                    job_id: item.id,
+                    job_category: item.category ?? undefined,
+                    job_price_kc: item.price ?? 0,
+                    job_city: item.city,
+                    position_in_list: index,
+                  });
+                  router.push({
+                    pathname: "/(contractor)/jobs/[id]",
+                    params: { id: item.id },
+                  });
+                }}
+              />
+            )}
+          />
+        </>
       )}
 
       <OpenJobsFiltersSheet
