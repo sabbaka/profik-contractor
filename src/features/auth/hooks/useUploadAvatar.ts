@@ -9,6 +9,10 @@ export interface UseUploadAvatarReturn {
    * Open the OS image picker, ask for permission if needed and POST the
    * selected image to /users/me/avatar. The /me cache is updated optimistically
    * via the underlying mutation's onQueryStarted.
+   *
+   * `cancelled` means there is nothing left to tell the user: they backed out
+   * of the picker, or the hook has already explained a refused permission.
+   * Callers alert `error` only when it is not set.
    */
   pickAndUpload: () => Promise<AuthResult & { cancelled?: boolean }>;
   isUploading: boolean;
@@ -25,7 +29,10 @@ export function useUploadAvatar(): UseUploadAvatarReturn {
 
     if (!permission.granted) {
       Alert.alert(t("profile.permissionTitle"), t("profile.permissionBody"));
-      return { success: false, error: "Permission denied" };
+      // The alert above is the whole message. Reported as `cancelled` so the
+      // screen, which alerts `error` for any other failure, doesn't stack an
+      // untranslated "Permission denied" on top of it.
+      return { success: false, cancelled: true, error: "Permission denied" };
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
