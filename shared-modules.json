@@ -4,7 +4,7 @@
     "__tests__/app/routeTree.test.ts": "f8ef0fdc7a50058dbe2e8ca151d566b0548b409d10fe56102ad5e225d73b5553",
     "eas.json": "a67393431989f7c53e05fb0decf640aaad048ad5c6ba2f687c616ef14e0e2e71",
     "jest.config.js": "c3d9e68b3c3120d328fbde56076c66fee7308105e1e9beff85bc31e620c9b158",
-    "jest.setup.ts": "435e3e0aa61e8e92a696a8f5f28ebdbd6f397a0f29083efd276cbd1457c6d66d",
+    "jest.setup.ts": "e88337c8022f07b03314e98eac9de9f811d0d9c9075562771d1564aa338ad0cd",
     "src/api/pagination.test.ts": "a80d57ded6305034726d1eff6b23dbc85b0a97f0622b5fc213889aefd244ea88",
     "src/api/pagination.ts": "fb201de7d8bf225cee89ab657f7e5e4b96ffce1a516ed72b426ca21bcc495427",
     "src/features/auth/errors.test.ts": "7c693873141114a6a749577ccfc4e4569166e10cf34b0b4bfd72c1850c0afff1",
