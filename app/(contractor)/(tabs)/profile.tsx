@@ -77,13 +77,18 @@ function ProfileRow({ label, iconBg, icon, value, onPress }: RowProps) {
       onPress={onPress}
       style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
     >
+      {/* The value keeps its width up to 60% of the row and wraps past that;
+          the label takes what is left and wraps too. Without the bounds a
+          Czech "Obchodní podmínky" + "Potvrzeno 29. 9. 2026" ran together and
+          pushed the chevron off the row. */}
       <XStack
         paddingVertical={14}
         paddingHorizontal={16}
         alignItems="center"
         justifyContent="space-between"
+        gap={12}
       >
-        <XStack alignItems="center" gap={12}>
+        <XStack alignItems="center" gap={12} flex={1}>
           <YStack
             width={36}
             height={36}
@@ -94,17 +99,34 @@ function ProfileRow({ label, iconBg, icon, value, onPress }: RowProps) {
           >
             {icon}
           </YStack>
-          <Text style={{ fontSize: 15, fontFamily: "Inter_500Medium" }}>
+          <Text
+            numberOfLines={2}
+            flex={1}
+            style={{
+              fontSize: 15,
+              lineHeight: 20,
+              fontFamily: "Inter_500Medium",
+            }}
+          >
             {label}
           </Text>
         </XStack>
-        <XStack alignItems="center" gap={6}>
+        <XStack alignItems="center" gap={6} flexShrink={0} maxWidth="60%">
           {value ? (
-            <Text variant="bodySm" style={{ color: colors.textMuted }}>
+            <Text
+              variant="bodySm"
+              numberOfLines={2}
+              flexShrink={1}
+              textAlign="right"
+              style={{ color: colors.textMuted }}
+            >
               {value}
             </Text>
           ) : null}
-          <ChevronRight size={20} color={colors.textMuted} />
+          {/* An icon on its own shrinks to nothing next to wrapping text. */}
+          <YStack flexShrink={0}>
+            <ChevronRight size={20} color={colors.textMuted} />
+          </YStack>
         </XStack>
       </XStack>
     </Pressable>
