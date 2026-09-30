@@ -7,6 +7,7 @@ import { useTabBarVisibility } from "@/src/context/TabBarVisibilityContext";
 import { useDebouncedValue } from "@/src/hooks/useDebouncedValue";
 import { useThemeColors, useThemeMode } from "@/src/theme";
 import { track } from "@/src/utils/analytics";
+import { openAppSettings } from "@/src/utils/openAppSettings";
 import { Slider } from "@tamagui/slider";
 import { Calendar, LocateFixed } from "@tamagui/lucide-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -175,6 +176,15 @@ export function OpenJobsFiltersSheet({
     : false;
 
   const handleEnableLocation = async () => {
+    // Once the OS has refused once, `requestForegroundPermissionsAsync`
+    // never shows the system prompt again — it just silently re-resolves
+    // `denied`. Retrying it here looked like a working button that quietly
+    // did nothing; Settings is the only place left to turn it back on.
+    if (location.status === "denied") {
+      location.prepareForSettingsReturn();
+      await openAppSettings(t);
+      return;
+    }
     const next = await location.request();
     if (next && draft.radiusKm == null) {
       setDraft((d) => ({ ...d, radiusKm: DEFAULT_RADIUS_KM }));
@@ -463,7 +473,9 @@ export function OpenJobsFiltersSheet({
                           <LocateFixed size={16} color={colors.accent} />
                         }
                       >
-                        {t("open.filters.locationEnable")}
+                        {location.status === "denied"
+                          ? t("open.filters.locationOpenSettings")
+                          : t("open.filters.locationEnable")}
                       </Button>
                     </YStack>
                   )}

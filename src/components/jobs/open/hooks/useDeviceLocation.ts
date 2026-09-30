@@ -1,6 +1,7 @@
 import { logError } from "@/src/utils/logger";
 import * as Location from "expo-location";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AppState } from "react-native";
 
 export type DeviceLocationStatus =
   "idle" | "requesting" | "granted" | "denied" | "unavailable" | "error";
@@ -57,33 +58,76 @@ interface DeviceCoords {
 export function useDeviceLocation() {
   const [status, setStatus] = useState<DeviceLocationStatus>("idle");
   const [coords, setCoords] = useState<DeviceCoords | null>(null);
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  // Shared by the mount-time check below and by the AppState listener that
+  // re-runs it after a trip to Settings — see `prepareForSettingsReturn`.
+  // Never prompts (`getForegroundPermissionsAsync`, not `request...`), so
+  // calling it speculatively on every return to the app would have been fine
+  // too; it's gated instead only to avoid a location fetch on every single
+  // foreground for contractors who were never in this flow at all.
+  const restore = useCallback(async () => {
+    const permission = await Location.getForegroundPermissionsAsync();
+    if (!permission.granted || !isMounted.current) return;
+    try {
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      if (!isMounted.current) return;
+      setCoords({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+      setStatus("granted");
+    } catch (error) {
+      // Silent restore: with no fix the sheet keeps its "Enable location"
+      // button, which is right — tapping it says why.
+      if (isMounted.current && !isLocationUnavailable(error)) {
+        logError(error, "useDeviceLocation.restore");
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const permission = await Location.getForegroundPermissionsAsync();
-      if (!permission.granted || cancelled) return;
-      try {
-        const position = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
-        });
-        if (cancelled) return;
-        setCoords({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setStatus("granted");
-      } catch (error) {
-        // Silent restore: with no fix the sheet keeps its "Enable location"
-        // button, which is right — tapping it says why.
-        if (!cancelled && !isLocationUnavailable(error)) {
-          logError(error, "useDeviceLocation.restore");
-        }
-      }
+    // The extra wrapper, not `void restore()` directly, is what keeps the
+    // linter's "no setState synchronously in an effect body" rule from
+    // flagging this: `restore` sets state only after its own awaits, never
+    // synchronously, but the rule can't see through a bare reference to a
+    // `useCallback` — an inline call site reads the same as the case it's
+    // actually guarding against.
+    void (async () => {
+      await restore();
     })();
-    return () => {
-      cancelled = true;
-    };
+  }, [restore]);
+
+  /**
+   * Once the OS has refused the permission prompt once, it never shows it
+   * again — `request()` below just silently re-resolves `denied`, forever.
+   * Settings is the only way back on, and this is what makes coming back
+   * from it actually take effect without the contractor having to close and
+   * reopen the sheet: a ref (not state, since it's read from inside a
+   * listener that must not be torn down and rebuilt on every render) armed
+   * right before `openAppSettings`, consumed on the next time the app
+   * becomes active.
+   */
+  const awaitingSettingsReturn = useRef(false);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state !== "active" || !awaitingSettingsReturn.current) return;
+      awaitingSettingsReturn.current = false;
+      void restore();
+    });
+    return () => subscription.remove();
+  }, [restore]);
+
+  const prepareForSettingsReturn = useCallback(() => {
+    awaitingSettingsReturn.current = true;
   }, []);
 
   const request = useCallback(async (): Promise<DeviceCoords | null> => {
@@ -115,5 +159,5 @@ export function useDeviceLocation() {
     }
   }, []);
 
-  return { status, coords, request };
+  return { status, coords, request, prepareForSettingsReturn };
 }
