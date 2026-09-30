@@ -75,6 +75,7 @@ function ProfileRow({ label, iconBg, icon, value, onPress }: RowProps) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
       style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
     >
       {/* The value keeps its width up to 60% of the row and wraps past that;
@@ -362,6 +363,7 @@ export default function ProfileRoute() {
             <Pressable
               style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
               onPress={() => router.push("/(contractor)/profile" as any)}
+              accessibilityRole="button"
               hitSlop={6}
             >
               <XStack
@@ -404,6 +406,7 @@ export default function ProfileRoute() {
                 params: { entryPoint: "profile" },
               } as any)
             }
+            accessibilityRole="button"
             style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
           >
             <YStack borderRadius={20} overflow="hidden" padding={18} gap={5}>
