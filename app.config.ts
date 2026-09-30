@@ -60,7 +60,10 @@ const config = {
   android: {
     package: "com.profik.contractor",
     adaptiveIcon: {
-      backgroundColor: "#FFFFFF",
+      // Only a fallback for the rare case `backgroundImage` fails to
+      // resolve — the gradient PNG is what actually paints. Matches the
+      // brand accent rather than the old white tile.
+      backgroundColor: "#E85D00",
       foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
