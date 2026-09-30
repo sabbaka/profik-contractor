@@ -14,6 +14,8 @@
     "src/features/auth/terms.test.ts": "18c5be54818cb5e7e76d90451b81e8a35f670b1d36f1a3d00e6f896a41591dc6",
     "src/features/auth/terms.ts": "2e106ada9f43bf8662e4c40154ca3584cfbc390460c684de546987c2ea5f00d5",
     "src/features/auth/utils.ts": "53131fca72ff177fe9978c30301999ed1c2e9527e3b8e580ee8817f4739b242d",
+    "src/i18n/pluralRules.test.ts": "ed8280759b556c20568472ad938b45755d401f9f99c38b606b1bfd26a3968e9a",
+    "src/i18n/pluralRules.ts": "66a25e394845056001f48cf843dc02a823179ef63ca49d0bbb3994e44513210d",
     "src/store/authSlice.test.ts": "03f287abe8361febe979e51fdd528f4986199bdb2611d403095ae3fbc9c521db",
     "src/store/rtkListeners.test.ts": "d7a63ef1b3d2bccd1ddbf76fd2336d70fe996f0e333629c06b578f156fe9be5c",
     "src/store/rtkListeners.ts": "aefa0c6e03c726d4083ac285c0112ffbbbb39abcd1d0c7b374f85e15c89afbc8",
