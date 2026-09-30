@@ -58,8 +58,16 @@ export default function PrivacyPolicyScreen() {
         <Text variant="body">{t("privacy.intro")}</Text>
 
         <Section
+          title={t("privacy.controllerTitle")}
+          body={t("privacy.controller", { email: SUPPORT_EMAIL })}
+        />
+        <Section
           title={t("privacy.dataCollectedTitle")}
           body={t("privacy.dataCollected")}
+        />
+        <Section
+          title={t("privacy.verificationTitle")}
+          body={t("privacy.verification")}
         />
         <Section
           title={t("privacy.locationTitle")}
@@ -74,6 +82,10 @@ export default function PrivacyPolicyScreen() {
           body={t("privacy.balance")}
         />
         <Section
+          title={t("privacy.legalBasisTitle")}
+          body={t("privacy.legalBasis")}
+        />
+        <Section
           title={t("privacy.sharingTitle")}
           body={t("privacy.sharing")}
         />
@@ -81,6 +93,7 @@ export default function PrivacyPolicyScreen() {
           title={t("privacy.retentionTitle")}
           body={t("privacy.retention")}
         />
+        <Section title={t("privacy.rightsTitle")} body={t("privacy.rights")} />
         <Section
           title={t("privacy.contactTitle")}
           body={t("privacy.contact", { email: SUPPORT_EMAIL })}
