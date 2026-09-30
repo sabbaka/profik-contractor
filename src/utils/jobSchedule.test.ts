@@ -37,16 +37,21 @@ describe("formatSchedule", () => {
     );
   });
 
-  it("states the earliest date and counts the rest", () => {
+  /**
+   * Several dates are the ends of a span the client will accept — what the
+   * client wizard's "this week" preset sends. A count said how many without
+   * saying which, so a contractor could not tell which days would do.
+   */
+  it("states a span from its earliest date to its latest", () => {
     const out = formatSchedule(
       ["2026-03-05T00:00:00.000Z", "2026-03-03T00:00:00.000Z"],
       "en-US",
       t,
     );
-    expect(out).toBe("Mar 3 +1");
+    expect(out).toBe("Mar 3 – Mar 5");
   });
 
-  it("sorts before counting, whatever order they arrive in", () => {
+  it("sorts first, whatever order the dates arrive in", () => {
     const out = formatSchedule(
       [
         "2026-03-09T00:00:00.000Z",
@@ -56,7 +61,7 @@ describe("formatSchedule", () => {
       "en-US",
       t,
     );
-    expect(out).toBe("Mar 3 +2");
+    expect(out).toBe("Mar 3 – Mar 9");
   });
 
   // "flexible" is a stored choice, not a date, and must never reach Date().

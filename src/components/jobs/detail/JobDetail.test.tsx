@@ -115,6 +115,23 @@ describe("Job detail", () => {
     ).toBeOnTheScreen();
   });
 
+  // The client wizard's "this week" preset stores both ends of the week: any
+  // day between them will do. The hero used to print "Sep 15, 2026 +1".
+  it("states a span of dates as a span", async () => {
+    mockApi(
+      routes({
+        [`GET /jobs/${JOB.id}`]: {
+          body: { ...JOB, scheduledDates: ["2026-09-15", "2026-09-21"] },
+        },
+      }),
+    );
+    await renderWithProviders(<JobDetail />, { authed: true });
+
+    expect(
+      await screen.findByText("Sep 15, 2026 – Sep 21, 2026"),
+    ).toBeOnTheScreen();
+  });
+
   it("offers a guest the sign-in instead of the offer buttons", async () => {
     const api = mockApi({ [`GET /jobs/${JOB.id}`]: { body: JOB } });
     await renderWithProviders(<JobDetail />);

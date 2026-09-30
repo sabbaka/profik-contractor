@@ -106,7 +106,10 @@ export function ContractorJobCard({
               {scheduleText ? (
                 <XStack alignItems="center" gap={6}>
                   <Calendar size={14} color={colors.textMuted} />
-                  <Text variant="caption" numberOfLines={1}>
+                  {/* Two lines, not one: a span of dates with the year, in
+                      Ukrainian, fills the row on its own and cut the time slot
+                      off behind an ellipsis. */}
+                  <Text variant="caption" numberOfLines={2} flex={1}>
                     {scheduleText}
                   </Text>
                 </XStack>
