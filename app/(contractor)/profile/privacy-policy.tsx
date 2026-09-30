@@ -93,7 +93,14 @@ export default function PrivacyPolicyScreen() {
           title={t("privacy.retentionTitle")}
           body={t("privacy.retention")}
         />
-        <Section title={t("privacy.rightsTitle")} body={t("privacy.rights")} />
+        <Section
+          title={t("privacy.rightsTitle")}
+          body={t("privacy.rights", { email: SUPPORT_EMAIL })}
+        />
+        <Section
+          title={t("privacy.changesTitle")}
+          body={t("privacy.changes")}
+        />
         <Section
           title={t("privacy.contactTitle")}
           body={t("privacy.contact", { email: SUPPORT_EMAIL })}
@@ -113,6 +120,8 @@ export default function PrivacyPolicyScreen() {
             {t("privacy.fullVersion")}
           </Text>
         </Pressable>
+
+        <Text variant="caption">{t("privacy.lastUpdated")}</Text>
       </ScrollView>
     </YStack>
   );
