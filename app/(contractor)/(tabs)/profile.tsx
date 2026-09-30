@@ -67,10 +67,23 @@ interface RowProps {
   iconBg: string;
   icon: React.ReactNode;
   value?: string;
+  /**
+   * Puts the value on its own line under the label instead of beside it. For
+   * values too long to share the row: a date or a status beside a long label
+   * cut one or the other off on narrow phones in Ukrainian.
+   */
+  stacked?: boolean;
   onPress?: () => void;
 }
 
-function ProfileRow({ label, iconBg, icon, value, onPress }: RowProps) {
+function ProfileRow({
+  label,
+  iconBg,
+  icon,
+  value,
+  stacked,
+  onPress,
+}: RowProps) {
   const colors = useThemeColors();
   return (
     <Pressable
@@ -78,10 +91,12 @@ function ProfileRow({ label, iconBg, icon, value, onPress }: RowProps) {
       accessibilityRole="button"
       style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
     >
-      {/* The value keeps its width up to 60% of the row and wraps past that;
+      {/* The value keeps its width up to 45% of the row and wraps past that;
           the label takes what is left and wraps too. Without the bounds a
           Czech "Obchodní podmínky" + "Potvrzeno 29. 9. 2026" ran together and
-          pushed the chevron off the row. */}
+          pushed the chevron off the row. A value too long for that split goes
+          under the label instead (`stacked`): no fixed share kept a long
+          Ukrainian word whole on a 360dp phone. */}
       <XStack
         paddingVertical={14}
         paddingHorizontal={16}
@@ -100,20 +115,30 @@ function ProfileRow({ label, iconBg, icon, value, onPress }: RowProps) {
           >
             {icon}
           </YStack>
-          <Text
-            numberOfLines={2}
-            flex={1}
-            style={{
-              fontSize: 15,
-              lineHeight: 20,
-              fontFamily: "Inter_500Medium",
-            }}
-          >
-            {label}
-          </Text>
+          <YStack flex={1} gap={2}>
+            <Text
+              numberOfLines={2}
+              style={{
+                fontSize: 15,
+                lineHeight: 20,
+                fontFamily: "Inter_500Medium",
+              }}
+            >
+              {label}
+            </Text>
+            {stacked && value ? (
+              <Text
+                variant="bodySm"
+                numberOfLines={2}
+                style={{ color: colors.textMuted }}
+              >
+                {value}
+              </Text>
+            ) : null}
+          </YStack>
         </XStack>
-        <XStack alignItems="center" gap={6} flexShrink={0} maxWidth="60%">
-          {value ? (
+        <XStack alignItems="center" gap={6} flexShrink={0} maxWidth="45%">
+          {value && !stacked ? (
             <Text
               variant="bodySm"
               numberOfLines={2}
@@ -473,6 +498,7 @@ export default function ProfileRoute() {
           >
             <ProfileRow
               label={t("verification.title")}
+              stacked
               iconBg={colors.greenSoftBg}
               icon={<BadgeCheck size={18} color={colors.greenStrong} />}
               value={t(verificationValueKey)}
@@ -532,6 +558,7 @@ export default function ProfileRoute() {
               read what was actually on screen at the time. */}
           <ProfileRow
             label={t("profile.menu.terms")}
+            stacked
             iconBg={colors.infoBg}
             icon={<FileText size={18} color={colors.infoStrong} />}
             value={
