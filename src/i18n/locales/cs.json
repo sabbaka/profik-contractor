@@ -47,7 +47,9 @@
     },
     "avatar": {
       "unsupportedFormat": "Použijte obrázek JPEG, PNG nebo WebP.",
-      "tooManyPixels": "Obrázek je příliš velký. Zkuste menší."
+      "tooManyPixels": "Obrázek je příliš velký. Zkuste menší.",
+      "tooSmall": "Obrázek je příliš malý. Zkuste větší.",
+      "fileTooLarge": "Soubor je příliš velký. Zkuste menší fotku."
     },
     "verification": {
       "unavailable": "Ověření teď není dostupné. Zkuste to prosím později.",
