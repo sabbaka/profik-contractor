@@ -77,8 +77,8 @@ describe("logError", () => {
   });
 
   it("falls back to the object itself when it carries no message", () => {
-    logError({ status: 500 });
-    expect(logged()).toContain("500");
+    logError({ code: 42 });
+    expect(logged()).toContain("42");
   });
 
   it("says something rather than nothing for a thrown nullish value", () => {
@@ -90,10 +90,81 @@ describe("logError", () => {
     expect(logged()).toContain("Unknown error");
   });
 
+  // RTK Query rejects with a plain object, and a title built from its JSON
+  // read "Error: {" for every failure alike in Sentry's issue list
+  // (PROFIK-5, PROFIK-4, PROFIK-B).
+  it("names an API error by its status and context, not by its JSON", () => {
+    logError({ status: 504, data: null }, "phoneAuth:requestCode");
+
+    expect(Sentry.captureException).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "HTTP 504 · phoneAuth:requestCode" }),
+      expect.objectContaining({
+        tags: { context: "phoneAuth:requestCode" },
+        extra: expect.objectContaining({
+          error: expect.stringContaining("504"),
+        }),
+      }),
+    );
+  });
+
+  it("names a transport failure by its tag, and adds the path the server gave", () => {
+    logError(
+      { status: "FETCH_ERROR", error: "TypeError: Network request failed" },
+      "createJob:mutation",
+    );
+    expect(Sentry.captureException).toHaveBeenLastCalledWith(
+      expect.objectContaining({ message: "FETCH_ERROR · createJob:mutation" }),
+      expect.anything(),
+    );
+
+    logError({
+      status: 401,
+      data: {
+        statusCode: 401,
+        message: "Unauthorized",
+        path: "/users/me/push-token",
+      },
+    });
+    expect(Sentry.captureException).toHaveBeenLastCalledWith(
+      expect.objectContaining({ message: "HTTP 401 · /users/me/push-token" }),
+      expect.anything(),
+    );
+  });
+
+  it("names a reply that was not JSON by its HTTP status, and drops the query", () => {
+    logError(
+      { status: "PARSING_ERROR", originalStatus: 502, data: "<html>…</html>" },
+      "openJobs",
+    );
+    expect(Sentry.captureException).toHaveBeenLastCalledWith(
+      expect.objectContaining({ message: "HTTP 502 · openJobs" }),
+      expect.anything(),
+    );
+
+    logError({
+      status: 500,
+      data: { path: "/jobs/open?lat=50.08&lng=14.42&radiusKm=10" },
+    });
+    expect(Sentry.captureException).toHaveBeenLastCalledWith(
+      expect.objectContaining({ message: "HTTP 500 · /jobs/open" }),
+      expect.anything(),
+    );
+  });
+
+  it("keeps the server's own words out of the title", () => {
+    logError(
+      { status: 400, data: { message: "price must not be less than 200" } },
+      "createJob:mutation",
+    );
+
+    const [sent] = (Sentry.captureException as jest.Mock).mock.calls.at(-1);
+    expect(sent.message).toBe("HTTP 400 · createJob:mutation");
+  });
+
   // A rejected RTK Query action and a Sentry event both hold back-references,
   // and JSON.stringify throws on those.
   it("survives a circular object instead of throwing over it", () => {
-    const circular: Record<string, unknown> = { status: 500 };
+    const circular: Record<string, unknown> = { code: 500 };
     circular.self = circular;
 
     expect(() => logError(circular)).not.toThrow();
