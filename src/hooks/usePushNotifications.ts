@@ -119,6 +119,11 @@ export function usePushNotifications(token: string | null) {
           });
         }
 
+        // A run cancelled while it waited on the permission — at launch the
+        // effect restarts once as its key settles — leaves the rest to the run
+        // that replaced it, rather than fetching a token of its own.
+        if (cancelled) return;
+
         step = "getExpoPushToken";
         const pushToken = await Notifications.getExpoPushTokenAsync({
           projectId,
@@ -140,8 +145,9 @@ export function usePushNotifications(token: string | null) {
           registeredFor.current = registrationKey;
         }
       } catch (err) {
-        // registeredFor stays unset, so the next foreground tries again.
-        if (!reported) {
+        // registeredFor stays unset, so the next foreground tries again. A
+        // cancelled run stays quiet: the run that replaced it reports its own.
+        if (!reported && !cancelled) {
           reported = true;
           logError(err, "push:register", { step });
         }
