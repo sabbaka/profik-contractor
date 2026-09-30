@@ -47,7 +47,9 @@
     },
     "avatar": {
       "unsupportedFormat": "Use a JPEG, PNG or WebP image.",
-      "tooManyPixels": "That image is too large. Try a smaller one."
+      "tooManyPixels": "That image is too large. Try a smaller one.",
+      "tooSmall": "That image is too small. Try a larger one.",
+      "fileTooLarge": "That file is too large. Try a smaller photo."
     },
     "verification": {
       "unavailable": "Verification isn't available right now. Please try again later.",
