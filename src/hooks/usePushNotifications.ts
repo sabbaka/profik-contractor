@@ -16,11 +16,15 @@ import * as Notifications from "expo-notifications";
 import { router, useRootNavigationState, useSegments } from "expo-router";
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 import { useDispatch } from "react-redux";
 
 const PROJECT_ID =
   Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+
+/** The awaits of a registration, reported with a failure. */
+type RegistrationStep =
+  "permissions" | "channel" | "getExpoPushToken" | "saveToken";
 
 /**
  * Decides what an arriving notification does while the app is open.
@@ -66,63 +70,107 @@ export function usePushNotifications(token: string | null) {
   const { i18n } = useTranslation();
   const language = i18n.language;
   // Tracks the auth token and language we last registered under, so we retry
-  // after a failure but don't re-register on every render.
+  // after a failure (see the foreground retry below) but don't re-register on
+  // every render.
   const registeredFor = useRef<string | null>(null);
 
   useEffect(() => {
     const registrationKey = `${token}:${language}`;
     if (!token || registeredFor.current === registrationKey) return;
+    if (!Device.isDevice) return;
+    if (!PROJECT_ID) {
+      logError(new Error("Missing EAS projectId; cannot register for push"));
+      return;
+    }
+    const projectId = PROJECT_ID;
 
     let cancelled = false;
+    let inFlight = false;
+    // Only the first failure of this run goes to Sentry. A phone that can never
+    // get a token — Android without Play services — fails on every foreground,
+    // and one event per foreground would bury everything else.
+    let reported = false;
 
-    async function register() {
-      if (!Device.isDevice) return;
-      if (!PROJECT_ID) {
-        logError(new Error("Missing EAS projectId; cannot register for push"));
-        return;
-      }
+    // `mayPrompt` is false for the retries a foreground triggers: asking again
+    // on every return to the app would nag, and on Android the system prompt
+    // can come back. A retry only picks up a permission granted in Settings.
+    async function register(mayPrompt: boolean) {
+      // Named so a failure says which await gave up — PROFIK-CONTRACTOR-8
+      // arrived as a bare "Aborted" that could have been any of them.
+      let step: RegistrationStep = "permissions";
+      try {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
 
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+        if (existingStatus !== "granted" && mayPrompt) {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
 
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
+        if (finalStatus !== "granted") return;
 
-      if (finalStatus !== "granted") return;
+        if (Platform.OS === "android") {
+          step = "channel";
+          await Notifications.setNotificationChannelAsync("default", {
+            name: "Default",
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+          });
+        }
 
-      if (Platform.OS === "android") {
-        await Notifications.setNotificationChannelAsync("default", {
-          name: "Default",
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
+        step = "getExpoPushToken";
+        const pushToken = await Notifications.getExpoPushTokenAsync({
+          projectId,
         });
-      }
 
-      const pushToken = await Notifications.getExpoPushTokenAsync({
-        projectId: PROJECT_ID,
-      });
+        // Signed out, or registering under a new account or language, while
+        // the token was on its way: that newer run saves its own, and this
+        // stale save could land after it — or after logout's unregister.
+        if (cancelled) return;
 
-      // unwrap() so a rejected mutation actually throws here — without it the
-      // failure is swallowed and we would mark the device as registered.
-      await registerPushToken({
-        pushToken: pushToken.data,
-        language,
-      }).unwrap();
-      if (!cancelled) {
-        registeredFor.current = registrationKey;
+        // unwrap() so a rejected mutation actually throws here — without it the
+        // failure is swallowed and we would mark the device as registered.
+        step = "saveToken";
+        await registerPushToken({
+          pushToken: pushToken.data,
+          language,
+        }).unwrap();
+        if (!cancelled) {
+          registeredFor.current = registrationKey;
+        }
+      } catch (err) {
+        // registeredFor stays unset, so the next foreground tries again.
+        if (!reported) {
+          reported = true;
+          logError(err, "push:register", { step });
+        }
       }
     }
 
-    register().catch((err) => {
-      // Leave registeredFor unset so the next mount retries.
-      logError(err);
+    function attempt(mayPrompt: boolean) {
+      if (cancelled || inFlight || registeredFor.current === registrationKey) {
+        return;
+      }
+      inFlight = true;
+      void register(mayPrompt).finally(() => {
+        inFlight = false;
+      });
+    }
+
+    attempt(true);
+
+    // This hook lives in the root layout and mounts once per launch, so
+    // without a retry here a failed attempt waited for the next cold start —
+    // the device went without pushes for as long as the app stayed alive in
+    // the background.
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") attempt(false);
     });
 
     return () => {
       cancelled = true;
+      subscription.remove();
     };
   }, [token, language, registerPushToken]);
 
