@@ -73,6 +73,24 @@ describe("locale files", () => {
     },
   );
 
+  // The language picker names each language in itself, so a Ukrainian who
+  // landed in English or Czech still finds "Українська" in the list. English
+  // and Czech already read "English" and "Čeština" everywhere; Ukrainian was
+  // translated instead, as "Ukrainian" and "Ukrajinština".
+  it.each([
+    ["english", "English"],
+    ["czech", "Čeština"],
+    ["ukrainian", "Українська"],
+  ])("names %s as %s in every language", (name, endonym) => {
+    const labels = Object.fromEntries(
+      Object.entries(LOCALES).map(([language, tree]) => [
+        language,
+        ((tree.profile as Tree).language as Tree)[name],
+      ]),
+    );
+    expect(labels).toEqual({ en: endonym, cs: endonym, uk: endonym });
+  });
+
   it("leaves no key with an empty translation", () => {
     for (const [language, tree] of Object.entries(LOCALES)) {
       const blank = flatten(tree).filter((key) => {
