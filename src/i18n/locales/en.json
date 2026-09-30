@@ -428,7 +428,8 @@
       "dark": "Dark"
     },
     "permissionTitle": "Permission required",
-    "permissionBody": "Please allow photo library access to change your avatar."
+    "permissionBody": "Please allow photo library access to change your avatar.",
+    "settingsUnavailable": "Couldn't open Settings. Open the Settings app, find Profik Pro and turn notifications on there."
   },
   "privacy": {
     "title": "Privacy Policy",

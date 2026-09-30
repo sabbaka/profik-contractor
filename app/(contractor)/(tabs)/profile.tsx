@@ -16,6 +16,7 @@ import {
 } from "@/src/utils/languageStorage";
 import { clearHasSeenOnboarding } from "@/src/utils/onboardingStorage";
 import { termsUrlOf } from "@/src/features/auth/terms";
+import { openAppSettings } from "@/src/utils/openAppSettings";
 import { openLegalDocument } from "@/src/utils/openLegalDocument";
 import { dateLocale } from "@/src/utils/jobSchedule";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
@@ -41,13 +42,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Alert,
-  Linking,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { VerifiedBadge } from "@/src/components/profile/VerifiedBadge";
 import { XStack, YStack } from "tamagui";
@@ -475,7 +470,7 @@ export default function ProfileRoute() {
                 label={t("profile.menu.notifications")}
                 iconBg={colors.warningBg}
                 icon={<Bell size={18} color={colors.warningText} />}
-                onPress={() => Linking.openSettings()}
+                onPress={() => openAppSettings(t)}
               />
               <Divider />
             </>
