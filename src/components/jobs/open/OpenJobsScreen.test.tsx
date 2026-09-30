@@ -4,6 +4,7 @@ import { apiCalls, mockApi } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
 import * as analytics from "@/src/utils/analytics";
 import { act, fireEvent, screen, waitFor } from "@testing-library/react-native";
+import * as Location from "expo-location";
 import { router } from "expo-router";
 import { OpenJobsScreen } from "./OpenJobsScreen";
 
@@ -276,5 +277,32 @@ describe("Open Jobs", () => {
     expect(
       screen.queryByText("Couldn't refresh jobs. Tap to try again."),
     ).not.toBeOnTheScreen();
+  });
+
+  it("says why there is no radius when location services are off", async () => {
+    mockApi({ "GET /jobs/open": { body: JOBS } });
+    jest
+      .mocked(Location.requestForegroundPermissionsAsync)
+      .mockResolvedValueOnce({
+        status: "granted",
+        granted: true,
+        canAskAgain: true,
+      } as never);
+    jest.mocked(Location.getCurrentPositionAsync).mockRejectedValueOnce(
+      Object.assign(new Error("Current location is unavailable"), {
+        code: "ERR_CURRENT_LOCATION_IS_UNAVAILABLE",
+      }),
+    );
+    await renderWithProviders(<OpenJobsScreen />);
+    await screen.findByText("Úklid bytu 2+kk");
+
+    await fireEvent.press(screen.getByRole("button", { name: "Open filters" }));
+    await fireEvent.press(await screen.findByText("Enable location"));
+
+    expect(
+      await screen.findByText(
+        "Couldn't get your location — check that location services are on and try again.",
+      ),
+    ).toBeOnTheScreen();
   });
 });
