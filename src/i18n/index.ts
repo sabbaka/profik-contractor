@@ -3,9 +3,14 @@ import baseI18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import { getStoredLanguage } from "../utils/languageStorage";
+import { ensurePluralRules } from "./pluralRules";
 import cs from "./locales/cs.json";
 import en from "./locales/en.json";
 import uk from "./locales/uk.json";
+
+// Before init: without it Czech and Ukrainian plurals silently get the
+// English rule on Hermes. See pluralRules.ts.
+ensurePluralRules();
 
 const resources = {
   en: { translation: en },
