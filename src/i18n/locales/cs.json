@@ -428,7 +428,8 @@
       "dark": "Tmavý"
     },
     "permissionTitle": "Potřebné oprávnění",
-    "permissionBody": "Povolte prosím přístup k fotkám, abyste mohli změnit avatar."
+    "permissionBody": "Povolte prosím přístup k fotkám, abyste mohli změnit avatar.",
+    "settingsUnavailable": "Nastavení se nepodařilo otevřít. Otevřete aplikaci Nastavení, najděte Profik Pro a zapněte tam oznámení."
   },
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
