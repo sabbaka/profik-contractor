@@ -111,7 +111,7 @@ export function usePhoneAuth(returnTo?: string): UsePhoneAuthReturn {
         setCodeError(undefined);
         setStep("code");
       } catch (error: unknown) {
-        const kind = classifyPhoneAuthError(error);
+        const kind = classifyPhoneAuthError(error, "requestCode");
         if (kind === "unknown") logError(error, "phoneAuth:requestCode");
         setPhoneError(t(phoneAuthErrorKey(kind)));
       }

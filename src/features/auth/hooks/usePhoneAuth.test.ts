@@ -122,6 +122,26 @@ describe("requesting a code", () => {
     expect(result.current.phoneError).toBe("auth.otp.errors.undeliverable");
     expect(result.current.phone).toBeNull();
   });
+
+  // PROFIK-5: Google Play's pre-launch robot types numbers Twilio refuses (400)
+  // and sits behind a proxy that answers 504. Neither is our failure.
+  it.each([
+    [400, "auth.otp.errors.invalidPhone"],
+    [504, "auth.otp.errors.unavailable"],
+  ])(
+    "says what to do about a %s, without reporting it",
+    async (status, key) => {
+      rejects(mockRequestOtpCode, { status });
+      const result = await setUp();
+
+      await act(async () => {
+        await result.current.requestCode("777123456");
+      });
+
+      expect(result.current.phoneError).toBe(key);
+      expect(logError).not.toHaveBeenCalled();
+    },
+  );
 });
 
 /**
@@ -137,6 +157,21 @@ describe("the resend cooldown", () => {
       jest.advanceTimersByTime(1000);
     });
     expect(result.current.secondsUntilResend).toBe(59);
+  });
+
+  it("still reports a real server failure when asking for a code", async () => {
+    rejects(mockRequestOtpCode, { status: 500 });
+    const result = await setUp();
+
+    await act(async () => {
+      await result.current.requestCode("777123456");
+    });
+
+    expect(result.current.phoneError).toBe("auth.otp.errors.unknown");
+    expect(logError).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      "phoneAuth:requestCode",
+    );
   });
 
   it("does nothing at all while it is still running", async () => {
@@ -321,6 +356,23 @@ describe("telling the failures apart", () => {
 
     expect(result.current.codeError).toBe(key);
     expect(router.replace).not.toHaveBeenCalled();
+  });
+
+  // The number was accepted when the SMS went out, so a 400 here is not the
+  // person's typing — it is our contract, and it must stay visible.
+  it("reports a 400 from verification instead of blaming the number", async () => {
+    rejects(mockVerifyOtpCode, { status: 400 });
+    const result = await reachCodeStep();
+
+    await act(async () => {
+      await result.current.verifyCode("123456");
+    });
+
+    expect(result.current.codeError).toBe("auth.otp.errors.unknown");
+    expect(logError).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 400 }),
+      "phoneAuth:verifyCode",
+    );
   });
 
   it("treats a transport failure as a network problem", async () => {

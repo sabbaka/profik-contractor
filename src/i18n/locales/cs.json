@@ -96,7 +96,9 @@
         "wrongApp": "Tento účet je registrovaný jako zákazník. Použijte prosím klientskou aplikaci Profik.",
         "tooManyAttempts": "Příliš mnoho pokusů. Počkejte pár minut a zkuste to znovu.",
         "undeliverable": "Na toto číslo nelze poslat SMS. Zkuste prosím jiné.",
+        "invalidPhone": "Toto číslo nevypadá správně. Zkontrolujte ho a zkuste to znovu.",
         "network": "Bez připojení. Zkontrolujte internet a zkuste to znovu.",
+        "unavailable": "Služba je dočasně nedostupná. Zkuste to prosím za chvíli.",
         "unknown": "Něco se pokazilo. Zkuste to prosím znovu."
       }
     },
