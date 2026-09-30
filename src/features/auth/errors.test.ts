@@ -20,6 +20,23 @@ describe("classifyPhoneAuthError", () => {
     );
   });
 
+  // PROFIK-5: a number Twilio will not take comes back as a 400 — the person
+  // typed it wrong — and a 502/503/504 is a gateway or proxy in the way, not
+  // our code. Neither is worth a Sentry event, and both have advice to give.
+  it("reads a refused number as a typing mistake, but only when asking for a code", () => {
+    expect(classifyPhoneAuthError({ status: 400 }, "requestCode")).toBe(
+      "invalidPhone",
+    );
+    // After the SMS went out the number is settled; a 400 then is ours.
+    expect(classifyPhoneAuthError({ status: 400 })).toBe("unknown");
+  });
+
+  it("reads a gateway failure as the service being unavailable", () => {
+    expect(classifyPhoneAuthError({ status: 502 })).toBe("unavailable");
+    expect(classifyPhoneAuthError({ status: 503 })).toBe("unavailable");
+    expect(classifyPhoneAuthError({ status: 504 })).toBe("unavailable");
+  });
+
   it("treats transport failures as network", () => {
     expect(classifyPhoneAuthError({ status: "FETCH_ERROR" })).toBe("network");
     expect(classifyPhoneAuthError({ status: "TIMEOUT_ERROR" })).toBe("network");

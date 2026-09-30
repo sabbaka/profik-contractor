@@ -96,7 +96,9 @@
         "wrongApp": "This account is registered as a client. Please use the Profik client app.",
         "tooManyAttempts": "Too many attempts. Wait a few minutes and try again.",
         "undeliverable": "We can't text this number. Please try a different one.",
+        "invalidPhone": "That number doesn't look right. Check it and try again.",
         "network": "No connection. Check your internet and try again.",
+        "unavailable": "The service is temporarily unavailable. Please try again in a moment.",
         "unknown": "Something went wrong. Please try again."
       }
     },
