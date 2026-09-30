@@ -258,6 +258,59 @@ describe("usePushNotifications registration", () => {
     expect(appStateListeners).toHaveLength(0);
   });
 
+  // At launch the effect restarts once (its key settles right after mount).
+  // The first run is cancelled, and before this it still went for a token and
+  // reported its own failure: two Sentry events per launch, not one.
+  it("stops a cancelled run before it asks for a token", async () => {
+    let grantFirst: (value: { status: string }) => void = () => {};
+    notifications.getPermissionsAsync.mockReturnValueOnce(
+      new Promise((resolve) => {
+        grantFirst = resolve;
+      }) as never,
+    );
+
+    const { rerender } = await renderHook(
+      ({ token }: { token: string }) => usePushNotifications(token),
+      { initialProps: { token: "jwt-1" } },
+    );
+    await rerender({ token: "jwt-2" });
+    await waitFor(() => expect(mockRegisterPushToken).toHaveBeenCalledTimes(1));
+
+    await act(async () => {
+      grantFirst({ status: "granted" });
+    });
+
+    expect(notifications.getExpoPushTokenAsync).toHaveBeenCalledTimes(1);
+    expect(mockRegisterPushToken).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not report the failure of a run that was cancelled meanwhile", async () => {
+    let failFirst: (error: Error) => void = () => {};
+    notifications.getExpoPushTokenAsync
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => {
+          failFirst = reject;
+        }),
+      )
+      .mockRejectedValue(new Error("Aborted"));
+
+    const { rerender } = await renderHook(
+      ({ token }: { token: string }) => usePushNotifications(token),
+      { initialProps: { token: "jwt-1" } },
+    );
+    await waitFor(() =>
+      expect(notifications.getExpoPushTokenAsync).toHaveBeenCalledTimes(1),
+    );
+    await rerender({ token: "jwt-2" });
+    await waitFor(() => expect(logError).toHaveBeenCalledTimes(1));
+
+    await act(async () => {
+      failFirst(new Error("Aborted"));
+    });
+
+    expect(logError).toHaveBeenCalledTimes(1);
+  });
+
   it("does nothing while signed out", async () => {
     await renderHook(() => usePushNotifications(null));
     await comeToForeground();
