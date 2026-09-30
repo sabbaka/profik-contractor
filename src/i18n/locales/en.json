@@ -145,6 +145,7 @@
       "locationEnable": "Enable location",
       "locationRequesting": "Getting your location...",
       "locationDenied": "Location permission denied — enable it in Settings to filter by distance.",
+      "locationUnavailable": "Couldn't get your location — check that location services are on and try again.",
       "withinKm": "Within {{count}} km",
       "withinKmPlus": "{{count}}+ km",
       "showJobsLoading": "Show Jobs",

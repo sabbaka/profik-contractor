@@ -448,6 +448,11 @@ export function OpenJobsFiltersSheet({
                           {t("open.filters.locationDenied")}
                         </Text>
                       )}
+                      {location.status === "unavailable" && (
+                        <Text variant="caption">
+                          {t("open.filters.locationUnavailable")}
+                        </Text>
+                      )}
                       <Button
                         variant="secondary"
                         size="sm"

@@ -3,7 +3,32 @@ import * as Location from "expo-location";
 import { useCallback, useEffect, useState } from "react";
 
 export type DeviceLocationStatus =
-  "idle" | "requesting" | "granted" | "denied" | "error";
+  "idle" | "requesting" | "granted" | "denied" | "unavailable" | "error";
+
+/**
+ * What expo-location rejects with when permission is granted but there is no
+ * fix — location services switched off, or no signal. A state of the phone,
+ * not a failure of the app, so it is shown to the contractor rather than
+ * reported (PROFIK-CONTRACTOR-4). The codes are expo's, inferred from the
+ * native exception class names: on Android `getCurrentPositionAsync` throws
+ * ERR_CURRENT_LOCATION_IS_UNAVAILABLE (no fix) or
+ * ERR_LOCATION_SETTINGS_UNSATISFIED (services off, system dialog declined); on
+ * iOS it throws ERR_LOCATION_UNAVAILABLE, which also covers a weak signal.
+ */
+const LOCATION_UNAVAILABLE_CODES = new Set([
+  "ERR_CURRENT_LOCATION_IS_UNAVAILABLE",
+  "ERR_LOCATION_UNAVAILABLE",
+  "ERR_LOCATION_SETTINGS_UNSATISFIED",
+]);
+
+function isLocationUnavailable(error: unknown): boolean {
+  return (
+    !!error &&
+    typeof error === "object" &&
+    "code" in error &&
+    LOCATION_UNAVAILABLE_CODES.has(String(error.code))
+  );
+}
 
 interface DeviceCoords {
   lat: number;
@@ -49,7 +74,11 @@ export function useDeviceLocation() {
         });
         setStatus("granted");
       } catch (error) {
-        if (!cancelled) logError(error, "useDeviceLocation.restore");
+        // Silent restore: with no fix the sheet keeps its "Enable location"
+        // button, which is right — tapping it says why.
+        if (!cancelled && !isLocationUnavailable(error)) {
+          logError(error, "useDeviceLocation.restore");
+        }
       }
     })();
     return () => {
@@ -76,6 +105,10 @@ export function useDeviceLocation() {
       setStatus("granted");
       return next;
     } catch (error) {
+      if (isLocationUnavailable(error)) {
+        setStatus("unavailable");
+        return null;
+      }
       logError(error, "useDeviceLocation.request");
       setStatus("error");
       return null;

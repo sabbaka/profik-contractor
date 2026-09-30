@@ -145,6 +145,7 @@
       "locationEnable": "Povolit polohu",
       "locationRequesting": "Zjišťuji vaši polohu...",
       "locationDenied": "Přístup k poloze byl zamítnut — povolte ho v Nastavení, chcete-li filtrovat podle vzdálenosti.",
+      "locationUnavailable": "Polohu se nepodařilo zjistit — zkontrolujte, že jsou zapnuté služby určování polohy, a zkuste to znovu.",
       "withinKm": "Do {{count}} km",
       "withinKmPlus": "{{count}}+ km",
       "showJobsLoading": "Zobrazit zakázky",
