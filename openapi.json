@@ -4870,6 +4870,7 @@
               "opening_balance",
               "account_deleted",
               "refund",
+              "dispute",
               "job"
             ],
             "example": "offer_fee"

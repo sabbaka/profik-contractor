@@ -374,7 +374,8 @@
         "offerFee": "Response fee",
         "signupBonus": "Welcome bonus",
         "openingBalance": "Starting balance",
-        "refund": "Refund"
+        "refund": "Refund",
+        "dispute": "Disputed payment"
       },
       "status": {
         "pending": "Pending",
