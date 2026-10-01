@@ -374,7 +374,8 @@
         "offerFee": "Poplatek za reakci",
         "signupBonus": "Uvítací bonus",
         "openingBalance": "Počáteční zůstatek",
-        "refund": "Vrácení platby"
+        "refund": "Vrácení platby",
+        "dispute": "Sporná platba"
       },
       "status": {
         "pending": "Čeká",

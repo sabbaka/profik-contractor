@@ -132,9 +132,14 @@ describe("locale files", () => {
         ].map((v) => `job.category.${v}`),
         "job.workName",
         // `typeKey` in PaymentHistoryRow builds these from the entry's type.
-        ...["topup", "offerFee", "signupBonus", "openingBalance", "refund"].map(
-          (v) => `balance.history.type.${v}`,
-        ),
+        ...[
+          "topup",
+          "offerFee",
+          "signupBonus",
+          "openingBalance",
+          "refund",
+          "dispute",
+        ].map((v) => `balance.history.type.${v}`),
       ];
 
       expect(expected.filter((key) => !keys.has(key))).toEqual([]);
