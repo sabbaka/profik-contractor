@@ -37,6 +37,8 @@
     "src/utils/openLegalDocument.ts": "2da859577ffe2751d7b9d58c21185ee4a4f1a00f9a39ffe9f2b260d85a5f56f9",
     "src/utils/setupGlobalErrorHandlers.ts": "d6ccd29ddd6606b2281b77b2c2db4edb69d8a64d6378f2a8d510ddb7120c0256",
     "src/utils/termsStorage.ts": "9a0e8e962ac97f46625a949ab28d9ed09377ecdc724488422c1edffaa4941ccd",
-    "src/utils/tokenStorage.ts": "e6e81fe52f00d5f5b81b006990a96afa50eaf6ad7f742a0d698df10b4755850c"
+    "src/utils/tokenStorage.ts": "e6e81fe52f00d5f5b81b006990a96afa50eaf6ad7f742a0d698df10b4755850c",
+    "src/utils/updateLabel.test.ts": "27e7f30ab4ad12faf48b07386d45fa04e2aea2296eac3c18dd93a74620bebeb7",
+    "src/utils/updateLabel.ts": "9c8e70622e31b4c2d9981a15354cb2d96325ac704f6fdb0d5a24f02408f73ad6"
   }
 }

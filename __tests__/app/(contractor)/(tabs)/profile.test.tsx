@@ -3,7 +3,21 @@ import { mockApi } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
 import { screen, within } from "@testing-library/react-native";
 import React from "react";
+import * as Updates from "expo-updates";
 import ProfileRoute from "@/app/(contractor)/(tabs)/profile";
+
+// Mutable, so each test can say which kind of launch it is. The module is
+// read at render, not at import, so changing it between tests is enough.
+jest.mock("expo-updates", () => ({
+  isEnabled: true,
+  isEmbeddedLaunch: false,
+  updateId: null,
+}));
+const mockUpdates = Updates as {
+  isEnabled: boolean;
+  isEmbeddedLaunch: boolean;
+  updateId: string | null;
+};
 
 const ME: MeResponse = {
   id: "pro-1",
@@ -51,6 +65,32 @@ describe("Profile", () => {
     const row = await screen.findByRole("button", { name: /Appearance/ });
     const label = within(row).getByText("Appearance");
     expect(within(label.parent!).getByText("System")).toBeOnTheScreen();
+  });
+
+  /**
+   * The footer names the over-the-air update the app is running, so testers
+   * and support can see whether one has arrived. A launch from the bundle in
+   * the binary shows the version alone.
+   */
+  it("names the running update after the version", async () => {
+    mockUpdates.isEmbeddedLaunch = false;
+    mockUpdates.updateId = "f9abcd76-1c2e-4b5a-9d3f-0a1b2c3d4e5f";
+    mockApi({ "GET /auth/me": { body: ME } });
+    await renderWithProviders(<ProfileRoute />, { authed: true });
+
+    expect(
+      await screen.findByText(/^Version .* · update f9abcd76$/),
+    ).toBeOnTheScreen();
+  });
+
+  it("shows the version alone for the bundle that shipped with the build", async () => {
+    mockUpdates.isEmbeddedLaunch = true;
+    mockUpdates.updateId = "f9abcd76-1c2e-4b5a-9d3f-0a1b2c3d4e5f";
+    mockApi({ "GET /auth/me": { body: ME } });
+    await renderWithProviders(<ProfileRoute />, { authed: true });
+
+    expect(await screen.findByText(/^Version /)).toBeOnTheScreen();
+    expect(screen.queryByText(/· update/)).toBeNull();
   });
 
   it("announces Edit Profile and the balance card as buttons", async () => {
