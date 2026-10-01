@@ -225,7 +225,7 @@ export interface UnreadSummary {
  * doesn't carry.
  */
 export type PaymentType =
-  "topup" | "offer_fee" | "signup_bonus" | "opening_balance" | "job";
+  "topup" | "offer_fee" | "signup_bonus" | "opening_balance" | "refund" | "job";
 
 export type PaymentStatus = "pending" | "completed" | "failed";
 

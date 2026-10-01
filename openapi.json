@@ -4869,6 +4869,7 @@
               "signup_bonus",
               "opening_balance",
               "account_deleted",
+              "refund",
               "job"
             ],
             "example": "offer_fee"
