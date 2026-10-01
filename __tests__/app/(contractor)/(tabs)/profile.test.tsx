@@ -1,7 +1,7 @@
 import type { MeResponse } from "@/src/api/profikApi";
 import { mockApi } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
-import { screen } from "@testing-library/react-native";
+import { screen, within } from "@testing-library/react-native";
 import React from "react";
 import ProfileRoute from "@/app/(contractor)/(tabs)/profile";
 
@@ -37,6 +37,20 @@ describe("Profile", () => {
         await screen.findByRole("button", { name: new RegExp(label) }),
       ).toBeOnTheScreen();
     }
+  });
+
+  /**
+   * The appearance value goes under its label, not beside it. Beside it, on a
+   * 320pt-wide phone in Ukrainian, "Як у системі" wrapped inside its 45% and
+   * left "Оформлення" too little room, so the label was cut off.
+   */
+  it("puts the appearance value under its label", async () => {
+    mockApi({ "GET /auth/me": { body: ME } });
+    await renderWithProviders(<ProfileRoute />, { authed: true });
+
+    const row = await screen.findByRole("button", { name: /Appearance/ });
+    const label = within(row).getByText("Appearance");
+    expect(within(label.parent!).getByText("System")).toBeOnTheScreen();
   });
 
   it("announces Edit Profile and the balance card as buttons", async () => {

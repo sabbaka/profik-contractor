@@ -536,6 +536,7 @@ export default function ProfileRoute() {
           <Divider />
           <ProfileRow
             label={t("profile.menu.appearance")}
+            stacked
             iconBg={colors.infoBg}
             icon={<Moon size={18} color={colors.purple} />}
             value={appearanceLabel}
