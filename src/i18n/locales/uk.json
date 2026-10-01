@@ -377,7 +377,8 @@
         "topup": "Поповнення",
         "offerFee": "Комісія за реакцію",
         "signupBonus": "Вітальний бонус",
-        "openingBalance": "Початковий баланс"
+        "openingBalance": "Початковий баланс",
+        "refund": "Повернення коштів"
       },
       "status": {
         "pending": "Очікує",

@@ -373,7 +373,8 @@
         "topup": "Dobití",
         "offerFee": "Poplatek za reakci",
         "signupBonus": "Uvítací bonus",
-        "openingBalance": "Počáteční zůstatek"
+        "openingBalance": "Počáteční zůstatek",
+        "refund": "Vrácení platby"
       },
       "status": {
         "pending": "Čeká",

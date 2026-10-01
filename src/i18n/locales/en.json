@@ -373,7 +373,8 @@
         "topup": "Top-up",
         "offerFee": "Response fee",
         "signupBonus": "Welcome bonus",
-        "openingBalance": "Starting balance"
+        "openingBalance": "Starting balance",
+        "refund": "Refund"
       },
       "status": {
         "pending": "Pending",
