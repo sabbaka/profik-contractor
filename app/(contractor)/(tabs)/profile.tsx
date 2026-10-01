@@ -18,6 +18,7 @@ import { clearHasSeenOnboarding } from "@/src/utils/onboardingStorage";
 import { termsUrlOf } from "@/src/features/auth/terms";
 import { openAppSettings } from "@/src/utils/openAppSettings";
 import { openLegalDocument } from "@/src/utils/openLegalDocument";
+import { runningUpdateId } from "@/src/utils/updateLabel";
 import { dateLocale } from "@/src/utils/jobSchedule";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
 import {
@@ -182,6 +183,8 @@ export default function ProfileRoute() {
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
   const isGuest = useIsGuest();
+  const version = Constants.expoConfig?.version ?? "—";
+  const updateId = runningUpdateId();
   const { data: user } = useMeQuery(undefined, { skip: isGuest });
 
   // The server sends this block only while the provider is configured, so its
@@ -720,9 +723,9 @@ export default function ProfileRoute() {
           textAlign="center"
           style={{ color: colors.textMuted }}
         >
-          {t("profile.version", {
-            version: Constants.expoConfig?.version ?? "—",
-          })}
+          {updateId
+            ? t("profile.versionWithUpdate", { version, update: updateId })
+            : t("profile.version", { version })}
         </Text>
       </ScrollView>
 

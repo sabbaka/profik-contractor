@@ -403,6 +403,7 @@
     "deleteSuccessMessage": "Your account and personal data have been deleted.",
     "deleteFailed": "Could not delete your account. Please try again.",
     "version": "Version {{version}}",
+    "versionWithUpdate": "Version {{version}} · update {{update}}",
     "balance": {
       "available": "AVAILABLE BALANCE",
       "tapToAddFunds": "Tap to Top Up"

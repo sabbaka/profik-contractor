@@ -403,6 +403,7 @@
     "deleteSuccessMessage": "Váš účet a osobní údaje byly smazány.",
     "deleteFailed": "Účet se nepodařilo smazat. Zkuste to prosím znovu.",
     "version": "Verze {{version}}",
+    "versionWithUpdate": "Verze {{version}} · aktualizace {{update}}",
     "balance": {
       "available": "DOSTUPNÝ ZŮSTATEK",
       "tapToAddFunds": "Klepnutím dobijte kredit"

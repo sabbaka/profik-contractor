@@ -407,6 +407,7 @@
     "deleteSuccessMessage": "Ваш обліковий запис та особисті дані видалено.",
     "deleteFailed": "Не вдалося видалити обліковий запис. Спробуйте ще раз.",
     "version": "Версія {{version}}",
+    "versionWithUpdate": "Версія {{version}} · оновлення {{update}}",
     "balance": {
       "available": "ДОСТУПНИЙ БАЛАНС",
       "tapToAddFunds": "Торкніться, щоб поповнити"
