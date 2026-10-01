@@ -1,5 +1,16 @@
 import type { TFunction } from "i18next";
 
+/*
+ * Both apps carry this module at this same path, byte for byte, and
+ * `shared-modules.json` in each records it. A change here fails
+ * `npm run shared:check` until it has been carried to the other app.
+ *
+ * It is its own module rather than part of a larger utilities file so that the
+ * check covers exactly these two helpers. The copies used to live under
+ * different paths and neither was recorded, so when the client moved to date
+ * spans on 15.09 the contractor app went on printing "15 Sep +1" for two weeks.
+ */
+
 const DATE_LOCALES: Record<string, string> = {
   cs: "cs-CZ",
   uk: "uk-UA",
@@ -7,17 +18,20 @@ const DATE_LOCALES: Record<string, string> = {
 };
 
 /**
- * BCP 47 tag for `Intl`, chosen from the active i18n language.
+ * BCP 47 tag for Intl, chosen from the active i18n language.
  *
- * The client app carries the same helper in `src/features/jobs/utils.ts`;
- * keep the two in step.
+ * Dates used to be formatted with a hardcoded "en-US", so a Czech user saw
+ * American dates whatever the interface language was. Pass `i18n.language`.
+ * It arrives as a bare code ("cs") but can carry a region ("cs-CZ"), so match
+ * on the prefix; anything the app has no mapping for falls back to English,
+ * the same fallback i18next uses for copy.
  */
 export function dateLocale(language: string): string {
   return DATE_LOCALES[language.slice(0, 2)] ?? "en-US";
 }
 
 /**
- * The date the client asked for, for the job card and the detail hero — not
+ * The date the client asked for, for the job card and the details hero — not
  * `createdAt`, the date the job was posted, which both screens used to show.
  *
  * `scheduledDates` is an array because the backend accepts several. One entry
@@ -29,9 +43,6 @@ export function dateLocale(language: string): string {
  *
  * Returns undefined when there is nothing to state, and the caller drops the
  * row. Jobs created before the wizard asked for a date have none.
- *
- * The client app carries the same helper in `src/features/jobs/utils.ts`;
- * keep the two in step.
  */
 export function formatSchedule(
   dates: string[] | null | undefined,
