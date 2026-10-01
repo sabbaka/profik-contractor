@@ -33,6 +33,16 @@ describe("useConversationTime", () => {
     return expect(format("2026-03-10T09:30:00")).resolves.toMatch(/9|09/);
   });
 
+  /**
+   * 24-hour even in English, which is the only language here that would
+   * default to AM/PM — one locale on a different clock in a list scanned at a
+   * glance is worse than either convention consistently applied.
+   */
+  it("uses a 24-hour clock", async () => {
+    await expect(format("2026-03-10T14:32:00")).resolves.toBe("14:32");
+    await expect(format("2026-03-10T00:05:00")).resolves.toBe("00:05");
+  });
+
   it("still says today one minute after midnight", async () => {
     await expect(format("2026-03-10T00:01:00")).resolves.not.toBe(
       "messages.yesterday",
