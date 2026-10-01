@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
  *
  * A hook rather than a plain formatter because "Yesterday" is copy and has to
  * go through `t`, and because the locale has to follow `i18n.language` rather
- * than the device.
+ * than the device. The clock itself is 24-hour in every language — see below.
  */
 export function useConversationTime() {
   const { t, i18n } = useTranslation();
@@ -28,6 +28,10 @@ export function useConversationTime() {
         return date.toLocaleTimeString(i18n.language, {
           hour: "2-digit",
           minute: "2-digit",
+          // 24-hour whatever the language. Czech and Ukrainian are already
+          // written this way, and English would otherwise be the one locale
+          // showing "2:32 PM" in a list read at a glance against the others.
+          hour12: false,
         });
       }
       if (days === 1) return t("messages.yesterday");
