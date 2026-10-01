@@ -5,10 +5,8 @@ import { dateLocale, formatSchedule } from "./jobSchedule";
 const t = ((key: string) => key) as unknown as TFunction;
 
 /**
- * Mirrors the client app's suite for the same two helpers, which live there in
- * `src/features/jobs/utils.ts`. Both apps shipped the "shows when it was
- * posted, not when it is scheduled" bug and both fixed it separately; only the
- * client got a test for it.
+ * Both apps carry this suite at this same path, byte for byte, beside the
+ * module it covers; `shared-modules.json` in each records both files.
  */
 describe("dateLocale", () => {
   // Dates were once formatted with a hardcoded "en-US", so a Czech user saw
@@ -40,7 +38,8 @@ describe("formatSchedule", () => {
   /**
    * Several dates are the ends of a span the client will accept — what the
    * client wizard's "this week" preset sends. A count said how many without
-   * saying which, so a contractor could not tell which days would do.
+   * saying which, and a single date said the job was on the last day of the
+   * week.
    */
   it("states a span from its earliest date to its latest", () => {
     const out = formatSchedule(
