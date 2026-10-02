@@ -65,6 +65,8 @@ import tamaguiConfig from "../tamagui.config";
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
   enabled: !!process.env.EXPO_PUBLIC_SENTRY_DSN,
+  // Set per EAS environment, so staging builds report apart from production.
+  environment: process.env.EXPO_PUBLIC_APP_ENV ?? "development",
   sendDefaultPii: false,
 });
 
