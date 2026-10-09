@@ -1,3 +1,4 @@
+import { CreditPacksCard } from "@/src/components/balance/CreditPacksCard";
 import { FormInput } from "@/src/components/form";
 import {
   ActivityIndicator,
@@ -6,6 +7,8 @@ import {
   Text,
 } from "@/src/components/ui/ui";
 import { useTopupForm } from "@/src/features/balance/forms";
+import type { CreditPurchaseResult } from "@/src/features/balance/hooks";
+import { sellsThroughAppStore } from "@/src/features/balance/purchases";
 import { useThemeColors } from "@/src/theme";
 import { track } from "@/src/utils/analytics";
 import { formatCredits } from "@/src/utils/currency";
@@ -49,6 +52,20 @@ export default function BalanceRoute() {
         }
       },
     });
+
+  const onPurchased = (result: CreditPurchaseResult) => {
+    if (result.status !== "completed") return;
+    // StoreKit has taken the money, but the webhook may still be on its way;
+    // say so rather than show a balance that has not moved yet.
+    setSnackbarMsg(
+      result.balanceUpdated
+        ? t("balance.updatedTo", {
+            amount: formatCredits(result.newBalance, t),
+          })
+        : t("balance.iap.processing"),
+    );
+    setSnackbarVisible(true);
+  };
 
   const viewedReported = useRef(false);
   useEffect(() => {
@@ -201,39 +218,45 @@ export default function BalanceRoute() {
             <ChevronRight size={18} color={colors.textMuted} />
           </XStack>
         </Pressable>
-        <YStack
-          padding={20}
-          borderRadius={20}
-          backgroundColor={colors.bgCard}
-          borderWidth={1}
-          borderColor={colors.borderSubtle}
-          gap={16}
-        >
-          <YStack gap={4}>
-            <Text variant="h4">{t("balance.addFunds")}</Text>
-            <Text variant="bodySm">{t("balance.amountBody")}</Text>
-            {/* The field asks for crowns because Stripe charges crowns, while
-                the balance above it counts credits. Without the rate between
-                them the two numbers look like a discrepancy. */}
-            <Text variant="caption">{t("balance.rateNote")}</Text>
+        {/* iOS sells credits through In-App Purchase only (App Review
+            guideline 3.1.1): the Stripe form is never shown there. */}
+        {sellsThroughAppStore ? (
+          <CreditPacksCard onPurchased={onPurchased} />
+        ) : (
+          <YStack
+            padding={20}
+            borderRadius={20}
+            backgroundColor={colors.bgCard}
+            borderWidth={1}
+            borderColor={colors.borderSubtle}
+            gap={16}
+          >
+            <YStack gap={4}>
+              <Text variant="h4">{t("balance.addFunds")}</Text>
+              <Text variant="bodySm">{t("balance.amountBody")}</Text>
+              {/* The field asks for crowns because Stripe charges crowns, while
+                  the balance above it counts credits. Without the rate between
+                  them the two numbers look like a discrepancy. */}
+              <Text variant="caption">{t("balance.rateNote")}</Text>
+            </YStack>
+            <FormInput
+              flex={0}
+              control={form.control}
+              name="amount"
+              placeholder={t("balance.amountPlaceholder")}
+              keyboardType="numeric"
+            />
+            <Button loading={isLoading} onPress={submit}>
+              {t("balance.continuePayment")}
+            </Button>
+            <XStack alignItems="flex-start" gap={8}>
+              <ShieldCheck size={16} color={colors.success} />
+              <Text variant="caption" flex={1}>
+                {t("balance.secureBody")}
+              </Text>
+            </XStack>
           </YStack>
-          <FormInput
-            flex={0}
-            control={form.control}
-            name="amount"
-            placeholder={t("balance.amountPlaceholder")}
-            keyboardType="numeric"
-          />
-          <Button loading={isLoading} onPress={submit}>
-            {t("balance.continuePayment")}
-          </Button>
-          <XStack alignItems="flex-start" gap={8}>
-            <ShieldCheck size={16} color={colors.success} />
-            <Text variant="caption" flex={1}>
-              {t("balance.secureBody")}
-            </Text>
-          </XStack>
-        </YStack>
+        )}
       </KeyboardAwareScreen>
       <Snackbar
         visible={snackbarVisible}

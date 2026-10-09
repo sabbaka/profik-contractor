@@ -1,5 +1,6 @@
 import { Text } from "@/src/components/ui/ui";
 import { FALLBACK_PRIVACY_URL } from "@/src/features/auth/terms";
+import { sellsThroughAppStore } from "@/src/features/balance/purchases";
 import { useThemeColors } from "@/src/theme";
 import { openLegalDocument } from "@/src/utils/openLegalDocument";
 import { ChevronLeft } from "@tamagui/lucide-icons";
@@ -79,7 +80,12 @@ export default function PrivacyPolicyScreen() {
         />
         <Section
           title={t("privacy.balanceTitle")}
-          body={t("privacy.balance")}
+          // Credits are bought through the App Store on iOS, Stripe elsewhere.
+          body={
+            sellsThroughAppStore
+              ? t("privacy.balanceIos")
+              : t("privacy.balance")
+          }
         />
         <Section
           title={t("privacy.legalBasisTitle")}

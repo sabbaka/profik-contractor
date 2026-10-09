@@ -1,4 +1,5 @@
 import { profikApi } from "@/src/api/profikApi";
+import { resetPurchaser } from "@/src/features/balance/purchases";
 import { useUnregisterPushToken } from "@/src/hooks/usePushNotifications";
 import { logout as logoutAction } from "@/src/store/authSlice";
 import { resetAnalytics } from "@/src/utils/analytics";
@@ -39,6 +40,10 @@ export function useAuth(): UseAuthReturn {
     // Same reason as the cache reset above, one layer over: an identity that
     // outlives the session files the next person's events under this one.
     resetAnalytics();
+
+    // And for App Store purchases: the next account to sign in on this device
+    // must not buy credits under this one's RevenueCat customer.
+    await resetPurchaser();
 
     // The cached terms answer is about the account that just left. Keeping it
     // would decide the next account's first frame, and the two can differ.

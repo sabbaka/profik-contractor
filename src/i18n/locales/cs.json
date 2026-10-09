@@ -355,6 +355,18 @@
     "secureBody": "Platba proběhne bezpečně ve webovém zobrazení a potom se automaticky vrátíte sem.",
     "updatedTo": "Zůstatek aktualizován na {{amount}}",
     "topupFailed": "Nepodařilo se spustit doplnění kreditu",
+    "iap": {
+      "body": "Vyberte balíček kreditů. Platba proběhne přes váš účet v App Storu.",
+      "loading": "Načítání balíčků kreditů...",
+      "unavailable": "Nákup kreditů teď není k dispozici. Zkuste to prosím později.",
+      "loadFailed": "Balíčky kreditů se nepodařilo načíst.",
+      "secureBody": "Platbu zpracovává Apple — Profik údaje o vaší kartě nikdy nevidí.",
+      "processing": "Platba přijata. Kredity se na zůstatku objeví za chvíli.",
+      "pendingTitle": "Čeká na schválení",
+      "pendingBody": "Tento nákup musí někdo schválit. Kredity se na zůstatku objeví, jakmile bude schválen.",
+      "purchaseFailed": "Nákup se nezdařil. Zkuste to prosím znovu.",
+      "notAllowed": "Nákupy jsou na tomto zařízení vypnuté. Povolit je můžete v Nastavení v části Čas u obrazovky."
+    },
     "errors": {
       "amountRequired": "Částka je povinná",
       "amountNumber": "Musí být platné číslo",
@@ -455,6 +467,7 @@
     "notifications": "Používáme token push oznámení vašeho zařízení, abychom vás upozornili na nové zprávy od zákazníků a změny reakcí. Push oznámení můžete kdykoli vypnout v nastavení zařízení.",
     "balanceTitle": "Kredity a platby",
     "balance": "Uchováváme váš zůstatek kreditů a jeho historii. Dobití probíhá na externí zabezpečené stránce Stripe Checkout otevřené v prohlížeči — Profik údaje o vaší kartě nevidí ani neukládá.",
+    "balanceIos": "Uchováváme váš zůstatek kreditů a jeho historii. Na iPhonu se kredity kupují přes App Store společnosti Apple: platbu zpracovává Apple a Profik údaje o vaší kartě nevidí ani neukládá.",
     "legalBasisTitle": "Proč vaše údaje zpracováváme",
     "legalBasis": "Pro poskytování Platformy — účet, zakázky, reakce, chat, kredity, hodnocení — jako plnění smlouvy. Pro bezpečnost, prevenci podvodů, opravu chyb a statistiky používání jako náš oprávněný zájem. Pro účetní a daňové účely jako zákonnou povinnost. Pro ověření totožnosti na základě vašeho souhlasu, který můžete kdykoli odvolat.",
     "sharingTitle": "Jak jsou vaše údaje sdíleny",
@@ -482,6 +495,7 @@
     "faq3A": "Otevřete svou reakci a přejděte do chatu, kde můžete zákazníkovi napsat přímo - telefonní číslo sdílet nemusíte.",
     "faq4Q": "Jak přidám kredit na zůstatek?",
     "faq4A": "V profilu otevřete Zůstatek, zadejte částku a pokračujte na zabezpečenou platební stránku. Zůstatek se používá k úhradě platformních poplatků.",
+    "faq4AIos": "V profilu otevřete Zůstatek, vyberte balíček kreditů a zaplaťte přes App Store. Zůstatek se používá k úhradě platformních poplatků.",
     "faq5Q": "Jak smažu svůj účet?",
     "faq5A": "Přejděte do nastavení účtu a sjeďte na Smazat účet. Tím účet trvale odstraníte a akci nelze vrátit zpět.",
     "contactTitle": "Stále potřebujete pomoc?",
@@ -589,7 +603,8 @@
     "verifiedIdentity": "Totožnost ověřena",
     "openFilters": "Otevřít filtry",
     "filtersActive": "{{count}} aktivních filtrů",
-    "chooseCountry": "Vybrat předvolbu země"
+    "chooseCountry": "Vybrat předvolbu země",
+    "buyCredits": "Koupit {{credits}} za {{price}}"
   },
   "messages": {
     "title": "Zprávy",

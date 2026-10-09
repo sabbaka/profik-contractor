@@ -1,4 +1,5 @@
 import { Button, Text } from "@/src/components/ui/ui";
+import { sellsThroughAppStore } from "@/src/features/balance/purchases";
 import { useThemeColors } from "@/src/theme";
 import { ChevronLeft, Mail } from "@tamagui/lucide-icons";
 import { router } from "expo-router";
@@ -76,7 +77,12 @@ export default function HelpSupportScreen() {
           <FaqItem question={t("support.faq1Q")} answer={t("support.faq1A")} />
           <FaqItem question={t("support.faq2Q")} answer={t("support.faq2A")} />
           <FaqItem question={t("support.faq3Q")} answer={t("support.faq3A")} />
-          <FaqItem question={t("support.faq4Q")} answer={t("support.faq4A")} />
+          <FaqItem
+            question={t("support.faq4Q")}
+            answer={
+              sellsThroughAppStore ? t("support.faq4AIos") : t("support.faq4A")
+            }
+          />
           <FaqItem question={t("support.faq5Q")} answer={t("support.faq5A")} />
         </YStack>
 
