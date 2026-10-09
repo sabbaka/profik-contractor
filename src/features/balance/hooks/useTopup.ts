@@ -6,6 +6,7 @@ import { Alert } from "react-native";
 import { useTranslation } from "react-i18next";
 import { extractErrorMessage } from "@/src/features/auth/types";
 import { TopupResult } from "../types";
+import { waitForBalanceIncrease } from "../waitForBalanceIncrease";
 
 export interface UseTopupReturn {
   topup: (amount: number) => Promise<TopupResult>;
@@ -46,32 +47,12 @@ export function useTopup(): UseTopupReturn {
         result.type === "dismiss" ||
         result.type === "cancel"
       ) {
-        const startBalance = user?.balance ?? 0;
-        let balanceUpdated = false;
-
-        // Polling, not an invalidation gap: Stripe credits the balance from
-        // its webhook, so at the moment the browser hands control back the
-        // money may genuinely not be there yet. Nothing the cache knows can
-        // shorten that — this waits for the server to catch up. Do not replace
-        // it with a tag invalidation.
-        let finalBalance = startBalance;
-        for (let i = 0; i < 5; i++) {
-          const r = await refetchBalance();
-          const newBalance = r.data?.balance ?? startBalance;
-
-          if (newBalance > startBalance) {
-            balanceUpdated = true;
-            finalBalance = newBalance;
-            break;
-          }
-
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
-
-        if (!balanceUpdated) {
-          const r = await refetchBalance();
-          finalBalance = r.data?.balance ?? startBalance;
-        }
+        // The webhook may not have credited the balance yet when the browser
+        // hands control back — see `waitForBalanceIncrease`.
+        const { balanceUpdated, finalBalance } = await waitForBalanceIncrease(
+          refetchBalance,
+          user?.balance ?? 0,
+        );
 
         if (balanceUpdated) {
           // The requested amount, not the delta actually credited — the two
@@ -81,6 +62,7 @@ export function useTopup(): UseTopupReturn {
           track("balance_topup_payment_completed", {
             amount_kc: amount,
             balance_after_kc: finalBalance,
+            provider: "stripe",
           });
         }
 

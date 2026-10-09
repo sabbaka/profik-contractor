@@ -26,6 +26,10 @@ import "react-native-reanimated";
 
 import { ErrorBoundary } from "@/src/components/ui/ErrorBoundary";
 import { isGuestAccessibleRoute } from "@/src/features/auth/guestRoutes";
+import {
+  configurePurchases,
+  identifyPurchaser,
+} from "@/src/features/balance/purchases";
 import { useAnalyticsContext } from "@/src/hooks/useAnalyticsContext";
 import {
   termsRequired,
@@ -71,6 +75,10 @@ Sentry.init({
 // Wire up global JS error / unhandled-rejection handlers as early as possible,
 // before any feature code runs.
 setupGlobalErrorHandlers();
+
+// iOS sells credits through the App Store via RevenueCat. A no-op on Android
+// and in a build without EXPO_PUBLIC_REVENUECAT_IOS_KEY.
+configurePurchases();
 
 // Hold the native splash until fonts are ready. Without this the splash hides
 // immediately and the user stares at a blank screen while Inter/Inter Tight
@@ -120,6 +128,13 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   // stale cache, and it self-heals a dead token for free, because
   // baseQueryWithReauth logs out on a 401 when one is held.
   const { data: me } = useMeQuery(undefined, { skip: !token });
+
+  // A launch with a stored token never passes through sign-in, so this is
+  // where RevenueCat learns whose purchases these are — the id the webhook
+  // credits. Sign-in does the same in `usePhoneAuth`; a repeat is a no-op.
+  useEffect(() => {
+    if (me?.id) identifyPurchaser(me.id);
+  }, [me?.id]);
 
   // The native window sits behind every screen and is white by default, so
   // it shows in the rounded corners of a screen mid-transition no matter what

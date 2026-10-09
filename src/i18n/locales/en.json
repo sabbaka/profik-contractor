@@ -355,6 +355,18 @@
     "secureBody": "Payment is completed securely in a web view, then you'll return here automatically.",
     "updatedTo": "Balance updated to {{amount}}",
     "topupFailed": "Failed to start top-up session",
+    "iap": {
+      "body": "Choose a credit pack. Payment goes through your App Store account.",
+      "loading": "Loading credit packs...",
+      "unavailable": "Buying credits isn't available right now. Please try again later.",
+      "loadFailed": "Couldn't load credit packs.",
+      "secureBody": "Apple handles the payment — Profik never sees your card details.",
+      "processing": "Payment received. Your credits will appear on your balance shortly.",
+      "pendingTitle": "Waiting for approval",
+      "pendingBody": "This purchase needs approval. Your credits will appear on your balance once it's approved.",
+      "purchaseFailed": "The purchase didn't go through. Please try again.",
+      "notAllowed": "Purchases are turned off on this device. You can allow them in Settings under Screen Time."
+    },
     "errors": {
       "amountRequired": "Amount is required",
       "amountNumber": "Must be a valid number",
@@ -455,6 +467,7 @@
     "notifications": "We use your device's push notification token to alert you about new client messages and response updates. You can turn push notifications off at any time in your device settings.",
     "balanceTitle": "Credits and payments",
     "balance": "We keep your Credit balance and its history. Topping up is completed in an external, secure Stripe checkout page opened in your browser — Profik does not see or store your card details.",
+    "balanceIos": "We keep your Credit balance and its history. On iPhone, Credits are bought through Apple's App Store: Apple processes the payment, and Profik does not see or store your card details.",
     "legalBasisTitle": "Why we process your data",
     "legalBasis": "To provide the Platform — account, Jobs, Responses, chat, Credits, reviews — as performance of a contract. For security, fraud prevention, fixing errors and usage statistics, as our legitimate interest. For accounting and tax records, as a legal obligation. For identity verification, based on your consent, which you can withdraw at any time.",
     "sharingTitle": "How your information is shared",
@@ -482,6 +495,7 @@
     "faq3A": "Open your response and tap into the chat to message the client directly - no need to share your phone number.",
     "faq4Q": "How do I top up my balance?",
     "faq4A": "Open Balance from your profile, enter an amount, and continue to the secure payment page. Your balance is used to pay platform fees.",
+    "faq4AIos": "Open Balance from your profile, choose a credit pack and pay through the App Store. Your balance is used to pay platform fees.",
     "faq5Q": "How do I delete my account?",
     "faq5A": "Go to Account settings and scroll to Delete account. This permanently removes your account and cannot be undone.",
     "contactTitle": "Still need help?",
@@ -589,7 +603,8 @@
     "verifiedIdentity": "Identity verified",
     "openFilters": "Open filters",
     "filtersActive": "{{count}} filters active",
-    "chooseCountry": "Choose country code"
+    "chooseCountry": "Choose country code",
+    "buyCredits": "Buy {{credits}} for {{price}}"
   },
   "messages": {
     "title": "Messages",

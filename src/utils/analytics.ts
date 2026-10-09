@@ -148,9 +148,19 @@ export interface AnalyticsEventMap {
     balance_kc: number;
     entry_point: "profile" | "insufficient_balance" | "manual";
   };
+  /**
+   * Stripe on Android, the App Store on iOS. For a Stripe top-up it fires once
+   * the poll sees the balance go up; for an App Store purchase, once StoreKit
+   * reports the payment through, whether or not the webhook has credited it
+   * yet — `balance_after_kc` is then whatever the poll last read.
+   */
   balance_topup_payment_completed: {
+    /** For the App Store, the credits the pack is shown as, 1 Kč each. */
     amount_kc: number;
     balance_after_kc: number;
+    provider: "stripe" | "app_store";
+    /** The App Store product, e.g. `profik.credits.249`. */
+    product_id?: string;
     /**
      * `POST /payments/topup` returns only a checkout URL, not a transaction
      * id — there is nothing here to send. Add it once the endpoint returns
@@ -158,6 +168,17 @@ export interface AnalyticsEventMap {
      */
     transaction_id?: string;
   };
+  /** iOS only: the App Store payment sheet is about to open for a pack. */
+  balance_topup_purchase_started: { product_id: string; credits: number };
+  /** iOS only: the person closed the App Store sheet without paying. */
+  balance_topup_purchase_cancelled: { product_id: string };
+  /**
+   * iOS only: the purchase waits for someone else's approval (Ask to Buy) or
+   * for a payment method to be fixed. It may still complete later.
+   */
+  balance_topup_purchase_pending: { product_id: string };
+  /** iOS only. `error_code` is RevenueCat's `PURCHASES_ERROR_CODE`. */
+  balance_topup_purchase_failed: { product_id: string; error_code: string };
 
   client_rating_sent: { job_id: string; rating: number };
   app_rating_sent: { job_id?: string; rating: number };

@@ -5,6 +5,7 @@ import {
 } from "@/src/api/profikApi";
 import { setToken } from "@/src/store/authSlice";
 import { identifyUser, track } from "@/src/utils/analytics";
+import { identifyPurchaser } from "@/src/features/balance/purchases";
 import { logError } from "@/src/utils/logger";
 import { setCachedTerms } from "@/src/utils/termsStorage";
 import { router } from "expo-router";
@@ -152,7 +153,10 @@ export function usePhoneAuth(returnTo?: string): UsePhoneAuthReturn {
 
         // Optional throughout: analytics is never allowed to be the reason a
         // sign-in fails, and the navigation below it has to run regardless.
-        if (res.user?.id) identifyUser(res.user.id);
+        if (res.user?.id) {
+          identifyUser(res.user.id);
+          identifyPurchaser(res.user.id);
+        }
         // Sent before the branch below, not after: a registration that lands
         // on the consent screen is still a completed sign-up, and tracking it
         // only on the path that reaches the app would quietly undercount every
