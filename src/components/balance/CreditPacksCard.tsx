@@ -30,6 +30,9 @@ export function CreditPacksCard({ onPurchased }: CreditPacksCardProps) {
   const { t } = useTranslation();
   const colors = useThemeColors();
   const { state, packs, purchasingId, reload, purchase } = useCreditPurchase();
+  // With nothing to buy, "choose a pack" and "Apple processes the payment"
+  // contradict the line saying buying is unavailable.
+  const sellable = state !== "unavailable";
 
   return (
     <YStack
@@ -42,7 +45,9 @@ export function CreditPacksCard({ onPurchased }: CreditPacksCardProps) {
     >
       <YStack gap={4}>
         <Text variant="h4">{t("balance.addFunds")}</Text>
-        <Text variant="bodySm">{t("balance.iap.body")}</Text>
+        {sellable ? (
+          <Text variant="bodySm">{t("balance.iap.body")}</Text>
+        ) : null}
       </YStack>
 
       {state === "loading" ? (
@@ -107,12 +112,14 @@ export function CreditPacksCard({ onPurchased }: CreditPacksCardProps) {
         </YStack>
       ) : null}
 
-      <XStack alignItems="flex-start" gap={8}>
-        <ShieldCheck size={16} color={colors.success} />
-        <Text variant="caption" flex={1}>
-          {t("balance.iap.secureBody")}
-        </Text>
-      </XStack>
+      {sellable ? (
+        <XStack alignItems="flex-start" gap={8}>
+          <ShieldCheck size={16} color={colors.success} />
+          <Text variant="caption" flex={1}>
+            {t("balance.iap.secureBody")}
+          </Text>
+        </XStack>
+      ) : null}
     </YStack>
   );
 }
