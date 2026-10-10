@@ -1,11 +1,13 @@
-import { useMeQuery } from "@/src/api/profikApi";
+import { profikApi, useMeQuery } from "@/src/api/profikApi";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
+import type { AppDispatch } from "@/src/store";
 import { track } from "@/src/utils/analytics";
 import { logError } from "@/src/utils/logger";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 import type { PurchasesPackage } from "react-native-purchases";
+import { useDispatch } from "react-redux";
 import { CREDITS_OFFERING_ID, creditsForProduct } from "../creditPacks";
 import {
   configurePurchases,
@@ -120,9 +122,24 @@ async function loadCreditPacks(): Promise<LoadedPacks> {
 export function useCreditPurchase(): UseCreditPurchaseReturn {
   const { t } = useTranslation();
   const isGuest = useIsGuest();
-  const { data: me, refetch: refetchBalance } = useMeQuery(undefined, {
-    skip: isGuest,
-  });
+  const dispatch = useDispatch<AppDispatch>();
+  const { data: me } = useMeQuery(undefined, { skip: isGuest });
+
+  // The poll reads `GET /auth/me` on its own rather than through the hook's
+  // `refetch`, which throws once the hook's subscription is gone — and the
+  // App Store sheet is up long enough for that to happen
+  // (PROFIK-CONTRACTOR-C). A one-off read never throws; a failure comes back
+  // as a result without `data`.
+  const readBalance = useCallback(
+    () =>
+      dispatch(
+        profikApi.endpoints.me.initiate(undefined, {
+          subscribe: false,
+          forceRefetch: true,
+        }),
+      ),
+    [dispatch],
+  );
 
   const [loaded, setLoaded] = useState<LoadedPacks>(() => ({
     state: inAppPurchasesAvailable() ? "loading" : "unavailable",
@@ -162,12 +179,14 @@ export function useCreditPurchase(): UseCreditPurchaseReturn {
       });
 
       const sdk = purchasesSdk();
+      let charged = false;
       try {
         await logInPurchaser(me.id);
         await sdk.default.purchasePackage(pack.pkg);
+        charged = true;
 
         const { balanceUpdated, finalBalance } = await waitForBalanceIncrease(
-          refetchBalance,
+          readBalance,
           me.balance,
         );
         track("balance_topup_payment_completed", {
@@ -182,6 +201,24 @@ export function useCreditPurchase(): UseCreditPurchaseReturn {
           newBalance: finalBalance,
         };
       } catch (error) {
+        // Past this point the App Store has taken the money and the webhook
+        // credits it regardless, so "purchase failed" would only make the
+        // person pay twice. The screen shows its "credits arrive shortly".
+        if (charged) {
+          logError(error, "purchases:balancePoll", { product_id });
+          track("balance_topup_payment_completed", {
+            amount_kc: pack.credits,
+            balance_after_kc: me.balance,
+            provider: "app_store",
+            product_id,
+          });
+          return {
+            status: "completed",
+            balanceUpdated: false,
+            newBalance: me.balance,
+          };
+        }
+
         const code = errorCode(error);
         const codes = sdk.PURCHASES_ERROR_CODE;
 
@@ -221,7 +258,7 @@ export function useCreditPurchase(): UseCreditPurchaseReturn {
         setPurchasingId(null);
       }
     },
-    [me, refetchBalance, t],
+    [me, readBalance, t],
   );
 
   return {
