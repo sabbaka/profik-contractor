@@ -4,13 +4,38 @@ import { track } from "@/src/utils/analytics";
 import { logError } from "@/src/utils/logger";
 import { useCreditPurchase, type CreditPack } from "./useCreditPurchase";
 
-const mockRefetchBalance = jest.fn();
+/**
+ * The hook's own `refetch` throws the way RTK Query's does once the hook's
+ * subscription is gone ("Cannot refetch a query that has not been started
+ * yet", PROFIK-CONTRACTOR-C) — the poll must not depend on it.
+ */
+const mockRefetchBalance = jest.fn(() => {
+  throw new Error("Cannot refetch a query that has not been started yet.");
+});
+/** What a dispatched one-off `GET /auth/me` resolves to. */
+const mockReadBalance = jest.fn();
+const mockInitiateMe = jest.fn((_arg: unknown, options: unknown) => ({
+  type: "initiate me",
+  options,
+}));
 
 jest.mock("@/src/api/profikApi", () => ({
+  profikApi: {
+    endpoints: {
+      me: {
+        initiate: (arg: unknown, options: unknown) =>
+          mockInitiateMe(arg, options),
+      },
+    },
+  },
   useMeQuery: () => ({
     data: { id: "pro-1", balance: 100 },
     refetch: mockRefetchBalance,
   }),
+}));
+
+jest.mock("react-redux", () => ({
+  useDispatch: () => (action: unknown) => mockReadBalance(action),
 }));
 
 jest.mock("@/src/features/auth/hooks/useIsGuest", () => ({
@@ -89,7 +114,7 @@ beforeEach(() => {
   mockPurchases.getOfferings.mockResolvedValue(offerings());
   mockPurchases.logIn.mockResolvedValue({ created: false });
   mockPurchases.purchasePackage.mockResolvedValue({});
-  mockRefetchBalance.mockResolvedValue({ data: { balance: 349 } });
+  mockReadBalance.mockResolvedValue({ data: { balance: 349 } });
   jest.spyOn(Alert, "alert").mockImplementation(() => undefined);
 });
 
@@ -185,7 +210,12 @@ describe("buying a pack", () => {
       balanceUpdated: true,
       newBalance: 349,
     });
-    expect(mockRefetchBalance).toHaveBeenCalledTimes(1);
+    expect(mockReadBalance).toHaveBeenCalledTimes(1);
+    expect(mockInitiateMe).toHaveBeenCalledWith(undefined, {
+      subscribe: false,
+      forceRefetch: true,
+    });
+    expect(mockRefetchBalance).not.toHaveBeenCalled();
     expect(track).toHaveBeenCalledWith("balance_topup_purchase_started", {
       product_id: "profik.credits.249",
       credits: 249,
@@ -200,6 +230,41 @@ describe("buying a pack", () => {
     expect(result.current.purchasingId).toBeNull();
   });
 
+  /**
+   * The App Store has charged by the time the balance is read, so nothing
+   * that goes wrong after that may say the purchase failed — the person would
+   * pay again. The credits arrive by webhook either way. (A one-off read
+   * itself resolves even on failure; this stands in for anything unexpected.)
+   */
+  it("reports a charged purchase as completed when anything after the charge throws", async () => {
+    mockReadBalance.mockRejectedValue(new Error("store torn down"));
+    const result = await setUp();
+
+    const outcome = await buy(result, result.current.packs[0]);
+
+    expect(outcome).toEqual({
+      status: "completed",
+      balanceUpdated: false,
+      newBalance: 100,
+    });
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledWith(
+      expect.any(Error),
+      "purchases:balancePoll",
+      { product_id: "profik.credits.99" },
+    );
+    expect(track).toHaveBeenCalledWith("balance_topup_payment_completed", {
+      amount_kc: 99,
+      balance_after_kc: 100,
+      provider: "app_store",
+      product_id: "profik.credits.99",
+    });
+    expect(track).not.toHaveBeenCalledWith(
+      "balance_topup_purchase_failed",
+      expect.anything(),
+    );
+  });
+
   it("treats a closed payment sheet as nothing to report", async () => {
     mockPurchases.purchasePackage.mockRejectedValue(storeError("1"));
     const result = await setUp();
@@ -209,7 +274,7 @@ describe("buying a pack", () => {
     expect(outcome).toEqual({ status: "cancelled" });
     expect(Alert.alert).not.toHaveBeenCalled();
     expect(logError).not.toHaveBeenCalled();
-    expect(mockRefetchBalance).not.toHaveBeenCalled();
+    expect(mockReadBalance).not.toHaveBeenCalled();
     expect(track).toHaveBeenCalledWith("balance_topup_purchase_cancelled", {
       product_id: "profik.credits.99",
     });
@@ -227,7 +292,7 @@ describe("buying a pack", () => {
       "balance.iap.pendingBody",
     );
     expect(logError).not.toHaveBeenCalled();
-    expect(mockRefetchBalance).not.toHaveBeenCalled();
+    expect(mockReadBalance).not.toHaveBeenCalled();
   });
 
   it("explains a store failure in the reader's language and logs it", async () => {
