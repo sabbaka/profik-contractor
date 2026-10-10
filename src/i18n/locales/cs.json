@@ -31,7 +31,10 @@
       "contractorsOnly": "Reakce může posílat jen účet PRO.",
       "insufficientBalance": "Na odeslání reakce nemáte dost prostředků.",
       "conversationClosed": "Konverzace je uzavřená — nové zprávy už poslat nelze.",
-      "ownJob": "Na vlastní zakázku reakci poslat nemůžete."
+      "ownJob": "Na vlastní zakázku reakci poslat nemůžete.",
+      "messageBlocked": "V této konverzaci nemůžete posílat zprávy.",
+      "replyBlocked": "Na tuto zakázku nemůžete reagovat.",
+      "acceptBlocked": "Tuto reakci nelze přijmout."
     },
     "payment": {
       "checkoutFailed": "Platbu se nepodařilo zahájit. Zkuste to prosím znovu."
@@ -58,6 +61,17 @@
     },
     "terms": {
       "versionMismatch": "Podmínky byly aktualizovány. Přečtěte si je prosím znovu."
+    },
+    "content": {
+      "notAllowed": "Text obsahuje nepovolená slova. Zkuste ho prosím přeformulovat."
+    },
+    "report": {
+      "self": "Nemůžete nahlásit sami sebe.",
+      "notFound": "To, co hlásíte, už neexistuje.",
+      "tooMany": "Dnes jste poslali hodně hlášení. Zkuste to prosím zítra."
+    },
+    "block": {
+      "self": "Nemůžete zablokovat sami sebe."
     }
   },
   "auth": {
@@ -330,7 +344,8 @@
       "message": "Napište zprávu..."
     },
     "yourOffer": "Vaše reakce {{price}}",
-    "openJob": "Otevřít detail zakázky"
+    "openJob": "Otevřít detail zakázky",
+    "blockedBody": "V této konverzaci nemůžete posílat zprávy."
   },
   "map": {
     "previewUnavailableWeb": "Náhled mapy není na webu dostupný",
@@ -434,7 +449,8 @@
       "termsAccepted": "Potvrzeno {{date}}",
       "privacyPolicy": "Zásady ochrany osobních údajů",
       "helpSupport": "Nápověda a podpora",
-      "about": "O aplikaci"
+      "about": "O aplikaci",
+      "blocked": "Zablokovaní"
     },
     "language": {
       "title": "Vyberte jazyk",
@@ -604,7 +620,8 @@
     "openFilters": "Otevřít filtry",
     "filtersActive": "{{count}} aktivních filtrů",
     "chooseCountry": "Vybrat předvolbu země",
-    "buyCredits": "Koupit {{credits}} za {{price}}"
+    "buyCredits": "Koupit {{credits}} za {{price}}",
+    "chatActions": "Další akce"
   },
   "messages": {
     "title": "Zprávy",
@@ -721,5 +738,45 @@
       "linkFailed": "Dokument se nepodařilo otevřít. Najdete ho na profik.app.",
       "loadFailed": "Podmínky se nepodařilo načíst. Zkontrolujte připojení a zkuste to znovu."
     }
+  },
+  "report": {
+    "title": {
+      "message": "Nahlásit zprávu",
+      "review": "Nahlásit hodnocení",
+      "job": "Nahlásit zakázku",
+      "user": "Nahlásit klienta"
+    },
+    "subtitle": "Proč to hlásíte? Podíváme se na to do 24 hodin.",
+    "reason": {
+      "spam": "Spam nebo reklama",
+      "fraud": "Podvod",
+      "harassment": "Urážky nebo obtěžování",
+      "inappropriate": "Nevhodný obsah",
+      "other": "Něco jiného"
+    },
+    "commentPlaceholder": "Doplňte podrobnosti (nepovinné)",
+    "send": "Odeslat hlášení",
+    "thanks": "Děkujeme. Podíváme se na to do 24 hodin.",
+    "failedTitle": "Hlášení se neodeslalo",
+    "failedBody": "Zkuste to prosím znovu.",
+    "action": {
+      "user": "Nahlásit klienta",
+      "message": "Nahlásit zprávu",
+      "job": "Nahlásit zakázku",
+      "review": "Nahlásit hodnocení"
+    },
+    "messageMenuTitle": "Zpráva"
+  },
+  "block": {
+    "action": "Zablokovat",
+    "confirmTitle": "Zablokovat {{name}}?",
+    "confirmBody": "Zakázky tohoto klienta zmizí z Dostupných zakázek, tato konverzace ze Zpráv a nikdo z vás nebude moct druhému psát. Odblokovat můžete v Profil → Zablokovaní.",
+    "confirm": "Zablokovat",
+    "listTitle": "Zablokovaní",
+    "emptyTitle": "Nikoho jste nezablokovali",
+    "emptyBody": "Klienti, které zablokujete v konverzaci, se zobrazí tady a můžete je kdykoli odblokovat.",
+    "loadFailed": "Seznam se nepodařilo načíst.",
+    "unblock": "Odblokovat",
+    "unblockA11y": "Odblokovat {{name}}"
   }
 }

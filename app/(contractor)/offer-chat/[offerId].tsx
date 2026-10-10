@@ -4,7 +4,10 @@ import {
   useMeQuery,
   useSendOfferMessageMutation,
 } from "@/src/api/profikApi";
-import { Text } from "@/src/components/ui/ui";
+import { Snackbar, Text } from "@/src/components/ui/ui";
+import { OptionSheet } from "@/src/components/ui/OptionSheet";
+import { ReportSheet } from "@/src/components/moderation/ReportSheet";
+import { useBlockUser, useReportFlow } from "@/src/features/moderation/hooks";
 import { useThemeColors } from "@/src/theme";
 import { OfferStatusPill } from "@/src/components/jobs/OfferStatusPill";
 import { formatCzk } from "@/src/utils/currency";
@@ -20,6 +23,7 @@ import {
   ChevronLeft,
   ChevronRight,
   MessageCircle,
+  MoreHorizontal,
   Send,
 } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -77,6 +81,7 @@ export default function OfferChatRoute() {
     offerStatus,
     jobStatus,
     clientName,
+    clientId,
   } = useLocalSearchParams<{
     offerId: string;
     jobId?: string;
@@ -87,6 +92,7 @@ export default function OfferChatRoute() {
     offerStatus?: OfferStatus;
     jobStatus?: JobStatus;
     clientName?: string;
+    clientId?: string;
   }>();
 
   // Composed here rather than at the navigation site: a label resolved there
@@ -182,15 +188,18 @@ export default function OfferChatRoute() {
   }, [offerId, newestMessageId, markConversationRead]);
 
   /**
-   * Set when the server refuses a message because the conversation is over.
+   * Set when the server refuses a message because the conversation is over,
+   * or because one of the two blocked the other.
    *
    * A chat reached from a push carries only an offer id, so the statuses below
    * can both be undefined and the screen cannot know. The refusal is what it
    * learns from, and it only ever moves one way — a closed conversation does
-   * not reopen.
+   * not reopen while the screen is up.
    */
-  const [refused, setRefused] = useState(false);
-  const closed = refused || isConversationClosed(offerStatus, jobStatus);
+  const [refusal, setRefusal] = useState<"closed" | "blocked" | null>(null);
+  const blocked = refusal === "blocked";
+  const closed =
+    refusal === "closed" || isConversationClosed(offerStatus, jobStatus);
 
   const handleSend = useCallback(async () => {
     if (!offerId || !content.trim()) return;
@@ -200,14 +209,70 @@ export default function OfferChatRoute() {
       setContent("");
     } catch (err) {
       logError(err);
-      if (serverErrorCode(err) === "offer.conversationClosed") {
-        setRefused(true);
+      const code = serverErrorCode(err);
+      if (code === "offer.conversationClosed") {
+        setRefusal("closed");
         Alert.alert(t("chat.notSentTitle"), t("chat.closedBody"));
+        return;
+      }
+      // Neutral on purpose, like the server's own message: whoever blocked
+      // whom, neither side is told.
+      if (code === "offer.messageBlocked") {
+        setRefusal("blocked");
+        Alert.alert(t("chat.notSentTitle"), t("chat.blockedBody"));
+        return;
+      }
+      // A banned word: the text stays in the field so it can be reworded.
+      if (code === "content.notAllowed") {
+        Alert.alert(t("chat.notSentTitle"), t("errors.content.notAllowed"));
         return;
       }
       Alert.alert(t("chat.notSentTitle"), t("chat.notSentBody"));
     }
   }, [offerId, content, sendMessage, t]);
+
+  // Who the chat is with, for reporting and blocking. In-app navigation hands
+  // it over; a deep link carries only the offer id, and then the client's own
+  // messages say who they are — a chat opened from a push always has one.
+  const counterpartId =
+    clientId ||
+    (me?.id
+      ? messages?.find((message) => message.senderId !== me.id)?.senderId
+      : undefined);
+  const counterpartName = clientName?.trim() || t("messages.unnamedClient");
+
+  const report = useReportFlow();
+  const { confirmBlock } = useBlockUser();
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const [messageToReport, setMessageToReport] = useState<string | null>(null);
+  const chatActions = useMemo(
+    () => [
+      { value: "report" as const, label: t("report.action.user") },
+      { value: "block" as const, label: t("block.action") },
+    ],
+    [t],
+  );
+  const messageActions = useMemo(
+    () => [{ value: "report" as const, label: t("report.action.message") }],
+    [t],
+  );
+
+  const handleChatAction = useCallback(
+    (action: "report" | "block") => {
+      if (!counterpartId) return;
+      if (action === "report") {
+        report.startReport({ type: "user", id: counterpartId });
+        return;
+      }
+      // The conversation leaves this account's list once the block lands, so
+      // there is nothing left to look at here. A push opens the chat on top of
+      // the tabs, so there is always somewhere to go back to.
+      confirmBlock({ id: counterpartId, name: clientName }, () =>
+        router.back(),
+      );
+    },
+    [counterpartId, clientName, report, confirmBlock],
+  );
 
   if (!offerId)
     return (
@@ -245,11 +310,23 @@ export default function OfferChatRoute() {
             otherwise. No subtitle: this used to read "OFFER CONVERSATION",
             which is exactly the word this screen no longer uses. */}
         <YStack alignItems="center">
-          <Text variant="h5">
-            {clientName?.trim() || t("messages.unnamedClient")}
-          </Text>
+          <Text variant="h5">{counterpartName}</Text>
         </YStack>
-        <XStack width={58} />
+        {/* The slot that used to be an empty spacer keeping the name centred:
+            same width, so the header does not shift when the button appears. */}
+        <XStack width={58} justifyContent="flex-end">
+          {counterpartId ? (
+            <Pressable
+              onPress={() => setActionsOpen(true)}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={t("a11y.chatActions")}
+              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            >
+              <MoreHorizontal size={24} color={colors.textPrimary} />
+            </Pressable>
+          ) : null}
+        </XStack>
       </XStack>
 
       {workName ? (
@@ -386,10 +463,12 @@ export default function OfferChatRoute() {
             keyboardDismissMode="interactive"
             renderItem={({ item: message }: { item: any }) => {
               const mine = message.senderId === me?.id;
-              return (
+              // Only the client's messages can be reported — a long press,
+              // the way messengers hide per-message actions. Screen readers
+              // get the same action through the accessibility menu.
+              const reportable = !mine && !!counterpartId;
+              const bubble = (
                 <YStack
-                  alignSelf={mine ? "flex-end" : "flex-start"}
-                  maxWidth="82%"
                   borderRadius={19}
                   overflow="hidden"
                   paddingHorizontal={15}
@@ -418,11 +497,45 @@ export default function OfferChatRoute() {
                   </Text>
                 </YStack>
               );
+              const place = {
+                alignSelf: mine ? "flex-end" : "flex-start",
+                maxWidth: "82%",
+              } as const;
+              // A Pressable only where there is something to press: one that
+              // is merely disabled is still announced, as "dimmed", on every
+              // one of the contractor's own messages.
+              return reportable ? (
+                <Pressable
+                  onLongPress={() => setMessageToReport(message.id)}
+                  accessibilityActions={[
+                    { name: "longpress", label: t("report.action.message") },
+                  ]}
+                  onAccessibilityAction={() => setMessageToReport(message.id)}
+                  style={place}
+                >
+                  {bubble}
+                </Pressable>
+              ) : (
+                <YStack {...place}>{bubble}</YStack>
+              );
             }}
           />
         )}
 
-        {closed ? (
+        {blocked ? (
+          <YStack
+            paddingHorizontal={16}
+            paddingTop={12}
+            paddingBottom={Math.max(insets.bottom, 12) + 4}
+            backgroundColor={colors.bgPrimary}
+            borderTopWidth={1}
+            borderTopColor={colors.borderSubtle}
+          >
+            <Text variant="bodySm" textAlign="center">
+              {t("chat.blockedBody")}
+            </Text>
+          </YStack>
+        ) : closed ? (
           /* The server refuses a message on a declined offer or a cancelled
              job, so the composer would only collect a message that bounces.
              The history above stays readable — that is the whole point of
@@ -510,6 +623,28 @@ export default function OfferChatRoute() {
       </KeyboardAvoidingView>
 
       <AppFeedbackSheet open={feedbackOpen} onOpenChange={closePrompt} />
+      <OptionSheet
+        open={actionsOpen}
+        onOpenChange={setActionsOpen}
+        title={counterpartName}
+        options={chatActions}
+        onSelect={handleChatAction}
+      />
+      <OptionSheet
+        open={messageToReport !== null}
+        onOpenChange={(open) => {
+          if (!open) setMessageToReport(null);
+        }}
+        title={t("report.messageMenuTitle")}
+        options={messageActions}
+        onSelect={() => {
+          if (messageToReport) {
+            report.startReport({ type: "message", id: messageToReport });
+          }
+        }}
+      />
+      <ReportSheet {...report.sheet} />
+      <Snackbar {...report.thanks}>{t("report.thanks")}</Snackbar>
     </SafeAreaView>
   );
 }

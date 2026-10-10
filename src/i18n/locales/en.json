@@ -31,7 +31,10 @@
       "contractorsOnly": "Only a PRO account can send responses.",
       "insufficientBalance": "Your balance is too low to send a response.",
       "conversationClosed": "This conversation is closed — no new messages can be sent.",
-      "ownJob": "You can't send a response to your own job."
+      "ownJob": "You can't send a response to your own job.",
+      "messageBlocked": "You can't send messages in this conversation.",
+      "replyBlocked": "You can't respond to this job.",
+      "acceptBlocked": "This response can't be accepted."
     },
     "payment": {
       "checkoutFailed": "We couldn't start the payment. Please try again."
@@ -58,6 +61,17 @@
     },
     "terms": {
       "versionMismatch": "These terms have been updated. Please read them again."
+    },
+    "content": {
+      "notAllowed": "This text contains words that aren't allowed. Please rephrase it."
+    },
+    "report": {
+      "self": "You can't report yourself.",
+      "notFound": "What you're reporting no longer exists.",
+      "tooMany": "You've sent a lot of reports today. Please try again tomorrow."
+    },
+    "block": {
+      "self": "You can't block yourself."
     }
   },
   "auth": {
@@ -330,7 +344,8 @@
       "message": "Write a message..."
     },
     "yourOffer": "Your response {{price}}",
-    "openJob": "Open job details"
+    "openJob": "Open job details",
+    "blockedBody": "You can't send messages in this conversation."
   },
   "map": {
     "previewUnavailableWeb": "Map preview not available on web",
@@ -434,7 +449,8 @@
       "termsAccepted": "Accepted {{date}}",
       "privacyPolicy": "Privacy Policy",
       "helpSupport": "Help & Support",
-      "about": "About"
+      "about": "About",
+      "blocked": "Blocked"
     },
     "language": {
       "title": "Choose language",
@@ -604,7 +620,8 @@
     "openFilters": "Open filters",
     "filtersActive": "{{count}} filters active",
     "chooseCountry": "Choose country code",
-    "buyCredits": "Buy {{credits}} for {{price}}"
+    "buyCredits": "Buy {{credits}} for {{price}}",
+    "chatActions": "More actions"
   },
   "messages": {
     "title": "Messages",
@@ -719,5 +736,45 @@
       "linkFailed": "Could not open the document. It is available at profik.app.",
       "loadFailed": "We could not load the Terms. Check your connection and try again."
     }
+  },
+  "report": {
+    "title": {
+      "message": "Report message",
+      "review": "Report review",
+      "job": "Report job",
+      "user": "Report client"
+    },
+    "subtitle": "Why are you reporting this? We'll look into it within 24 hours.",
+    "reason": {
+      "spam": "Spam or advertising",
+      "fraud": "Fraud or a scam",
+      "harassment": "Insults or harassment",
+      "inappropriate": "Inappropriate content",
+      "other": "Something else"
+    },
+    "commentPlaceholder": "Add details (optional)",
+    "send": "Send report",
+    "thanks": "Thank you. We'll look into it within 24 hours.",
+    "failedTitle": "Report not sent",
+    "failedBody": "Please try again.",
+    "action": {
+      "user": "Report client",
+      "message": "Report message",
+      "job": "Report job",
+      "review": "Report review"
+    },
+    "messageMenuTitle": "Message"
+  },
+  "block": {
+    "action": "Block",
+    "confirmTitle": "Block {{name}}?",
+    "confirmBody": "Their jobs leave Open Jobs and this conversation leaves Messages, and neither of you will be able to write to the other. You can unblock them in Profile → Blocked.",
+    "confirm": "Block",
+    "listTitle": "Blocked",
+    "emptyTitle": "No one is blocked",
+    "emptyBody": "Clients you block from a chat appear here, and you can unblock them at any time.",
+    "loadFailed": "We couldn't load the list.",
+    "unblock": "Unblock",
+    "unblockA11y": "Unblock {{name}}"
   }
 }

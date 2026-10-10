@@ -23,6 +23,7 @@ import { dateLocale } from "@/src/utils/jobSchedule";
 import { PROFIK_GRADIENT } from "@/tamagui.config";
 import {
   BadgeCheck,
+  Ban,
   Bell,
   ChevronRight,
   Edit3,
@@ -525,6 +526,15 @@ export default function ProfileRoute() {
                 iconBg={colors.warningBg}
                 icon={<Bell size={18} color={colors.warningText} />}
                 onPress={() => openAppSettings(t)}
+              />
+              <Divider />
+              <ProfileRow
+                label={t("profile.menu.blocked")}
+                iconBg={colors.surfaceInput}
+                icon={<Ban size={18} color={colors.textSecondary} />}
+                onPress={() =>
+                  router.push("/(contractor)/profile/blocked" as any)
+                }
               />
               <Divider />
             </>
