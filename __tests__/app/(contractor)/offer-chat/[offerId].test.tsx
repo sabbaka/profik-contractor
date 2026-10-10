@@ -3,7 +3,7 @@ import type { OfferMessage } from "@/src/api/types";
 import { apiCalls, mockApi, type MockRoutes } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
 import { formatCzk } from "@/src/utils/currency";
-import { fireEvent, screen, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Alert } from "react-native";
 import OfferChatRoute from "@/app/(contractor)/offer-chat/[offerId]";
@@ -109,7 +109,9 @@ describe("Offer chat", () => {
       await screen.findByText("Dobrý den, zvládnete to v pondělí dopoledne?"),
     ).toBeOnTheScreen();
     expect(screen.getByText("Ano, v 9:00 můžu.")).toBeOnTheScreen();
-    expect(screen.getByText("Petr Svoboda")).toBeOnTheScreen();
+    // Twice: the header, and the title of the chat's actions sheet, which
+    // stays mounted while closed.
+    expect(screen.getAllByText("Petr Svoboda")[0]).toBeOnTheScreen();
     expect(
       screen.getByText(`Your response ${formatCzk(2200)}`),
     ).toBeOnTheScreen();
@@ -236,5 +238,245 @@ describe("Offer chat", () => {
       ),
     );
     expect(field.props.value).toBe("Jste tam?");
+  });
+
+  describe("report and block", () => {
+    /** Presses the button on an `Alert.alert` the screen raised. */
+    const pressAlertButton = async (title: string, button: string) => {
+      const call = jest
+        .mocked(Alert.alert)
+        .mock.calls.find(([t]) => t === title);
+      expect(call).toBeDefined();
+      const buttons = (call?.[2] ?? []) as {
+        text?: string;
+        onPress?: () => unknown;
+      }[];
+      await act(async () => {
+        await buttons.find((b) => b.text === button)?.onPress?.();
+      });
+    };
+
+    it("reports the client with a reason and thanks the contractor", async () => {
+      const api = mockApi(
+        routes(HISTORY, {
+          "POST /reports": ({ body }) => ({
+            status: 201,
+            body: { id: "r-1", status: "OPEN", ...(body as object) },
+          }),
+        }),
+      );
+      await renderWithProviders(<OfferChatRoute />, { authed: true });
+      await screen.findByText("Ano, v 9:00 můžu.");
+
+      await fireEvent.press(
+        screen.getByRole("button", { name: "More actions" }),
+      );
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Report client" }),
+      );
+      await fireEvent.press(await screen.findByText("Fraud or a scam"));
+      await fireEvent.changeText(
+        screen.getByPlaceholderText("Add details (optional)"),
+        "  Chce zaplatit mimo aplikaci  ",
+      );
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send report" }),
+      );
+
+      await waitFor(async () =>
+        expect(await posts(api, "/reports")).toHaveLength(1),
+      );
+      const [sent] = await posts(api, "/reports");
+      expect(sent.body).toEqual({
+        targetType: "user",
+        targetId: "client-7",
+        reason: "fraud",
+        comment: "Chce zaplatit mimo aplikaci",
+      });
+      expect(
+        await screen.findByText(
+          "Thank you. We'll look into it within 24 hours.",
+        ),
+      ).toBeOnTheScreen();
+    });
+
+    it("cannot send a report before a reason is picked", async () => {
+      mockApi(routes(HISTORY));
+      await renderWithProviders(<OfferChatRoute />, { authed: true });
+      await screen.findByText("Ano, v 9:00 můžu.");
+
+      await fireEvent.press(
+        screen.getByRole("button", { name: "More actions" }),
+      );
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Report client" }),
+      );
+
+      expect(
+        await screen.findByRole("button", { name: "Send report" }),
+      ).toBeDisabled();
+    });
+
+    it("reports one of the client's messages after a long press", async () => {
+      const api = mockApi(
+        routes(HISTORY, {
+          "POST /reports": { status: 201, body: { id: "r-2" } },
+        }),
+      );
+      await renderWithProviders(<OfferChatRoute />, { authed: true });
+
+      await fireEvent(
+        await screen.findByText("Dobrý den, zvládnete to v pondělí dopoledne?"),
+        "longPress",
+      );
+      await fireEvent.press(await screen.findByText("Report message"));
+      await fireEvent.press(await screen.findByText("Spam or advertising"));
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send report" }),
+      );
+
+      await waitFor(async () =>
+        expect(await posts(api, "/reports")).toHaveLength(1),
+      );
+      const [sent] = await posts(api, "/reports");
+      expect(sent.body).toEqual({
+        targetType: "message",
+        targetId: "m1",
+        reason: "spam",
+      });
+    });
+
+    it("blocks the client after confirming, and leaves the chat", async () => {
+      const api = mockApi(
+        routes(HISTORY, {
+          "POST /users/client-7/block": {
+            status: 201,
+            body: {
+              id: "client-7",
+              name: "Petr Svoboda",
+              avatarUrl: null,
+              blockedAt: "2026-10-11T08:00:00.000Z",
+            },
+          },
+        }),
+      );
+      await renderWithProviders(<OfferChatRoute />, { authed: true });
+      await screen.findByText("Ano, v 9:00 můžu.");
+
+      await fireEvent.press(
+        screen.getByRole("button", { name: "More actions" }),
+      );
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Block" }),
+      );
+
+      // Nothing is sent until the contractor confirms.
+      expect(await posts(api, "/users/client-7/block")).toHaveLength(0);
+      await pressAlertButton("Block Petr Svoboda?", "Block");
+
+      await waitFor(async () =>
+        expect(await posts(api, "/users/client-7/block")).toHaveLength(1),
+      );
+      await waitFor(() => expect(router.back).toHaveBeenCalled());
+    });
+
+    it("finds the client from their messages when a push opened the chat", async () => {
+      jest.mocked(useLocalSearchParams).mockReturnValue({ offerId: OFFER_ID });
+      const api = mockApi(
+        routes(HISTORY, {
+          "POST /reports": { status: 201, body: { id: "r-3" } },
+        }),
+      );
+      await renderWithProviders(<OfferChatRoute />, { authed: true });
+      await screen.findByText("Ano, v 9:00 můžu.");
+
+      await fireEvent.press(
+        screen.getByRole("button", { name: "More actions" }),
+      );
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Report client" }),
+      );
+      await fireEvent.press(await screen.findByText("Something else"));
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send report" }),
+      );
+
+      await waitFor(async () =>
+        expect(await posts(api, "/reports")).toHaveLength(1),
+      );
+      const [sent] = await posts(api, "/reports");
+      expect(sent.body).toMatchObject({
+        targetType: "user",
+        targetId: "client-7",
+      });
+    });
+
+    it("says so neutrally when the server refuses because of a block", async () => {
+      silenceLoggedError();
+      mockApi(
+        routes(HISTORY, {
+          [`POST /offers/${OFFER_ID}/messages`]: {
+            status: 403,
+            body: {
+              statusCode: 403,
+              code: "offer.messageBlocked",
+              message: "You cannot send a message in this conversation",
+            },
+          },
+        }),
+      );
+      await renderWithProviders(<OfferChatRoute />, { authed: true });
+      await screen.findByText("Ano, v 9:00 můžu.");
+
+      await fireEvent.changeText(
+        screen.getByPlaceholderText("Write a message..."),
+        "Jste tam?",
+      );
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send message" }),
+      );
+
+      await waitFor(() =>
+        expect(Alert.alert).toHaveBeenCalledWith(
+          "Message not sent",
+          "You can't send messages in this conversation.",
+        ),
+      );
+      expect(
+        screen.queryByPlaceholderText("Write a message..."),
+      ).not.toBeOnTheScreen();
+    });
+
+    it("keeps a draft the word filter refused, and says why", async () => {
+      silenceLoggedError();
+      mockApi(
+        routes(HISTORY, {
+          [`POST /offers/${OFFER_ID}/messages`]: {
+            status: 400,
+            body: {
+              statusCode: 400,
+              code: "content.notAllowed",
+              message: "This text contains words that are not allowed here.",
+            },
+          },
+        }),
+      );
+      await renderWithProviders(<OfferChatRoute />, { authed: true });
+      await screen.findByText("Ano, v 9:00 můžu.");
+
+      const field = screen.getByPlaceholderText("Write a message...");
+      await fireEvent.changeText(field, "nevhodný text");
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send message" }),
+      );
+
+      await waitFor(() =>
+        expect(Alert.alert).toHaveBeenCalledWith(
+          "Message not sent",
+          "This text contains words that aren't allowed. Please rephrase it.",
+        ),
+      );
+      expect(field.props.value).toBe("nevhodný text");
+    });
   });
 });

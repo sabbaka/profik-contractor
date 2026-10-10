@@ -38,6 +38,11 @@ import type {
   AppFeedbackParams,
   AppFeedbackResponse,
 } from "@/src/features/feedback/types";
+import type {
+  BlockedUser,
+  CreateReportParams,
+  ReportResponse,
+} from "@/src/features/moderation/types";
 
 /** Conversations fetched per page by the Messages tab. */
 export const CONVERSATIONS_PAGE_SIZE = 20;
@@ -153,6 +158,7 @@ export const profikApi = createApi({
     "Reviews",
     "Me",
     "Payments",
+    "Blocks",
   ],
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
@@ -605,6 +611,40 @@ export const profikApi = createApi({
     sendAppFeedback: builder.mutation<AppFeedbackResponse, AppFeedbackParams>({
       query: (body) => ({ url: "/feedback/app", method: "POST", body }),
     }),
+    /**
+     * Reports a message, review, job or user to the team. Reporting the same
+     * thing twice answers with the first report, so a double tap is harmless.
+     *
+     * A reported job leaves the reporter's Open feed on the server, so the
+     * feed is read again; nothing else a report touches is shown anywhere.
+     */
+    createReport: builder.mutation<ReportResponse, CreateReportParams>({
+      query: (body) => ({ url: "/reports", method: "POST", body }),
+      invalidatesTags: (_result, error, { targetType }) =>
+        !error && targetType === "job" ? ["Jobs"] : [],
+    }),
+    /**
+     * The people this account blocked, for the Blocked screen. One page of
+     * the server's maximum: the list is short by nature, and the screen has
+     * no "load more".
+     */
+    getMyBlocks: builder.query<BlockedUser[], void>({
+      query: () => ({ url: "/users/me/blocks?limit=100", method: "GET" }),
+      providesTags: ["Blocks"],
+    }),
+    /**
+     * Blocks a client. The server then hides that client's conversations and
+     * jobs from this account and marks the hidden chats read, so the lists,
+     * the unread badges and the feed are all read again.
+     */
+    blockUser: builder.mutation<BlockedUser, string>({
+      query: (userId) => ({ url: `/users/${userId}/block`, method: "POST" }),
+      invalidatesTags: ["Blocks", "Conversations", "Unread", "Jobs", "Me"],
+    }),
+    unblockUser: builder.mutation<void, string>({
+      query: (userId) => ({ url: `/users/${userId}/block`, method: "DELETE" }),
+      invalidatesTags: ["Blocks", "Conversations", "Unread", "Jobs"],
+    }),
   }),
 });
 
@@ -636,4 +676,8 @@ export const {
   useStartVerificationMutation,
   useRefreshVerificationMutation,
   useSendAppFeedbackMutation,
+  useCreateReportMutation,
+  useGetMyBlocksQuery,
+  useBlockUserMutation,
+  useUnblockUserMutation,
 } = profikApi;

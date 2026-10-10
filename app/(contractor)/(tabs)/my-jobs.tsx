@@ -294,6 +294,7 @@ export default function MyJobsTab() {
                           offerPrice: item.myOffer.price,
                           offerStatus: item.myOffer.status,
                           jobStatus: item.job.status,
+                          clientId: item.job.clientId,
                         }) as any,
                       )
                   : undefined

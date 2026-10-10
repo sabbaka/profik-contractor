@@ -34,6 +34,7 @@ export default function ContractorLayout() {
       <Stack.Screen name="profile/privacy-policy" />
       <Stack.Screen name="profile/help-support" />
       <Stack.Screen name="profile/about" />
+      <Stack.Screen name="profile/blocked" />
     </Stack>
   );
 }

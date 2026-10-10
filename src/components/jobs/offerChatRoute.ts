@@ -27,6 +27,12 @@ export interface OfferChatRouteInput {
    * to a generic "Client" label instead of guessing.
    */
   clientName?: string | null;
+  /**
+   * Who the chat is with, for the header's report and block actions. Every
+   * in-app caller holds it (`counterparty.id`, `job.clientId`); a deep link
+   * does not, and the screen then reads it off the client's own messages.
+   */
+  clientId?: string | null;
 }
 
 /**
@@ -50,6 +56,7 @@ export function buildOfferChatRoute({
   offerStatus,
   jobStatus,
   clientName,
+  clientId,
 }: OfferChatRouteInput) {
   return {
     pathname: "/(contractor)/offer-chat/[offerId]",
@@ -63,6 +70,7 @@ export function buildOfferChatRoute({
       ...(offerStatus ? { offerStatus } : {}),
       ...(jobStatus ? { jobStatus } : {}),
       ...(clientName ? { clientName } : {}),
+      ...(clientId ? { clientId } : {}),
     },
   };
 }

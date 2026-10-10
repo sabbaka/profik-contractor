@@ -6,6 +6,7 @@ import { useThemeColors } from "@/src/theme";
 import { Star } from "@tamagui/lucide-icons";
 import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
+import { Pressable } from "react-native";
 import { XStack, YStack } from "tamagui";
 
 /** Amber is the same in both themes — a grey star does not read as a rating. */
@@ -30,6 +31,8 @@ function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
 interface JobReviewCardProps {
   /** Null while the client has finished the job but not rated it yet. */
   review: Review | null;
+  /** Reports this review; the link appears only when there is one. */
+  onReport?: (reviewId: string) => void;
 }
 
 /**
@@ -41,7 +44,7 @@ interface JobReviewCardProps {
  * says the client has not left one, because silence would otherwise look like
  * a screen that failed to load.
  */
-export const JobReviewCard = ({ review }: JobReviewCardProps) => {
+export const JobReviewCard = ({ review, onReport }: JobReviewCardProps) => {
   const { t, i18n } = useTranslation();
   const colors = useThemeColors();
 
@@ -134,6 +137,21 @@ export const JobReviewCard = ({ review }: JobReviewCardProps) => {
             <Text variant="bodySm" style={{ color: colors.textPrimary }}>
               {comment}
             </Text>
+          ) : null}
+          {onReport ? (
+            <Pressable
+              onPress={() => onReport(review.id)}
+              accessibilityRole="button"
+              hitSlop={10}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.6 : 1,
+                alignSelf: "flex-start",
+              })}
+            >
+              <Text variant="caption" style={{ color: colors.textMuted }}>
+                {t("report.action.review")}
+              </Text>
+            </Pressable>
           ) : null}
         </YStack>
       ) : (

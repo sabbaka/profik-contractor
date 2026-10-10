@@ -40,6 +40,7 @@ describe("Profile", () => {
 
     for (const label of [
       "Notifications",
+      "Blocked",
       "Language",
       "Appearance",
       "Terms of Use",

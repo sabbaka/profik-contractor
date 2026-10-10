@@ -34,6 +34,8 @@ interface Props {
   propertyType?: PropertyType | null;
   /** Read together with `myOfferStatus`: see `OfferStatusPill`. */
   jobStatus?: JobStatus | null;
+  /** Who posted the job — the chat's report and block actions need it. */
+  clientId: string;
   offerIdForChat: string | null;
   mode: OfferMode;
   setMode: (mode: OfferMode) => void;
@@ -62,6 +64,7 @@ export const ContractorOfferSection = (props: Props) => {
     serviceType,
     propertyType,
     jobStatus,
+    clientId,
     offerIdForChat,
     balance,
     canAffordOffer,
@@ -201,6 +204,7 @@ export const ContractorOfferSection = (props: Props) => {
                   offerPrice: myOfferPrice,
                   offerStatus: myOfferStatus,
                   jobStatus,
+                  clientId,
                 }) as any,
               );
             }}

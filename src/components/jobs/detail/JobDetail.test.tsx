@@ -4,7 +4,7 @@ import { apiCalls, mockApi, type MockRoutes } from "@/src/test-utils/mockApi";
 import { renderWithProviders } from "@/src/test-utils/renderWithProviders";
 import { formatCzk } from "@/src/utils/currency";
 import { fireEvent, screen, waitFor } from "@testing-library/react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Alert } from "react-native";
 import { JobDetail } from "./JobDetail";
 
@@ -304,5 +304,148 @@ describe("Job detail", () => {
     expect(
       screen.queryByRole("button", { name: "Send Response" }),
     ).not.toBeOnTheScreen();
+  });
+
+  describe("reporting", () => {
+    it("reports the job with the reason the contractor picked", async () => {
+      const api = mockApi(
+        routes({ "POST /reports": { status: 201, body: { id: "r-1" } } }),
+      );
+      await renderWithProviders(<JobDetail />, { authed: true });
+
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Report job" }),
+      );
+      await fireEvent.press(await screen.findByText("Spam or advertising"));
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send report" }),
+      );
+
+      await waitFor(async () =>
+        expect(
+          (await apiCalls(api)).filter(
+            (r) => new URL(r.url).pathname === "/reports",
+          ),
+        ).toHaveLength(1),
+      );
+      const [sent] = (await apiCalls(api)).filter(
+        (r) => new URL(r.url).pathname === "/reports",
+      );
+      expect(sent.body).toEqual({
+        targetType: "job",
+        targetId: JOB.id,
+        reason: "spam",
+      });
+      expect(
+        await screen.findByText(
+          "Thank you. We'll look into it within 24 hours.",
+        ),
+      ).toBeOnTheScreen();
+    });
+
+    it("reports the review the client left on a finished job", async () => {
+      const done = {
+        ...JOB,
+        status: "completed" as const,
+        contractorId: ME.id,
+      };
+      const api = mockApi(
+        routes({
+          [`GET /jobs/${JOB.id}`]: { body: done },
+          [`GET /offers/job/${JOB.id}/my`]: {
+            body: { ...offerFrom({ price: 2400 }), status: "accepted" },
+          },
+          [`GET /jobs/${JOB.id}/reviews`]: {
+            body: [
+              {
+                id: "rev-1",
+                jobId: JOB.id,
+                authorId: "client-7",
+                targetId: ME.id,
+                targetRole: "contractor",
+                rating: 1,
+                comment: "Nic neuklidila.",
+                author: { id: "client-7", name: "Petr", avatarUrl: null },
+                createdAt: "2026-10-06T10:00:00.000Z",
+              },
+            ],
+          },
+          "POST /reports": { status: 201, body: { id: "r-9" } },
+        }),
+      );
+      await renderWithProviders(<JobDetail />, { authed: true });
+
+      expect(await screen.findByText("Nic neuklidila.")).toBeOnTheScreen();
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Report review" }),
+      );
+      await fireEvent.press(await screen.findByText("Insults or harassment"));
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send report" }),
+      );
+
+      await waitFor(async () =>
+        expect(
+          (await apiCalls(api)).filter(
+            (r) => new URL(r.url).pathname === "/reports",
+          ),
+        ).toHaveLength(1),
+      );
+      const [sent] = (await apiCalls(api)).filter(
+        (r) => new URL(r.url).pathname === "/reports",
+      );
+      expect(sent.body).toEqual({
+        targetType: "review",
+        targetId: "rev-1",
+        reason: "harassment",
+      });
+    });
+
+    it("sends a guest to sign in and back to this job", async () => {
+      mockApi({ [`GET /jobs/${JOB.id}`]: { body: JOB } });
+      await renderWithProviders(<JobDetail />);
+
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Report job" }),
+      );
+
+      expect(router.push).toHaveBeenCalledWith({
+        pathname: "/auth/login",
+        params: { returnTo: expect.stringContaining(JOB.id) },
+      });
+    });
+
+    it("tells the contractor when the report could not be sent", async () => {
+      jest.spyOn(console, "error").mockImplementation(() => {});
+      mockApi(
+        routes({
+          "POST /reports": {
+            status: 429,
+            body: {
+              statusCode: 429,
+              code: "report.tooMany",
+              message: "You have sent a lot of reports today.",
+            },
+          },
+        }),
+      );
+      await renderWithProviders(<JobDetail />, { authed: true });
+
+      await fireEvent.press(
+        await screen.findByRole("button", { name: "Report job" }),
+      );
+      await fireEvent.press(await screen.findByText("Something else"));
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Send report" }),
+      );
+
+      await waitFor(() =>
+        expect(alertSpy()).toHaveBeenCalledWith(
+          "Report not sent",
+          "You've sent a lot of reports today. Please try again tomorrow.",
+        ),
+      );
+      jest.mocked(console.error).mockRestore();
+    });
   });
 });

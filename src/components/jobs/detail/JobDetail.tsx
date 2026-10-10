@@ -13,6 +13,10 @@ import { Button, Spinner, Text, YStack } from "tamagui";
 import { KeyboardAwareScreen } from "@/src/components/ui/KeyboardAwareScreen";
 import { NamePromptSheet } from "@/src/components/auth";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
+import { useReportFlow } from "@/src/features/moderation/hooks";
+import { ReportSheet } from "@/src/components/moderation/ReportSheet";
+import { Snackbar } from "@/src/components/ui/ui";
+import { ReportJobLink } from "./ReportJobLink";
 import { ContractorOfferSection } from "./ContractorOfferSection";
 import { GuestOfferCta } from "./GuestOfferCta";
 import { JobBasicInfo } from "./JobBasicInfo";
@@ -90,6 +94,8 @@ export const JobDetail = () => {
     jobStatus: job?.status ?? "open",
     contractorId: job?.contractorId ?? null,
   });
+
+  const report = useReportFlow();
 
   const handleShare = useCallback(() => {
     if (!job) return;
@@ -260,6 +266,7 @@ export const JobDetail = () => {
                 serviceType={job.serviceType}
                 propertyType={job.propertyType}
                 jobStatus={job.status}
+                clientId={job.clientId}
                 hasOffered={hasOffered}
                 myOfferPrice={myOfferPrice}
                 myOfferMessage={myOfferMessage}
@@ -283,8 +290,21 @@ export const JobDetail = () => {
                   currentRating={myReview?.rating}
                   onStarPress={openSheetAt}
                 />
-                <JobReviewCard review={review} />
+                <JobReviewCard
+                  review={review}
+                  onReport={(reviewId) =>
+                    report.startReport({ type: "review", id: reviewId })
+                  }
+                />
               </>
+            )}
+
+            {!isOwnJob && (
+              <ReportJobLink
+                jobId={id}
+                isGuest={isGuest}
+                onReport={() => report.startReport({ type: "job", id })}
+              />
             )}
           </YStack>
         </KeyboardAwareScreen>
@@ -292,6 +312,8 @@ export const JobDetail = () => {
 
       <NamePromptSheet {...nameSheetProps} />
       <ReviewSheet {...reviewSheetProps} />
+      <ReportSheet {...report.sheet} />
+      <Snackbar {...report.thanks}>{t("report.thanks")}</Snackbar>
     </SafeAreaView>
   );
 };
