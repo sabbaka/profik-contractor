@@ -5,9 +5,9 @@ const GOOGLE_MAPS_API_KEY =
   process.env.GOOGLE_MAPS_API_KEY ||
   process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 const PHOTO_LIBRARY_PERMISSION =
-  "Profik Contractor uses your photo library so you can choose an existing photo to upload as your profile avatar. For example, when you tap Change avatar on your Profile screen, you can pick a picture from your library.";
+  "Profik Pro uses your photo library so you can choose an existing photo to upload as your profile avatar. For example, when you tap Change avatar on your Profile screen, you can pick a picture from your library.";
 const LOCATION_WHEN_IN_USE_PERMISSION =
-  "Profik Contractor uses your location while you are using the app to show open cleaning jobs near you on the map and how far each job is from your current position. For example, on the Open Jobs map you can see your own location relative to the jobs you can send offers for.";
+  "Profik Pro uses your location while you are using the app to show open cleaning jobs near you on the map and how far each job is from your current position. For example, on the Open Jobs map you can see your own location relative to the jobs you can send offers for.";
 
 // What the phone shows under the icon, in search and in the app switcher.
 // `name` would set it too, but it also names the Xcode project and target, and
