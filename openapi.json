@@ -100,7 +100,7 @@
     },
     "/auth/otp/verify": {
       "post": {
-        "description": "Signs the user in, creating the account on first use. Phone is the only required field; name and email are optional and can be set later.",
+        "description": "Signs the user in, creating the account on first use. Phone is the only required field; name and email are optional and can be set later. With `createAccount: false` an unknown phone is answered with 404 (`auth.accountNotFound`) instead, and nothing is created.",
         "operationId": "verifyOtp",
         "parameters": [
           {
@@ -153,6 +153,9 @@
           },
           "403": {
             "description": "The account belongs to the other app"
+          },
+          "404": {
+            "description": "Only with `createAccount: false`: the code was correct, but no account exists for this phone (code `auth.accountNotFound`)"
           },
           "429": {
             "description": "Too many attempts. Please try again later."
@@ -916,6 +919,194 @@
         "summary": "Get chat messages for an offer",
         "tags": [
           "Offers"
+        ]
+      }
+    },
+    "/reports": {
+      "post": {
+        "description": "Stored and emailed to the team, who respond within 24 hours. Reporting the same thing again answers with the first report and sends nothing.",
+        "operationId": "createReport",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReportDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Report saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or reporting yourself"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "A message from a conversation the caller is not part of"
+          },
+          "404": {
+            "description": "The reported item does not exist"
+          },
+          "429": {
+            "description": "Too many reports"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Report a message, review, job or user",
+        "tags": [
+          "moderation"
+        ]
+      }
+    },
+    "/users/me/blocks": {
+      "get": {
+        "description": "Cursor-paginated plain array; pass the `id` of the last item as `cursor`.",
+        "operationId": "listBlocks",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Page size. Defaults to 50.",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "The `id` of the last user on the previous page. The response is a plain array, so the cursor is read off the last item.",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BlockedUserDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List the users the caller blocked, newest first",
+        "tags": [
+          "moderation"
+        ]
+      }
+    },
+    "/users/{id}/block": {
+      "post": {
+        "description": "Their conversations and offers disappear from the caller’s lists, their jobs from the caller’s feed, and neither side can message the other or reply to the other’s jobs. Idempotent.",
+        "operationId": "block",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID to block",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockedUserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Blocking yourself"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Block a user",
+        "tags": [
+          "moderation"
+        ]
+      },
+      "delete": {
+        "operationId": "unblock",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User ID to unblock",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Unblocked, or was not blocked"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Unblock a user. Idempotent.",
+        "tags": [
+          "moderation"
         ]
       }
     },
@@ -2706,6 +2897,12 @@
                 "$ref": "#/components/schemas/AcceptTermsDto"
               }
             ]
+          },
+          "createAccount": {
+            "type": "boolean",
+            "example": false,
+            "default": true,
+            "description": "Whether an unknown phone gets a new account. Defaults to true, which is what both apps rely on. `false` is for a caller that must only ever reach an existing account — the account-deletion page on the landing site: a correct code for a phone with no account (or a deleted one) then answers 404 with code `auth.accountNotFound`, and nothing is created. The code is checked first either way, so the answer reveals nothing to someone who does not hold the phone."
           }
         },
         "required": [
@@ -3308,6 +3505,141 @@
           "senderId",
           "content",
           "createdAt"
+        ]
+      },
+      "CreateReportDto": {
+        "type": "object",
+        "properties": {
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "message",
+              "review",
+              "job",
+              "user"
+            ],
+            "example": "message",
+            "description": "What is being reported: a chat message, a review, a job, or a user as a whole"
+          },
+          "targetId": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "description": "ID of the message, review, job or user, depending on `targetType`"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "spam",
+              "fraud",
+              "harassment",
+              "inappropriate",
+              "other"
+            ],
+            "example": "harassment",
+            "description": "Why it is being reported"
+          },
+          "comment": {
+            "type": "string",
+            "example": "Asked me to pay outside the app",
+            "description": "Optional details, up to 1000 characters"
+          }
+        },
+        "required": [
+          "targetType",
+          "targetId",
+          "reason"
+        ]
+      },
+      "ReportResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174300",
+            "description": "Report ID"
+          },
+          "targetType": {
+            "type": "string",
+            "enum": [
+              "message",
+              "review",
+              "job",
+              "user"
+            ],
+            "example": "message"
+          },
+          "targetId": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "spam",
+              "fraud",
+              "harassment",
+              "inappropriate",
+              "other"
+            ],
+            "example": "harassment"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "RESOLVED"
+            ],
+            "example": "OPEN",
+            "description": "OPEN until the team has dealt with it. Changed by hand; there is no endpoint for it."
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-10-10T12:00:00.000Z",
+            "description": "When the report was made. A repeat report of the same thing answers with the first one, so this can be earlier than the request."
+          }
+        },
+        "required": [
+          "id",
+          "targetType",
+          "targetId",
+          "reason",
+          "status",
+          "createdAt"
+        ]
+      },
+      "BlockedUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "description": "ID of the blocked user"
+          },
+          "name": {
+            "type": "object",
+            "example": "Jana Nováková",
+            "nullable": true,
+            "description": "Name of the blocked user, null when they have not set one"
+          },
+          "avatarUrl": {
+            "type": "object",
+            "example": "https://api.example.com/avatars/123e4567.webp",
+            "nullable": true,
+            "description": "Public URL of the blocked user avatar"
+          },
+          "blockedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-10-10T12:00:00.000Z",
+            "description": "When the caller blocked this user"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "avatarUrl",
+          "blockedAt"
         ]
       },
       "StartVerificationDto": {
@@ -4888,6 +5220,16 @@
               "failed"
             ],
             "example": "completed"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "stripe",
+              "app_store"
+            ],
+            "nullable": true,
+            "example": "app_store",
+            "description": "Where the money of a `topup` or `refund` went through: `stripe` or `app_store` (an in-app purchase). Null on internal movements, and on Stripe entries older than this field. A `topup` reads the same either way — this only says how it was paid."
           },
           "job": {
             "nullable": true,
