@@ -1,3 +1,6 @@
+import { AndroidConfig, withStringsXml } from "expo/config-plugins";
+import type { ConfigPlugin } from "expo/config-plugins";
+
 const GOOGLE_MAPS_API_KEY =
   process.env.GOOGLE_MAPS_API_KEY ||
   process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -5,6 +8,28 @@ const PHOTO_LIBRARY_PERMISSION =
   "Profik Contractor uses your photo library so you can choose an existing photo to upload as your profile avatar. For example, when you tap Change avatar on your Profile screen, you can pick a picture from your library.";
 const LOCATION_WHEN_IN_USE_PERMISSION =
   "Profik Contractor uses your location while you are using the app to show open cleaning jobs near you on the map and how far each job is from your current position. For example, on the Open Jobs map you can see your own location relative to the jobs you can send offers for.";
+
+// What the phone shows under the icon, in search and in the app switcher.
+// `name` would set it too, but it also names the Xcode project and target, and
+// renaming those is a change to every native build for the sake of a label.
+// So `name` keeps the technical id and the label is set on its own: iOS through
+// `CFBundleDisplayName` below, Android through `app_name` here. Native only —
+// an OTA update cannot change it.
+const DISPLAY_NAME = "Profik Pro";
+
+const withAndroidDisplayName: ConfigPlugin = (config) =>
+  withStringsXml(config, (config) => {
+    config.modResults = AndroidConfig.Strings.setStringItem(
+      [
+        AndroidConfig.Resources.buildResourceItem({
+          name: "app_name",
+          value: DISPLAY_NAME,
+        }),
+      ],
+      config.modResults,
+    );
+    return config;
+  });
 
 // One number for the whole release. It lives in package.json rather than here
 // because npm ci fails when package.json and the lockfile disagree — so
@@ -52,6 +77,7 @@ const config = {
       tinted: "./assets/images/ios-icon-tinted.png",
     },
     infoPlist: {
+      CFBundleDisplayName: DISPLAY_NAME,
       ITSAppUsesNonExemptEncryption: false,
       NSPhotoLibraryUsageDescription: PHOTO_LIBRARY_PERMISSION,
       NSLocationWhenInUseUsageDescription: LOCATION_WHEN_IN_USE_PERMISSION,
@@ -87,6 +113,7 @@ const config = {
     favicon: "./assets/images/favicon.png",
   },
   plugins: [
+    withAndroidDisplayName,
     "expo-router",
     [
       "expo-splash-screen",
