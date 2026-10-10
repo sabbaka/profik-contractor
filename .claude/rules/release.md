@@ -4,6 +4,34 @@ The full procedure is in the README under **Build & release**. This file is the
 part that is easy to get wrong, and was got wrong repeatedly before the setup
 below existed.
 
+## Staging and production
+
+Two backends, two apps on the device, one codebase:
+
+|                 | production                               | staging                                                |
+| --------------- | ---------------------------------------- | ------------------------------------------------------ |
+| Backend         | `https://api.profik.app`, clean database | `https://profik-backend.onrender.com`, pre-launch data |
+| App             | Profik Pro, bundle id without suffix     | Profik Pro Staging, bundle id `….staging`              |
+| Build profile   | `production`                             | `staging` (`APP_VARIANT=staging`)                      |
+| EAS environment | `production`                             | `preview`                                              |
+| Update channel  | `production`                             | `staging`                                              |
+| Reaches         | App Store / Play after review            | TestFlight and the Play internal track only            |
+| Started by      | a version tag (`release.yml`)            | by hand (`staging.yml`)                                |
+
+The API address is baked into the JS at bundle time from `EXPO_PUBLIC_API_URL`
+of the EAS environment the profile names; `app.config.ts` only decides the name
+and bundle id. So:
+
+- **The binary testers tested never ships.** Once a commit is right on staging,
+  a version tag builds a separate production binary of the same commit, and the
+  last check is that build on TestFlight / internal against production, under
+  the reviewer demo accounts.
+- **Moving a binary between backends is not possible.** A staging build cannot
+  be promoted to the store, and changing an environment's `EXPO_PUBLIC_API_URL`
+  only affects builds and updates made after the change.
+- Both variants share the deep-link scheme, so with both installed a
+  `profikcontractor://` link — a Stripe return, a shared job — may open either one.
+
 ## One number, in one place
 
 The version lives in `package.json` and nowhere else. `app.config.ts` reads it
@@ -144,7 +172,14 @@ a build env var and does not apply here; this step fails loudly, which is the
 right trade when nothing has shipped yet.
 
 Channels map to build profiles in `eas.json`: `production` on the production
-profile, `preview` on every other one. Stage on `preview` first —
+profile, `staging` on the staging one, `preview` on every other one. An update
+for testers goes to staging, against the staging backend:
+
+```bash
+eas update --channel staging --environment preview --message "<what>"
+```
+
+To exercise the production update path itself, stage on `preview` first —
 `eas build --profile preview` is a release build (an APK, or an iOS simulator
 app compiled on EAS), so it is the only way to exercise the real update path
 without a store round trip. The `development` and `simulator` profiles are dev

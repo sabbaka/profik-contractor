@@ -11,8 +11,18 @@ const LOCATION_WHEN_IN_USE_PERMISSION =
 // package.json has to be right regardless. Let it be the source, then.
 const { version } = require("./package.json") as { version: string };
 
+// The staging variant is a separate app on the device and in the stores —
+// its own bundle id, so testers keep it next to the production one — that
+// talks to the staging backend. Set by the `staging` profile in eas.json;
+// everything else builds production. The API address is not decided here:
+// it comes from EXPO_PUBLIC_API_URL of the EAS environment the profile names.
+const IS_STAGING = process.env.APP_VARIANT === "staging";
+const BUNDLE_ID = IS_STAGING
+  ? "com.profik.contractor.staging"
+  : "com.profik.contractor";
+
 const config = {
-  name: "profik-contractor",
+  name: IS_STAGING ? "Profik Pro Staging" : "profik-contractor",
   slug: "profik-contractor",
   version,
   orientation: "portrait",
@@ -40,7 +50,7 @@ const config = {
   // yet, and publishes successfully to nobody.
   runtimeVersion: { policy: "appVersion" },
   ios: {
-    bundleIdentifier: "com.profik.contractor",
+    bundleIdentifier: BUNDLE_ID,
     supportsTablet: false,
     // iOS 18 renders three variants of every icon. Left to itself it derives
     // the dark and tinted ones from `icon`, which is a white tile — a white
@@ -58,7 +68,7 @@ const config = {
     },
   },
   android: {
-    package: "com.profik.contractor",
+    package: BUNDLE_ID,
     adaptiveIcon: {
       // Only a fallback for the rare case `backgroundImage` fails to
       // resolve — the gradient PNG is what actually paints. Matches the
