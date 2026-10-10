@@ -1,13 +1,35 @@
 import { act, renderHook } from "@testing-library/react-native";
 import * as WebBrowser from "expo-web-browser";
 import { Alert } from "react-native";
+import { logError } from "@/src/utils/logger";
 import { useTopup } from "./useTopup";
 
 const mockTopupMutation = jest.fn();
-const mockRefetchBalance = jest.fn();
+/**
+ * The hook's own `refetch` throws the way RTK Query's does once the hook's
+ * subscription is gone ("Cannot refetch a query that has not been started
+ * yet") — the poll must not depend on it.
+ */
+const mockRefetchBalance = jest.fn(() => {
+  throw new Error("Cannot refetch a query that has not been started yet.");
+});
+/** What a dispatched one-off `GET /auth/me` resolves to. */
+const mockReadBalance = jest.fn();
+const mockInitiateMe = jest.fn((_arg: unknown, options: unknown) => ({
+  type: "initiate me",
+  options,
+}));
 let mockBalance = 100;
 
 jest.mock("@/src/api/profikApi", () => ({
+  profikApi: {
+    endpoints: {
+      me: {
+        initiate: (arg: unknown, options: unknown) =>
+          mockInitiateMe(arg, options),
+      },
+    },
+  },
   useMeQuery: () => ({
     data: { balance: mockBalance },
     isLoading: false,
@@ -15,6 +37,12 @@ jest.mock("@/src/api/profikApi", () => ({
   }),
   useTopupBalanceMutation: () => [mockTopupMutation, { isLoading: false }],
 }));
+
+jest.mock("react-redux", () => ({
+  useDispatch: () => (action: unknown) => mockReadBalance(action),
+}));
+
+jest.mock("@/src/utils/logger", () => ({ logError: jest.fn() }));
 
 jest.mock("expo-auth-session", () => ({
   makeRedirectUri: () => "profikcontractor://payments/return",
@@ -36,7 +64,7 @@ jest.mock("react-i18next", () => ({
 /** Balance the poll sees on each successive attempt. */
 const balanceSequence = (values: (number | undefined)[]) => {
   let call = 0;
-  mockRefetchBalance.mockImplementation(async () => {
+  mockReadBalance.mockImplementation(async () => {
     const value = values[Math.min(call, values.length - 1)];
     call += 1;
     return value === undefined
@@ -108,7 +136,12 @@ describe("waiting for Stripe to credit the balance", () => {
       balanceUpdated: true,
       newBalance: 500,
     });
-    expect(mockRefetchBalance).toHaveBeenCalledTimes(1);
+    expect(mockReadBalance).toHaveBeenCalledTimes(1);
+    expect(mockInitiateMe).toHaveBeenCalledWith(undefined, {
+      subscribe: false,
+      forceRefetch: true,
+    });
+    expect(mockRefetchBalance).not.toHaveBeenCalled();
   });
 
   it("keeps waiting while the balance is unchanged", async () => {
@@ -118,7 +151,7 @@ describe("waiting for Stripe to credit the balance", () => {
     const outcome = await runTopup(() => result.current.topup(400));
 
     expect(outcome).toMatchObject({ balanceUpdated: true, newBalance: 500 });
-    expect(mockRefetchBalance).toHaveBeenCalledTimes(4);
+    expect(mockReadBalance).toHaveBeenCalledTimes(4);
   });
 
   it("gives up after five attempts and reports the money as not arrived", async () => {
@@ -134,7 +167,7 @@ describe("waiting for Stripe to credit the balance", () => {
     });
     // Five polls, then one last read so the screen shows the server's answer
     // rather than the balance the user started with.
-    expect(mockRefetchBalance).toHaveBeenCalledTimes(6);
+    expect(mockReadBalance).toHaveBeenCalledTimes(6);
   });
 
   it("polls the same way when the user simply closes the browser", async () => {
@@ -147,6 +180,27 @@ describe("waiting for Stripe to credit the balance", () => {
     expect(outcome).toMatchObject({ balanceUpdated: true });
   });
 
+  /**
+   * The browser has handed back by then and the money may well be taken, so
+   * nothing that goes wrong while waiting may say the top-up failed — the
+   * person would pay again. The webhook credits it either way. (A one-off
+   * read itself resolves even on failure; this stands in for anything
+   * unexpected.)
+   */
+  it("does not report a failure when anything after the payment throws", async () => {
+    mockReadBalance.mockRejectedValue(new Error("store torn down"));
+    const result = await setUp();
+
+    const outcome = await runTopup(() => result.current.topup(400));
+
+    expect(outcome).toEqual({ success: true, balanceUpdated: false });
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledWith(
+      expect.any(Error),
+      "balance:topupPoll",
+    );
+  });
+
   it("does not poll when the browser session never opened", async () => {
     browserReturns("locked");
     const result = await setUp();
@@ -154,7 +208,7 @@ describe("waiting for Stripe to credit the balance", () => {
     const outcome = await runTopup(() => result.current.topup(400));
 
     expect(outcome).toEqual({ success: true, balanceUpdated: false });
-    expect(mockRefetchBalance).not.toHaveBeenCalled();
+    expect(mockReadBalance).not.toHaveBeenCalled();
   });
 });
 
@@ -180,7 +234,7 @@ describe("when the top-up cannot start", () => {
       error: "errors.payment.checkoutFailed",
     });
     expect(Alert.alert).toHaveBeenCalled();
-    expect(mockRefetchBalance).not.toHaveBeenCalled();
+    expect(mockReadBalance).not.toHaveBeenCalled();
   });
 
   it("does not quote a refusal that carries no code", async () => {
