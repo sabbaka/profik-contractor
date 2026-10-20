@@ -42,6 +42,11 @@ Note: push notifications require a development build on a physical device (`eas 
 Releasing is a pushed tag. EAS builds both platforms and submits each one to
 its store; see `.eas/workflows/release.yml`.
 
+Testers use a separate staging app (bundle id `….staging`, staging backend),
+built by hand with `npx eas-cli workflow:run .eas/workflows/staging.yml` and
+delivered through TestFlight and the Play internal track. A staging binary never
+ships to a store; see "Staging and production" in `.claude/rules/release.md`.
+
 ```bash
 npm version patch -m "chore(release): %s"   # bumps package.json and the lockfile, commits, tags
 git push && git push --tags

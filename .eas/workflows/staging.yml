@@ -1,0 +1,45 @@
+# Builds the staging app — its own bundle id (".staging"), talking to the
+# staging backend — and sends it to TestFlight and the Play internal track,
+# where testers install it next to the production app.
+#
+# Nothing triggers it; run it by hand when testers need a new binary:
+#   npx eas-cli workflow:run .eas/workflows/staging.yml
+#
+# A JS-only change does not need this — publish it to the staging channel:
+#   eas update --channel staging --environment preview --message "..."
+#
+# A staging binary never goes to the App Store or Play production. What ships
+# is a separate production build of the same commit, from a version tag
+# (release.yml).
+name: Staging
+
+jobs:
+  build_ios:
+    name: Build iOS (staging)
+    type: build
+    params:
+      platform: ios
+      profile: staging
+
+  build_android:
+    name: Build Android (staging)
+    type: build
+    params:
+      platform: android
+      profile: staging
+
+  submit_ios:
+    name: Submit to TestFlight
+    needs: [build_ios]
+    type: submit
+    params:
+      build_id: ${{ needs.build_ios.outputs.build_id }}
+      profile: staging
+
+  submit_android:
+    name: Submit to Play internal
+    needs: [build_android]
+    type: submit
+    params:
+      build_id: ${{ needs.build_android.outputs.build_id }}
+      profile: staging
