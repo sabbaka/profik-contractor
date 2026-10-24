@@ -1,6 +1,7 @@
 import { useGetAppConfigQuery } from "@/src/api/profikApi";
 import { logError } from "@/src/utils/logger";
 import { isTestFlightInstall } from "@/src/utils/testFlightInstall";
+import Constants from "expo-constants";
 import { useCallback, useState } from "react";
 import { Linking } from "react-native";
 
@@ -8,6 +9,15 @@ import { Linking } from "react-native";
 export const PRO_APP_STORE_URL = "itms-apps://apps.apple.com/app/id6787445540";
 /** The same page on the web, for when the App Store app will not open. */
 const PRO_APP_STORE_WEB_URL = "https://apps.apple.com/app/id6787445540";
+
+/**
+ * The versions testers have from TestFlight's public link — the only builds
+ * that ever ask to move. App Review installs a build with a sandbox receipt
+ * too, so without this the reviewer of the next version would see the "go to
+ * the App Store" banner, and "TestFlight" in the profile footer. Add a version
+ * here only if it is handed out through TestFlight again.
+ */
+const TESTFLIGHT_VERSIONS: readonly string[] = ["1.1.16"];
 
 // Read once per launch: the receipt does not change while the app runs.
 let testFlight: boolean | undefined;
@@ -18,7 +28,9 @@ let testFlight: boolean | undefined;
  * banner is switched on.
  */
 export function runsFromTestFlight(): boolean {
-  testFlight ??= isTestFlightInstall();
+  testFlight ??=
+    TESTFLIGHT_VERSIONS.includes(Constants.expoConfig?.version ?? "") &&
+    isTestFlightInstall();
   return testFlight;
 }
 

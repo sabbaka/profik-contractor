@@ -8,6 +8,19 @@ import ProfileRoute from "@/app/(contractor)/(tabs)/profile";
 import { resetAppStoreMoveBannerForTests } from "@/src/features/appStoreMove/useAppStoreMoveBanner";
 import { isTestFlightInstall } from "@/src/utils/testFlightInstall";
 
+// jest has no app config, so no version; the TestFlight test sets the one
+// testers have.
+const mockAppVersion: { version?: string } = {};
+jest.mock("expo-constants", () => ({
+  __esModule: true,
+  // A getter: the factory runs during the imports, before the const is set.
+  default: {
+    get expoConfig() {
+      return mockAppVersion;
+    },
+  },
+}));
+
 // Reads the device's file system; an App Store install unless a test says so.
 jest.mock("@/src/utils/testFlightInstall", () => ({
   isTestFlightInstall: jest.fn(() => false),
@@ -109,6 +122,7 @@ describe("Profile", () => {
   it("marks a TestFlight install after the version", async () => {
     resetAppStoreMoveBannerForTests();
     jest.mocked(isTestFlightInstall).mockReturnValue(true);
+    mockAppVersion.version = "1.1.16";
     mockUpdates.isEmbeddedLaunch = true;
     mockApi({ "GET /auth/me": { body: ME } });
     await renderWithProviders(<ProfileRoute />, { authed: true });

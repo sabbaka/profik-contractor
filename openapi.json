@@ -2556,28 +2556,6 @@
           "feedback"
         ]
       }
-    },
-    "/app-config": {
-      "get": {
-        "operationId": "getAppConfig",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Current switches",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppConfigResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Runtime switches for the mobile apps",
-        "tags": [
-          "app-config"
-        ]
-      }
     }
   },
   "info": {
@@ -5350,19 +5328,6 @@
           "appVersion",
           "locale",
           "createdAt"
-        ]
-      },
-      "AppConfigResponseDto": {
-        "type": "object",
-        "properties": {
-          "proAppStoreLive": {
-            "type": "boolean",
-            "description": "Profik Pro is live in the App Store. A TestFlight build of Pro shows a \"get the App Store version\" banner while this is true.",
-            "example": false
-          }
-        },
-        "required": [
-          "proAppStoreLive"
         ]
       }
     }

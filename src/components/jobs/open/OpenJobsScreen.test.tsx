@@ -11,6 +11,18 @@ import { isTestFlightInstall } from "@/src/utils/testFlightInstall";
 import { Linking } from "react-native";
 import { OpenJobsScreen } from "./OpenJobsScreen";
 
+// jest has no app config, so no version; each test says which build it is.
+const mockAppVersion: { version?: string } = {};
+jest.mock("expo-constants", () => ({
+  __esModule: true,
+  // A getter: the factory runs during the imports, before the const is set.
+  default: {
+    get expoConfig() {
+      return mockAppVersion;
+    },
+  },
+}));
+
 // The receipt check reads the device's file system. An App Store install by
 // default; the TestFlight tests below switch it.
 jest.mock("@/src/utils/testFlightInstall", () => ({
@@ -319,6 +331,7 @@ describe("Open Jobs", () => {
     beforeEach(() => {
       resetAppStoreMoveBannerForTests();
       jest.mocked(isTestFlightInstall).mockReturnValue(true);
+      mockAppVersion.version = "1.1.16";
     });
     afterEach(() => {
       jest.mocked(isTestFlightInstall).mockReturnValue(false);
@@ -390,6 +403,20 @@ describe("Open Jobs", () => {
       await screen.unmount();
       await renderWithProviders(<OpenJobsScreen />);
       await screen.findByText("Úklid bytu 2+kk");
+      expect(
+        screen.queryByText("Profik Pro is now on the App Store"),
+      ).not.toBeOnTheScreen();
+    });
+
+    it("stays quiet on any build but the one testers have, and never asks", async () => {
+      // A later binary in App Review is installed with a sandbox receipt too;
+      // the reviewer must not be told to go to the App Store.
+      mockAppVersion.version = "1.1.17";
+      // No /app-config route: a request for it would fail the test.
+      mockApi({ "GET /jobs/open": { body: JOBS } });
+      await renderWithProviders(<OpenJobsScreen />);
+
+      expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
       expect(
         screen.queryByText("Profik Pro is now on the App Store"),
       ).not.toBeOnTheScreen();
