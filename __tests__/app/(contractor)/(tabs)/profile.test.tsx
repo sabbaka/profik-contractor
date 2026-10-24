@@ -5,6 +5,13 @@ import { screen, within } from "@testing-library/react-native";
 import React from "react";
 import * as Updates from "expo-updates";
 import ProfileRoute from "@/app/(contractor)/(tabs)/profile";
+import { resetAppStoreMoveBannerForTests } from "@/src/features/appStoreMove/useAppStoreMoveBanner";
+import { isTestFlightInstall } from "@/src/utils/testFlightInstall";
+
+// Reads the device's file system; an App Store install unless a test says so.
+jest.mock("@/src/utils/testFlightInstall", () => ({
+  isTestFlightInstall: jest.fn(() => false),
+}));
 
 // Mutable, so each test can say which kind of launch it is. The module is
 // read at render, not at import, so changing it between tests is enough.
@@ -92,6 +99,26 @@ describe("Profile", () => {
 
     expect(await screen.findByText(/^Version /)).toBeOnTheScreen();
     expect(screen.queryByText(/· update/)).toBeNull();
+  });
+
+  /**
+   * A TestFlight install says so beside the version. It is how the receipt
+   * check is confirmed on a real phone before the App Store banner is
+   * switched on.
+   */
+  it("marks a TestFlight install after the version", async () => {
+    resetAppStoreMoveBannerForTests();
+    jest.mocked(isTestFlightInstall).mockReturnValue(true);
+    mockUpdates.isEmbeddedLaunch = true;
+    mockApi({ "GET /auth/me": { body: ME } });
+    await renderWithProviders(<ProfileRoute />, { authed: true });
+
+    expect(
+      await screen.findByText(/^Version .* · TestFlight$/),
+    ).toBeOnTheScreen();
+
+    jest.mocked(isTestFlightInstall).mockReturnValue(false);
+    resetAppStoreMoveBannerForTests();
   });
 
   it("announces Edit Profile and the balance card as buttons", async () => {
