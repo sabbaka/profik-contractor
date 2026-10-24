@@ -178,34 +178,6 @@ export function TermsGateScreen({ returnTo }: { returnTo?: string }) {
           />
         </YStack>
 
-        {/* One checkbox, and only for the Terms. A privacy policy is not
-            agreed to — it is disclosed — and putting both behind one tick
-            would merge two different legal bases into one ambiguous act. */}
-        <Pressable
-          onPress={() => setAgreed((value) => !value)}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: agreed }}
-          hitSlop={8}
-        >
-          <XStack gap={12} ai="center">
-            <YStack
-              width={24}
-              height={24}
-              borderRadius={6}
-              ai="center"
-              jc="center"
-              borderWidth={agreed ? 0 : 1.5}
-              borderColor="$borderToken"
-              backgroundColor={agreed ? "$accent" : "transparent"}
-            >
-              {agreed ? <Check size={16} color="#FFFFFF" /> : null}
-            </YStack>
-            <Text variant="body" flex={1}>
-              {t("terms.gate.checkbox")}
-            </Text>
-          </XStack>
-        </Pressable>
-
         <Text variant="caption">{t("terms.gate.privacyNotice")}</Text>
 
         {/* Two different failures, and the person needs to tell them apart.
@@ -238,9 +210,47 @@ export function TermsGateScreen({ returnTo }: { returnTo?: string }) {
       <YStack
         paddingHorizontal={20}
         paddingBottom={insets.bottom + 16}
-        paddingTop={8}
+        paddingTop={16}
         gap={12}
+        borderTopWidth={1}
+        borderColor="$borderSubtle"
       >
+        {/* One checkbox, and only for the Terms. A privacy policy is not
+            agreed to — it is disclosed — and putting both behind one tick
+            would merge two different legal bases into one ambiguous act.
+
+            It sits here, pinned above the button it unlocks, and not at the
+            end of the scroll. Down there it was two screens below the fold on
+            a 1080×1920 Android phone, in Ukrainian and in Czech alike: what a
+            new account saw was a grey "Accept" that did nothing and said
+            nothing, beside a bright "Decide later" that signs out. Three of
+            the first five PROs after launch got their 500 credits and left
+            from exactly that screen. */}
+        <Pressable
+          onPress={() => setAgreed((value) => !value)}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: agreed }}
+          hitSlop={8}
+        >
+          <XStack gap={12} ai="center">
+            <YStack
+              width={24}
+              height={24}
+              borderRadius={6}
+              ai="center"
+              jc="center"
+              borderWidth={agreed ? 0 : 1.5}
+              borderColor="$borderToken"
+              backgroundColor={agreed ? "$accent" : "transparent"}
+            >
+              {agreed ? <Check size={16} color="#FFFFFF" /> : null}
+            </YStack>
+            <Text variant="body" flex={1}>
+              {t("terms.gate.checkbox")}
+            </Text>
+          </XStack>
+        </Pressable>
+
         {/* `loading` covers the wait for the terms as well as the accept
             itself: until they arrive there is nothing to accept, and a button
             that is merely grey does not say so. */}
