@@ -16,6 +16,8 @@
     "src/features/auth/terms.test.ts": "18c5be54818cb5e7e76d90451b81e8a35f670b1d36f1a3d00e6f896a41591dc6",
     "src/features/auth/terms.ts": "2e106ada9f43bf8662e4c40154ca3584cfbc390460c684de546987c2ea5f00d5",
     "src/features/auth/utils.ts": "53131fca72ff177fe9978c30301999ed1c2e9527e3b8e580ee8817f4739b242d",
+    "src/features/notifications/transientPushError.test.ts": "2b53f5a8ad1d4836cb3d330e2ae0034c7a7c7144675af1111022591a7d8cb4a0",
+    "src/features/notifications/transientPushError.ts": "dfe759e4261a41eb41d0680973be52a1e4f90cfa63d37dbec83ae98a74089adc",
     "src/i18n/pluralRules.test.ts": "ed8280759b556c20568472ad938b45755d401f9f99c38b606b1bfd26a3968e9a",
     "src/i18n/pluralRules.ts": "66a25e394845056001f48cf843dc02a823179ef63ca49d0bbb3994e44513210d",
     "src/store/authSlice.test.ts": "03f287abe8361febe979e51fdd528f4986199bdb2611d403095ae3fbc9c521db",

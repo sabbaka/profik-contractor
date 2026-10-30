@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react-native";
 import {
   profikApi,
   useRegisterPushTokenMutation,
@@ -5,6 +6,7 @@ import {
 } from "@/src/api/profikApi";
 import {
   isChatOnScreen,
+  isTransientPushError,
   readNotificationIds,
   resolveNotificationRoute,
 } from "@/src/features/notifications";
@@ -21,6 +23,13 @@ import { useDispatch } from "react-redux";
 
 const PROJECT_ID =
   Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+
+/**
+ * Pauses before each retry of a registration the network failed. Three tries
+ * cover a phone switching networks at launch; past that the device is offline,
+ * and the next foreground tries again anyway.
+ */
+const TRANSIENT_RETRY_DELAYS_MS = [2_000, 10_000, 30_000];
 
 /** The awaits of a registration, reported with a failure. */
 type RegistrationStep =
@@ -90,6 +99,10 @@ export function usePushNotifications(token: string | null) {
     // get a token — Android without Play services — fails on every foreground,
     // and one event per foreground would bury everything else.
     let reported = false;
+    // One budget per run — per launch, account and language. Once it is spent,
+    // a transient failure waits for the next foreground.
+    let transientRetries = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
 
     // `mayPrompt` is false for the retries a foreground triggers: asking again
     // on every return to the app would nag, and on Android the system prompt
@@ -147,7 +160,27 @@ export function usePushNotifications(token: string | null) {
       } catch (err) {
         // registeredFor stays unset, so the next foreground tries again. A
         // cancelled run stays quiet: the run that replaced it reports its own.
-        if (!reported && !cancelled) {
+        if (cancelled) return;
+        // A dropped connection is not ours to fix, and nobody can act on an
+        // issue about it: try again after a pause. The breadcrumb still rides
+        // along with the next real event, so a device that never gets a token
+        // is not left without a trace.
+        if (isTransientPushError(err)) {
+          const { code, status } = err as { code?: unknown; status?: unknown };
+          Sentry.addBreadcrumb({
+            category: "push.register",
+            level: "warning",
+            message: "transient failure",
+            data: { step, code, status },
+          });
+          const delay = TRANSIENT_RETRY_DELAYS_MS[transientRetries++];
+          clearTimeout(retryTimer);
+          if (delay !== undefined) {
+            retryTimer = setTimeout(() => attempt(false), delay);
+          }
+          return;
+        }
+        if (!reported) {
           reported = true;
           logError(err, "push:register", { step });
         }
@@ -176,6 +209,7 @@ export function usePushNotifications(token: string | null) {
 
     return () => {
       cancelled = true;
+      clearTimeout(retryTimer);
       subscription.remove();
     };
   }, [token, language, registerPushToken]);
