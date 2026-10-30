@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react-native";
 import * as Notifications from "expo-notifications";
+import * as Sentry from "@sentry/react-native";
 import { AppState, type AppStateStatus } from "react-native";
 import { logError } from "@/src/utils/logger";
 import { usePushNotifications } from "./usePushNotifications";
@@ -309,6 +310,124 @@ describe("usePushNotifications registration", () => {
     });
 
     expect(logError).toHaveBeenCalledTimes(1);
+  });
+
+  describe("when the network is to blame", () => {
+    /** What expo-notifications throws when the token request gets no answer. */
+    const connectionLost = () =>
+      Object.assign(
+        new Error(
+          "Error encountered while fetching Expo token: Error: fetch failed: UnexpectedException: The network connection was lost..",
+        ),
+        { code: "ERR_NOTIFICATIONS_NETWORK_ERROR" },
+      );
+
+    beforeEach(() => jest.useFakeTimers());
+    afterEach(() => jest.useRealTimers());
+
+    async function wait(ms: number) {
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(ms);
+      });
+    }
+
+    // PROFIK-E, PROFIK-CONTRACTOR-E: a phone between networks at launch is
+    // not something anyone can fix, and the next try goes through.
+    it("does not report a dropped connection and tries again shortly", async () => {
+      notifications.getExpoPushTokenAsync.mockRejectedValueOnce(
+        connectionLost(),
+      );
+
+      await renderHook(() => usePushNotifications("jwt-1"));
+      await wait(0);
+      expect(mockRegisterPushToken).not.toHaveBeenCalled();
+
+      await wait(2_000);
+
+      expect(mockRegisterPushToken).toHaveBeenCalledWith({
+        pushToken: "ExponentPushToken[abc]",
+        language: "cs",
+      });
+      expect(logError).not.toHaveBeenCalled();
+      expect(Sentry.addBreadcrumb).toHaveBeenCalledWith(
+        expect.objectContaining({
+          category: "push.register",
+          data: {
+            step: "getExpoPushToken",
+            code: "ERR_NOTIFICATIONS_NETWORK_ERROR",
+            status: undefined,
+          },
+        }),
+      );
+    });
+
+    // PROFIK-CONTRACTOR-B: the token arrived, saving it to our server did not.
+    it("treats saving the token without an answer the same way", async () => {
+      mockRegisterPushToken.mockReturnValueOnce({
+        unwrap: async () => {
+          throw { status: "FETCH_ERROR", error: "fetch failed" };
+        },
+      });
+
+      await renderHook(() => usePushNotifications("jwt-1"));
+      await wait(2_000);
+
+      expect(mockRegisterPushToken).toHaveBeenCalledTimes(2);
+      expect(logError).not.toHaveBeenCalled();
+    });
+
+    it("gives up after a few tries and waits for the next foreground", async () => {
+      notifications.getExpoPushTokenAsync.mockRejectedValue(connectionLost());
+
+      await renderHook(() => usePushNotifications("jwt-1"));
+      await wait(10 * 60_000);
+
+      expect(notifications.getExpoPushTokenAsync).toHaveBeenCalledTimes(4);
+      expect(logError).not.toHaveBeenCalled();
+
+      notifications.getExpoPushTokenAsync.mockResolvedValue({
+        data: "ExponentPushToken[abc]",
+        type: "expo",
+      });
+      await comeToForeground();
+      await wait(0);
+
+      expect(mockRegisterPushToken).toHaveBeenCalledTimes(1);
+    });
+
+    it("drops a pending retry when the account signs out", async () => {
+      notifications.getExpoPushTokenAsync.mockRejectedValueOnce(
+        connectionLost(),
+      );
+
+      const { rerender } = await renderHook(
+        ({ token }: { token: string | null }) => usePushNotifications(token),
+        { initialProps: { token: "jwt-1" as string | null } },
+      );
+      await wait(0);
+      await rerender({ token: null });
+      await wait(10 * 60_000);
+
+      expect(notifications.getExpoPushTokenAsync).toHaveBeenCalledTimes(1);
+      expect(mockRegisterPushToken).not.toHaveBeenCalled();
+    });
+
+    it("still reports a failure that is not the network's", async () => {
+      const refused = { status: 401, data: null };
+      mockRegisterPushToken.mockReturnValueOnce({
+        unwrap: async () => {
+          throw refused;
+        },
+      });
+
+      await renderHook(() => usePushNotifications("jwt-1"));
+      await wait(10 * 60_000);
+
+      expect(logError).toHaveBeenCalledWith(refused, "push:register", {
+        step: "saveToken",
+      });
+      expect(mockRegisterPushToken).toHaveBeenCalledTimes(1);
+    });
   });
 
   it("does nothing while signed out", async () => {
