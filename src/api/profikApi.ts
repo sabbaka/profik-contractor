@@ -18,6 +18,7 @@ import i18n from "../i18n";
 import { logout } from "../store/authSlice";
 import { forwardIdCursor } from "./pagination";
 import type {
+  AppConfig,
   ConversationFilter,
   ConversationList,
   GetOfferedJobsParams,
@@ -645,6 +646,10 @@ export const profikApi = createApi({
       query: (userId) => ({ url: `/users/${userId}/block`, method: "DELETE" }),
       invalidatesTags: ["Blocks", "Conversations", "Unread", "Jobs"],
     }),
+    /** Runtime switches, read without a token — guests see Open Jobs too. */
+    getAppConfig: builder.query<AppConfig, void>({
+      query: () => ({ url: "/app-config", method: "GET" }),
+    }),
   }),
 });
 
@@ -680,4 +685,5 @@ export const {
   useGetMyBlocksQuery,
   useBlockUserMutation,
   useUnblockUserMutation,
+  useGetAppConfigQuery,
 } = profikApi;

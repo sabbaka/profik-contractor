@@ -466,7 +466,8 @@
     },
     "permissionTitle": "Permission required",
     "permissionBody": "Please allow photo library access to change your avatar.",
-    "settingsUnavailable": "Couldn't open Settings. Open the Settings app, find Profik Pro and turn notifications on there."
+    "settingsUnavailable": "Couldn't open Settings. Open the Settings app, find Profik Pro and turn notifications on there.",
+    "testFlight": "TestFlight"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -621,7 +622,8 @@
     "filtersActive": "{{count}} filters active",
     "chooseCountry": "Choose country code",
     "buyCredits": "Buy {{credits}} for {{price}}",
-    "chatActions": "More actions"
+    "chatActions": "More actions",
+    "hideAppStoreMove": "Hide the App Store notice"
   },
   "messages": {
     "title": "Messages",
@@ -776,5 +778,10 @@
     "loadFailed": "We couldn't load the list.",
     "unblock": "Unblock",
     "unblockA11y": "Unblock {{name}}"
+  },
+  "appStoreMove": {
+    "title": "Profik Pro is now on the App Store",
+    "body": "Install the App Store version. Your account, credits and chats stay as they are, and this test version will stop working soon.",
+    "cta": "Open the App Store"
   }
 }

@@ -286,3 +286,13 @@ export interface Review {
   author: ReviewAuthor;
   createdAt: string;
 }
+
+/**
+ * `GET /app-config` — switches the backend flips from env on Render, so a
+ * released build can change course without an update. Each is off unless
+ * set, and a failed request is read the same way.
+ */
+export interface AppConfig {
+  /** Pro is in the App Store, so TestFlight installs are asked to move. */
+  proAppStoreLive: boolean;
+}
