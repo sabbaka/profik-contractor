@@ -2,7 +2,8 @@
   "note": "Modules whose logic is mirrored in profik, and the test files that cover them. Doc comments may differ where each app names its own endpoints. See scripts/check-shared-modules.mjs.",
   "files": {
     "__tests__/app/routeTree.test.ts": "f8ef0fdc7a50058dbe2e8ca151d566b0548b409d10fe56102ad5e225d73b5553",
-    "eas.json": "a67393431989f7c53e05fb0decf640aaad048ad5c6ba2f687c616ef14e0e2e71",
+    "__tests__/node-version.test.ts": "d2a440ffdb0034a9def5fca0711b2f4d811e3bccba3da4072dc6eed1d3469da8",
+    "eas.json": "aa958c7a7e1de6246029ae69c4a83f5a47943e2c84759c07d19eec058f7a79ae",
     "jest.config.js": "c3d9e68b3c3120d328fbde56076c66fee7308105e1e9beff85bc31e620c9b158",
     "jest.setup.ts": "e88337c8022f07b03314e98eac9de9f811d0d9c9075562771d1564aa338ad0cd",
     "src/api/pagination.test.ts": "a80d57ded6305034726d1eff6b23dbc85b0a97f0622b5fc213889aefd244ea88",
