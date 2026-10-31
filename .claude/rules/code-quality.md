@@ -119,7 +119,7 @@ the part that was missing.
 
 Expo SDK 57 (the version this app is on) requires Node
 `^20.19.4 || ^22.13.0 || ^24.3.0 || >=25.0.0` — this is metro's engine range,
-not a soft recommendation. `.nvmrc` at the repo root pins `v22.16.0`. If
+not a soft recommendation. `.nvmrc` at the repo root pins `v22.23.4`. If
 `npm install` or `expo-doctor` was run under a different Node than the one the
 app is actually launched with, `package-lock.json` can drift to versions that
 don't match — `nvm use` (or read `.nvmrc`) before installing, not after
