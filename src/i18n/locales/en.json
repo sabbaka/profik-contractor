@@ -669,7 +669,7 @@
     "stepBadge": "Once it's confirmed, a verified badge appears on your profile.",
     "whatWeKeep": "What Profik keeps",
     "whatWeKeepBody": "Your photos go straight to our verification partner and never reach Profik. We keep only the result, your first name, the first letter of your surname, and the type and expiry of the document.",
-    "consentNote": "Verification is optional and Profik works without it. By continuing you agree to our verification partner checking your document and your photo.",
+    "consentNote": "Verification is optional and Profik works without it. By continuing you agree that our verification partner Didit processes your document and a photo of your face (biometric data) to confirm your identity.",
     "start": "Verify my identity",
     "resume": "Continue verification",
     "retry": "Try again",
