@@ -487,7 +487,7 @@
     "legalBasisTitle": "Why we process your data",
     "legalBasis": "To provide the Platform — account, Jobs, Responses, chat, Credits, reviews — as performance of a contract. For security, fraud prevention, fixing errors and usage statistics, as our legitimate interest. For accounting and tax records, as a legal obligation. For identity verification, based on your consent, which you can withdraw at any time.",
     "sharingTitle": "How your information is shared",
-    "sharing": "Clients can see what's needed to work together — your name, profile photo, job details, the price of your Response, reviews and chat messages. Your phone number is never shared with clients; all communication happens through the in-app chat.\n\nWe also share data with the providers that run the Platform, among them Render (servers), Cloudflare (photo storage), Stripe (payments), Expo (push notifications), Sentry (error logs), PostHog (usage statistics, EU servers), Google and Apple (maps), Didit (identity verification) and our SMS provider (verification codes). Some process data outside the EU/EEA, mainly in the US, under an EU adequacy decision or standard contractual clauses. We never sell your data, and share it with public authorities only where the law requires it.",
+    "sharing": "Clients can see what's needed to work together — your name, profile photo, job details, the price of your Response, reviews and chat messages. Your phone number is never shared with clients; all communication happens through the in-app chat.\n\nWe also share data with the providers that run the Platform, among them Render (servers), Cloudflare (photo storage), Stripe (card payments on Android), Apple (App Store payments on iPhone; maps), RevenueCat (verifying App Store purchases), Expo (push notifications), Sentry (error logs), PostHog (usage statistics, EU servers), Google (maps), Didit (identity verification) and our SMS provider (verification codes). Some process data outside the EU/EEA, mainly in the US, under an EU adequacy decision or standard contractual clauses. We never sell your data, and share it with public authorities only where the law requires it.",
     "retentionTitle": "Data retention & deletion",
     "retention": "Your data is kept for as long as your account is active. After you delete it, we delete or anonymise your data without undue delay, except records we're legally required to keep — accounting documents, for up to 10 years.",
     "rightsTitle": "Your rights",
@@ -497,7 +497,7 @@
     "contactTitle": "Contact us",
     "contact": "If you have questions about this policy, contact us at {{email}}.",
     "fullVersion": "Read the full Privacy Policy at profik.app",
-    "lastUpdated": "Last updated: 30 September 2026"
+    "lastUpdated": "Last updated: 3 November 2026"
   },
   "support": {
     "title": "Help & Support",
