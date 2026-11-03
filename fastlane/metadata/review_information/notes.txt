@@ -26,7 +26,7 @@ Permissions used:
 - Location (while using the app): to show open jobs near the contractor on the map and the distance to each job.
 - Notifications: to alert the contractor about new client messages and offer updates.
 
-Balance top-up: contractors can add funds to their platform balance, which is used to pay platform fees. The top-up is completed in an external Stripe web checkout page opened in the browser — not via In-App Purchase. This is compliant because the balance is used for real-world physical services (home cleaning) delivered outside the app, per App Store Review Guideline 3.1.5(a). The app sells no digital content or features.
+Buying credits: contractors keep a prepaid credit balance (1 credit = 1 CZK) that pays the platform fee for each offer they send. On iPhone, credits are sold only through In-App Purchase: Profile tab -> balance card -> one of four consumable credit packs (profik.credits.99, profik.credits.249, profik.credits.499, profik.credits.999), paid with the App Store account. Each purchase is validated through RevenueCat and then credited to the account by our server. The iOS app offers no other way to pay and does not link to any external payment page. To test a purchase, sign in with the demo account above and buy a pack with a Sandbox Apple Account; sandbox purchases are credited to the demo account. (On Android the same balance is topped up through a Stripe checkout; that path is not present in the iOS app.)
 
 The app supports English, Czech and Ukrainian. Language follows the device locale and can also be changed from the Profile tab.
 
