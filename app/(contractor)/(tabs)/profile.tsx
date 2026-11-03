@@ -1,6 +1,7 @@
 import { useDeleteAccountMutation, useMeQuery } from "@/src/api/profikApi";
 import { OptionSheet } from "@/src/components/ui/OptionSheet";
 import { Button, Text } from "@/src/components/ui/ui";
+import { runsFromTestFlight } from "@/src/features/appStoreMove/useAppStoreMoveBanner";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
 import { extractErrorMessage } from "@/src/features/auth/types";
@@ -736,6 +737,7 @@ export default function ProfileRoute() {
           {updateId
             ? t("profile.versionWithUpdate", { version, update: updateId })
             : t("profile.version", { version })}
+          {runsFromTestFlight() && ` · ${t("profile.testFlight")}`}
         </Text>
       </ScrollView>
 

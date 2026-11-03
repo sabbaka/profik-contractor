@@ -466,7 +466,8 @@
     },
     "permissionTitle": "Potřebné oprávnění",
     "permissionBody": "Povolte prosím přístup k fotkám, abyste mohli změnit avatar.",
-    "settingsUnavailable": "Nastavení se nepodařilo otevřít. Otevřete aplikaci Nastavení, najděte Profik Pro a zapněte tam oznámení."
+    "settingsUnavailable": "Nastavení se nepodařilo otevřít. Otevřete aplikaci Nastavení, najděte Profik Pro a zapněte tam oznámení.",
+    "testFlight": "TestFlight"
   },
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
@@ -621,7 +622,8 @@
     "filtersActive": "{{count}} aktivních filtrů",
     "chooseCountry": "Vybrat předvolbu země",
     "buyCredits": "Koupit {{credits}} za {{price}}",
-    "chatActions": "Další akce"
+    "chatActions": "Další akce",
+    "hideAppStoreMove": "Skrýt upozornění na App Store"
   },
   "messages": {
     "title": "Zprávy",
@@ -778,5 +780,10 @@
     "loadFailed": "Seznam se nepodařilo načíst.",
     "unblock": "Odblokovat",
     "unblockA11y": "Odblokovat {{name}}"
+  },
+  "appStoreMove": {
+    "title": "Profik Pro je teď v App Storu",
+    "body": "Nainstalujte si verzi z App Storu. Účet, kredity i chaty vám zůstanou a tahle testovací verze brzy přestane fungovat.",
+    "cta": "Otevřít App Store"
   }
 }

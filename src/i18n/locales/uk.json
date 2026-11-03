@@ -470,7 +470,8 @@
     },
     "permissionTitle": "Потрібен дозвіл",
     "permissionBody": "Дозвольте доступ до фотографій, щоб змінити фото профілю.",
-    "settingsUnavailable": "Не вдалося відкрити налаштування. Відкрийте налаштування телефону, знайдіть Profik Pro і ввімкніть там сповіщення."
+    "settingsUnavailable": "Не вдалося відкрити налаштування. Відкрийте налаштування телефону, знайдіть Profik Pro і ввімкніть там сповіщення.",
+    "testFlight": "TestFlight"
   },
   "privacy": {
     "title": "Політика конфіденційності",
@@ -625,7 +626,8 @@
     "filtersActive": "Активних фільтрів: {{count}}",
     "chooseCountry": "Обрати код країни",
     "buyCredits": "Купити {{credits}} за {{price}}",
-    "chatActions": "Більше дій"
+    "chatActions": "Більше дій",
+    "hideAppStoreMove": "Сховати повідомлення про App Store"
   },
   "messages": {
     "title": "Повідомлення",
@@ -784,5 +786,10 @@
     "loadFailed": "Не вдалося завантажити список.",
     "unblock": "Розблокувати",
     "unblockA11y": "Розблокувати {{name}}"
+  },
+  "appStoreMove": {
+    "title": "Profik Pro тепер в App Store",
+    "body": "Встановіть версію з App Store. Акаунт, кредити й чати залишаться, а ця тестова версія скоро перестане працювати.",
+    "cta": "Відкрити App Store"
   }
 }

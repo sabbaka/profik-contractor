@@ -1,5 +1,6 @@
 import { useGetOpenJobsInfiniteQuery } from "@/src/api/profikApi";
 import { ContractorJobCard } from "@/src/components/jobs/ContractorJobCard";
+import { AppStoreMoveBanner } from "@/src/components/layout/AppStoreMoveBanner";
 import { ListFooterSpinner } from "@/src/components/ui/ListFooterSpinner";
 import { Button, Text } from "@/src/components/ui/ui";
 import { useIsGuest } from "@/src/features/auth/hooks/useIsGuest";
@@ -170,6 +171,8 @@ export function OpenJobsScreen() {
           )}
         </Pressable>
       </XStack>
+
+      <AppStoreMoveBanner />
 
       {isLoading && !data ? (
         <YStack flex={1} alignItems="center" justifyContent="center" gap={12}>

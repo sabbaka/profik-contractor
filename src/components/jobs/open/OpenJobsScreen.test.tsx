@@ -6,7 +6,28 @@ import * as analytics from "@/src/utils/analytics";
 import { act, fireEvent, screen, waitFor } from "@testing-library/react-native";
 import * as Location from "expo-location";
 import { router } from "expo-router";
+import { resetAppStoreMoveBannerForTests } from "@/src/features/appStoreMove/useAppStoreMoveBanner";
+import { isTestFlightInstall } from "@/src/utils/testFlightInstall";
+import { Linking } from "react-native";
 import { OpenJobsScreen } from "./OpenJobsScreen";
+
+// jest has no app config, so no version; each test says which build it is.
+const mockAppVersion: { version?: string } = {};
+jest.mock("expo-constants", () => ({
+  __esModule: true,
+  // A getter: the factory runs during the imports, before the const is set.
+  default: {
+    get expoConfig() {
+      return mockAppVersion;
+    },
+  },
+}));
+
+// The receipt check reads the device's file system. An App Store install by
+// default; the TestFlight tests below switch it.
+jest.mock("@/src/utils/testFlightInstall", () => ({
+  isTestFlightInstall: jest.fn(() => false),
+}));
 
 // The filters read the location permission on mount. Undetermined, and denied
 // when asked, is where a fresh install starts — no coordinates are sent.
@@ -304,5 +325,113 @@ describe("Open Jobs", () => {
         "Couldn't get your location — check that location services are on and try again.",
       ),
     ).toBeOnTheScreen();
+  });
+
+  describe("asking a TestFlight install to move to the App Store", () => {
+    beforeEach(() => {
+      resetAppStoreMoveBannerForTests();
+      jest.mocked(isTestFlightInstall).mockReturnValue(true);
+      mockAppVersion.version = "1.1.16";
+    });
+    afterEach(() => {
+      jest.mocked(isTestFlightInstall).mockReturnValue(false);
+      resetAppStoreMoveBannerForTests();
+    });
+
+    it("says so once Pro is live in the App Store, and the button opens its page", async () => {
+      mockApi({
+        "GET /jobs/open": { body: JOBS },
+        "GET /app-config": { body: { proAppStoreLive: true } },
+      });
+      const openURL = jest.spyOn(Linking, "openURL").mockResolvedValue(true);
+      await renderWithProviders(<OpenJobsScreen />);
+
+      expect(
+        await screen.findByText("Profik Pro is now on the App Store"),
+      ).toBeOnTheScreen();
+      await fireEvent.press(screen.getByText("Open the App Store"));
+      expect(openURL).toHaveBeenCalledWith(
+        "itms-apps://apps.apple.com/app/id6787445540",
+      );
+    });
+
+    it("stays quiet while Pro is not in the store yet", async () => {
+      const api = mockApi({
+        "GET /jobs/open": { body: JOBS },
+        "GET /app-config": { body: { proAppStoreLive: false } },
+      });
+      await renderWithProviders(<OpenJobsScreen />);
+      await screen.findByText("Úklid bytu 2+kk");
+
+      await waitFor(async () =>
+        expect(
+          (await apiCalls(api)).some((r) => r.url.endsWith("/app-config")),
+        ).toBe(true),
+      );
+      expect(
+        screen.queryByText("Profik Pro is now on the App Store"),
+      ).not.toBeOnTheScreen();
+    });
+
+    it("stays quiet when the switch cannot be read", async () => {
+      mockApi({
+        "GET /jobs/open": { body: JOBS },
+        "GET /app-config": { status: 500 },
+      });
+      await renderWithProviders(<OpenJobsScreen />);
+      await screen.findByText("Úklid bytu 2+kk");
+
+      expect(
+        screen.queryByText("Profik Pro is now on the App Store"),
+      ).not.toBeOnTheScreen();
+    });
+
+    it("goes away when closed, and stays away for the rest of the launch", async () => {
+      mockApi({
+        "GET /jobs/open": { body: JOBS },
+        "GET /app-config": { body: { proAppStoreLive: true } },
+      });
+      await renderWithProviders(<OpenJobsScreen />);
+      await screen.findByText("Profik Pro is now on the App Store");
+
+      await fireEvent.press(screen.getByLabelText("Hide the App Store notice"));
+      expect(
+        screen.queryByText("Profik Pro is now on the App Store"),
+      ).not.toBeOnTheScreen();
+
+      // A second visit to the tab in the same launch mounts the screen anew.
+      await screen.unmount();
+      await renderWithProviders(<OpenJobsScreen />);
+      await screen.findByText("Úklid bytu 2+kk");
+      expect(
+        screen.queryByText("Profik Pro is now on the App Store"),
+      ).not.toBeOnTheScreen();
+    });
+
+    it("stays quiet on any build but the one testers have, and never asks", async () => {
+      // A later binary in App Review is installed with a sandbox receipt too;
+      // the reviewer must not be told to go to the App Store.
+      mockAppVersion.version = "1.1.17";
+      // No /app-config route: a request for it would fail the test.
+      mockApi({ "GET /jobs/open": { body: JOBS } });
+      await renderWithProviders(<OpenJobsScreen />);
+
+      expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
+      expect(
+        screen.queryByText("Profik Pro is now on the App Store"),
+      ).not.toBeOnTheScreen();
+    });
+
+    it("never asks the server from an App Store install", async () => {
+      jest.mocked(isTestFlightInstall).mockReturnValue(false);
+      // No /app-config route: a request for it would fail the test.
+      mockApi({ "GET /jobs/open": { body: JOBS } });
+      await renderWithProviders(<OpenJobsScreen />);
+
+      expect(await screen.findByText("Úklid bytu 2+kk")).toBeOnTheScreen();
+      expect(
+        screen.queryByText("Profik Pro is now on the App Store"),
+      ).not.toBeOnTheScreen();
+    });
   });
 });
