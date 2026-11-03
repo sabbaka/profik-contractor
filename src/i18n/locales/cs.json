@@ -487,7 +487,7 @@
     "legalBasisTitle": "Proč vaše údaje zpracováváme",
     "legalBasis": "Pro poskytování Platformy — účet, zakázky, reakce, chat, kredity, hodnocení — jako plnění smlouvy. Pro bezpečnost, prevenci podvodů, opravu chyb a statistiky používání jako náš oprávněný zájem. Pro účetní a daňové účely jako zákonnou povinnost. Pro ověření totožnosti na základě vašeho souhlasu, který můžete kdykoli odvolat.",
     "sharingTitle": "Jak jsou vaše údaje sdíleny",
-    "sharing": "Zákazníci vidí to, co je potřeba pro spolupráci — vaše jméno, profilovou fotku, detaily zakázky, cenu vaší reakce, hodnocení a zprávy v chatu. Vaše telefonní číslo není nikdy sdíleno se zákazníky; veškerá komunikace probíhá přes chat v aplikaci.\n\nÚdaje sdílíme také s poskytovateli, kteří zajišťují chod Platformy — mimo jiné Render (servery), Cloudflare (úložiště fotografií), Stripe (platby), Expo (push oznámení), Sentry (chybové protokoly), PostHog (statistiky používání, servery v EU), Google a Apple (mapy), Didit (ověření totožnosti) a náš poskytovatel SMS (ověřovací kódy). Někteří z nich zpracovávají údaje mimo EU/EHP, zejména v USA, na základě rozhodnutí Evropské komise o odpovídající ochraně nebo standardních smluvních doložek. Vaše údaje neprodáváme a orgánům veřejné moci je poskytujeme jen tam, kde to vyžaduje zákon.",
+    "sharing": "Zákazníci vidí to, co je potřeba pro spolupráci — vaše jméno, profilovou fotku, detaily zakázky, cenu vaší reakce, hodnocení a zprávy v chatu. Vaše telefonní číslo není nikdy sdíleno se zákazníky; veškerá komunikace probíhá přes chat v aplikaci.\n\nÚdaje sdílíme také s poskytovateli, kteří zajišťují chod Platformy — mimo jiné Render (servery), Cloudflare (úložiště fotografií), Stripe (platby kartou na Androidu), Apple (platby v App Store na iPhonu; mapy), RevenueCat (ověření nákupů v App Store), Expo (push oznámení), Sentry (chybové protokoly), PostHog (statistiky používání, servery v EU), Google (mapy), Didit (ověření totožnosti) a náš poskytovatel SMS (ověřovací kódy). Někteří z nich zpracovávají údaje mimo EU/EHP, zejména v USA, na základě rozhodnutí Evropské komise o odpovídající ochraně nebo standardních smluvních doložek. Vaše údaje neprodáváme a orgánům veřejné moci je poskytujeme jen tam, kde to vyžaduje zákon.",
     "retentionTitle": "Uchovávání a mazání údajů",
     "retention": "Vaše údaje uchováváme po dobu, kdy je účet aktivní. Po jeho smazání údaje bez zbytečného odkladu smažeme nebo anonymizujeme, s výjimkou záznamů, které jsme ze zákona povinni uchovávat — účetní doklady až po dobu 10 let.",
     "rightsTitle": "Vaše práva",
@@ -497,7 +497,7 @@
     "contactTitle": "Kontaktujte nás",
     "contact": "Pokud máte dotazy ohledně těchto zásad, kontaktujte nás na {{email}}.",
     "fullVersion": "Úplné znění zásad najdete na profik.app",
-    "lastUpdated": "Naposledy aktualizováno: 30. září 2026"
+    "lastUpdated": "Naposledy aktualizováno: 3. listopadu 2026"
   },
   "support": {
     "title": "Nápověda a podpora",
