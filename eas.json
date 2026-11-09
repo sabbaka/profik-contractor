@@ -14,9 +14,25 @@
     },
     "production": {
       "extends": "base",
+      "environment": "production",
       "distribution": "store",
       "channel": "production",
       "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      }
+    },
+    "staging": {
+      "extends": "base",
+      "environment": "preview",
+      "distribution": "store",
+      "channel": "staging",
+      "autoIncrement": true,
+      "env": {
+        "APP_VARIANT": "staging",
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "true",
+        "SENTRY_ALLOW_FAILURE": "true"
+      },
       "android": {
         "buildType": "app-bundle"
       }
@@ -64,6 +80,14 @@
       "ios": {
         "appleId": "sabbakaz@gmail.com",
         "ascAppId": "6787445540"
+      },
+      "android": {
+        "track": "internal"
+      }
+    },
+    "staging": {
+      "ios": {
+        "appleId": "sabbakaz@gmail.com"
       },
       "android": {
         "track": "internal"
