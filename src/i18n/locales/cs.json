@@ -785,5 +785,10 @@
     "title": "Profik Pro je teď v App Storu",
     "body": "Nainstalujte si verzi z App Storu. Účet, kredity i chaty vám zůstanou a tahle testovací verze brzy přestane fungovat.",
     "cta": "Otevřít App Store"
+  },
+  "updateRequired": {
+    "title": "Aktualizujte Profik Pro",
+    "body": "Tato verze aplikace už není podporována. Pro pokračování si nainstalujte nejnovější verzi.",
+    "cta": "Aktualizovat"
   }
 }

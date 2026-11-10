@@ -295,4 +295,17 @@ export interface Review {
 export interface AppConfig {
   /** Pro is in the App Store, so TestFlight installs are asked to move. */
   proAppStoreLive: boolean;
+  /**
+   * The oldest version of each app, per platform, that may keep running.
+   * Optional: a backend from before the field does not send it.
+   */
+  minSupportedVersion?: {
+    client: MinSupportedPlatforms;
+    contractor: MinSupportedPlatforms;
+  };
+}
+
+interface MinSupportedPlatforms {
+  ios: string | null;
+  android: string | null;
 }

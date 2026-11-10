@@ -2556,6 +2556,28 @@
           "feedback"
         ]
       }
+    },
+    "/app-config": {
+      "get": {
+        "operationId": "getAppConfig",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current switches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppConfigResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Runtime switches for the mobile apps",
+        "tags": [
+          "app-config"
+        ]
+      }
     }
   },
   "info": {
@@ -5328,6 +5350,64 @@
           "appVersion",
           "locale",
           "createdAt"
+        ]
+      },
+      "MinSupportedPlatformsDto": {
+        "type": "object",
+        "properties": {
+          "ios": {
+            "type": "string",
+            "description": "Oldest version that may keep running on iOS, or null.",
+            "example": "1.1.33",
+            "nullable": true
+          },
+          "android": {
+            "type": "string",
+            "description": "Oldest version that may keep running on Android, or null.",
+            "example": null,
+            "nullable": true
+          }
+        },
+        "required": [
+          "ios",
+          "android"
+        ]
+      },
+      "MinSupportedVersionDto": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "$ref": "#/components/schemas/MinSupportedPlatformsDto"
+          },
+          "contractor": {
+            "$ref": "#/components/schemas/MinSupportedPlatformsDto"
+          }
+        },
+        "required": [
+          "client",
+          "contractor"
+        ]
+      },
+      "AppConfigResponseDto": {
+        "type": "object",
+        "properties": {
+          "proAppStoreLive": {
+            "type": "boolean",
+            "description": "Profik Pro is live in the App Store. A TestFlight build of Pro shows a \"get the App Store version\" banner while this is true.",
+            "example": false
+          },
+          "minSupportedVersion": {
+            "description": "The oldest version of each app, per platform, that may keep running. An app older than its entry stops at an \"update the app\" screen; null means no version is refused.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MinSupportedVersionDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "proAppStoreLive",
+          "minSupportedVersion"
         ]
       }
     }

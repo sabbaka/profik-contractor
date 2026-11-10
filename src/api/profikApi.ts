@@ -17,6 +17,7 @@ import type { TermsState } from "../features/auth/terms";
 import i18n from "../i18n";
 import { logout } from "../store/authSlice";
 import { forwardIdCursor } from "./pagination";
+import { appBuildHeaderValue } from "../features/appUpdate/appBuild";
 import type {
   AppConfig,
   ConversationFilter,
@@ -121,6 +122,10 @@ const rawBaseQuery = fetchBaseQuery({
     // outside the React tree. The server needs this for the one thing it sends
     // before an account exists — the SMS carrying the sign-in code.
     headers.set("Accept-Language", i18n.language);
+    // Which build is asking. The backend's request log is the only record of
+    // what is still installed, and it can only write down what it is told.
+    const build = appBuildHeaderValue();
+    if (build) headers.set("X-Profik-App", build);
     return headers;
   },
 });
