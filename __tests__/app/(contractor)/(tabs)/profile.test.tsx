@@ -28,7 +28,11 @@ jest.mock("@/src/utils/testFlightInstall", () => ({
 
 // Mutable, so each test can say which kind of launch it is. The module is
 // read at render, not at import, so changing it between tests is enough.
+// `__esModule` makes every importer hold this one object: without it each
+// `import * as Updates` may get its own copy, and a change made here is not
+// seen by `updateLabel` once another module has imported that first.
 jest.mock("expo-updates", () => ({
+  __esModule: true,
   isEnabled: true,
   isEmbeddedLaunch: false,
   updateId: null,

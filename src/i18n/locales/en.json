@@ -783,5 +783,10 @@
     "title": "Profik Pro is now on the App Store",
     "body": "Install the App Store version. Your account, credits and chats stay as they are, and this test version will stop working soon.",
     "cta": "Open the App Store"
+  },
+  "updateRequired": {
+    "title": "Update Profik Pro",
+    "body": "This version of the app is no longer supported. Install the latest version to continue.",
+    "cta": "Update"
   }
 }

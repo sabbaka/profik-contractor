@@ -38,6 +38,7 @@ import {
 } from "@/src/features/auth/terms";
 import { getCachedTerms, setCachedTerms } from "@/src/utils/termsStorage";
 import { useMeQuery } from "@/src/api/profikApi";
+import { UpdateRequiredGate } from "@/src/components/appUpdate/UpdateRequiredGate";
 import { usePushNotifications } from "@/src/hooks/usePushNotifications";
 import { ThemeProvider, useThemeColors, useThemeMode } from "@/src/theme";
 import {
@@ -300,9 +301,11 @@ function ThemedApp() {
           <PortalProvider>
             <ErrorBoundary context="root">
               <NavigationTheme>
-                <AuthGate>
-                  <Slot />
-                </AuthGate>
+                <UpdateRequiredGate>
+                  <AuthGate>
+                    <Slot />
+                  </AuthGate>
+                </UpdateRequiredGate>
               </NavigationTheme>
             </ErrorBoundary>
             <StatusBar style={mode === "dark" ? "light" : "dark"} />
